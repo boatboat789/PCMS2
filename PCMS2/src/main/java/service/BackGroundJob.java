@@ -1,0 +1,47 @@
+package service;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.Date;
+
+import javax.servlet.ServletContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import info.FtpSapInfo;
+import info.SqlInfo;
+//import model.ColorManagementModel;
+//import model.MaterialMasterModel;
+import th.in.totemplate.core.net.FtpReceive;
+import th.in.totemplate.core.sql.Database;
+
+public class BackGroundJob { 
+	private String LOCAL_DIRECTORY;
+	private String FTP_DIRECTORY;
+	private FtpTaskRunner ftr;
+	@Autowired
+	private ServletContext context; 
+	public BackGroundJob() {  } 
+//	@Scheduled(fixedDelay = 10000)       
+	@Scheduled(cron = "0 4/10 * * * *")    
+	public void sortBackGround1() {	
+		LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
+		FTP_DIRECTORY = context.getInitParameter("FTP_PATH");
+		// Creating a File object
+		File file = new File(LOCAL_DIRECTORY);
+		// Creating the directory 
+		boolean bool = file.mkdir();
+		try {
+			ftr = new FtpTaskRunner(new Database(SqlInfo.getInstance()), new FtpReceive(FtpSapInfo.getInstance(), FTP_DIRECTORY, LOCAL_DIRECTORY));
+			ftr.loadFTP(); 
+		} catch (ClassNotFoundException | SQLException e) { 
+			e.printStackTrace();
+		}    
+	}     
+//	@Scheduled(cron = "0 0 1 * * *")    
+//	public void sortBackGroundTwo() { 
+//		MaterialMasterModel model = new MaterialMasterModel();
+//		model.insertMaterialToTmpMaterial( ); 
+//	}  
+}

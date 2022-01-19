@@ -1,0 +1,151 @@
+	/* .dataTables_scrollBody{ */
+/* 	height: 400px !important; */
+/* }         */
+ table.dataTable, table.dataTable th, table.dataTable td {
+       box-sizing: border-box;    
+}
+.dt-custom-unavailable {
+	color: white;
+	font-weight: normal;
+	background-color: #c0c0c0 !important;
+} 
+.dt-custom-highlight {
+	color: #555;
+	font-weight: normal;
+	background-color: #bbb !important;
+}
+
+.table thead {
+	background-color: #c0eaf9;
+}
+
+td.dt-custom-tvd {
+	width: 50px !important;
+	min-width: 50px !important;
+	max-width: 50px !important;
+    overflow-wrap: break-word;
+}
+
+td.dt-custom-td1 {
+	width: 80px !important;
+	min-width: 80px !important;
+	max-width: 80px !important;
+    overflow-wrap: break-word;
+}
+
+td.dt-custom-td2 {
+	width: 50px !important;
+	min-width: 50px !important;
+	max-width: 50px !important;
+    overflow-wrap: break-word;
+}
+
+td.dt-custom-td3 {
+	width: 170px !important;
+	min-width: 170px !important;
+	max-width: 170px !important;
+    overflow-wrap: break-word;
+}
+
+td.dt-custom-td4 {
+	width: 230px !important;
+	min-width: 230px !important;
+	max-width: 230px !important;
+	word-wrap: break-word;      
+}
+td.dt-custom-td100 {
+	width: 100px !important;
+	min-width: 100px !important;
+	max-width: 100px !important;
+    overflow-wrap: break-word;
+}
+td.dt-custom-td120 {
+	width: 120px !important;
+	min-width: 120px !important;
+	max-width: 120px !important;
+    overflow-wrap: break-word;
+}
+td.dt-custom-td140 {
+	width: 140px !important;
+	min-width: 140px !important;
+	max-width: 140px !important;    
+    overflow-wrap: break-word;
+}
+td.dt-custom-td400 {           
+	width: 400px !important; 
+	min-width: 400px !important;
+	max-width: 400px !important;
+    overflow-wrap: break-word;   
+}
+td.dt-custom-td450 {              
+	width: 450px !important; 
+	min-width: 450px !important;
+	max-width: 450px !important;
+    overflow-wrap: break-word;   
+}
+th.dt-custom-thdate {
+	width: 76px !important;
+	min-width: 76px !important;
+	max-width: 76px !important;     
+    overflow-wrap: break-word;
+}  
+
+td.dt-custom-td80 {
+	width: 80px !important;
+	min-width: 80px !important;
+	max-width: 80px !important;
+    overflow-wrap: break-word; 
+	/*vertical-align: middle !important;*/
+}     
+.dataTables_scrollBody {    
+    overflow-y: overlay !important;        
+/*     overflow-y: initial !important; */
+    overflow-x: auto !important;
+}
+.dt-custom-tdd .datepicker {    
+	width: 100%;
+	background-color: #fff;      
+}
+
+.dt-custom-tdd .statchoose {
+	width: 100%;
+	background-color: #fff;    
+}  
+th.sorting.sorting_asc {              
+    padding: 0px 3px 0px 3px;
+}                      
+th.data-custom-main {          
+	 padding: 7px 3px 7px 3px !important; 
+/* 	 width: 230px !important; */
+/* 	min-width: 230px !important;     */
+/* 	max-width: 230px !important; */
+/* 	word-wrap: break-word;        */
+}                  
+td.data-custom-main {     
+	 padding: 7px 3px 7px 3px !important; 
+/* 	 width: 230px !important; */
+/* 	min-width: 230px !important; */
+/* 	max-width: 230px !important; */
+/* 	word-wrap: break-word;              */
+}        
+/* .data-custom-padding0505 td { */
+/*     padding: 5px !important;      */
+/* }              */       
+/* td .data-custom-padding0505 { */
+/*     padding: 5px !important;           */
+/* }    */        
+.table-bordered tbody tr td, .table-bordered tbody tr th {
+    text-align: center;
+    vertical-align: middle;             
+}
+
+tr.dtrg-group.dtrg-start td {
+    text-align: left !important;   
+}              
+table.dataTable.compact thead th, table.dataTable.compact thead td{
+	padding: 2px 6px;
+}       
+.dataTables_scrollBody {
+    background-color: whitesmoke;
+}       
+ 

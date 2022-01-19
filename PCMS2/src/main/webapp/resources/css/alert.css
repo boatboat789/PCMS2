@@ -1,0 +1,29 @@
+.modal-header {
+/* 	display: block; */
+	border-radius: 6px;
+}
+
+#success-add {
+	background-color: green;
+}
+
+#fail-add {
+	background-color: salmon;
+}
+
+.modal-content {
+	box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+	border: 0px solid rgba(0,0,0,.2);
+	border-radius: .5rem;
+}
+
+.close {
+	float: right;
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	filter: alpha(opacity = 20);
+	opacity: .2;
+}
