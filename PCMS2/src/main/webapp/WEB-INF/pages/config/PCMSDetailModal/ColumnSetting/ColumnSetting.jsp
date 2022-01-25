@@ -26,13 +26,17 @@
 <!-- 					    <option value='QuantityMR'>Qty(M.)</option> -->
 <!-- 					    <option value='Priority'>UserStatus</option> -->
 <!-- 					    <option value='LabStatus'>LabStatus</option> -->
-<!-- 					    <option value='DyeDate'>DyeDate</option> -->
+<!-- 					    <option value='DyeDate'>DyeDate</option> -->   
 <!-- 					    <option value='GroupPlanningDetailId'>Group</option> -->
 <!-- 					    <option value='Reason'>Reason</option> -->  
-<!-- 					  </select> -->      
-				<label class=" margin-0" for="multi_colVis">Select for hidden column</label>  	
+<!-- 					  </select> -->         
+				<label class=" margin-0" for="multi_colVis">Select column :</label>  	
 				<div >   
-					<select id="multi_colVis"   class="selectpicker"  data-live-search="true">
+					<select id="multi_colVis"   class="selectpicker" 
+					multiple 
+					data-selected-text-format="count > 3"   
+					data-live-search="true"  
+				 	data-actions-box="true">
 <!-- 				  <option>Mustard</option> -->       
 <!-- 				  <option>Ketchup</option> -->   	
 <!-- 				  <option>Relish</option> -->

@@ -41,13 +41,16 @@ public class PCMSDetailController {
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		PCMSDetailModel model = new PCMSDetailModel();
-		 ArrayList<ColumnHiddenDetail> list = model.getColHiddenDetail(user);
-		 String[] arrayCol = null  ;
-		 if(list.size() == 0) {  } 
-		 else {  arrayCol = list.get(0).getColName().split(","); }   
+		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		 String[] arrayCol = null  ;      
+		 if(list.size() == 0) { 
+			 ColumnHiddenDetail bean = new ColumnHiddenDetail();
+			 arrayCol = bean.getColVisibleDetail().split(",");
+			 } 
+		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }   
 		mv.setViewName("PCMSDetail/PCMSDetail"); 
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
-		mv.addObject("ColHiddenList", g.toJson(arrayCol));
+		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 		return mv;
 	}    
@@ -199,16 +202,16 @@ public class PCMSDetailController {
 		String [] userArray = (String[]) g.fromJson(data, String[].class);
 		ArrayList<ColumnHiddenDetail> poList = new ArrayList<ColumnHiddenDetail>();
 		int i = 0; 
-		String colHidden = "";
+		String colVisible = "";
 		for (i = 0; i < userArray.length; i++) { 
-			colHidden += userArray[i];
+			colVisible += userArray[i];
 			if(i!= userArray.length - 1) {
-				colHidden +=",";
+				colVisible +=",";
 			} 
 		}  
 		ColumnHiddenDetail pd = new ColumnHiddenDetail(); 
 		pd.setUserId(user);
-		pd.setColName(colHidden);
+		pd.setColVisibleDetail(colVisible);
 		poList.add(pd);   
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();

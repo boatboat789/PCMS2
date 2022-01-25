@@ -28,7 +28,7 @@ public class DataImportMainGradeDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 8;
+      this.maxfield = 10;
    }
 
    public String getMessage() {
@@ -130,10 +130,10 @@ public class DataImportMainGradeDaoImpl implements DataImportDao {
       if (!datas.isEmpty()) {
          try {
         	 String sql = "INSERT INTO [PCMS].[dbo].[SapTempMainGrade] "
-             		+ " (F001, F002, F003, F004, F005, F006 , F007 , F008"
+             		+ " (F001, F002, F003, F004, F005, F006 , F007 , F008, F009, F010"
              		+ " ) "
              		+ " VALUES ("
-             		+ "        ?, ?, ?, ?, ?, ? , ?, ?"
+             		+ "        ?, ?, ?, ?, ?, ? , ?, ?, ?, ?"
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);
@@ -146,7 +146,7 @@ public class DataImportMainGradeDaoImpl implements DataImportDao {
             }  
             prepared.executeBatch();
             value = i;
-         } catch (SQLException var9) {
+         } catch (SQLException var9) { 
         	 System.out.println(var9);
             throw new RuntimeException();
              

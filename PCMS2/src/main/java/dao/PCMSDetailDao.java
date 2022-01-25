@@ -24,7 +24,7 @@ public interface PCMSDetailDao {
 	ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList); 
 	ArrayList<ColumnHiddenDetail> saveColSettingToServer(ColumnHiddenDetail pd);
 
-	ArrayList<ColumnHiddenDetail> getColHiddenDetail(String user);
+	ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user);
 
 	ArrayList<PCMSAllDetail> getUserStatusList(); 
 

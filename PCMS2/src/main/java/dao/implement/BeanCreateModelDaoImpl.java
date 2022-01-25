@@ -33,7 +33,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm:ss");
-	DecimalFormat df = new DecimalFormat("0.00");   
+	DecimalFormat df = new DecimalFormat("0.00");       
+	DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
 	@Override  
 	public PCMSTableDetail _genPCMSTableDetail(Map<String, Object> map) {
 		String SaleOrder = "";
@@ -67,16 +68,18 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SaleQuantity = "";
 		if (map.get("SaleQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("SaleQuantity");
-			Double doubleVal = value.doubleValue();  
-			SaleQuantity = df.format(doubleVal);      
+			Double doubleVal = value.doubleValue();     
+			SaleQuantity = formatter.format(doubleVal);
+//			System.out.println(SaleQuantity);
+//			SaleQuantity =  formatter.format(doubleVal);     
 		}
 		String BillQuantity = "";
 		if (map.get("BillQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillQuantity");
 			Double doubleVal = value.doubleValue();
-			BillQuantity = df.format(doubleVal);
+			BillQuantity = formatter.format(doubleVal);
 		}
-		String SaleUnit = "";
+		String SaleUnit = "";  
 		if (map.get("SaleUnit") != null) {
 			SaleUnit = (String) map.get("SaleUnit");
 		}
@@ -88,7 +91,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("TotalQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("TotalQuantity");
 			Double doubleVal = value.doubleValue();
-			TotalQuantity = df.format(doubleVal);
+			TotalQuantity = formatter.format(doubleVal);
 		}
 		String GreigeInDate = "";
 		if (map.get("GreigeInDate") != null) {
@@ -282,7 +285,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Volumn") != null) {
 			BigDecimal value = (BigDecimal) map.get("Volumn");
 			Double doubleVal = value.doubleValue();
-			Volumn = df.format(doubleVal);
+			Volumn = formatter.format(doubleVal);
 		}
 		String SaleUnit = "";
 		if (map.get("SaleUnit") != null) {
@@ -383,11 +386,15 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("GreigeDesign") != null) {
 			GreigeDesign = (String) map.get("GreigeDesign");
 		}
+		String ColorCustomer = "";
+		if (map.get("ColorCustomer") != null) {
+			ColorCustomer = (String) map.get("ColorCustomer");
+		}  
 		return new PCMSAllDetail(ProductionOrder, LotNo, Batch, LabNo, PrdCreateDate, DueDate, SaleOrder, SaleLine,
 				PurchaseOrder, ArticleFG, DesignFG, CustomerName, CustomerShortName,Shade, BookNo, Center, MaterialNo, Volumn, SaleUnit,
 				STDUnit, Color, PlanGreigeDate, RefPrd, GreigeInDate, BCAware, OrderPuang, UserStatus, LabStatus,
 				CFMPlanDate, DeliveryDate, BCDate, RemarkOne, RemarkTwo, RemarkThree, RemAfterCloseOne,
-				RemAfterCloseTwo, RemAfterCloseThree,GreigeArticle,GreigeDesign);
+				RemAfterCloseTwo, RemAfterCloseThree,GreigeArticle,GreigeDesign,ColorCustomer);
 	}
 
 	@Override
@@ -404,13 +411,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("QuantityKG") != null) {
 			BigDecimal value = (BigDecimal) map.get("QuantityKG");
 			Double doubleVal = value.doubleValue();
-			QuantityKG = df.format(doubleVal);
+			QuantityKG = formatter.format(doubleVal);
 		}
 		String QuantityMR = "";
 		if (map.get("QuantityMR") != null) {
 			BigDecimal value = (BigDecimal) map.get("QuantityMR");
 			Double doubleVal = value.doubleValue();
-			QuantityMR = df.format(doubleVal);
+			QuantityMR = formatter.format(doubleVal);
 		}
 		String CreateDate = "";
 		if (map.get("CreateDate") != null) {
@@ -568,7 +575,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("QuantityGreige") != null) { 
 			BigDecimal value = (BigDecimal) map.get("QuantityGreige");
 			Double doubleVal = value.doubleValue();
-			QuantityGreige = df.format(doubleVal);
+			QuantityGreige = formatter.format(doubleVal);
 		}
 		String Operation = "";
 		if (map.get("Operation") != null) {
@@ -578,7 +585,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("QuantityFG") != null) {
 			BigDecimal value = (BigDecimal) map.get("QuantityFG");
 			Double doubleVal = value.doubleValue();
-			QuantityFG = df.format(doubleVal);
+			QuantityFG = formatter.format(doubleVal);
 		}
 		String Remark = "";
 		if (map.get("Remark") != null) {
@@ -686,7 +693,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Quantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("Quantity");
 			Double doubleVal = value.doubleValue();
-			Quantity = df.format(doubleVal);
+			Quantity = formatter.format(doubleVal);
 		}
 		String RollNo = "";
 		if (map.get("RollNo") != null) {
@@ -700,7 +707,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("QuantityKG") != null) {
 			BigDecimal value = (BigDecimal) map.get("QuantityKG");
 			Double doubleVal = value.doubleValue();
-			QuantityKG = df.format(doubleVal);
+			QuantityKG = formatter.format(doubleVal);
 		}
 		String Grade = "";
 		if (map.get("Grade") != null) {
@@ -710,7 +717,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("QuantityYD") != null) {
 			BigDecimal value = (BigDecimal) map.get("QuantityYD");
 			Double doubleVal = value.doubleValue();
-			QuantityYD = df.format(doubleVal);
+			QuantityYD = formatter.format(doubleVal);
 		}
 		return new PackingDetail(PostingDate, Quantity, RollNo, Status, QuantityKG, Grade,QuantityYD);
 	}
@@ -872,7 +879,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("SOChangeQty") != null) {
 			BigDecimal value = (BigDecimal) map.get("SOChangeQty");
 			Double doubleVal = value.doubleValue();
-			SOChangeQty = df.format(doubleVal);
+			SOChangeQty = formatter.format(doubleVal);
 		}
 		String SOChangeUnit = "";
 		if (map.get("SOChangeUnit") != null) {
@@ -895,7 +902,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("BillQtyPerSale") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillQtyPerSale");
 			Double doubleVal = value.doubleValue();
-			BillQtyPerSale = df.format(doubleVal);
+			BillQtyPerSale = formatter.format(doubleVal);
 		}
 		String SaleOrder = "";
 		if (map.get("SaleOrder") != null) {
@@ -909,7 +916,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Quantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillQtyPerStock");
 			Double doubleVal = value.doubleValue();
-			BillQtyPerStock = df.format(doubleVal);
+			BillQtyPerStock = formatter.format(doubleVal);
 		}
 		return new SaleDetail(BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock);
 	}
@@ -925,7 +932,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("BillQtyPerSale") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillQtyPerSale");
 			Double doubleVal = value.doubleValue();
-			BillQtyPerSale = df.format(doubleVal);
+			BillQtyPerSale = formatter.format(doubleVal);
 		}
 		String SaleOrder = "";
 		if (map.get("SaleOrder") != null) {
@@ -939,7 +946,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Quantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillQtyPerStock");
 			Double doubleVal = value.doubleValue();
-			BillQtyPerStock = df.format(doubleVal);
+			BillQtyPerStock = formatter.format(doubleVal);
 		}
 		return new SaleInputDetail(BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock);
 	}
@@ -981,7 +988,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Quantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("Quantity");
 			Double doubleVal = value.doubleValue();
-			Quantity = df.format(doubleVal);
+			Quantity = formatter.format(doubleVal);
 		}
 		String Unit = "";
 		if (map.get("Unit") != null) {
@@ -1059,7 +1066,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Price") != null) {
 			BigDecimal value = (BigDecimal) map.get("Price");
 			Double doubleVal = value.doubleValue();
-			Price = df.format(doubleVal);
+			Price = formatter.format(doubleVal);
 		}   
 		String SaleUnit = "";
 		if (map.get("SaleUnit") != null) {
@@ -1069,31 +1076,31 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("SaleQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("SaleQuantity");
 			Double doubleVal = value.doubleValue();
-			SaleQuantity = df.format(doubleVal);
+			SaleQuantity = formatter.format(doubleVal);
 		}   
 		String OrderAmount = "";
 		if (map.get("OrderAmount") != null) {
 			BigDecimal value = (BigDecimal) map.get("OrderAmount");
 			Double doubleVal = value.doubleValue();
-			OrderAmount = df.format(doubleVal);
+			OrderAmount = formatter.format(doubleVal);
 		}   
 		String RemainQuantity = "";
 		if (map.get("RemainQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("RemainQuantity");
 			Double doubleVal = value.doubleValue();
-			RemainQuantity = df.format(doubleVal);
+			RemainQuantity = formatter.format(doubleVal);
 		}   
 		String RemainAmount = "";
 		if (map.get("RemainAmount") != null) {
 			BigDecimal value = (BigDecimal) map.get("RemainAmount");
 			Double doubleVal = value.doubleValue();
-			RemainAmount = df.format(doubleVal);
+			RemainAmount = formatter.format(doubleVal);
 		}   
 		String TotalQuantity = "";
-		if (map.get("CustomerDue") != null) {
+		if (map.get("TotalQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("TotalQuantity");
-			Double doubleVal = value.doubleValue();
-			TotalQuantity = df.format(doubleVal);
+			Double doubleVal = value.doubleValue();  
+			TotalQuantity = formatter.format(doubleVal);
 		}   
 		String Grade = "";
 		if (map.get("Grade") != null) {
@@ -1103,15 +1110,27 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("BillSendWeightQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillSendWeightQuantity");
 			Double doubleVal = value.doubleValue();
-			BillSendWeightQuantity = df.format(doubleVal);
+			BillSendWeightQuantity = formatter.format(doubleVal);
+		} 
+		String BillSendMRQuantity = "";
+		if (map.get("BillSendMRQuantity") != null) {
+			BigDecimal value = (BigDecimal) map.get("BillSendMRQuantity");
+			Double doubleVal = value.doubleValue();
+			BillSendMRQuantity = formatter.format(doubleVal);
+		} 
+		String BillSendYDQuantity = "";
+		if (map.get("BillSendYDQuantity") != null) {
+			BigDecimal value = (BigDecimal) map.get("BillSendYDQuantity");
+			Double doubleVal = value.doubleValue();
+			BillSendYDQuantity = formatter.format(doubleVal);
 		} 
 		String BillSendQuantity = "";
 		if (map.get("BillSendQuantity") != null) {
 			BigDecimal value = (BigDecimal) map.get("BillSendQuantity");
 			Double doubleVal = value.doubleValue();
-			BillSendQuantity = df.format(doubleVal);
+			BillSendQuantity = formatter.format(doubleVal);
 		}    
-		String CustomerDue = "";    
+		String CustomerDue = "";      
 		if (map.get("CustomerDue") != null) {
 			CustomerDue = (String) map.get("CustomerDue");
 		}      
@@ -1216,11 +1235,24 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 //		if (map.get("CFMLastest") != null) {
 //			CFMLastest = (String) map.get("CFMLastest");
 //		} 
-		CFMLastest =  CFMAnswerDate + " | " + CFMStatus + " | "+ CFMRemark ; 
+		if(CFMLastest.trim().equals("") && CFMStatus.trim().equals("") && CFMRemark.trim().equals("")) {
+			CFMLastest = "";
+		}    
+		else {
+			CFMLastest =  CFMAnswerDate + " | " + CFMStatus + " | "+ CFMRemark ;
+		}   
+		if((BillSendWeightQuantity.trim().equals("") && BillSendMRQuantity.trim().equals("") && BillSendYDQuantity.trim().equals(""))||
+	       (BillSendWeightQuantity.trim().equals("0.00") && BillSendMRQuantity.trim().equals("0.00") && BillSendYDQuantity.trim().equals("0.00"))
+	       ) {
+			BillSendWeightQuantity = "";  
+		}    
+		else {  
+			BillSendWeightQuantity =  BillSendWeightQuantity + " | " + BillSendMRQuantity + " | "+ BillSendYDQuantity ;
+		}  
 		Remark = RemarkOne + RemarkTwo   + RemarkThree;
 		return new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
-				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendQuantity, CustomerDue, 
+				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
 				DueDate, LotNo, LabNo, LabStatus, CFMPlanLabDate, CFMActualLabDate, CFMCusAnsLabDate, UserStatus,
 				TKCFM, CFMPlanDate, CFMSendDate, CFMAnswerDate, 
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
@@ -1267,10 +1299,14 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("UserId") != null) {
 			UserId = (String) map.get("UserId");   
 		}
-		String ColName = "";
-		if (map.get("ColName") != null) {
-			ColName = (String) map.get("ColName");
+		String ColVisibleDetail = "";
+		if (map.get("ColVisibleDetail") != null) {
+			ColVisibleDetail = (String) map.get("ColVisibleDetail");
 		}
-		return new ColumnHiddenDetail(UserId, ColName);
+		String ColVisibleSummary = "";
+		if (map.get("ColVisibleSummary") != null) {
+			ColVisibleSummary = (String) map.get("ColVisibleSummary");
+		}
+		return new ColumnHiddenDetail(UserId, ColVisibleDetail,ColVisibleSummary);
 	}
 }

@@ -18,6 +18,8 @@ public class PCMSSecondTableDetail {
 	private String TotalQuantity;
 	private String Grade;
 	private String BillSendWeightQuantity;
+	private String BillSendMRQuantity;
+	private String BillSendYDQuantity;
 	private String BillSendQuantity;
 	private String CustomerDue;
 	private String DueDate;
@@ -48,7 +50,8 @@ public class PCMSSecondTableDetail {
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
-				String grade, String BillSendWeightQuantity, String billSendQuantity, String customerDue, String dueDate,
+				String grade, String BillSendWeightQuantity, String billSendMRQuantity,String billSendYDQuantity, String billSendQuantity, 
+				String customerDue, String dueDate,
 				String lotNo, String labNo, String labStatus, String cFMPlanLabDate, String cFMActualLabDate,
 				String cFMCusAnsLabDate, String userStatus, String tKCFM, String cFMPlanDate, String cFMSendDate,
 				String cFMAnswerDate, String cFMNumber, String cFMStatus, String cFMRemark, String deliveryDate,

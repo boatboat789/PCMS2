@@ -87,7 +87,7 @@
 					  	<div > 
 				    		<input class="form-control " autocomplete="off"  type="text"  id="input_material"   maxlength="30" > 
 						</div>     
-					</div>   
+					</div>      
 					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
 					  	<label class=" label-input  margin-0" for="input_labNo">LabNo</label>           
 					  	<div > 
@@ -101,7 +101,9 @@
 <!-- 						</div>         -->
 						<label class=" label-input  margin-0" for="SL_userStatus">UserStatus</label>           
 					  	<div >  
-					  		<select id="SL_userStatus"   class="selectpicker"  data-live-search="true"></select>
+					  		<select id="SL_userStatus"   class="selectpicker"  data-live-search="true">
+					  			<option value="" selected>SelectAll</option>
+					  		</select>
 						</div>    
 					</div>   
 					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
@@ -133,15 +135,15 @@
 		                    Download Excel     
 		              	</button>     
 					</div>       
-<!-- 					<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >   -->
+					<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
 	   
-<!-- 		              	<button id="btn_colSetting" class="btn btn-primary" type="button" style=" width: -webkit-fill-available; " > -->
-<!-- 		                    <i class="fa fa-cogs "></i>  -->
-<!-- 		                    Col Setting -->
-<!-- 		              	</button>         -->
-<!-- 					</div>        -->
+		              	<button id="btn_colSetting" class="btn btn-primary" type="button" style=" width: -webkit-fill-available; " >
+		                    <i class="fa fa-cogs"></i> 
+		                    Column Setting
+		              	</button>      
+					</div>       
 				</div>    
-			</div>                           
+			</div>                             
 			 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 "  >
 			 	<div class="row">          
 				 	<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
@@ -209,12 +211,12 @@
 					</div>   
 					      
 				</div>   
-			</div>     
+			</div>          
 		</div>        
 		<div id="wrapper-center" class="row" style="margin: 0px 5px;">     
 			<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px;margin: 0px 0px;" >                
-				<div class="table-responsive ">     
-					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="   font-size: 12.5px;width:100%">
+				<div class="table-responsive ">        
+					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 90%;   font-size: 12.5px;width:100%">
 				        <thead>
 				            <tr>
 				                <th class=" " style="vertical-align: middle;">SO No. </span></th>
@@ -225,28 +227,30 @@
 				                <th class=" " style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Color</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Order<span class="c"style="display: block;"> Qty.</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Shipped	<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class=" " style="vertical-align: middle;">UOM </th> 
+				                <th class=" " style="vertical-align: middle;">Unit </th> 
 				                <th class=" " style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
 				                <th class=" " style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Prepare	 </th> 
-				                <th class=" " style="vertical-align: middle;">PS </th>     
-				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Plan]</span> </th> 
+				                <th class=" " style="vertical-align: middle;">Prepare	 </th>  
+				                <th class=" " style="vertical-align: middle;">PS </th>      
+				                <th class=" " style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
 				                <th class=" " style="vertical-align: middle;">FN  </th> 
 				                <th class=" " style="vertical-align: middle;">Inspect </th>  
 				                <th class=" " style="vertical-align: middle;">วันนัด CF<span class="c"style="display: block;"> [Plan]</span> </th> 
+				                <th class=" " style="vertical-align: middle;">วันนัด CF<span class="c"style="display: block;"> [Actual]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">วันนัด<span class="c"style="display: block;"> ส่งของ</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Shipping </th>     
+				                <th class=" " style="vertical-align: middle;">Shipping </th>   
+				        
 				        	</tr> 
 				        </thead>     	     
 				        <tbody>    
 				        </tbody>       
 				    </table>            
-				</div>              
+				</div>                
 			</div>   	
 		</div>               
 <!-- 		<div id="wrapper-bot" class="row">   -->
@@ -254,6 +258,7 @@
 <!-- 		</div>        -->   
       <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include> 
+		<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
 <%-- 	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/Redirect/modalMain.jsp"></jsp:include>  --%>
 </body>               
 <%-- <script src="<c:url value="/resources/js/dataTables.rowsGroup.js" />"></script>          --%>
@@ -268,7 +273,7 @@ $(document).on('show.bs.modal', '.modal', function (event) {
     $(this).css('z-index', zIndex);
     setTimeout(function() {
         $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-    }, 0);
+    }, 0);  
 });
 var today = new Date();        //modalForm
 var dd = String('0' + today.getDate()).slice(-2); 
@@ -277,9 +282,12 @@ var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
 var MainTable ;  
 var poTable ;      
-var userStatusList ; 
+var userStatusList ;  	
+var mapsDataHeader  = new Map();  
+var mapsTitleHeader  = new Map();  
 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
-
+var columnsHeader  = [];
+var colList ;
 var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
@@ -367,7 +375,7 @@ $(document) .ready( function() {
 	   
 	var saleNumberList = JSON.parse('${SaleNumberList}');
 	userStatusList = JSON.parse('${UserStatusList}');  
-	$('#SL_userStatus').selectpicker();            
+	$('#SL_userStatus').selectpicker();             
 	addUserStatusOption(userStatusList );        
 // 	$('#SL_userStatus').selectpicker('val', userStatusList);     
   	addSelectOption(saleNumberList)
@@ -396,7 +404,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == '' ){
+			if(prdOrder == 'รอจัด Lot' ){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -423,7 +431,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == '' ){
+			if(prdOrder == 'รอจัด Lot' ){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -456,7 +464,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == '' ){
+			if(prdOrder == 'รอจัด Lot' ){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -483,7 +491,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == '' ){
+			if(prdOrder == 'รอจัด Lot' ){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -510,8 +518,8 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == '' ){
+			var prdOrder = tblData[0].ProductionOrder 
+			if(prdOrder == 'รอจัด Lot' ){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -528,10 +536,10 @@ $(document) .ready( function() {
     $('#btn_search').on( 'click', function () {      
     	searchByDetail();   
  	} );       
- 	$('#btn_colSetting').on( 'click', function () {      
- 		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
- 		      	
- 	} );  
+    $('#btn_colSetting').on( 'click', function () {      
+//		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
+		$('#modalColSetting').modal('show'); 
+	} );     	 
     $('#btn_download').on( 'click', function () {      
     	var ObjMarkup = MainTable.data().toArray(); 
 		exportCSV(ObjMarkup)            
@@ -547,69 +555,97 @@ $(document) .ready( function() {
 	});     
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
-    MainTable = $('#MainTable').DataTable({ 
+    var startdate = moment();
+   var  subDate = startdate.add(7, "days");
+    subDate = startdate.format("MM/DD/YYYY");      
+    var sevenDayAgo = new Date(subDate) ;   
+    MainTable = $('#MainTable').DataTable({    
 // 		data : jsonData,
  	    select : true,    
+ 	   	scrollX: true,        
  	    scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง 
- 	   scrollCollapse: true,   
+ 	   	scrollCollapse: true,   
 	   	orderCellsTop : true,           
 		orderClasses : false,           
-// 		lengthChange: false,             
-// "deferRender": true,       
-lengthChange : false,     
+// 		lengthChange: false,              
+// "deferRender": true,          	
+		filter:false,       
+		lengthChange : false,     
 		pageLength: 1000,	 
 // 		lengthMenu: [[1000, -1], [1000, "All"]],
 // 		colReorder: {      
 //             realtime: true       
-//         },                 
+//         },                       
  		colReorder: true,  
- 	   	columns : 
+		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],             
+ 	   	columns :    
  	   		[      
-		    {"data" : "SaleOrder"} ,         //0
-		    {"data" : "SaleLine"}, 
-		    {"data" : "ArticleFG"}, 
-		    {"data" : "DesignFG"}, 
-		    {"data" : "Color"}, 
-		    {"data" : "ColorCustomer"},      //5
-		    {"data" : "SaleQuantity"}, 
-		    {"data" : "BillQuantity"}, 
-		    {"data" : "SaleUnit"}, 
-		    {"data" : "ProductionOrder"}, 
-		    {"data" : "TotalQuantity"},      //10 
-		    {"data" : "GreigeInDate"}, 
-		    {"data" : "UserStatus"}, 
-		    {"data" : "DueDate"}, 
-		    {"data" : "Prepare"}, 
-		    {"data" : "Preset"},             //15
-		    {"data" : "DyePlan"},            //16
-		    {"data" : "DyeActual"}, 
-		    {"data" : "Dryer"},     
-		    {"data" : "Finishing"}, 
-		    {"data" : "Inspectation"},       //20 
-		    {"data" : "CFMPlanDate"},        //21 
-		    {"data" : "DeliveryDate"},       
-		    {"data" : "LotShipping"}         //23    
+		    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
+		    {"data" : "SaleLine",  "title": 'SO Line'}, 
+		    {"data" : "ArticleFG",  "title": 'Article No'}, 
+		    {"data" : "DesignFG",  "title": 'Design No'}, 
+		    {"data" : "Color",  "title": 'ATT Color'}, 
+		    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //5
+		    {"data" : "SaleQuantity",  "title": 'Order Qty.'}, 
+		    {"data" : "BillQuantity",  "title": 'Shipped Qty.'}, 
+		    {"data" : "SaleUnit",  "title": 'Unit'}, 
+		    {"data" : "ProductionOrder",  "title": 'Prod.No.'}, 
+		    {"data" : "TotalQuantity",  "title": 'Prod.Qty.'},      //10 
+		    {"data" : "GreigeInDate",  "title": 'Greige In'}, 
+		    {"data" : "UserStatus",  "title": 'User Status'},     
+		    {"data" : "DueDate",  "title": 'Due Date'},        
+		    {"data" : "Prepare",  "title": 'Prepare'},   
+		    {"data" : "Preset",  "title": 'PS'},                 //15
+		    {"data" : "DyePlan",  "title": 'Dye [Plan]'},            //16
+		    {"data" : "DyeActual",  "title": 'Dye [Actual]'},     
+		    {"data" : "Dryer" ,  "title": 'Dryer Date'},     
+		    {"data" : "Finishing",  "title": 'FN'},  
+		    {"data" : "Inspectation",  "title": 'Inspect'},       //20 
+		    {"data" : "CFMPlanDate",  "title": 'วันนัด CF[Plan]'},        //21 
+		    {"data" : "CFMDateActual",  "title": 'วันนัด CF[Actual]'},        //22
+		    {"data" : "DeliveryDate",  "title": 'วันนัดส่งของ'},       //23
+		    {"data" : "LotShipping",  "title": 'Shipping'}         //24    
 // 		    {"data" : "ShipDate"}          //23   
 		],       
-//     col,      	      
+//     col,      	           
 		columnDefs :  [	       
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24],                
 // 			  	  className : 'data-custom-main',        
 // 		  	 	  type: 'string'      
 				} ,            
-			{ targets :  [22],                   
+			{ targets :  [24],                   
 			  	  className : 'p-r-15',                  
-				} ,    
-			{ targets : [ 13],  
-				type: 'date-euro'          
-				} , 
+				} ,   
+				{ targets :  [16,21,23],                            
+// 				  	  className : 'bg-color-azure',                  
+					} ,   
+// 			{ targets : [ 13],  
+// 				type: 'date-euro'          
+// 				} , 
 						 
-// 		 	{ targets : [ 1 ],       
-// 		  	 	  type: 'string',
-// 			   	  render: function (data, type, row) {	 
-// 						return '<input class="form-control ColorInput"  name="Color" type="text"  value = "' + row.ColorCustomer+ '" autocomplete="off" >';
-// 			   	  }    
-// 				} ,    
+		 	{ targets : [ 13 ],       
+		  	 	  type: 'string', 
+			   	  render: function (data, type, row) {	     
+// 			   		  var html = ''  
+// 			   		  console.log(row,type)
+// 				   		if(row.DueDate != "") {  
+// 			 	    		var datearray = row.DueDate.split("/");
+// 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+// 					  	    if (dueDate < today){     
+// 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
+// 	//		 		  	    	$(row).addClass('dt-custom-overdue');    
+// 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
+// 					        }
+// 					  	    else{
+// 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
+// 					  	    }
+// 			  	    	}   
+// 				   		else{
+// 				   			html = ' <div >' + row.DueDate+ '</div>' 
+// 				   		}     
+						return  row.DueDate;
+			   	  }    
+				} ,    
 // 		 	{ targets : [ 2 ], 
 // 		 		className : 'status',   
 // 	  	 	  type: 'string',
@@ -626,32 +662,50 @@ lengthChange : false,
 // 			},    
 		],
 // 		 order: [[2, 'asc'], [1, 'asc']],  
-		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
+// 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
 	 	select : {             
 			style: 'os',         
 		 	selector: 'td:not(.status)'  // .status is class        
   		},    
   		createdRow : function(row, data, index) {
-			$('td', row).eq(16).addClass('bg-color-azure');
-  	        $('td', row).eq(21).addClass('bg-color-azure');    
-  	        $('td', row).eq(22).addClass('bg-color-azure'); 
-//   			console.log(row,data,index)
+// 			$('td', row).eq(16).addClass('bg-color-azure');
+//   	        $('td', row).eq(21).addClass('bg-color-azure');    
+//   	        $('td', row).eq(23).addClass('bg-color-azure');   
+//   			console.log(data.DueDate, index )                   
+  			if(mapsDataHeader.size != 0){     
+//   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
+  				if(data["DueDate"] != "") {      
+	 	    		var datearray = data["DueDate"].split("/");
+		  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+// 		  	    	console.log(sevenDayAgo >= dueDate,sevenDayAgo ,dueDate)
+			  	    if (sevenDayAgo >= dueDate   ){             
+			  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
+			        }
+  	    		}     
+  			}
+  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
+  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');      }
+  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');      }
+//   			console.log(data["SaleOrder"], index )              
 // 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
-  	    	if(data["DueDate"] != "") {  
- 	    		var datearray = data["DueDate"].split("/");
-	  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-		  	    if (dueDate < today){     
-		  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
-// 		  	    	$(row).addClass('dt-custom-overdue');    
-		        }
-  	    	}
+// 			console.log(row  )      
+//   	    	if(data["DueDate"] != "") {  
+//  	    		var datearray = data["DueDate"].split("/");
+// 	  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+// 		  	    if (dueDate < today){     
+// 		  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
+// // 		  	    	$(row).addClass('dt-custom-overdue');    
+// 		        }
+//   	    	}
 // 			if (data["OperationStartDate"] != "") { $(row).addClass('dt-custom-overdue'); } 
 		},
 		drawCallback: function( settings ) { 
 // 			console.log(settings)
 		},   
-		initComplete: function () { }  
+		initComplete: function () { }      
  	 });   
+// 	console.log( 'Table\'s column visibility are set to: '+MainTable.columns().visible(true).join(', ') );
+// 	console.log( 'Table\'s column non visibility are set to: '+MainTable.columns().visible().join(', ') );
 //     $('#MainTable').on('dblclick','td',function(e){
 // // 		scroll_to_contact_form_fn()      
 // 	    var row_object  = MainTable.row(this).data();
@@ -669,6 +723,7 @@ lengthChange : false,
 // 		$('#modalRedirect').modal('show');   
 		
 // 	})
+ 
     poTable = $('#poTable').DataTable({  
     	scrollY:       '400px',        
     	scrollX: true,      
@@ -1070,7 +1125,7 @@ lengthChange : false,
 	});      
 // 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
 	        
-	$("#MainTable_filter").hide();  
+// 	$("#MainTable_filter").hide();  
 // 	$("#presetTable_filter").hide();  
 	$("#dyeingTable_filter").hide();  
 	$("#fnTable_filter").hide();  
@@ -1095,8 +1150,17 @@ lengthChange : false,
 	$("#packingTable_info").hide();   
 	$("#sendTestQCTable_info").hide();      
 	$("#poTable_info").hide();  
-	
- 
+	colList = JSON.parse('${ColList}');   
+  	columnsHeader = MainTable.settings().init().columns;  
+	addColOption(columnsHeader ) 
+	$('#multi_colVis').selectpicker();   
+	settingColumnOption(columnsHeader, colList);
+	$('#save_col_button').on( 'click', function () {       
+	    var selectedItem = $('#multi_colVis').val();    // get selected list  
+		setColVisible(columnsHeader,selectedItem);
+		saveColSettingToServer(selectedItem);     
+		get_visible_columns()
+ 	} ); 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
 //     	MainTable.columns.adjust(); 
     	poTable.columns.adjust();   
@@ -1124,7 +1188,8 @@ lengthChange : false,
     	saleTable.columns.adjust(); saleInputTable.columns.adjust(); submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); receipeTable.columns.adjust(); 
 	})
-});          
+});  
+ 
 function searchByDetail(){ 
 	var customer = document.getElementById("input_customer").value .trim();
 	var customerShort = document.getElementById("input_customerShortName").value .trim();
@@ -1139,8 +1204,9 @@ function searchByDetail(){
 	var material = document.getElementById("input_material").value .trim(); 
 	var labNo = document.getElementById("input_labNo").value .trim(); 
 	var userStatus = document.getElementById("SL_userStatus").value .trim();  
+// 	console.log(userStatus)  
 	var deliStatus = document.getElementById("SLDelivStatus").value .trim();      
-	var dmCheck = document.getElementById("check_DM").checked;  
+	var dmCheck = document.getElementById("check_DM").checked;        
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;  
 	var dist = "";     
@@ -1222,63 +1288,78 @@ function exportCSV(data){
     var createXLSLFormatObj = []; 
     /* XLS Head Columns */ 
     
-    var xlsHeader = [
-   	"SaleOrder",
-   	"SaleLine",
-    "ArticleFG",
-	"DesignFG",
-	"Color",
-	"ColorCustomer",
-	"SaleQuantity",
-	"BillQuantity",
-	"SaleUnit",
-	"ProductionOrder",
-	"TotalQuantity",
-	"GreigeInDate",	
-	"UserStatus",
-	"DueDate",
-	"Prepare",
-	"Preset",
-	"DyePlan",
-	"DyeActual",
-	"Dryer",
-	"Finishing",   
-	"Inspectation",
-	"CFMDatePlan",
-	"CFMDateActual",//วันนัดส่งของ
-	"LotShipping" ];   
-    /* XLS Rows Data */
-    var xlsRows = data
+//     var xlsHeader = [
+//    	"SO No.",
+//    	"SO Line",
+//     "Article No",
+// 	"Design No",
+// 	"ATT Color",
+// 	"Cust.Color",   
+// 	"Order Qty.", 
+// 	"Shipped Qty.",
+// 	"Unit",
+// 	"Prod.No.",
+// 	"Prod.Qty.",
+// 	"Greige In",	
+// 	"User Status",
+// 	"Due Date",
+// 	"Prepare",
+// 	"PS",
+// 	"Dye[Plan]",
+// 	"Dye[Actual]",
+// 	"Dryer Date",   
+// 	"FN",   
+// 	"Inspect",
+// 	"วันนัด CF[Actual]",
+// 	"วันนัด CF[Plan]",
+// 	"วันนัดส่งของ",//วันนัดส่งของ         
+// 	"Shipping" ];       
+//     console.log(colList );   
+//     console.log(columnsHeader );    
+    let xlsHeader = Array.from( mapsTitleHeader.keys() );
+//     let xlsHeader = Array.from(map, ([name, value]) => ({ name, value }));
+     
+    /* XLS Rows Data */   
+    var xlsRows = data   
     createXLSLFormatObj.push(xlsHeader);
-    $.each(xlsRows, function(index, value) {
+    $.each(xlsRows, function(index, value) {    
         var innerRowData = [];  
-//         $.each(value, function(ind, val) {     	
-//             innerRowData.push(val); 
-//         }); 
-        innerRowData.push(value.SaleOrder ); 
-        innerRowData.push(value.SaleLine ); 
-        innerRowData.push(value.ArticleFG ); 
-        innerRowData.push(value.DesignFG ); 
-        innerRowData.push(value.Color ); 
-        innerRowData.push(value.ColorCustomer ); 
-        innerRowData.push(value.SaleQuantity ); 
-        innerRowData.push(value.BillQuantity ); 
-        innerRowData.push(value.SaleUnit ); 
-        innerRowData.push(value.ProductionOrder ); 
-        innerRowData.push(value.TotalQuantity ); 
-        innerRowData.push(value.GreigeInDate ); 
-        innerRowData.push(value.UserStatus ); 
-        innerRowData.push(value.DueDate ); 
-        innerRowData.push(value.Prepare ); 
-        innerRowData.push(value.Preset ); 
-        innerRowData.push(value.DyePlan ); 
-        innerRowData.push(value.DyeActual ); 
-        innerRowData.push(value.Dryer ); 
-        innerRowData.push(value.Finishing );  
-        innerRowData.push(value.Inspectation );  
-        innerRowData.push(value.CFMDatePlan );  
-        innerRowData.push(value.CFMDateActual );  
-        innerRowData.push(value.LotShipping );         
+//         console.log(index,value)       
+        $.each(value, function(ind, val) {               	
+//             console.log(ind,val)        
+// 			console.log(mapsDataHeader.get(ind))          
+            if(mapsDataHeader.size != 0){                
+			  	if(mapsDataHeader.get(ind) !== undefined){   
+// 			  		 console.log(ind,val) 
+			  		 innerRowData.push(val); 
+			  	}
+            }
+        }); 
+//         innerRowData.push(value.SaleOrder ); 
+//         innerRowData.push(value.SaleLine ); 
+//         innerRowData.push(value.ArticleFG ); 
+//         innerRowData.push(value.DesignFG ); 
+//         innerRowData.push(value.Color ); 
+//         innerRowData.push(value.ColorCustomer ); 
+//         innerRowData.push(value.SaleQuantity ); 
+//         innerRowData.push(value.BillQuantity ); 
+//         innerRowData.push(value.SaleUnit ); 
+//         innerRowData.push(value.ProductionOrder ); 
+//         innerRowData.push(value.TotalQuantity ); 
+//         innerRowData.push(value.GreigeInDate ); 
+//         innerRowData.push(value.UserStatus ); 
+//         innerRowData.push(value.DueDate );   
+//         innerRowData.push(value.Prepare ); 
+//         innerRowData.push(value.Preset ); 
+//         innerRowData.push(value.DyePlan ); 
+//         innerRowData.push(value.DyeActual ); 
+//         innerRowData.push(value.Dryer ); 
+//         innerRowData.push(value.Finishing );  
+//         innerRowData.push(value.Inspectation );  
+//         innerRowData.push(value.CFMDatePlan );  
+//         innerRowData.push(value.CFMDateActual );   
+//         innerRowData.push(value.DeliveryDate );  
+//         innerRowData.push(value.LotShipping );         
         
 //         innerRowData.push(value);
         createXLSLFormatObj.push(innerRowData);
@@ -1328,6 +1409,8 @@ function searchByDetailToServer(arrayTmp) {
 		url: "PCMSMain/searchByDetail", 
 		success: function(data) { 
 // 			console.log(data)
+			
+// 			get_visible_columns();
 			MainTable.clear();        
 			MainTable.rows.add(data);     
 			MainTable.draw();  
@@ -1442,7 +1525,8 @@ function setModalDetail(data){
 	document.getElementById("input_matNoCM").value = innnerText.MaterialNo;    
 	document.getElementById("input_volumnCM").value = innnerText.Volumn+" "+innnerText.SaleUnit;    
 	document.getElementById("input_stdUnitCM").value = innnerText.STDUnit;    
-	
+	   
+// 	console.log(innnerText)
 	document.getElementById("input_colorCM").value = innnerText.Color + ' ( '+ innnerText.ColorCustomer +' ) ';        
 	document.getElementById("input_planGreigeDateCM").value = innnerText.PlanGreigeDate;   
 	document.getElementById("input_refPrdCM").value = innnerText.RefPrd;   
@@ -1637,9 +1721,9 @@ function addSelectOption(data){
 function addUserStatusOption(data ){ 
 	// The DOM way. 
 	var sel = document.getElementById("SL_userStatus");
-	for (i = sel.length - 1; i >= 0; i--) {       
-		sel.remove(i);
-	}             
+// 	for (i = sel.length - 1; i >= 0; i--) {       
+// 		sel.remove(i);
+// 	}             
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
 		 var resultData = data[i]; 	   
@@ -1650,6 +1734,169 @@ function addUserStatusOption(data ){
 		 sel.appendChild(opt);          
 	}             
 	$("#SL_userStatus").selectpicker("refresh");
+}         
+function saveInputDateToServer(arrayTmp) {   
+// 	console.log(arrayTmp)
+	$.ajax({   
+		type: "POST",  
+		contentType: "application/json",  
+		data: JSON.stringify(arrayTmp),         
+		url: "PCMSMain/saveInputDate", 
+		success: function(data) {  
+			if(data.length > 0){
+				var bean = data[0]; 
+				if(bean.IconStatus == 'I'){
+					swal({
+						title: "Success",    
+					 	text: bean.StatusSystem ,
+						icon: "info",
+						button: "confirm",
+   					});  
+				}
+				else{  
+					swal({   
+						title: "Warning ",    
+					 	text: bean.StatusSystem  , 
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+				}  
+			}
+// 			MainTable.clear();           
+// 			MainTable.rows.add(data);      
+// 			MainTable.columns.adjust().draw();       
+		},   
+		error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+		},
+		done: function(e) {       
+		}   	
+	});   
+}    
+function settingColumnOption(columns ,colVisible){  
+	if(colVisible == null){
+		$('#multi_colVis option').attr("selected","selected");
+		$('#multi_colVis').selectpicker('refresh');
+	}  
+	else{   
+// 		$('#multi_colVis').selectpicker();   
+// 		columns = MainTable.settings().init().columns; 
+// 		console.log(columns)
+// 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
+// 		addColOption(columns ) 
+		setColVisible(columnsHeader,colVisible);    
+		$('#multi_colVis').selectpicker('val', colVisible);     
+	}
+	get_visible_columns()     
+}
+        
+function get_visible_columns() {   
+// 	columnsHeader = MainTable.settings().init().columns;
+   	mapsDataHeader.clear();   
+   	mapsTitleHeader.clear();
+// 	console.log('all_columns', all_columns);
+	var visible_columns = [];        
+	var check = '';
+	var count = 0;
+	for (var i in columnsHeader) {        
+		check = (MainTable.column( i ).visible() === true ? 'visible' : 'not visible');
+		if((check == 'visible'      
+// 				&& all_columns[i].data == 'DueDate'
+				)){    
+// 			visible        
+			mapsTitleHeader.set(columnsHeader[i].title, count); 
+			mapsDataHeader.set(columnsHeader[i].data, count);
+			count = count + 1
+		}   
+		else{        
+// 			unvisible 
+		} 
+	}    
+// 	console.log(mapsDataHeader )
 }     
+function setColVisible(mainCol,colVisible) {    
+// 	console.log(colVisible)   
+// 	console.log(mainCol)  
+	let index ; 
+	let colName = '';  
+   let i = 0;
+//    console.log(mainCol)   
+//    console.log(colVisible)
+	for (i =  0; i < mainCol.length ; i++) {           
+		colName = mainCol[i].data;     
+		check = colVisible.includes(colName);  
+		if(check === true){ 
+			MainTable.column( i ).visible(true  )   ;        
+		}    
+		else{      
+			MainTable.column( i ).visible( false )  
+			}  
+	}   
+	MainTable.columns.adjust().draw( false ); // adjust column sizing and redraw
+
+}    
+function saveColSettingToServer(arrayTmp) {   
+// 	console.log(arrayTmp)
+	$.ajax({     
+		type: "POST",  
+		contentType: "application/json",  
+		data: JSON.stringify(arrayTmp),      
+		url: "PCMSMain/saveColSettingToServer", 
+		success: function(data) {  
+// 			MainTable.clear();           
+// 			MainTable.rows.add(data);      
+// 			MainTable.columns.adjust().draw();   
+			if(data.length > 0){
+				var bean = data[0];   
+				if(bean.IconStatus == 'I'){
+					swal({   
+						title: "Success",    
+					 	text: bean.SystemStatus ,
+						icon: "info",
+						button: "confirm",
+   					});  
+				}
+				else{  
+					swal({   
+						title: "Warning ",    
+					 	text: bean.SystemStatus  , 
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+				}  
+			}
+		},   
+		error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+		},
+		done: function(e) {       
+		}   	   
+	});   
+}   
+function addColOption(colName ){  
+	var sel = document.getElementById('multi_colVis');
+	for (i = sel.length - 1; i >= 0; i--) {
+		sel.remove(i);
+	}             
+	var size = colName.length;
+	for (var i = 0; i < size; i++) {		   
+		 var resultData = colName[i]; 	   
+// 		 console.log(resultData)   
+		 var opt = document.createElement('option');
+	     opt.appendChild(document.createTextNode(i));
+		 opt.text  = (i+1)+" : "+resultData.title;
+		 opt.value = resultData.data;  
+		 sel.appendChild(opt);              
+	}         
+// 	$('#multi_colVis option').attr("selected","selected");
+// 	$('#multi_colVis').selectpicker('refresh');
+// 	 var selectobject = sel.getElementsByTagName("option");
+// 	for (var i = 0; i < 9; i++) {		
+// 		selectobject[i].disabled = true;      
+// 	}        
+	$("#multi_colVis").selectpicker("refresh");
+} 
 </script>
 </html>

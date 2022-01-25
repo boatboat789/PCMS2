@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 
 import dao.PCMSMainDao;
 import dao.implement.PCMSMainDaoImpl;
+import entities.ColumnHiddenDetail;
 import entities.PCMSAllDetail; 
 import entities.PCMSTableDetail;
 import info.SqlInfo;
@@ -66,8 +67,18 @@ public class PCMSMainModel extends HttpServlet {
 	}
 
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub   
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
+		return list;
+	}
+
+	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
+		ArrayList<ColumnHiddenDetail> list = this.dao.getColVisibleDetail(user);
+		return list;
+	}
+
+	public  ArrayList<ColumnHiddenDetail>  saveColSettingToServer(ColumnHiddenDetail pd) {
+		ArrayList<ColumnHiddenDetail> list = this.dao.saveColSettingToServer(pd);
 		return list;
 	} 
  

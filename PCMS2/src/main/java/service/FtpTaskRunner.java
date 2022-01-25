@@ -96,12 +96,10 @@ public class FtpTaskRunner {
 	   this.importerFinishing.loadDataFTP(this.user);
 	   this.importerDyeing.loadDataFTP(this.user);
 	   this.importerPreset.loadDataFTP(this.user);
-	   this.importerPO.loadDataFTP(this.user); 
-//	   
+	   this.importerPO.loadDataFTP(this.user);  
 	   this.importerMainProdSale.loadDataFTP(this.user);
 	   this.importerMainProd.loadDataFTP(this.user);
-	   this.importerMainSale.loadDataFTP(this.user);
-//	   
+	   this.importerMainSale.loadDataFTP(this.user); 
 	   this.importerMainGrade.loadDataFTP(this.user);
 	   
 	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 

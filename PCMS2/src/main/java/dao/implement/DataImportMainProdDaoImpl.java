@@ -28,7 +28,7 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 35;
+      this.maxfield = 37;
    }
 
    public String getMessage() {
@@ -132,13 +132,13 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
              		+ " (F001, F002, F003, F004, F005, F006, F007, F008, F009, F010,"
              		+ "	 F011, F012, F013, F014, F015, F016, F017, F018, F019, F020,"
              		+ "	 F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,"
-             		+ "	 F031, F032, F033, F034, F035 "
+             		+ "	 F031, F032, F033, F034, F035, F036, F037  "
              		+ " ) "
              		+ " VALUES ("
              		+ "        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
              		+ " 	   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
              		+ " 	   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-         		    + "        ?, ?, ?, ?, ? "
+         		    + "        ?, ?, ?, ?, ?, ?, ? "
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);

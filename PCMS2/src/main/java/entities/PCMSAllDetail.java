@@ -24,6 +24,7 @@ public class PCMSAllDetail {
 	  private String SaleUnit;
 	  private String STDUnit;
 	  private String Color;
+	  private String ColorCustomer;
 	  private String PlanGreigeDate;
 	  private String RefPrd;
 	  private String GreigeInDate;
@@ -65,7 +66,7 @@ public class PCMSAllDetail {
 			String bCAware, String orderPuang, String userStatus, String labStatus, String cFMDatePlan,
 			String DeliveryDate, String bCDate, String remarkOne, String remarkTwo, String remarkThree,
 			String remAfterCloseOne, String remAfterCloseTwo, String remAfterCloseThree,
-			String GreigeArticle ,String GreigeDesign) {
+			String GreigeArticle ,String GreigeDesign,String ColorCustomer) {
 		super();
 		CustomerShortName = customerShortName;
 		ProductionOrder = productionOrder;
@@ -106,6 +107,19 @@ public class PCMSAllDetail {
 		RemAfterCloseThree = remAfterCloseThree;
 		this.GreigeArticle = GreigeArticle;
 		this.GreigeDesign = GreigeDesign;
+		this.ColorCustomer = ColorCustomer;
+	}
+	public String getColorCustomer() {
+		return ColorCustomer;
+	}
+	public void setColorCustomer(String colorCustomer) {
+		ColorCustomer = colorCustomer;
+	}
+	public ArrayList<InputDateDetail> getSubmitDateDetailList() {
+		return submitDateDetailList;
+	}
+	public void setSubmitDateDetailList(ArrayList<InputDateDetail> submitDateDetailList) {
+		this.submitDateDetailList = submitDateDetailList;
 	}
 	public String getCustomerShortName() {
 		return CustomerShortName;

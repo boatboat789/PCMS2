@@ -85,8 +85,8 @@ public class PCMSDetailModel extends HttpServlet {
 		return list;
 	}
 
-	public ArrayList<ColumnHiddenDetail> getColHiddenDetail(String user) {
-		ArrayList<ColumnHiddenDetail> list = this.dao.getColHiddenDetail(user);
+	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
+		ArrayList<ColumnHiddenDetail> list = this.dao.getColVisibleDetail(user);
 		return list;
 	}
 

@@ -1,5 +1,8 @@
 package dao.implement;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +11,7 @@ import java.util.Map;
 
 import dao.PCMSMainDao;
 import entities.CFMDetail;
+import entities.ColumnHiddenDetail;
 import entities.DyeingDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
@@ -36,7 +40,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
 	private String message;
-	private String select = " a.SaleOrder "
+	private String select = 
+			  " a.SaleOrder "
 			+ "		,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
 			+ "		WHEN 0 THEN ''  \r\n"  
 			+ "		ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
@@ -47,7 +52,12 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "   ,a.Color\r\n" 
 			+ "   ,a.ColorCustomer,a.SaleQuantity\r\n"
 			+ "	  ,( a.SaleQuantity - a.RemainQuantity ) as BillQuantity\r\n" + "   ,a.SaleUnit\r\n"
-			+ "	  ,b.ProductionOrder,b.TotalQuantity,b.GreigeInDate\r\n"
+//			+ "	  ,b.ProductionOrder"
+			+  "  ,CASE  \r\n"
+			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[ProductionOrder]  \r\n"  
+			+ "		  ELSE 'รอจัด Lot'  \r\n"
+			+ "		  END AS [ProductionOrder] \r\n"
+			+ "   ,b.TotalQuantity,b.GreigeInDate\r\n"
 			+ "	  , CASE WHEN (b.GreigeInDate is NULL) THEN null \r\n"
 			+ "	    ELSE CAST(DAY(b.GreigeInDate) AS VARCHAR(2)) + '/' +  CAST(MONTH(GreigeInDate)AS VARCHAR(2)) END AS GreigeInDate \r\n"
 			+ "	  ,b.UserStatus,b.LabStatus,a.DueDate\r\n"
@@ -100,8 +110,15 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "    		 END AS [SaleFullName]   \r\n" 
 			+ "	  ,a.SaleCreateDate,b.PrdCreateDate\r\n" 
 			+ "	  ,a.MaterialNo,a.DeliveryStatus,a.SaleStatus\r\n" 
-			+ "   ,[LotNo] ,a.ShipDate\r\n";
-	private String selectTwo = " b.[ProductionOrder],[LotNo],[Batch],[LabNo]\r\n"
+			+ "   ,[LotNo] ,a.ShipDate\r\n";  
+	private String selectTwo = 
+			  "  CASE  \r\n"
+			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[ProductionOrder]  \r\n"  
+			+ "		  ELSE 'รอจัด Lot'  \r\n"
+			+ "		  END AS [ProductionOrder] \r\n"     
+//		    + " b.[ProductionOrder]"
+			+ "   ,ColorCustomer"
+		    + "   ,[LotNo],[Batch],[LabNo]\r\n"
 			+ "	  ,[PrdCreateDate],a.[DueDate],a.[SaleOrder]\r\n"
 			+ "	  ,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n" 
 			+ "		WHEN 0 THEN ''  \r\n"
@@ -371,7 +388,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.leftJoinIToO  
 				+ where   
 				+ " Order by a.SaleOrder , SaleLine"; 
-		  
+//		  System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<PCMSTableDetail>();
 		for (Map<String, Object> map : datas) {
@@ -819,6 +836,63 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSAllDetail(map));
 		} 
+		return list;
+	}
+
+	@Override
+	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
+		ArrayList<ColumnHiddenDetail> list = null;  
+		String sql = 
+				    " SELECT distinct [EmployeeID] ,[ColVisibleDetail] ,[ColVisibleSummary]\r\n"
+		 		  + " FROM [PCMS].[dbo].[ColumnSetting] \r\n "
+		 		  + " where [EmployeeID] = '" + user+ "' ";
+		 		  ; 
+		List<Map<String, Object>> datas = this.database.queryList(sql);  
+		list = new ArrayList<ColumnHiddenDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genColumnHiddenDetail(map));
+		}
+		return list;
+	}  
+
+	@Override
+	public ArrayList<ColumnHiddenDetail> saveColSettingToServer(ColumnHiddenDetail pd) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String colName = pd.getColVisibleSummary();   
+		String user = pd.getUserId(); 
+		ArrayList<ColumnHiddenDetail> list = new ArrayList<ColumnHiddenDetail>();
+		ColumnHiddenDetail bean = new ColumnHiddenDetail();
+//		ArrayList<ColumnHiddenDetail> beanCheck = this.getColHiddenDetail(leftJoinB);
+//		if(beanCheck.size() > 0) { 
+//		} 
+		try {      
+			String sql = 
+					"UPDATE [PCMS].[dbo].[ColumnSetting] "
+					+ " SET [ColVisibleSummary] = ?  "
+					+ " WHERE [EmployeeID]  = ? "
+					+ " declare  @rc int = @@ROWCOUNT " // 56
+					+ "  if @rc <> 0 " 
+					+ " print @rc " 
+					+ " else "
+					+ " INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
+					+ " ([EmployeeID] ,[ColVisibleSummary])"//55 
+					+ " values(? , ? )  ;"  ;     	
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, colName);
+				prepared.setString(2, user);
+				prepared.setString(3, user);
+				prepared.setString(4, colName);  
+				prepared.executeUpdate();   
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.out.println("insertLabNoDetail"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		list.add(bean);
 		return list;
 	}
 }

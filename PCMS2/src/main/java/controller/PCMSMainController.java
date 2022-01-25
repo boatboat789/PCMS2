@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 
+import entities.ColumnHiddenDetail;
 import entities.PCMSTableDetail;
 import model.PCMSDetailModel;
 import model.PCMSMainModel;
@@ -32,11 +33,17 @@ public class PCMSMainController {
 	private String LOCAL_DIRECTORY;
 	private String FTP_DIRECTORY; 
 	@RequestMapping(method = { RequestMethod.GET })
-	public ModelAndView test(HttpSession session) {
+	public ModelAndView test(HttpSession session) {       
 		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
 		PCMSMainModel model = new PCMSMainModel();
-		mv.setViewName("PCMSMain/PCMSMain");
+		String user = (String) session.getAttribute("user");
+		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		 String[] arrayCol = null  ;
+		 if(list.size() == 0) { } 
+		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
+		mv.setViewName("PCMSMain/PCMSMain");  
+		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 		return mv;
@@ -108,5 +115,32 @@ public class PCMSMainController {
 		PrintWriter out = response.getWriter();
 		out.println(g.toJson(model.getPrdDetailByRow( poList)));  
 //		out.println(g.toJson(null ));  
+	}
+	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
+	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data) throws IOException {
+		PCMSMainModel model = new PCMSMainModel();
+		String user = (String) session.getAttribute("user");
+		Gson g = new Gson(); 
+		String [] userArray = (String[]) g.fromJson(data, String[].class);
+		ArrayList<ColumnHiddenDetail> poList = new ArrayList<ColumnHiddenDetail>();
+		int i = 0; 
+		String colVisible = "";
+		for (i = 0; i < userArray.length; i++) { 
+			colVisible += userArray[i];
+			if(i!= userArray.length - 1) {
+				colVisible +=",";   
+			} 
+		}  
+//		System.out.println(colVisible);
+		ColumnHiddenDetail pd = new ColumnHiddenDetail(); 
+		pd.setUserId(user);
+		pd.setColVisibleSummary(colVisible);
+		poList.add(pd);   
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+//		System.out.println("he");
+		out.println(g.toJson(model.saveColSettingToServer( pd)));  
+//		out.println();  
 	}
 }

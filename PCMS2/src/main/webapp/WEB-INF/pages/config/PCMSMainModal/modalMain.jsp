@@ -48,7 +48,9 @@
 /* 						display: table;  */  
 /*  		 							height: 490px;             */
 /* height: 70vh;    */
-    height: calc(100vh - 160px);
+height: -webkit-fill-available;
+    min-height: fit-content;   
+/*     height: calc(100vh - 160px); */
 								border: 1px solid #212529;      
 								padding : 5px;   
 								background-color: honeydew;     

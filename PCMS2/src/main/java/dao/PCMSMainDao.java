@@ -3,6 +3,7 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.ColumnHiddenDetail;
 import entities.PCMSAllDetail; 
 import entities.PCMSTableDetail;
 
@@ -15,6 +16,10 @@ public interface PCMSMainDao {
 	ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList);
 
 	ArrayList<PCMSAllDetail> getUserStatusList();
+
+	ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user);
+
+	ArrayList<ColumnHiddenDetail> saveColSettingToServer(ColumnHiddenDetail pd);
  
 
 }

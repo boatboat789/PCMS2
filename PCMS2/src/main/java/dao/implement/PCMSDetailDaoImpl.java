@@ -49,9 +49,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     		+ "c.Grade,\r\n"   
     		+ "c.BillSendWeightQuantity,\r\n"
     		+ "c.BillSendQuantity,\r\n"  
+    		+ "c.BillSendMRQuantity,\r\n"  
+    		+ "c.BillSendYDQuantity,\r\n"    
     		+ "CustomerDue,\r\n"
     		+ "DueDate,\r\n"  
-    		+ "LotNo,\r\n"
+//    		+ "LotNo,\r\n"
+    		+  "  CASE  \r\n"
+  			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[LotNo]  \r\n"  
+  			+ "		  ELSE 'รอจัด Lot'  \r\n"
+  			+ "		  END AS [LotNo] ,\r\n"   
     		+ "b.LabNo,\r\n" 
     		+ "LabStatus,\r\n"
     		+ "e.CFMPlanLabDate,\r\n"
@@ -76,22 +82,22 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //    		+ "CFMRemark,\r\n" 
 
     		+ "CASE  \r\n"
-    		+ "		WHEN i.CFMStatus is not null THEN d.CFMStatus  \r\n"
-    		+ "		ELSE i.CFMStatus\r\n"
+    		+ "		WHEN i.CFMStatus is not null THEN i.CFMStatus  \r\n"
+    		+ "		ELSE d.CFMStatus\r\n"
     		+ "		END AS CFMStatus ,  \r\n"
     		+ "CASE  \r\n"
-    		+ "		WHEN i.CFMStatus is null THEN d.CFMNumber  \r\n"
-    		+ "		ELSE i.CFMNumber\r\n"
-    		+ "		END AS CFMNumber ,  \r\n"
+    		+ "		WHEN i.CFMStatus is not null THEN i.CFMNumber  \r\n"
+    		+ "		ELSE d.CFMNumber\r\n"
+    		+ "		END AS CFMNumber ,  \r\n" 
     		+ "CASE  \r\n"
-    		+ "		WHEN i.CFMStatus is null THEN d.CFMRemark  \r\n"
-    		+ "		ELSE i.CFMRemark\r\n"
+    		+ "		WHEN i.CFMStatus is not null THEN i.CFMRemark  \r\n"
+    		+ "		ELSE d.CFMRemark\r\n"
     		+ "		END AS CFMRemark ,  \r\n"
     		
     		+ "ShipDate,\r\n"
     		+ "RemarkOne,\r\n"
     		+ "RemarkTwo,\r\n"
-    		+ "RemarkThree ,\r\n"
+    		+ "RemarkThree ,\r\n"   
     		+ "b.ProductionOrder \r\n"; 
         
     private String leftJoinB = " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n";
@@ -169,7 +175,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
   		  	+ "				on a.ProductionOrder = b.ProductionOrder and a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
   		  	+ "				and a.[CreateDate] = b.[MaxCreateDate] \r\n"
   		  	+ "			) as h on h.ProductionOrder = b.ProductionOrder and h.SaleOrder = a.SaleOrder and h.SaleLine = a.SaleLine\r\n"  ;   
-    private String leftJoinZ = 
+    private String leftJoinZ =   
 		      " left join (SELECT distinct  [ProductionOrder]\r\n      "
 			+ "                 ,[SaleOrder]\r\n      " 
 		    + "                 ,[SaleLine]\r\n      "
@@ -258,7 +264,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n " 
 					+ this.leftJoinB 
 					+ this.leftJoinC	
-					+ this.leftJoinX
+					+ this.leftJoinX     
 					+ this.leftJoinCFMLastD    
 					+ this.leftJoinE
 					+ this.leftJoinF
@@ -267,7 +273,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ this.leftJoinCFMLastNoStatI
 					+ this.leftJoinLB  
 					+ where  
-					+ " and c.DataStatus <> 'X' and x.ProductionOrder is null "
+					+ " and ( c.DataStatus <> 'X'  OR C.DataStatus IS NULL ) "          
+					+ " and x.ProductionOrder is null "
 					+ " union " 
 					+  " SELECT DISTINCT  "       
 					+ this.select
@@ -287,12 +294,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ this.leftJoinF
 					+ this.leftJoinG   
 					+ this.leftJoinH
-					+ this.leftJoinCFMLastNoStatI
-					+ this.leftJoinLB
+					+ this.leftJoinCFMLastNoStatI    
+					+ this.leftJoinLB  
 					+ where  
-					+ " and c.DataStatus <> 'X' "      
-					+ " Order by a.SaleOrder, SaleLine,b.LotNo,c.Grade ";      
-//		System.out.println(sql 	);     
+					+ " and ( c.DataStatus <> 'X'  OR C.DataStatus IS NULL ) "      
+					+ " Order by a.SaleOrder, SaleLine,b.ProductionOrder,c.Grade ";      
+//		System.out.println(sql 	);          
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<PCMSSecondTableDetail>(); 
 		for (Map<String, Object> map : datas) {  
@@ -575,10 +582,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	}
 
 	@Override
-	public ArrayList<ColumnHiddenDetail> getColHiddenDetail(String user) {
+	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
 		ArrayList<ColumnHiddenDetail> list = null;  
 		String sql = 
-				    " SELECT distinct [EmployeeID] ,[ColName] \r\n"
+				    " SELECT distinct [EmployeeID] ,[ColVisibleDetail] ,[ColVisibleSummary]\r\n"
 		 		  + " FROM [PCMS].[dbo].[ColumnSetting] \r\n "
 		 		  + " where [EmployeeID] = '" + user+ "' ";
 		 		  ; 
@@ -586,7 +593,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		list = new ArrayList<ColumnHiddenDetail>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genColumnHiddenDetail(map));
-		}
+		} 
 		return list;
 	}  
 
@@ -595,7 +602,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		PreparedStatement prepared = null;
 		Connection connection;
 		connection = this.database.getConnection();   
-		String colName = pd.getColName(); 
+		String colName = pd.getColVisibleDetail(); 
 		String user = pd.getUserId(); 
 		ArrayList<ColumnHiddenDetail> list = new ArrayList<ColumnHiddenDetail>();
 		ColumnHiddenDetail bean = new ColumnHiddenDetail();
@@ -605,14 +612,14 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		try {      
 			String sql = 
 					"UPDATE [PCMS].[dbo].[ColumnSetting] "
-					+ " SET [ColName] = ?  "
+					+ " SET [ColVisibleDetail] = ?  "
 					+ " WHERE [EmployeeID]  = ? "
 					+ " declare  @rc int = @@ROWCOUNT " // 56
 					+ "  if @rc <> 0 " 
 					+ " print @rc " 
 					+ " else "
 					+ " INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
-					+ " ([EmployeeID] ,[ColName])"//55 
+					+ " ([EmployeeID] ,[ColVisibleDetail])"//55 
 					+ " values(? , ? )  ;"  ;     	
 				prepared = connection.prepareStatement(sql);    
 				prepared.setString(1, colName);

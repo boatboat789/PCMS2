@@ -4,15 +4,17 @@ import java.util.List;
 
 public class ColumnHiddenDetail {
 	private String UserId;
-	private String ColName;
+	private String ColVisibleDetail;
+	private String ColVisibleSummary;
 	 private List<String> ColList;
 	 private String IconStatus;
 		private String SystemStatus;
 
-	public ColumnHiddenDetail(String userId, String colName) {
+	public ColumnHiddenDetail(String userId, String ColVisibleDetail,String ColVisibleSummary) {
 		super();
 		UserId = userId;
-		ColName = colName;
+		this.ColVisibleDetail = ColVisibleDetail;
+		this.ColVisibleSummary = ColVisibleSummary;
 	}
 	public ColumnHiddenDetail() {
 		// TODO Auto-generated constructor stub
@@ -41,10 +43,17 @@ public class ColumnHiddenDetail {
 	public void setUserId(String userId) {
 		this.UserId = userId;
 	}
-	public String getColName() {
-		return ColName;
+	public String getColVisibleDetail() {
+		return ColVisibleDetail;
 	}
-	public void setColName(String colName) {
-		ColName = colName;
+	public void setColVisibleDetail(String colVisibleDetail) {
+		ColVisibleDetail = colVisibleDetail;
 	}
+	public String getColVisibleSummary() {
+		return ColVisibleSummary;
+	}
+	public void setColVisibleSummary(String colVisibleSummary) {
+		ColVisibleSummary = colVisibleSummary;
+	}
+	 
 }

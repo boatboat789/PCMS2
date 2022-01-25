@@ -4,14 +4,14 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page isELIgnored="false"%> 
 <!DOCTYPE html>
-<html>
-<head>  
+<html>  
+<head>   
 	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  
 	<title>PCMS - Detail</title>            	    
 	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>       
 <%-- 	<jsp:include page="/WEB-INF/pages/config/css/multi_Select.jsp"></jsp:include> --%>
-	<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
-	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
+		<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
+		<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
 </head>      
 <body>       	     
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include> 
@@ -96,7 +96,9 @@
 					  	<label class=" label-input  margin-0" for="SL_userStatus">UserStatus</label>           
 					  	<div > 
 <!-- 				    		<input class="form-control " autocomplete="off"  type="text"  id="input_userStatus"   maxlength="30" >  -->
-							<select id="SL_userStatus"   class="selectpicker"  data-live-search="true"></select>
+							<select id="SL_userStatus"   class="selectpicker"  data-live-search="true">
+								<option value="" selected>SelectAll</option> 
+							</select>
 						</div>        
 					</div>   
 					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
@@ -175,34 +177,7 @@
 					</div>    
 					
 					
-					    
-					<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" style="justify-content: right;" >   
-						<div class="row">       
-							<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >     
-				              	<button id="btn_prdDetail" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-search"></i>  -->
-				                    Production Detail 
-				              	</button>     
-				              	<button id="btn_lbms" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-save"></i>         -->
-				                   LBMS Detail            
-				              	</button>    
-				              	<button id="btn_qcms" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    QCMS Result
-				              	</button>   
-				              	<button id="btn_inspect" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    Inspect Result
-				              	</button>   
-				              	<button id="btn_sfc" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    SFC Detail
-				              	</button>      
-							</div>       
-						</div>    
-					</div>   
-					      
+					 
 				</div>   
 			</div>           
 		</div>                  
@@ -228,10 +203,10 @@
 				                <th class=" " style="vertical-align: middle;">Remain<span class="c"style="display: block;">Qty.</span> </th>
 				                <th class=" " style="vertical-align: middle;">Remain<span class="c"style="display: block;">Amt.(THB)</span> </th>
 				                <th class=" " style="vertical-align: middle;">จำนวนต่อ LOT </th>
-				                <th class=" " style="vertical-align: middle;">Grade </th>
-				                <th class=" " style="vertical-align: middle;">จำนวน (FG) <span class="c"style="display: block;">MR/YD/KG</span> </th> 
+				                <th class=" " style="vertical-align: middle;">Grade </th>  
+				                <th class=" " style="vertical-align: middle;">จำนวน (FG) <span class="c"style="display: block;">KG/MR/YD</span> </th> 
 				                <th class=" " style="vertical-align: middle;">จำนวนที่ส่ง </th> 
-				                <th class=" " style="vertical-align: middle;">Amount<span class="c"style="display: block;">(THB)</span> </th>
+				                <th class=" " style="vertical-align: middle;">Amt.<span class="c"style="display: block;">(THB)</span> </th>
 				                <th class=" " style="vertical-align: middle;">Due Cus. </th> 
 				                <th class=" " style="vertical-align: middle;">Due Date </th>  
 				                <th class=" " style="vertical-align: middle;">Lab No </th> 
@@ -239,12 +214,13 @@
 				                <th class=" " style="vertical-align: middle;">Lot </th> 
 				                <th class=" " style="vertical-align: middle;">วันนัด<span class="c"style="display: block;">CFM LAB</span> </th> 
 				                <th class=" " style="vertical-align: middle;">วันส่ง<span class="c"style="display: block;"> CFM LAB</span> </th> 
-				                <th class=" " style="vertical-align: middle;">User Status </th>     
+				                  
 				                <th class=" " style="vertical-align: middle;">วันที่ลูกค้า <span class="c"style="display: block;"> ตอบ LAB</span> 	 </th> 
 				                 
 				                <th class=" " style="vertical-align: middle;">TK CFM</span> </th> 
 				                <th class=" " style="vertical-align: middle;">วันที่นัด CFM </th>    
-				                <th class=" " style="vertical-align: middle;">วันที่ส่งCFMจริง</th> 
+				                <th class=" " style="vertical-align: middle;">วันที่ส่ง CFM จริง</th> 
+				                <th class=" " style="vertical-align: middle;">User Status </th>    
 <!-- 				                <th class=" " style="vertical-align: middle;">วันที่ ตอบ และ <span class="c"style="display: block;">Result ที่ตอบ CFM</span> </th>  -->
 			                    <th class=" " style="vertical-align: middle;">Lastest<span class="c"style="display: block;">CFM Detail  </span> </th> 
 				                <th class=" " style="vertical-align: middle;">Lastest<span class="c"style="display: block;">CFM Number</span> </th> 
@@ -316,15 +292,19 @@ var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
 var MainTable ;  
+var mapsDataHeader  = new Map(); 
+var mapsTitleHeader  = new Map();    
 var check1 = 0	;
 var check2 = 0	; 
 var check3 = 0	;
 var saleNumberList ; 
 var userStatusList ; 
-var colHiddenList ; 
+var colList ; 
+var soTmp ;   
+var soLineTmp;
 var InputDateTable ;
 var collapsedGroups = {};        
-var columns  = [];
+var columnsHeader  = [];
 var domain = "http://"+window.location.hostname+":8080"; 
 $(document).on('keypress', 'input,select', function(e) { 
 	if (e.which === 13) {   
@@ -385,11 +365,13 @@ $(document) .ready( function() {
 	$('#input_prdOrderDate').val('');    
 	<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>   
 	 saleNumberList = JSON.parse('${SaleNumberList}'); 
-	 colHiddenList = JSON.parse('${ColHiddenList}'); 
+	 colList = JSON.parse('${ColList}'); 
 	 userStatusList = JSON.parse('${UserStatusList}'); 
   	addSelectOption(saleNumberList) 
 //   	showThing();    
- 
+  
+	
+	
 	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');     
 	  });
@@ -408,7 +390,12 @@ $(document) .ready( function() {
         scrollCollapse: true,   
  	   	orderCellsTop : true,           
 		orderClasses : false,                      
-// 		 fixedHeader: {  header: true, },                    		 
+// 		 fixedHeader: {  header: true, },    
+// 		 select : true,  	
+select : {             
+			style: 'os',         
+		 	selector: 'td:not(.status)'  // .status is class        
+  		},    
 		pageLength:	 1000,	 
 	    lengthChange : false,  
 // 		lengthMenu: [[1000, -1], [1000, "All"]], 
@@ -421,46 +408,48 @@ $(document) .ready( function() {
 // 	    },
  	   	columns : 
  	   		[      
-			    {"data" : "Division"           },         //0
-			    {"data" : "SaleOrder"          },         //1
-			    {"data" : "SaleLine"           },         //2
-			    {"data" : "CustomerShortName"  }, 
-			    {"data" : "SaleCreateDate"     },    
-			    {"data" : "PurchaseOrder"},      //5 
-			    {"data" : "MaterialNo"}, 
-			    {"data" : "CustomerMaterial"},    //7
-			    {"data" : "Price"}, 
-			    {"data" : "SaleUnit"}, 
-			    {"data" : "SaleQuantity"},              //10
-			    {"data" : "RemainQuantity"},            //11
-			    {"data" : "RemainAmount"}, 
-			    {"data" : "TotalQuantity"},             //13
-			    {"data" : "Grade"}, 
-			    {"data" : "BillSendWeightQuantity"}, 
-			    {"data" : "BillSendQuantity"},          //16
-			    {"data" : "OrderAmount"},               //17
-			    {"data" : "CustomerDue"}, 
-			    {"data" : "DueDate"},                   //19 
+			    {"data" : "Division" ,"title":"DIV"          },         //0
+			    {"data" : "SaleOrder" ,"title":"SO No."           },         //1
+			    {"data" : "SaleLine"   ,"title":"SO Line"          },         //2
+			    {"data" : "CustomerShortName"  ,"title":"Cust.(Name4)"  }, 
+			    {"data" : "SaleCreateDate" ,"title":"SO Date"      },    
+			    {"data" : "PurchaseOrder" ,"title":"P/O" },      //5 
+			    {"data" : "MaterialNo" ,"title":"Material" }, 
+			    {"data" : "CustomerMaterial" ,"title":"Customer Mat.No." },    //7
+			    {"data" : "Price" ,"title":"Price (THB)" }, 
+			    {"data" : "SaleUnit" ,"title":"Unit" }, 
+			    {"data" : "SaleQuantity" ,"title":"Order Qty." },              //10
+			    {"data" : "RemainQuantity" ,"title":"Remain Qty." },            //11
+			    {"data" : "RemainAmount" ,"title":"Remain Amt.(THB)" }, 
+			    {"data" : "TotalQuantity" ,"title":"จำนวนต่อ LOT" },             //13
+			    {"data" : "Grade" ,"title":"Grade" }, 
+			    {"data" : "BillSendWeightQuantity" ,"title":"จำนวน(FG)KG/MR/YD" }, 
+			    {"data" : "BillSendQuantity" ,"title":"จำนวนที่ส่ง" },          //16
+			    {"data" : "OrderAmount" ,"title":"Amt.(THB)" },               //17
+			    {"data" : "CustomerDue" ,"title":"Due Cus." }, 
+			    {"data" : "DueDate" ,"title":"Due Date" },                   //19 
 			     
-			    {"data" : "LabNo"},  
-			    {"data" : "LabStatus"},                 //21 
-			    {"data" : "LotNo"},                     //22
-			    {"data" : "CFMPlanLabDate"},            //23
-			    {"data" : "CFMActualLabDate"}, 
-			    {"data" : "UserStatus"},                  //25
-			    {"data" : "CFMCusAnsLabDate"},           //26
+			    {"data" : "LabNo","title":"Lab No" },  
+			    {"data" : "LabStatus","title":"Lab Status" },                 //21 
+			    {"data" : "LotNo","title":"Lot" },                     //22    
+			    {"data" : "CFMPlanLabDate","title":"วันนัด CFM LAB" },            //23
+			    {"data" : "CFMActualLabDate","title":"วันส่ง CFM LAB" },     	    //24
 			    
-			    {"data" : "TKCFM"},                       //27
-			    {"data" : "CFMPlanDate"}, 
-			    {"data" : "CFMSendDate"},        //29
-				{"data" : "CFMLastest"},         //30
-				{"data" : "CFMNumber"},          
-			    {"data" : "DeliveryDate"},       //32
-			    {"data" : "ShipDate"},              
-			    {"data" : "Remark"},              //34
-		],        	      
+			    
+			    
+			    {"data" : "CFMCusAnsLabDate","title":"วันที่ลูกค้าตอบ LAB"},           //25
+			    {"data" : "TKCFM","title":"TK CFM"},                       //26
+			    {"data" : "CFMPlanDate","title":"วันที่นัด CFM"},                 //27
+			    {"data" : "CFMSendDate","title":"วันที่ส่ง CFM จริง"},                 //28 
+			    {"data" : "UserStatus","title":"User Status"},                  //29
+				{"data" : "CFMLastest","title":"Lastest CFM Detail"},         //30
+				{"data" : "CFMNumber","title":"Lastest CFM Number"},          
+			    {"data" : "DeliveryDate","title":"Delivery (วันที่นัดส่ง)"},       //32
+			    {"data" : "ShipDate","title":"Bill Date"},              
+			    {"data" : "Remark","title":"EFFECT"},              //34
+		],        	         
 		columnDefs :  [	   
-			{ targets : [ 4,18,23,24,25,28,32,33 ],                    
+			{ targets : [ 4,18,23,24,24,27,32,33 ],                    
 			  	  className : 'dt-custom-td80',    
 			  	  type: 'date-euro'  
 				} ,                   
@@ -472,7 +461,7 @@ $(document) .ready( function() {
 			  	  className : 'dt-custom-lotNo',    
 			  	  type: 'string'     
 			} ,     
-			{ targets : [3, 5,6 , 7 ,21,25],                    
+			{ targets : [3, 5,6 , 7 ,21,29],                    
 		  	  	className : 'dt-custom-td140',      
 		  	  	type: 'string'   
 				} ,         
@@ -480,26 +469,49 @@ $(document) .ready( function() {
 		  	  	className : 'dt-custom-td400',         
 		  	  	type: 'string'  
 				} ,            
-			{ targets : [  34],                    
+			{ targets : [  34],                       
 		  	  	className : 'dt-custom-td450 p-r-15',      
 		  	  	type: 'string'  
 				} ,    
 		 	{ targets : [ 23 ],    
 			   	  render: function (data, type, row) {
-		   			var htmlEx = '' 
-					if(row.LotNo.trim() == ""){ 
+		   			var htmlEx = ''     
+					if(row.LotNo.trim() == "รอจัด Lot"){ 
 						htmlEx = ''; 
 					}
 					else{
 						htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.CFMPlanLabDate+ '" autocomplete="off" >';
 					}
 					return  htmlEx;
+			   	  }        
+				} ,  
+			{ targets : [ 11 ],    
+			   	  render: function (data, type, row) {	   
+			   		var htmlEx = '' 
+			   		
+			   		if(soLineTmp == row.SaleLine && soTmp   == row.SaleOrder  ){
+			   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
+			   		}   
+			   		else{      
+			   			soLineTmp = row.SaleLine;     
+			   			soTmp = row.SaleOrder;   
+			   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
+			   		}
+// 			   		console.log(soTmp,row.SaleOrder  ,row.SaleLine,soLineTmp )
+			   		
+// 			   		if(row.RemainQuantity.trim() == ""){ 
+// 						htmlEx = ''; 
+// 					}
+// 					else{
+// 						htmlEx = row.RemainQuantity;
+// 					}
+					return  htmlEx
 			   	  }    
 				} ,  
-			{ targets : [ 28 ],    
+			{ targets : [ 27 ],    
 			   	  render: function (data, type, row) {	
 			   		var htmlEx = '' 
-			   		if(row.LotNo.trim() == ""){ 
+			   		if(row.LotNo.trim() == "รอจัด Lot"){ 
 						htmlEx = ''; 
 					}
 					else{
@@ -511,18 +523,19 @@ $(document) .ready( function() {
 			{ targets : [ 32 ],     
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = ''   
-				   		if(row.LotNo.trim() == ""){ 
+				   		if(row.LotNo.trim() == "รอจัด Lot"){ 
 							htmlEx = ''; 
 						}
 						else{
 							htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.DeliveryDate+ '" autocomplete="off" >';
 						}
-						return  htmlEx   
+						return  htmlEx      
 					}       
-				} ,     
+			} ,     
 		],
-// 		 order: [[2, 'asc'], [1, 'asc']],     	
-// 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9 ],          	
+// 		 order: [[2, 'asc'], [1, 'asc']],     	   
+// 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9 ,10,11,12,13],   
+// 		rowsGroup: [ 0 ,1,2, 11 ],       
 // 		order : [],   
 		createdRow : function(row, data, index) {
 // 			$('td', row).eq(22).addClass('bg-color-azure');
@@ -578,11 +591,11 @@ $(document) .ready( function() {
 		MainTable.column($(this).data('index')).search(this.value).draw(); 
 	});                
 // 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
-	columns = MainTable.settings().init().columns;  
-	addColOption(columns ) 
+	columnsHeader = MainTable.settings().init().columns;  
+	addColOption(columnsHeader ) 
 	$('#multi_colVis').selectpicker();   
-	settingColumnHidden(columns, colHiddenList);   
-// 	console.log(columns,colHiddenList)  
+	settingColumnOption(columnsHeader, colList);   
+// 	console.log(columns,colList)  
 	$('#SL_userStatus').selectpicker();      
 	addUserStatusOption(userStatusList );    
 // 	console.log(userStatusList) 
@@ -605,15 +618,16 @@ $(document) .ready( function() {
  
 // ----------------------------------------------
 	$('#save_col_button').on( 'click', function () {      
-// 		console.log(colHiddenList)
+// 		console.log(colList)
 	    var selectedItem = $('#multi_colVis').val();    // get selected list 
 // 		for (i =  0; i < selectedItem.length ; i++) {              
 // 			let index = columns.findIndex(element => element.data === selectedItem[i] );
 // 			console.log(index )       
 // 			MainTable.column( index ).visible( false ); 
 // 		}    
-		setColVisible(columns,selectedItem);
+		setColVisible(columnsHeader,selectedItem);
 		saveColSettingToServer(selectedItem);
+		get_visible_columns()       
  	} );   
     $('#btn_search').on( 'click', function () {      
     	searchByDetail();   
@@ -886,7 +900,7 @@ $(document) .ready( function() {
 						
 					}    
 	             check2= 0; 
-			} 
+			}    
 		});       
 	 $("#MainTable").on("keydown blur",".DeliveryDateInput", function (e) { 
 			var $row = $(this).parents("tr");
@@ -1129,84 +1143,91 @@ function createJsonData(){
 function exportCSV(data){ 
     var createXLSLFormatObj = []; 
     /* XLS Head Columns */      
-    var xlsHeader = [
-    	 "Division"            ,         
-    	 "SaleOrder"           ,    
-    	 "SaleLine"            , 
-    	 "CustomerShortName"   , 
-    	 "SaleCreateDate"      ,    
-    	 "PurchaseOrder" ,   
-    	 "MaterialNo" , 
-    	 "CustomerMaterial" ,  
-    	 "Price" , 
-    	 "SaleUnit" , 
-    	 "SaleQuantity" ,          
-    	 "RemainQuantity" ,         
-    	 "RemainAmount" , 
-    	 "TotalQuantity" ,        
-    	 "Grade" , 
-    	 "BillSendWeightQuantity" , 
-    	 "BillSendQuantity" ,        
-    	 "CustomerDue" , 
-    	 "DueDate" ,               
-    	 "LotNo" , 
-    	 "LabNo" ,  
-    	 "LabStatus" ,              
-    	 "CFMPlanLabDate" ,         
-    	 "CFMActualLabDate" , 
-    	 "CFMCusAnsLabDate" ,          
-    	 "UserStatus" ,                  
-    	 "TKCFM" ,                      
-    	 "CFMPlanDate" ,   
-    	 "CFMSendDate" ,         
-    	 "CFMLastest" ,         
-    	 "CFMNumber" ,          
-    	 "DeliveryDate" ,       
-    	 "ShipDate" ,              
-    	 "Remark"  ];   
+//     var xlsHeader = [
+//     	 "Division"            ,         
+//     	 "SaleOrder"           ,    
+//     	 "SaleLine"            , 
+//     	 "CustomerShortName"   , 
+//     	 "SaleCreateDate"      ,    
+//     	 "PurchaseOrder" ,   
+//     	 "MaterialNo" , 
+//     	 "CustomerMaterial" ,  
+//     	 "Price" , 
+//     	 "SaleUnit" , 
+//     	 "SaleQuantity" ,          
+//     	 "RemainQuantity" ,         
+//     	 "RemainAmount" , 
+//     	 "TotalQuantity" ,        
+//     	 "Grade" , 
+//     	 "BillSendWeightQuantity" , 
+//     	 "BillSendQuantity" ,        
+//     	 "CustomerDue" , 
+//     	 "DueDate" ,               
+//     	 "LotNo" , 
+//     	 "LabNo" ,  
+//     	 "LabStatus" ,              
+//     	 "CFMPlanLabDate" ,         
+//     	 "CFMActualLabDate" , 
+//     	 "CFMCusAnsLabDate" ,          
+//     	 "UserStatus" ,                  
+//     	 "TKCFM" ,                      
+//     	 "CFMPlanDate" ,   
+//     	 "CFMSendDate" ,             
+//     	 "CFMLastest" ,         
+//     	 "CFMNumber" ,          
+//     	 "DeliveryDate" ,       
+//     	 "ShipDate" ,              
+//     	 "Remark"  ];   
     /* XLS Rows Data */
+    let xlsHeader = Array.from( mapsTitleHeader.keys() );
     var xlsRows = data
     createXLSLFormatObj.push(xlsHeader);
     $.each(xlsRows, function(index, value) {
         var innerRowData = [];  
-//         $.each(value, function(ind, val) {     	
+        $.each(value, function(ind, val) {     	
 //             innerRowData.push(val); 
-//         }); 
-        innerRowData.push(value.Division);        
-innerRowData.push(value.SaleOrder);    
-innerRowData.push(value.SaleLine);
-innerRowData.push(value.CustomerShortName); 
-innerRowData.push(value.SaleCreateDate); 
-innerRowData.push(value.PurchaseOrder);    
-innerRowData.push(value.MaterialNo);  
-innerRowData.push(value.CustomerMaterial); 
-innerRowData.push(value.Price); 
-innerRowData.push(value.SaleUnit);  
-innerRowData.push(value.SaleQuantity);           
-innerRowData.push(value.RemainQuantity);          
-innerRowData.push(value.RemainAmount);  
-innerRowData.push(value.TotalQuantity);         
-innerRowData.push(value.Grade);  
-innerRowData.push(value.BillSendWeightQuantity);  
-innerRowData.push(value.BillSendQuantity);         
-innerRowData.push(value.CustomerDue);  
-innerRowData.push(value.DueDate);                
-innerRowData.push(value.LotNo);  
-innerRowData.push(value.LabNo);   
-innerRowData.push(value.LabStatus);               
-innerRowData.push(value.CFMPlanLabDate);          
-innerRowData.push(value.CFMActualLabDate);  
-innerRowData.push(value.CFMCusAnsLabDate);           
-innerRowData.push(value.UserStatus);                   
-innerRowData.push(value.TKCFM);                       
-innerRowData.push(value.CFMPlanDate);  
-innerRowData.push(value.CFMSendDate);          
-innerRowData.push(value.CFMLastest);          
-innerRowData.push(value.CFMNumber);           
-innerRowData.push(value.DeliveryDate);        
-innerRowData.push(value.ShipDate);               
-innerRowData.push(value.Remark);          
-        
+        	 if(mapsDataHeader.size != 0){                
+ 			  	if(mapsDataHeader.get(ind) !== undefined){   
+//  			  		 console.log(ind,val) 
+ 			  		 innerRowData.push(val); 
+ 			  	}
+             }
+        }); 
+//         innerRowData.push(value.Division);        
+// innerRowData.push(value.SaleOrder);    
+// innerRowData.push(value.SaleLine);
+// innerRowData.push(value.CustomerShortName); 
+// innerRowData.push(value.SaleCreateDate); 
+// innerRowData.push(value.PurchaseOrder);    
+// innerRowData.push(value.MaterialNo);  
+// innerRowData.push(value.CustomerMaterial); 
+// innerRowData.push(value.Price); 
+// innerRowData.push(value.SaleUnit);  
+// innerRowData.push(value.SaleQuantity);           
+// innerRowData.push(value.RemainQuantity);          
+// innerRowData.push(value.RemainAmount);  
+// innerRowData.push(value.TotalQuantity);         
+// innerRowData.push(value.Grade);  
+// innerRowData.push(value.BillSendWeightQuantity);  
+// innerRowData.push(value.BillSendQuantity);         
+// innerRowData.push(value.CustomerDue);  
+// innerRowData.push(value.DueDate);                
+// innerRowData.push(value.LotNo);  
+// innerRowData.push(value.LabNo);   
+// innerRowData.push(value.LabStatus);               
+// innerRowData.push(value.CFMPlanLabDate);          
+// innerRowData.push(value.CFMActualLabDate);  
+// innerRowData.push(value.CFMCusAnsLabDate);           
+// innerRowData.push(value.UserStatus);                   
+// innerRowData.push(value.TKCFM);                       
+// innerRowData.push(value.CFMPlanDate);  
+// innerRowData.push(value.CFMSendDate);          
+// innerRowData.push(value.CFMLastest);          
+// innerRowData.push(value.CFMNumber);           
+// innerRowData.push(value.DeliveryDate);        
+// innerRowData.push(value.ShipDate);               
+// innerRowData.push(value.Remark);          
+              
 //         innerRowData.push(value);
         createXLSLFormatObj.push(innerRowData);
     }); 
@@ -1312,9 +1333,11 @@ function searchByDetailToServer(arrayTmp) {
 		url: "PCMSDetail/searchByDetail", 
 		success: function(data) { 
 // 			console.log(data)
+// 			get_visible_columns()
 			MainTable.clear();           
 			MainTable.rows.add(data);     
-			MainTable.columns.adjust().draw();       
+			MainTable.columns.adjust().draw();   
+			
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
@@ -1413,22 +1436,24 @@ function addLeadingZero(i) {
 	const val = ('0' + i).slice(-2);
 	return val;
 }
-function settingColumnHidden(columns ,colVisible){ 
+function settingColumnOption(columnsHeader ,colVisible){ 
 	 
 // 	ADD COL VISIBLE CASE
 	if(colVisible == null){
-		
+		$('#multi_colVis option').attr("selected","selected");
+		$('#multi_colVis').selectpicker('refresh');
 	}  
 	else{   
 // 		$('#multi_colVis').selectpicker();   
 // 		columns = MainTable.settings().init().columns; 
 // 		console.log(columns)
+// 		console.log(colVisible)   
 // 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
 // 		addColOption(columns ) 
-		setColVisible(columns,colVisible);    
-		$('#multi_colVis').selectpicker('val', colVisible); 
+		setColVisible(columnsHeader,colVisible);    
+		$('#multi_colVis').selectpicker('val', colVisible);     
 	}
- 	   
+	get_visible_columns()  
 // 	int index = row.MainTable.Columns["Division"].Ordinal;  
 // 	console.log(index)  
 // SELECTED ONLY   
@@ -1448,24 +1473,24 @@ function addColOption(colName ){
 	for (i = sel.length - 1; i >= 0; i--) {
 		sel.remove(i);
 	}             
-	var size = colName.length;
+	var size = colName.length; 
 	for (var i = 0; i < size; i++) {		
 		 var resultData = colName[i]; 	   
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.data;
+		 opt.text  = (i+1)+" : "+resultData.title;
 		 opt.value = resultData.data;  
 		 sel.appendChild(opt);          
 	}             
 	$("#multi_colVis").selectpicker("refresh");
 } 
-function addUserStatusOption(data  ){ 
+function addUserStatusOption(data  ){   
 	// The DOM way. 
 	var sel = document.getElementById("SL_userStatus");
-	for (i = sel.length - 1; i >= 0; i--) {
-		sel.remove(i);
-	}                   
-	console.log(data)
+// 	for (i = sel.length - 1; i >= 0; i--) {
+// 		sel.remove(i);
+// 	}                   
+// 	console.log(data)
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		     
 		 var resultData = data[i]; 	   
@@ -1477,8 +1502,8 @@ function addUserStatusOption(data  ){
 	}             
 	$("#SL_userStatus").selectpicker("refresh");
 } 
-function setColVisible(mainCol,hiddenCol) {    
-// 	console.log(hiddenCol)   
+function setColVisible(mainCol,colVisible) {    
+// 	console.log(colVisible)   
 // 	console.log(mainCol)  
 	let index ;
 	let check ;
@@ -1492,10 +1517,10 @@ function setColVisible(mainCol,hiddenCol) {
    let tmpArrayHide = [];
    let i = 0;
 //    console.log(mainCol)   
-//    console.log(hiddenCol)
+//    console.log(colVisible)
 	for (i =  0; i < mainCol.length ; i++) {           
 		colName = mainCol[i].data;    
-// 		index = hiddenCol.findIndex(element => element === colName);   
+// 		index = colVisible.findIndex(element => element === colName);   
 // 		console.log(' i ' ,i ,' index ' ,index ,colName)  
 // 		if(index < 0){ 
 // 			MainTable.column( i ).visible(true  )   ;
@@ -1506,8 +1531,8 @@ function setColVisible(mainCol,hiddenCol) {
 // 			MainTable.column( i ).visible( false ) 
 // // 			tmpArrayHide.push(index)       
 // 			}   
-		check = hiddenCol.includes(colName);  
-		if(check === false){ 
+		check = colVisible.includes(colName);  
+		if(check === true){ 
 			MainTable.column( i ).visible(true  )   ;        
 		}    
 		else{      
@@ -1515,7 +1540,7 @@ function setColVisible(mainCol,hiddenCol) {
 			}   
 		
 		
-// 		index = sparseIndexOf(hiddenCol, colName)
+// 		index = sparseIndexOf(colVisible, colName)
 // 		if(index === undefined){      
 // 			MainTable.column( i ).visible( false )     
 // 			}  
@@ -1530,21 +1555,21 @@ function setColVisible(mainCol,hiddenCol) {
 // 	for (i =  0; i < mainCol.length ; i++) {                   
 // 		 MainTable.column( i ).visible( true )      
 // 	}        
-// 	for (i =  0; i < hiddenCol.length ; i++) {              
-// // 		let index = hiddenCol.findIndex(element => element === mainCol[i] .data);    
+// 	for (i =  0; i < colVisible.length ; i++) {              
+// // 		let index = colVisible.findIndex(element => element === mainCol[i] .data);    
 // 		MainTable.column( index ).visible( false );    
 // 	}   
 	MainTable.columns.adjust().draw( false ); // adjust column sizing and redraw
 
 } 
 function addSelectOption(data){ 
-	// The DOM way.
+	// The DOM way.  
 	arrayProblem = [];
 	arrayProblem = data;
 	var sel = document.getElementById('SL_saleNumber');
 // 	for (i = sel.length - 1; i >= 0; i--) {
 // 		sel.remove(i);
-// 	}             
+// 	}               
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
 		 var resultData = data[i]; 	
@@ -1554,17 +1579,17 @@ function addSelectOption(data){
 		 opt.text  = resultData.SaleFullName;
 		 opt.value = resultData.SaleNumber;   
 		 sel.appendChild(opt);          
-	}      
+	}         
 } 
 function getInputDate(arrTmp,colIdx){      
 	var path ="";
-	if(colIdx == 22){
+	if(colIdx == 23){
 		path = "PCMSDetail/getCFMPlanLabDateDetail";
-	} 
+	}    
 	else if(colIdx == 27){
 		path = "PCMSDetail/getCFMPlanDateDetail";
 	}  
-	else if(colIdx == 31){
+	else if(colIdx == 32){
 		path = "PCMSDetail/getDeliveryPlanDateDetail"; 
 	}
 	if(path != ''){
@@ -1604,5 +1629,30 @@ function getInputDate(arrTmp,colIdx){
 		
 	}
 }
+function get_visible_columns() {   
+// 	columnsHeader = MainTable.settings().init().columns;
+   	mapsDataHeader.clear();    
+   	mapsTitleHeader.clear();
+// 	console.log('all_columns', all_columns);
+	var visible_columns = [];        
+	var check = '';    
+	var count = 0;
+	for (var i in columnsHeader) {        
+		check = (MainTable.column( i ).visible() === true ? 'visible' : 'not visible');
+		if((check == 'visible'      
+// 				&& all_columns[i].data == 'DueDate'
+				)){    
+// 			visible        
+// 			console.log(all_columns[i].data, count)
+			mapsTitleHeader.set(columnsHeader[i].title, count); 
+			mapsDataHeader.set(columnsHeader[i].data, count);
+			count = count + 1
+		}    
+		else{        
+// 			unvisible 
+		} 
+	}    
+// 	console.log(mapsDataHeader )
+}     
 </script> 
 </html>
