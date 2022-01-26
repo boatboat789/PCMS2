@@ -23,8 +23,8 @@ public class BackGroundJob {
 	@Autowired
 	private ServletContext context; 
 	public BackGroundJob() {  } 
-//	@Scheduled(fixedDelay = 10000)       
-	@Scheduled(cron = "0 4/10 * * * *")    
+	@Scheduled(fixedDelay = 10000)       
+//	@Scheduled(cron = "0 4/10 * * * *")    
 	public void sortBackGround1() {	
 		LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
 		FTP_DIRECTORY = context.getInitParameter("FTP_PATH");

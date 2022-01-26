@@ -82,22 +82,22 @@ public class FtpTaskRunner {
    } 
    public void loadFTP() {
 	   System.out.println("PCMS START FTP run at :: " + Calendar.getInstance().getTime().toString()); 
-	   this.importerNC.loadDataFTP(this.user);
-	   this.importerReceipe.loadDataFTP(this.user);
-	   this.importerSubmitDate.loadDataFTP(this.user);
-	   this.importerSaleInput.loadDataFTP(this.user);
-	   this.importerSale.loadDataFTP(this.user);
-	   this.importerCFM.loadDataFTP(this.user);
-	   this.importerWaitTest.loadDataFTP(this.user);
-	   this.importerWorkInLab.loadDataFTP(this.user);
-	   this.importerSendTestQC.loadDataFTP(this.user);
-	   this.importerPacking.loadDataFTP(this.user); 
-	   this.importerInspect.loadDataFTP(this.user);  
-	   this.importerFinishing.loadDataFTP(this.user);
-	   this.importerDyeing.loadDataFTP(this.user);
-	   this.importerPreset.loadDataFTP(this.user);
-	   this.importerPO.loadDataFTP(this.user);  
-	   this.importerMainProdSale.loadDataFTP(this.user);
+//	   this.importerNC.loadDataFTP(this.user);
+//	   this.importerReceipe.loadDataFTP(this.user);
+//	   this.importerSubmitDate.loadDataFTP(this.user);
+//	   this.importerSaleInput.loadDataFTP(this.user);
+//	   this.importerSale.loadDataFTP(this.user);
+//	   this.importerCFM.loadDataFTP(this.user);
+//	   this.importerWaitTest.loadDataFTP(this.user);
+//	   this.importerWorkInLab.loadDataFTP(this.user);
+//	   this.importerSendTestQC.loadDataFTP(this.user);
+//	   this.importerPacking.loadDataFTP(this.user); 
+//	   this.importerInspect.loadDataFTP(this.user);  
+//	   this.importerFinishing.loadDataFTP(this.user);
+//	   this.importerDyeing.loadDataFTP(this.user);
+//	   this.importerPreset.loadDataFTP(this.user);
+//	   this.importerPO.loadDataFTP(this.user);  
+//	   this.importerMainProdSale.loadDataFTP(this.user);
 	   this.importerMainProd.loadDataFTP(this.user);
 	   this.importerMainSale.loadDataFTP(this.user); 
 	   this.importerMainGrade.loadDataFTP(this.user);

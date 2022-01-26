@@ -40,7 +40,7 @@ public class PCMSMainController {
 		String user = (String) session.getAttribute("user");
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		 String[] arrayCol = null  ;
-		 if(list.size() == 0) { } 
+		 if(list.size() == 0) { arrayCol = null  ;} 
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("ColList", g.toJson(arrayCol));

@@ -41,16 +41,23 @@ public class PCMSDetailController {
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		PCMSDetailModel model = new PCMSDetailModel();
+//		System.out.println("1");
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ;      
-		 if(list.size() == 0) { 
-			 ColumnHiddenDetail bean = new ColumnHiddenDetail();
-			 arrayCol = bean.getColVisibleDetail().split(",");
-			 } 
-		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }   
+		 String[] arrayCol = null  ;   
+//		 System.out.println("dddddddddd" +list.toString());
+//		 System.out.println("dddddddddd" +list.size());
+		 if(list.size() == 0) {     
+//			 String colVis = ""; 
+			 arrayCol = null; 
+		 } 
+		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); } 
+		 System.out.println("2");
 		mv.setViewName("PCMSDetail/PCMSDetail"); 
+//		System.out.println("3");
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
+//		System.out.println("4");
 		mv.addObject("ColList", g.toJson(arrayCol));
+//		System.out.println("5");
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 		return mv;
 	}    

@@ -97,12 +97,12 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 	                  this.message = "Field length is missing" +counter;
 	               }
 	            }  
-//	            System.out.println(!datas.isEmpty());
+	            System.out.println(!datas.isEmpty()+" "+"main prd");
 	            if (!datas.isEmpty()) {
 	               this.clearData(); 
-//	               System.out.println("clear");
+	               System.out.println("clear");
 	               this.insertData(datas);
-//	               System.out.println("wtf");
+	               System.out.println("wtf");
 	               this.database.update("EXEC spd_UpsertToMainProd");
 	               System.out.println("EXEC spd_UpsertToMainProd"); 
 	               success = true;

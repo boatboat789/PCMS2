@@ -550,8 +550,8 @@ $(document) .ready( function() {
 
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
-		var title = $(this).text();      
-		$(this).html( '<input type="text" class=" monitor_search" style="width:100%" data-index="' + i + '"/>');
+		var title = $(this).text();         
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
 	});     
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
@@ -568,8 +568,8 @@ $(document) .ready( function() {
 	   	orderCellsTop : true,           
 		orderClasses : false,           
 // 		lengthChange: false,              
-// "deferRender": true,          	
-		filter:false,       
+// "deferRender": true,              	
+// 		filter:false,       
 		lengthChange : false,     
 		pageLength: 1000,	 
 // 		lengthMenu: [[1000, -1], [1000, "All"]],
@@ -1116,16 +1116,26 @@ $(document) .ready( function() {
 	 	 });
 	// SEARCH BY FILTER UNDER COLUMN NAME : BOAT 
 // 	$("#MainTable thead").on('keyup', '.monitor_search', function() {
-// // 		console.log(this.value)
-// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
-// 	});       
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
 // 		console.log(this.value)    
-		MainTable.column($(this).data('index')).search(this.value).draw(); 
+// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
+// 	});           
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {        
+// 		console.log(this.value)        
+		let searchVal = this.value;      
+		if(searchVal  == ' '){                       
+// 			console.log(" DyePlan = ''" )  
+// 			var rows = MainTable.Select($(this).data('index')+" = ''"); 
+			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();; 
+		}      
+		else{
+			MainTable.column($(this).data('index')).search(searchVal).draw(); 
+// 			MainTable.column($(this).data('index')).search( '^'+searchVal+'$', true, false ).draw(); 
+		}
+		
 	});      
 // 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
 	        
-// 	$("#MainTable_filter").hide();  
+	$("#MainTable_filter").hide();  
 // 	$("#presetTable_filter").hide();  
 	$("#dyeingTable_filter").hide();  
 	$("#fnTable_filter").hide();  

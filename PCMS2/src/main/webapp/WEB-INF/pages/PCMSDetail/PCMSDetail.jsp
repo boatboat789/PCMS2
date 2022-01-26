@@ -366,8 +366,8 @@ $(document) .ready( function() {
 	<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>   
 	 saleNumberList = JSON.parse('${SaleNumberList}'); 
 	 colList = JSON.parse('${ColList}'); 
-	 userStatusList = JSON.parse('${UserStatusList}'); 
-  	addSelectOption(saleNumberList) 
+	 userStatusList = JSON.parse('${UserStatusList}');  
+  	 addSelectOption(saleNumberList) 
 //   	showThing();    
   
 	
@@ -382,11 +382,11 @@ $(document) .ready( function() {
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
 		var title = $(this).text();      
-		$(this).html( '<input type="text" class=" monitor_search" style="width:100%" data-index="' + i + '"/>');
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
 	});        
     MainTable = $('#MainTable').DataTable({   
 		scrollX: true,                      
-        scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง     
+        scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง         
         scrollCollapse: true,   
  	   	orderCellsTop : true,           
 		orderClasses : false,                      
@@ -485,11 +485,15 @@ select : {
 					return  htmlEx;
 			   	  }        
 				} ,  
-			{ targets : [ 11 ],    
+			{ targets : [ 11 ],        
 			   	  render: function (data, type, row) {	   
-			   		var htmlEx = '' 
-			   		
-			   		if(soLineTmp == row.SaleLine && soTmp   == row.SaleOrder  ){
+			   		var htmlEx = ''; 
+		   			if(soLineTmp == '' && soTmp == ''  ){
+		   				soLineTmp = row.SaleLine;     
+			   			soTmp = row.SaleOrder;   
+			   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
+			   		}  
+		   			else if(soLineTmp == row.SaleLine && soTmp   == row.SaleOrder  ){
 			   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
 			   		}   
 			   		else{      
@@ -497,7 +501,7 @@ select : {
 			   			soTmp = row.SaleOrder;   
 			   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
 			   		}
-// 			   		console.log(soTmp,row.SaleOrder  ,row.SaleLine,soLineTmp )
+// 			   		console.	log(soTmp,row.SaleOrder  ,row.SaleLine,soLineTmp )
 			   		
 // 			   		if(row.RemainQuantity.trim() == ""){ 
 // 						htmlEx = ''; 
@@ -588,7 +592,14 @@ select : {
 	// SEARCH BY FILTER UNDER COLUMN NAME : BOAT         
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
 // 		console.log(this.value)    
-		MainTable.column($(this).data('index')).search(this.value).draw(); 
+// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
+		let searchVal = this.value;      
+		if(searchVal  == ' '){                        
+			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();; 
+		}      
+		else{    
+			MainTable.column($(this).data('index')).search(searchVal).draw();  
+		}  
 	});                
 // 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
 	columnsHeader = MainTable.settings().init().columns;  
