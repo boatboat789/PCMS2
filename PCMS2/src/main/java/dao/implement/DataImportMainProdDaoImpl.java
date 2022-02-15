@@ -97,22 +97,22 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 	                  this.message = "Field length is missing" +counter;
 	               }
 	            }  
-	            System.out.println(!datas.isEmpty()+" "+"main prd");
+//	            System.out.println(!datas.isEmpty()+" "+"main prd");
 	            if (!datas.isEmpty()) {
 	               this.clearData(); 
-	               System.out.println("clear");
+//	               System.out.println("clear");
 	               this.insertData(datas);
-	               System.out.println("wtf");
+//	               System.out.println("wtf");
 	               this.database.update("EXEC spd_UpsertToMainProd");
-	               System.out.println("EXEC spd_UpsertToMainProd"); 
+//	               System.out.println("EXEC spd_UpsertToMainProd"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
 	            this.message = "File Not Found";
-	            System.out.println("success4");
+	            System.err.println("success4");
 	         } catch (IOException var32) {
 	            this.message = "Read file Error";
-	            System.out.println("success5");
+	            System.err.println("success5");
 	         } finally {
 	        	    try { if(buffer != null) { buffer.close(); } } catch(IOException e) { }
 	                try { if(reader != null) { reader.close(); } } catch(IOException e) { }

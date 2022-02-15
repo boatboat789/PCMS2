@@ -65,4 +65,6 @@ public interface BeanCreateModelDao {
 
 	ColumnHiddenDetail _genColumnHiddenDetail(Map<String, Object> map);
 
+	PCMSTableDetail _genSearchTableDetail(Map<String, Object> map);
+
 }

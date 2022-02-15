@@ -78,7 +78,7 @@ public class DataImportDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;  
-      System.out.println(fullname);
+//      System.out.println(fullname);
       if (fullname.contains("ZSAPPO")) {  
 	      if (file.exists()) {
 	         try {  
@@ -101,15 +101,15 @@ public class DataImportDaoImpl implements DataImportDao {
 	               this.clearData(); 
 	               this.insertData(datas);    
 	               this.database.update("EXEC spd_OrderProcessImport");
-	               System.out.println("EXEC spd_OrderProcessImport"); 
+//	               System.out.println("EXEC spd_OrderProcessImport"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
 	            this.message = "File Not Found";
-	            System.out.println("success4");
+	            System.err.println("success4");
 	         } catch (IOException var32) {
 	            this.message = "Read file Error";
-	            System.out.println("success5");
+	            System.err.println("success5");
 	         } finally {
 	        	    try { if(buffer != null) { buffer.close(); } } catch(IOException e) { }
 	                try { if(reader != null) { reader.close(); } } catch(IOException e) { }

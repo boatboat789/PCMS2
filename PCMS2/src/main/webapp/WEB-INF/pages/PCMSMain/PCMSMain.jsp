@@ -13,211 +13,14 @@
 	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
 </head>      
 <body>       	         
-	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>  
+	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>      
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>    
-		<div id="wrapper-top" class="row" style="  margin: 5px;  background-color: azure;  " >  
-<!-- 		style="top: 0; margin: 5px; z-index: 1000; background-color: azure;  -->
-<!-- 		       position: sticky;position: -webkit-sticky;      "  -->
-			<div class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-10 "  >   
-				<div class="row">        
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
-					  	<label class=" label-input  margin-0" for="input_customer">Customer</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_customer"   maxlength="50" > 
-						</div>     
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
-					  	<label class=" label-input  margin-0" for="input_customerShortName">Cust.(Name4)</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_customerShortName"   maxlength="50" > 
-						</div>     
-					</div>             
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
-					  	<label class=" label-input  margin-0" for="input_saleOrder">SO No.</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_saleOrder"   maxlength="30" > 
-						</div>     
-					</div>         
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_article">Article No</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_article"   maxlength="30" > 
-						</div>     
-					</div>                      
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_prdOrder">Prod.No</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_prdOrder"   maxlength="30" > 
-						</div>     
-					</div>     
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="SL_saleNumber">SaleName</label>           
-					  	<div > 
-<!-- 				    		<input class="form-control " autocomplete="off"  type="text"  id="input_saleNumber"   maxlength="30" >  -->
-							<select id="SL_saleNumber" class="form-control "   >      
-								<option value="" selected>Select</option>   
-							</select>
-						</div> 
-						 
-					</div>                     
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_saleOrderDate">SO. Date</label>           
-					  	<div > 
-				  			<input autocomplete="off" id="input_saleOrderDate" type="text" name="daterange"   class='form-control'
-								style=' display: inline;margin-top: 0px;' /> 
-<!-- 								onchange="checkDate(this)" />      -->
-						</div>     
-					</div>                    
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_designNo">Design No</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_designNo"   maxlength="30" > 
-						</div>     
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_prdOrderDate">Prod.Date</label>           
-					  	<div > 
-					  	<input autocomplete="off" id="input_prdOrderDate" type="text" name="daterange"   class='form-control'
-								style=' display: inline;margin-top: 0px;' />       
-<!-- 								onchange="checkDate(this)" />     -->
-						</div>     
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_material">Mat No.</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_material"   maxlength="30" > 
-						</div>     
-					</div>      
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="input_labNo">LabNo</label>           
-					  	<div > 
-				    		<input class="form-control " autocomplete="off"  type="text"  id="input_labNo"   maxlength="30" > 
-						</div>     
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-<!-- 					  	<label class=" label-input  margin-0" for="input_planStatus">UserStatus</label>            -->
-<!-- 					  	<div >  -->
-<!-- 				    		<input class="form-control " autocomplete="off"  type="text"  id="input_userStatus"   maxlength="30" >  -->
-<!-- 						</div>         -->
-						<label class=" label-input  margin-0" for="SL_userStatus">UserStatus</label>           
-					  	<div >  
-					  		<select id="SL_userStatus"   class="selectpicker"  data-live-search="true">
-					  			<option value="" selected>SelectAll</option>
-					  		</select>
-						</div>    
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
-					  	<label class=" label-input  margin-0" for="SLDelivStatus">Delivery Status</label>           
-					  	<div >    
-				    		<select id="SLDelivStatus" class="form-control "   >      
-							<option value="" selected>Select</option>  
-							<option value="C" >Completed</option>  
-							<option value="B" >Partial Process</option>  
-							<option value="A" >NotYet Process</option>  
-						</select>
-						</div>      
-					</div>   
-				</div>       
-			</div>            
-			<!--  ROW 2 -->    
-			<div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2  "  >   
-				<div class="row">       
-					<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
-		              	<button id="btn_search" class="btn btn-primary" type="button" style=" width: -webkit-fill-available; " >
-		                    <i class="fa fa-search"></i> 
-		                    Search 
-		              	</button>      
-					</div>          
-					<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
-		              	 
-		              	<button id="btn_download" class="btn btn-primary" type="button" style=" width: -webkit-fill-available; " >
-		                    <i class="fa fa-download"></i>     
-		                    Download Excel     
-		              	</button>     
-					</div>       
-					<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
-	   
-		              	<button id="btn_colSetting" class="btn btn-primary" type="button" style=" width: -webkit-fill-available; " >
-		                    <i class="fa fa-cogs"></i> 
-		                    Column Setting
-		              	</button>      
-					</div>       
-				</div>    
-			</div>                             
-			 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 "  >
-			 	<div class="row">          
-				 	<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
-					 	<div class="form-check" style="margin-left: 10px;  display: inline;">     
-						  	<input class="form-check-input" type="checkbox" id="check_DM" value="DM" checked>
-						  	<label class="form-check-label" for="check_DM">
-						    	Domestic
-						  	</label>  
-						</div>    
-					 	<div class="form-check" style="margin-left: 10px; display: inline;">     
-							<input class="form-check-input" type="checkbox" id="check_EX" value="EX" checked>
-							<label class="form-check-label" for="check_EX">
-							    Export
-						  	</label>
-						</div>    
-						<div class="form-check" style="margin-left: 10px; display: inline;">     
-							  <input class="form-check-input" type="checkbox" id="check_HW" value="HW" checked>
-							  <label class="form-check-label" for="check_HW">
-							    Hire work  
-							  </label>    
-						</div>   	              
-					</div>   
-					<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >       
-						<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
-							<input type="radio" id="rad_all" name="saleStatusRadio" class="custom-control-input" value="" >
-							<label class="custom-control-label" for="rad_all">All</label>
-						</div>
-						<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
-							<input type="radio" id="rad_inProc" name="saleStatusRadio" class="custom-control-input" value="O" checked>
-							<label class="custom-control-label" for="rad_inProc">In-Process</label>
-						</div> 
-						<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
-							<input type="radio" id="rad_closed" name="saleStatusRadio" class="custom-control-input" value=C>    
-							<label class="custom-control-label" for="rad_closed">Closed</label>
-						</div> 
-					</div>    
-					
-					
-					    
-					<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" style="justify-content: right;" >   
-						<div class="row">       
-							<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >     
-				              	<button id="btn_prdDetail" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-search"></i>  -->
-				                    Production Detail 
-				              	</button>     
-				              	<button id="btn_lbms" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-save"></i>         -->
-				                   LBMS Detail            
-				              	</button>    
-				              	<button id="btn_qcms" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    QCMS Result
-				              	</button>   
-				              	<button id="btn_inspect" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    Inspect Result
-				              	</button>   
-				              	<button id="btn_sfc" class="btn btn-primary" type="button" style="margin-bottom: 5px;" >
-<!-- 				                    <i class="fa fa-print"></i>  -->
-				                    SFC Detail
-				              	</button>      
-							</div>       
-						</div>    
-					</div>   
-					      
-				</div>   
-			</div>          
-		</div>        
+    <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>    
 		<div id="wrapper-center" class="row" style="margin: 0px 5px;">     
 			<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px;margin: 0px 0px;" >                
 				<div class="table-responsive ">        
-					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 90%;   font-size: 12.5px;width:100%">
-				        <thead>
+					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%;   font-size: 12.5px;width:100%">
+				        <thead>          
 				            <tr>
 				                <th class=" " style="vertical-align: middle;">SO No. </span></th>
 				                <th class=" " style="vertical-align: middle;">SO Line</th> 
@@ -234,21 +37,21 @@
 				                <th class=" " style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Prepare	 </th>  
+				                <th class=" " style="vertical-align: middle;">Relax	 </th>  
 				                <th class=" " style="vertical-align: middle;">PS </th>      
 				                <th class=" " style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
 				                <th class=" " style="vertical-align: middle;">FN  </th> 
 				                <th class=" " style="vertical-align: middle;">Inspect </th>  
-				                <th class=" " style="vertical-align: middle;">วันนัด CF<span class="c"style="display: block;"> [Plan]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">วันนัด CF<span class="c"style="display: block;"> [Actual]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">วันนัด<span class="c"style="display: block;"> ส่งของ</span> </th> 
+				                <th class=" " style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
+				                <th class=" " style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
+				                <th class=" " style="vertical-align: middle;">Delivery Date </th> 
 				                <th class=" " style="vertical-align: middle;">Shipping </th>   
-				        
-				        	</tr> 
-				        </thead>     	     
-				        <tbody>    
-				        </tbody>       
+				        	</tr>   
+				        </thead>          	         
+<!-- 				        <tbody>     -->
+<!-- 				        </tbody>        --> 
 				    </table>            
 				</div>                
 			</div>   	
@@ -259,35 +62,31 @@
       <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include> 
 		<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
-<%-- 	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/Redirect/modalMain.jsp"></jsp:include>  --%>
-</body>               
-<%-- <script src="<c:url value="/resources/js/dataTables.rowsGroup.js" />"></script>          --%>
+</body>                
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>   
+<script src="<c:url value="/resources/js/General.js" />"></script>   
   <style>
   .p-r-15 {padding-right: 15px !important; }
   </style>
 <!-- <script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>    -->
-<script>     
-$(document).on('show.bs.modal', '.modal', function (event) {
-    var zIndex = 1040 + (10 * $('.modal:visible').length);
-    $(this).css('z-index', zIndex);
-    setTimeout(function() {
-        $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-    }, 0);  
-});
+<script>       
+var preloader = document.getElementById('loader');  
 var today = new Date();        //modalForm
 var dd = String('0' + today.getDate()).slice(-2); 
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
 var MainTable ;  
-var poTable ;      
-var userStatusList ;  	
+var poTable ;       
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
+var mapsColumnHeader  = new Map(); 
 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
 var columnsHeader  = [];
 var colList ;
+var userStatusList ;  	
+var cusNameList ;  	
+var cusShortNameList ;  	
 var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
@@ -302,20 +101,14 @@ var urlQCMS = domain+"/QCMS/first.html";
 var urlQCMSObj = domain+"/QCMS/request/search.html"; 
 // console.log(window.location.host)
 // console.log(window.location.hostname)
-// console.log(window.location.origin)
-// var urlLBMS = "http://localhost:8080/LBMS/";     
-// var urlLBMSObj = "http://localhost:8080/LBMS/LabHistory"; 
-// var urlSFC = "http://localhost:8080/SFC/"; 
-// var urlSFCObj = "http://localhost:8080/SFC/HistoryWork"; 
-// var urlInspect = "http://localhost:8080/InspectSystem/search/home.html"; 
-// var urlInspectObj = "http://localhost:8080/InspectSystem/search/home.html"; 
-  
-// var urlLBMS = "http://pcms.a-tech.co.th:8080/LBMS/";     
-// var urlLBMSObj = "http://pcms.a-tech.co.th:8080/LBMS/LabHistory";        
-// var urlSFC = "http://pcms.a-tech.co.th:8080/SFC/"; 
-// var urlSFCObj = "http://pcms.a-tech.co.th:8080/SFC/HistoryWork";   
-// var urlInspect = "http://pcms.a-tech.co.th:8080/InspectSystem/"; 
-// var urlInspectObj = "http://pcms.a-tech.co.th:8080/InspectSystem/search/home.html";    
+// console.log(window.location.origin)   
+$(document).on('show.bs.modal', '.modal', function (event) {
+    var zIndex = 1040 + (10 * $('.modal:visible').length);
+    $(this).css('z-index', zIndex);
+    setTimeout(function() {
+        $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+    }, 0);
+});  
 $(document).on('keypress', 'input,select', function(e) { 
 	if (e.which === 13) {   
 		if (e.target.id == 'input_customer') { searchByDetail();    }   
@@ -357,11 +150,26 @@ $('#input_saleOrderDate').daterangepicker({
 	      },       
 		  drops : "auto",        
 // 		  autoUpdateInput: false,        
-// 	 	  autoApply: true,                 
+// 	 	  autoApply: true,                    
 	  } 
 , function(start, end, label) {   
-});       
+});      
+$('#input_dueDate').daterangepicker({
+	   opens: 'right', 	
+	    locale: {
+	        format: 'DD/MM/YYYY',   
+ 	    	cancelLabel: 'Clear'
+	      },       
+		  drops : "auto",        
+//		  autoUpdateInput: false,        
+//	 	  autoApply: true,                 
+	  } 
+, function(start, end, label) {   
+});  
 $(document) .ready( function() {
+// 	 $('#loading').fadeOut(2000,function(){
+//          $('#loading').fadeIn(1000);
+//      });  
 <%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
 // 		var ctx = "${pageContext.request.contextPath}";
 // 		console.log(window.location.hostname)       ;       
@@ -373,24 +181,53 @@ $(document) .ready( function() {
 <%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>
 // 	  ;    
 	   
-	var saleNumberList = JSON.parse('${SaleNumberList}');
-	userStatusList = JSON.parse('${UserStatusList}');  
-	$('#SL_userStatus').selectpicker();             
-	addUserStatusOption(userStatusList );        
+// 	var saleNumberList = JSON.parse('${SaleNumberList}');
+// 	userStatusList = JSON.parse('${UserStatusList}');  
+// 	$('#SL_userStatus').selectpicker();             
+// 	addUserStatusOption(userStatusList );        
 // 	$('#SL_userStatus').selectpicker('val', userStatusList);     
-  	addSelectOption(saleNumberList)
+//   	addSelectOption(saleNumberList)
 // 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
 // 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-// 	  });
+// 	  });        
+	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
+	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
+	$('#input_dueDate').val('');
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');
 	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');     
-	  });
-	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
-	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });     
-	  
-	
+	  });     
+	//--------------------------------------- SEARCH ----------------------------------------------
+	$('#btn_saveDefault').on( 'click', function () {       
+	     saveDefault();
+	} );
+    $('#btn_loadDefault').on( 'click', function () {       
+	     loadDefault();
+	} );
+    $('#btn_search').on( 'click', function () {      
+    	$("#submit_button").click()
+    	searchByDetail();          
+ 	} );                             
+    $('#btn_colSetting').on( 'click', function () {      
+// 		MainTable. colReorder.order( [ 5,24,25,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ,1  ] ); 
+		$('#modalColSetting').modal('show'); 
+	} );     	 
+    $('#btn_download').on( 'click', function () {      
+    	var ObjMarkup = MainTable.data().toArray(); 
+//     	console.log(ObjMarkup)
+		exportCSV(ObjMarkup)            
+ 	} );  
+ 	$('#btn_clear').on( 'click', function () {       
+		clearInput();
+ 	} ); 
+	$('#save_col_button').on( 'click', function () {       
+	    var selectedItem = $('#multi_colVis').val();    // get selected list  
+		setColVisible(columnsHeader,selectedItem);
+		saveColSettingToServer(selectedItem);     
+		get_visible_columns()
+ 	} ); 
+	//--------------------------------------- SEARCH ----------------------------------------------
     $('#btn_lbms').on( 'click', function () {       
     	var tblData = MainTable.rows( '.selected').data(); 
 		if(tblData.length == 0 ){
@@ -532,197 +369,158 @@ $(document) .ready( function() {
 				 goToQCMS(tblData);
 			}   
 		} 
- 	} ); 
-    $('#btn_search').on( 'click', function () {      
-    	searchByDetail();   
- 	} );       
-    $('#btn_colSetting').on( 'click', function () {      
-//		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
-		$('#modalColSetting').modal('show'); 
-	} );     	 
-    $('#btn_download').on( 'click', function () {      
-    	var ObjMarkup = MainTable.data().toArray(); 
-		exportCSV(ObjMarkup)            
  	} );  
 //     var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
-// 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY'); 
-
-
+// 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
 		var title = $(this).text();         
 		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
 	});     
+	 MainTable = $('#MainTable').DataTable({    
+//	     	stateSave: true ,    
+//	 		data : jsonData,
+	 	    select : true,           
+	 	   	scrollX: true,              
+//	  	    scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง 
+	 	  scrollY: '55vh' , //ขนาดหน้าจอแนวตั้ง       
+	 	   	scrollCollapse: true,   
+		   	orderCellsTop : true,           
+			orderClasses : false,           
+//	 		lengthChange: false,              
+	// "deferRender": true,              	
+//	 		filter:false,       
+			lengthChange : false,     
+			pageLength: 1000,	 
+//	 		lengthMenu: [[1000, -1], [1000, "All"]],
+//	 		colReorder: {      
+//	             realtime: true       
+//	         },                       
+	 		colReorder: true,  
+			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],             
+	 	   	columns :    
+	 	   		[      
+			    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
+			    {"data" : "SaleLine",  "title": 'SO Line'}, 
+			    {"data" : "ArticleFG",  "title": 'Article No'}, 
+			    {"data" : "DesignFG",  "title": 'Design No'}, 
+			    {"data" : "Color",  "title": 'ATT Color'},     
+			    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //5
+			    {"data" : "SaleQuantity",  "title": 'Order Qty.','type': 'num'}, 
+			    {"data" : "BillQuantity",  "title": 'Shipped Qty.','type': 'num'}, 
+			    {"data" : "SaleUnit",  "title": 'Unit'}, 
+			    {"data" : "ProductionOrder",  "title": 'Prod.No.'}, 
+			    {"data" : "TotalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //10 
+			    {"data" : "GreigeInDate",  "title": 'Greige In'},    
+			    {"data" : "UserStatus",  "title": 'User Status'},     
+			    {"data" : "DueDate",  "title": 'Due Date','type': 'date-euro'},        
+			    {"data" : "Prepare",  "title": 'Prepare'},   
+			    {"data" : "Relax",  "title": 'Relax'},                 //15
+			    {"data" : "Preset",  "title": 'PS'},                 //16
+			    {"data" : "DyePlan",  "title": 'Dye [Plan]'},            //17
+			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},     
+			    {"data" : "Dryer" ,  "title": 'Dryer Date'},     
+			    {"data" : "Finishing",  "title": 'FN'},  
+			    {"data" : "Inspectation",  "title": 'Inspect'},       //21 
+			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},        //22 
+			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},        //23
+			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //24
+			    {"data" : "LotShipping",  "title": 'Shipping'}         //25    
+//	 		    {"data" : "ShipDate"}          //23   
+			],       
+//	     col,      	           
+			columnDefs :  [	       
+				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25],                
+//	 			  	  className : 'data-custom-main',        
+//	 		  	 	  type: 'string'      
+					} ,            
+				{ targets :  [25],                   
+				  	  className : 'p-r-15',                  
+					} ,   
+				{ targets :  [6,7,10],                         
+			  	  type : 'num',                  
+				} ,   
+					{ targets :  [17,22,24],                            
+//	 				  	  className : 'bg-color-azure',                  
+						} ,   
+//	 			{ targets : [ 13],  
+//	 				type: 'date-euro'          
+//	 				} , 
+							 
+			 	{ targets : [ 13 ],      
+					  type: 'date-euro'          ,
+				   	  render: function (data, type, row) {	     
+//	 			   		  var html = ''  
+//	 			   		  console.log(row,type)
+//	 				   		if(row.DueDate != "") {  
+//	 			 	    		var datearray = row.DueDate.split("/");
+//	 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+//	 					  	    if (dueDate < today){     
+//	 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
+//	 	//		 		  	    	$(row).addClass('dt-custom-overdue');    
+//	 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
+//	 					        }
+//	 					  	    else{
+//	 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
+//	 					  	    }
+//	 			  	    	}   
+//	 				   		else{
+//	 				   			html = ' <div >' + row.DueDate+ '</div>' 
+//	 				   		}     
+							return  row.DueDate;
+				   	  }    
+					} ,     
+			], 
+//	 		 order: [[2, 'asc'], [1, 'asc']],  
+//	 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
+		 	select : {              
+				style: 'os',         
+			 	selector: 'td:not(.status)'  // .status is class        
+	  		},    
+	  		createdRow : function(row, data, index) {
+//	 			$('td', row).eq(16).addClass('bg-color-azure');
+//	   	        $('td', row).eq(21).addClass('bg-color-azure');    
+//	   	        $('td', row).eq(23).addClass('bg-color-azure');   
+//	   			console.log(data.DueDate, index )                   
+	  			if(mapsDataHeader.size != 0){     
+//	   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
+	  				if(data["DueDate"] != "") {      
+		 	    		var datearray = data["DueDate"].split("/");
+			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+//	 		  	    	console.log(sevenDayAgo >= dueDate,sevenDayAgo ,dueDate)
+				  	    if (sevenDayAgo >= dueDate   ){             
+				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
+				        }
+	  	    		}        
+	  			}
+	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
+	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');      }
+	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');      }
+//	   			console.log(data["SaleOrder"], index )              
+//	 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
+//	 			console.log(row  )      
+//	   	    	if(data["DueDate"] != "") {  
+//	  	    		var datearray = data["DueDate"].split("/");
+//	 	  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+//	 		  	    if (dueDate < today){     
+//	 		  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
+	// // 		  	    	$(row).addClass('dt-custom-overdue');    
+//	 		        }
+//	   	    	}
+//	 			if (data["OperationStartDate"] != "") { $(row).addClass('dt-custom-overdue'); } 
+			},
+			drawCallback: function( settings ) { 
+//	 			console.log(settings)
+			},   
+			initComplete: function () { }      
+	 	 });        
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
     var startdate = moment();
-   var  subDate = startdate.add(7, "days");
+    var subDate = startdate.add(7, "days");
     subDate = startdate.format("MM/DD/YYYY");      
     var sevenDayAgo = new Date(subDate) ;   
-    MainTable = $('#MainTable').DataTable({    
-// 		data : jsonData,
- 	    select : true,    
- 	   	scrollX: true,        
- 	    scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง 
- 	   	scrollCollapse: true,   
-	   	orderCellsTop : true,           
-		orderClasses : false,           
-// 		lengthChange: false,              
-// "deferRender": true,              	
-// 		filter:false,       
-		lengthChange : false,     
-		pageLength: 1000,	 
-// 		lengthMenu: [[1000, -1], [1000, "All"]],
-// 		colReorder: {      
-//             realtime: true       
-//         },                       
- 		colReorder: true,  
-		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],             
- 	   	columns :    
- 	   		[      
-		    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
-		    {"data" : "SaleLine",  "title": 'SO Line'}, 
-		    {"data" : "ArticleFG",  "title": 'Article No'}, 
-		    {"data" : "DesignFG",  "title": 'Design No'}, 
-		    {"data" : "Color",  "title": 'ATT Color'}, 
-		    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //5
-		    {"data" : "SaleQuantity",  "title": 'Order Qty.'}, 
-		    {"data" : "BillQuantity",  "title": 'Shipped Qty.'}, 
-		    {"data" : "SaleUnit",  "title": 'Unit'}, 
-		    {"data" : "ProductionOrder",  "title": 'Prod.No.'}, 
-		    {"data" : "TotalQuantity",  "title": 'Prod.Qty.'},      //10 
-		    {"data" : "GreigeInDate",  "title": 'Greige In'}, 
-		    {"data" : "UserStatus",  "title": 'User Status'},     
-		    {"data" : "DueDate",  "title": 'Due Date'},        
-		    {"data" : "Prepare",  "title": 'Prepare'},   
-		    {"data" : "Preset",  "title": 'PS'},                 //15
-		    {"data" : "DyePlan",  "title": 'Dye [Plan]'},            //16
-		    {"data" : "DyeActual",  "title": 'Dye [Actual]'},     
-		    {"data" : "Dryer" ,  "title": 'Dryer Date'},     
-		    {"data" : "Finishing",  "title": 'FN'},  
-		    {"data" : "Inspectation",  "title": 'Inspect'},       //20 
-		    {"data" : "CFMPlanDate",  "title": 'วันนัด CF[Plan]'},        //21 
-		    {"data" : "CFMDateActual",  "title": 'วันนัด CF[Actual]'},        //22
-		    {"data" : "DeliveryDate",  "title": 'วันนัดส่งของ'},       //23
-		    {"data" : "LotShipping",  "title": 'Shipping'}         //24    
-// 		    {"data" : "ShipDate"}          //23   
-		],       
-//     col,      	           
-		columnDefs :  [	       
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24],                
-// 			  	  className : 'data-custom-main',        
-// 		  	 	  type: 'string'      
-				} ,            
-			{ targets :  [24],                   
-			  	  className : 'p-r-15',                  
-				} ,   
-				{ targets :  [16,21,23],                            
-// 				  	  className : 'bg-color-azure',                  
-					} ,   
-// 			{ targets : [ 13],  
-// 				type: 'date-euro'          
-// 				} , 
-						 
-		 	{ targets : [ 13 ],       
-		  	 	  type: 'string', 
-			   	  render: function (data, type, row) {	     
-// 			   		  var html = ''  
-// 			   		  console.log(row,type)
-// 				   		if(row.DueDate != "") {  
-// 			 	    		var datearray = row.DueDate.split("/");
-// 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-// 					  	    if (dueDate < today){     
-// 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
-// 	//		 		  	    	$(row).addClass('dt-custom-overdue');    
-// 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
-// 					        }
-// 					  	    else{
-// 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
-// 					  	    }
-// 			  	    	}   
-// 				   		else{
-// 				   			html = ' <div >' + row.DueDate+ '</div>' 
-// 				   		}     
-						return  row.DueDate;
-			   	  }    
-				} ,    
-// 		 	{ targets : [ 2 ], 
-// 		 		className : 'status',   
-// 	  	 	  type: 'string',
-// 		   	  render: function (data, type, row) {	 
-// 					return '<input class="form-control ColorCusInput"  name="ColorCus" type="text"  value = "' + row.ColorCustomer+ '" autocomplete="off">';
-// 		   	  } 
-// 			} ,   
-// 			{  targets : [ 3 ],     
-// 				className : 'status',       
-// 				type: 'string',     
-// 				render: function (data, type, row) {
-//  					return '<input  class="form-control ShadeTestInput"  name="ShadeTest" type="text"  style="width:100%;overflow:auto;"  value = "' + row.ShadeTest + '" autocomplete="off">';
-//                	} 
-// 			},    
-		],
-// 		 order: [[2, 'asc'], [1, 'asc']],  
-// 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
-	 	select : {             
-			style: 'os',         
-		 	selector: 'td:not(.status)'  // .status is class        
-  		},    
-  		createdRow : function(row, data, index) {
-// 			$('td', row).eq(16).addClass('bg-color-azure');
-//   	        $('td', row).eq(21).addClass('bg-color-azure');    
-//   	        $('td', row).eq(23).addClass('bg-color-azure');   
-//   			console.log(data.DueDate, index )                   
-  			if(mapsDataHeader.size != 0){     
-//   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
-  				if(data["DueDate"] != "") {      
-	 	    		var datearray = data["DueDate"].split("/");
-		  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-// 		  	    	console.log(sevenDayAgo >= dueDate,sevenDayAgo ,dueDate)
-			  	    if (sevenDayAgo >= dueDate   ){             
-			  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
-			        }
-  	    		}     
-  			}
-  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
-  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');      }
-  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');      }
-//   			console.log(data["SaleOrder"], index )              
-// 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
-// 			console.log(row  )      
-//   	    	if(data["DueDate"] != "") {  
-//  	    		var datearray = data["DueDate"].split("/");
-// 	  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-// 		  	    if (dueDate < today){     
-// 		  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
-// // 		  	    	$(row).addClass('dt-custom-overdue');    
-// 		        }
-//   	    	}
-// 			if (data["OperationStartDate"] != "") { $(row).addClass('dt-custom-overdue'); } 
-		},
-		drawCallback: function( settings ) { 
-// 			console.log(settings)
-		},   
-		initComplete: function () { }      
- 	 });   
-// 	console.log( 'Table\'s column visibility are set to: '+MainTable.columns().visible(true).join(', ') );
-// 	console.log( 'Table\'s column non visibility are set to: '+MainTable.columns().visible().join(', ') );
-//     $('#MainTable').on('dblclick','td',function(e){
-// // 		scroll_to_contact_form_fn()      
-// 	    var row_object  = MainTable.row(this).data();
-// 	    var cellDate  = MainTable.row(this).data().Date;
-// 	    var col = MainTable.cell(this).index().column;
-// 	    arrTmp = [];
-// 		checkClick = '1';
-// 		cellDateTmp = cellDate;
-// 		colDataTmp = col;
-// 		arrTmp.push(cellDate)   
-// 		arrTmp.push(col) 
-// 		console.log(col)
-// 		console.log(cellDate)    
-// 		console.log(row_object)
-// 		$('#modalRedirect').modal('show');   
-		
-// 	})
+ 
  
     poTable = $('#poTable').DataTable({  
     	scrollY:       '400px',        
@@ -1160,17 +958,32 @@ $(document) .ready( function() {
 	$("#packingTable_info").hide();   
 	$("#sendTestQCTable_info").hide();      
 	$("#poTable_info").hide();  
-	colList = JSON.parse('${ColList}');   
-  	columnsHeader = MainTable.settings().init().columns;  
-	addColOption(columnsHeader ) 
+	
+	$('#multi_userStatus').selectpicker();     
 	$('#multi_colVis').selectpicker();   
-	settingColumnOption(columnsHeader, colList);
-	$('#save_col_button').on( 'click', function () {       
-	    var selectedItem = $('#multi_colVis').val();    // get selected list  
-		setColVisible(columnsHeader,selectedItem);
-		saveColSettingToServer(selectedItem);     
-		get_visible_columns()
- 	} ); 
+	$('#multi_cusName').selectpicker();     
+	$('#multi_cusShortName').selectpicker();   
+	colList = JSON.parse('${ColList}'); 
+	cusNameList = JSON.parse('${CusNameList}');   	
+	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
+	userStatusList = JSON.parse('${UserStatusList}');       
+	columnsHeader = MainTable.settings().init().columns;  
+	var saleNumberList = JSON.parse('${SaleNumberList}'); 
+  	addSelectOption(saleNumberList)
+	addUserStatusOption(userStatusList );        
+	addCusNameOption(cusNameList );      
+	addCusShortNameOption(cusShortNameList );       
+	addColOption(columnsHeader )  
+	settingColumnOption(columnsHeader, colList); 
+	     
+	$('#multi_userStatus option').attr("selected","selected");
+	$('#multi_userStatus').selectpicker('refresh');
+	$('#multi_cusName option').attr("selected","selected");
+	$('#multi_cusName').selectpicker('refresh');
+	$('#multi_cusShortName option').attr("selected","selected");
+	$('#multi_cusShortName').selectpicker('refresh');
+	
+ 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
 //     	MainTable.columns.adjust(); 
     	poTable.columns.adjust();   
@@ -1197,12 +1010,13 @@ $(document) .ready( function() {
     	workInLabTable.columns.adjust(); waitTestTable.columns.adjust(); cfmTable.columns.adjust(); 
     	saleTable.columns.adjust(); saleInputTable.columns.adjust(); submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); receipeTable.columns.adjust(); 
-	})
+	})  
+	preLoaderHandler( preloader)   
 });  
  
 function searchByDetail(){ 
-	var customer = document.getElementById("input_customer").value .trim();
-	var customerShort = document.getElementById("input_customerShortName").value .trim();
+// 	var customer = document.getElementById("input_customer").value .trim();
+// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
 	 
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
@@ -1211,22 +1025,38 @@ function searchByDetail(){
 	var SaleOrderDate = document.getElementById("input_saleOrderDate").value .trim();
 	var designNo = document.getElementById("input_designNo").value .trim(); 
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
+	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
-	var labNo = document.getElementById("input_labNo").value .trim(); 
-	var userStatus = document.getElementById("SL_userStatus").value .trim();  
-// 	console.log(userStatus)  
-	var deliStatus = document.getElementById("SLDelivStatus").value .trim();      
-	var dmCheck = document.getElementById("check_DM").checked;        
+	var labNo = document.getElementById("input_labNo").value .trim();    
+	var userStatus = $('#multi_userStatus').val(); 
+	var customer = $('#multi_cusName').val();    
+	var customerShort = $('#multi_cusShortName').val(); 
+// 	console.log(userStatus)    
+	var deliStatus = document.getElementById("SL_delivStatus").value .trim();      
+	var dmCheck = document.getElementById("check_DM").checked;         
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;  
 	var dist = "";     
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "," } dist = "EX";}     
-	 if( hwCheck ){ if(dist != "") {dist = dist + "," } dist = "HW";}     
-	if(customer == '' && saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && userStatus == '' && deliStatus == '' &&
-	   customerShort == '')  {    
+	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
+	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = "HW";}     
+// 	if(  customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0){
+// 		swal({
+//    		    title: 'Warning',
+//    		    text: 'Customer CustomerShortName and UserStatus need atleast 1 selected rwo.',
+//    		    icon: 'warning',
+//    		    timer: 1000,
+//    		    buttons: false,
+//    		})
+// 	}
+// 	else if( saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+// 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {    
+	 if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 )
+	 	&& (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+  			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
+   			dueDate == '')
+  			)  { 
 		swal({
    		    title: 'Warning',
    		    text: 'Need input some field for search.',
@@ -1235,6 +1065,7 @@ function searchByDetail(){
    		    buttons: false,
    		})
 	}
+
 	else if (dist == ''){
 		swal({
    		    title: 'Warning',
@@ -1245,16 +1076,17 @@ function searchByDetail(){
    		})
 	}
 	else{
-		var json = createJsonData(); 
+		var json = createJsonData();      
 	    var  obj = JSON.parse(json);    
 		var arrayTmp = [];   
-		arrayTmp.push(obj);     
+		arrayTmp.push(obj);      
+// 		console.log(obj)
 		searchByDetailToServer(arrayTmp); 
 	}
 } 
 function createJsonData(){ 
-	var customer = document.getElementById("input_customer").value .trim();  
-	var customerShort = document.getElementById("input_customerShortName").value .trim();
+// 	var customer = document.getElementById("input_customer").value .trim();  
+// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
 	 
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
@@ -1264,20 +1096,27 @@ function createJsonData(){
 	var designNo = document.getElementById("input_designNo").value .trim(); 
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
-	var labNo = document.getElementById("input_labNo").value .trim(); 
-	var userStatus = document.getElementById("SL_userStatus").value .trim();  
-	var deliStatus = document.getElementById("SLDelivStatus").value .trim();  
+	var labNo = document.getElementById("input_labNo").value .trim();      
+// 	var userStatus = document.getElementById("multi_userStatus").value;    
+	var userStatus = $('#multi_userStatus').val();    
+	var customer = $('#multi_cusName').val();
+	var customerShort = $('#multi_cusShortName').val();
+// 	var customer = document.getElementById("multi_cusName").value .trim();
+// 	var customerShort = document.getElementById("multi_cusShortName").value .trim(); 
+	var deliStatus = document.getElementById("SL_delivStatus").value .trim();  
+	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var dmCheck = document.getElementById("check_DM").checked;  
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;     
 	var dist = "";    
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "," } dist = dist + "EX";}       
-	 if( hwCheck ){ if(dist != "") {dist = dist + "," } dist = dist + "HW";}
-	var json = '{"CustomerName":'+JSON.stringify(customer)+ 
-	 ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
-	   ',"SaleOrder":'+JSON.stringify(saleOrder)+ 
+	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
+	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
+	var json = '{'+   
+// 		"CustomerName":'+JSON.stringify(customer)+ 
+// 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
+	    '"SaleOrder":'+JSON.stringify(saleOrder)+ 
 	   ',"ArticleFG":'+JSON.stringify(article)+  
 	   ',"ProductionOrder":'+JSON.stringify(prdOrder)+  
 	   ',"SaleNumber": '+JSON.stringify(saleNumber)+
@@ -1285,13 +1124,16 @@ function createJsonData(){
 	   ',"DesignFG":'+JSON.stringify(designNo)+       
 	   ',"ProductionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
 	   ',"MaterialNo":'+JSON.stringify(material)+
-	   ',"LabNo":'+JSON.stringify(labNo)+ 
-	   ',"UserStatus":'+JSON.stringify(userStatus)+ 
-	   ',"DeliveryStatus":'+JSON.stringify(deliStatus)+         
+	   ',"LabNo":'+JSON.stringify(labNo)+          
+// 	   ',"UserStatus":'+JSON.stringify(userStatus)+ 
+	   ',"UserStatusList":'+JSON.stringify(userStatus)+       
+	   ',"CustomerNameList":'+JSON.stringify(customer)+   
+	   ',"CustomerShortNameList":'+JSON.stringify(customerShort)+   
+	   ',"DeliveryStatus":'+JSON.stringify(deliStatus)+            
 	   ',"SaleStatus":'+JSON.stringify(saleStatus)+  
 	   ',"DistChannel":'+JSON.stringify(dist) + 
-	   '} ';     
-// 	   console.log(json) 
+	   ',"DueDate":'+JSON.stringify(dueDate) + 
+	   '} ';            
 	   return json; 
 }
 function exportCSV(data){ 
@@ -1323,65 +1165,55 @@ function exportCSV(data){
 // 	"วันนัด CF[Actual]",
 // 	"วันนัด CF[Plan]",
 // 	"วันนัดส่งของ",//วันนัดส่งของ         
-// 	"Shipping" ];       
-//     console.log(colList );   
-//     console.log(columnsHeader );    
+// 	"Shipping" ];        
     let xlsHeader = Array.from( mapsTitleHeader.keys() );
-//     let xlsHeader = Array.from(map, ([name, value]) => ({ name, value }));
-     
-    /* XLS Rows Data */   
+//     let xlsHeader = Array.from(map, ([name, value]) => ({ name, value })); 
+    /* XLS Rows Data */    
+    xlsHeader.push("CustomerName");
+    xlsHeader.push("CustomerShortName");      
     var xlsRows = data   
-    createXLSLFormatObj.push(xlsHeader);
+    let indexArray = 0,colType = '';
+    createXLSLFormatObj.push(xlsHeader);            ; 
+    var sizeMap = mapsDataHeader.size;
     $.each(xlsRows, function(index, value) {    
-        var innerRowData = [];  
-//         console.log(index,value)       
-        $.each(value, function(ind, val) {               	
-//             console.log(ind,val)        
-// 			console.log(mapsDataHeader.get(ind))          
-            if(mapsDataHeader.size != 0){                
-			  	if(mapsDataHeader.get(ind) !== undefined){   
-// 			  		 console.log(ind,val) 
-			  		 innerRowData.push(val); 
-			  	}
-            }
-        }); 
-//         innerRowData.push(value.SaleOrder ); 
-//         innerRowData.push(value.SaleLine ); 
-//         innerRowData.push(value.ArticleFG ); 
-//         innerRowData.push(value.DesignFG ); 
-//         innerRowData.push(value.Color ); 
-//         innerRowData.push(value.ColorCustomer ); 
-//         innerRowData.push(value.SaleQuantity ); 
-//         innerRowData.push(value.BillQuantity ); 
-//         innerRowData.push(value.SaleUnit ); 
-//         innerRowData.push(value.ProductionOrder ); 
-//         innerRowData.push(value.TotalQuantity ); 
-//         innerRowData.push(value.GreigeInDate ); 
-//         innerRowData.push(value.UserStatus ); 
-//         innerRowData.push(value.DueDate );   
-//         innerRowData.push(value.Prepare ); 
-//         innerRowData.push(value.Preset ); 
-//         innerRowData.push(value.DyePlan ); 
-//         innerRowData.push(value.DyeActual ); 
-//         innerRowData.push(value.Dryer ); 
-//         innerRowData.push(value.Finishing );  
-//         innerRowData.push(value.Inspectation );  
-//         innerRowData.push(value.CFMDatePlan );  
-//         innerRowData.push(value.CFMDateActual );   
-//         innerRowData.push(value.DeliveryDate );  
-//         innerRowData.push(value.LotShipping );         
+        var innerRowData = [];   
         
-//         innerRowData.push(value);
+        $.each(value, function(data, val) {                  
+            if(mapsDataHeader.size != 0){               
+            	 indexArray = mapsDataHeader.get(data); 
+            	 colType = mapsColumnHeader.get(data); 
+			  	if(indexArray !== undefined){             
+					if (colType === undefined){  
+						innerRowData[indexArray] = val;      
+					}
+					else if (colType == 'num'){    
+						if(val == ''){ innerRowData[indexArray] = parseFloat(0);       } 
+ 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, ''))  ; }
+					}      
+					else if (colType == 'date-euro'){       
+						if(val == ''){ innerRowData[indexArray] = ''   ;   }
+ 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
+					}
+			  		         
+			  	}   
+			  	else if(data == 'CustomerName'){innerRowData[sizeMap] = val  ;     
+	 
+			  	}
+			  	else if(data == 'CustomerShortName'){innerRowData[sizeMap+1] =val ; }
+			  	
+            }
+        });  
         createXLSLFormatObj.push(innerRowData);
     }); 
     /* File Name */
     var filename = "PCMSMain.xlsx"; 
     /* Sheet Name */
-    var ws_name = "PCMSMain"; 
+    var ws_name = "PCMSMain";     
     if (typeof console !== 'undefined') console.log(new Date());
     var wb = XLSX.utils.book_new(),
-        ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj); 
-    /* Add worksheet to workbook */
+//         ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);   
+    	ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj, {dateNF:"dd/MM/yyyy",rawNumbers: true});  
+    /* Add worksheet to workbook */ 
     XLSX.utils.book_append_sheet(wb, ws, ws_name); 
     /* Write workbook and Download */
     if (typeof console !== 'undefined') console.log(new Date());
@@ -1389,6 +1221,7 @@ function exportCSV(data){
     if (typeof console !== 'undefined') console.log(new Date()); 
 	  
 }   
+ 
 function getPrdDetailByRow(arrayTmp) {     
 // 	console.log(arrayTmp)
 	$.ajax({   
@@ -1401,21 +1234,42 @@ function getPrdDetailByRow(arrayTmp) {
 // 			MainTable.rows.add(data);     
 // 			MainTable.draw();  
 // 			console.log(data)
-setModalDetail(data);   
+			setModalDetail(data);   
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
 		},
 		done: function(e) {       
 		}   	
-	});   
-}       
+	});      
+}     
+function clearInput(){
+	document.getElementById("input_saleOrder").value = '';  
+	document.getElementById("input_article").value   = '';  
+	document.getElementById("input_prdOrder").value  = '';     
+// 	document.getElementById("input_saleOrderDate").value = '';  
+	document.getElementById("input_designNo").value  = '';  
+// 	document.getElementById("input_prdOrderDate").value  = '';  
+	document.getElementById("input_material").value  = '';         
+	document.getElementById("input_labNo").value     = '';  
+	document.getElementById('SL_saleNumber').value= '';
+	document.getElementById('SL_delivStatus').value='';
+	$('#input_saleOrderDate').val('');      
+	$('#input_prdOrderDate').val('');
+	$('#input_dueDate').val('');
+	$('#multi_userStatus').val('default').selectpicker('deselectAll');  
+	$('#multi_cusName').val('default').selectpicker('deselectAll');      
+	$('#multi_cusShortName').val('default').selectpicker('deselectAll');   
+	$('#multi_userStatus').selectpicker('refresh');     
+	$('#multi_cusName').selectpicker('refresh');
+	$('#multi_cusShortName').selectpicker('refresh'); 
+}
 function searchByDetailToServer(arrayTmp) {   
 // 	console.log(arrayTmp)
 	$.ajax({
 		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),      
+		contentType: "application/json",   
+		data: JSON.stringify(arrayTmp),           
 		url: "PCMSMain/searchByDetail", 
 		success: function(data) { 
 // 			console.log(data)
@@ -1571,8 +1425,7 @@ function goToLBMS(tblData){
   	    		
   	    		
 				tab.document.getElementById('input_article').value = article;     
-			 	tab.document.getElementById('input_color').value = color  ;  //'S2A001' 
-			 	
+			 	tab.document.getElementById('input_color').value = color  ;  //'S2A001'  
 				tab.searchHistory();     
 				tab.document.getElementById('nav-prd-tab').click();  
 // 				setTimeout(function(){
@@ -1727,24 +1580,8 @@ function addSelectOption(data){
 		 opt.value = resultData.SaleNumber;   
 		 sel.appendChild(opt);          
 	}      
-} 
-function addUserStatusOption(data ){ 
-	// The DOM way. 
-	var sel = document.getElementById("SL_userStatus");
-// 	for (i = sel.length - 1; i >= 0; i--) {       
-// 		sel.remove(i);
-// 	}             
-	var size = data.length;
-	for (var i = 0; i < size; i++) {		
-		 var resultData = data[i]; 	   
-		 var opt = document.createElement('option');
-	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.UserStatus;
-		 opt.value = resultData.UserStatus;
-		 sel.appendChild(opt);          
-	}             
-	$("#SL_userStatus").selectpicker("refresh");
-}         
+}   
+ 
 function saveInputDateToServer(arrayTmp) {   
 // 	console.log(arrayTmp)
 	$.ajax({   
@@ -1805,6 +1642,7 @@ function get_visible_columns() {
 // 	columnsHeader = MainTable.settings().init().columns;
    	mapsDataHeader.clear();   
    	mapsTitleHeader.clear();
+   	mapsColumnHeader.clear();
 // 	console.log('all_columns', all_columns);
 	var visible_columns = [];        
 	var check = '';
@@ -1815,9 +1653,11 @@ function get_visible_columns() {
 // 				&& all_columns[i].data == 'DueDate'
 				)){    
 // 			visible        
-			mapsTitleHeader.set(columnsHeader[i].title, count); 
+			mapsColumnHeader.set(columnsHeader[i].data, columnsHeader[i].type); 
+			mapsTitleHeader.set(columnsHeader[i].title, columnsHeader[i].type); 
 			mapsDataHeader.set(columnsHeader[i].data, count);
-			count = count + 1
+			count = count + 1  
+// 			console.log(columnsHeader[i])
 		}   
 		else{        
 // 			unvisible 
@@ -1885,6 +1725,58 @@ function saveColSettingToServer(arrayTmp) {
 		}   	   
 	});   
 }   
+function addUserStatusOption(data ){ 
+	// The DOM way. 
+	var sel = document.getElementById("multi_userStatus"); 
+	for (i = sel.length - 1; i >= 0; i--) {
+		sel.remove(i);
+	}  
+	var size = data.length;
+	for (var i = 0; i < size; i++) {		
+		 var resultData = data[i]; 	   
+		 var opt = document.createElement('option');
+	     opt.appendChild(document.createTextNode(i));
+		 opt.text  = resultData.UserStatus;
+		 opt.value = resultData.UserStatus;
+		 sel.appendChild(opt);          
+	}             
+	$("#multi_userStatus").selectpicker("refresh");
+}    
+function addCusNameOption(data ){ 
+	// The DOM way. 
+	var sel = document.getElementById("multi_cusName"); 
+	for (i = sel.length - 1; i >= 0; i--) {
+		sel.remove(i);
+	}  
+	var size = data.length;
+	for (var i = 0; i < size; i++) {		   
+		 var resultData = data[i]; 	   
+// 		 console.log(resultData)
+		 var opt = document.createElement('option');
+	     opt.appendChild(document.createTextNode(i));
+		 opt.text  = resultData.CustomerName;  
+		 opt.value = resultData.CustomerName;
+		 sel.appendChild(opt);          
+	}             
+	$("#multi_cusName").selectpicker("refresh");
+} 
+function addCusShortNameOption(data ){ 
+	// The DOM way. 
+	var sel = document.getElementById("multi_cusShortName"); 
+	for (i = sel.length - 1; i >= 0; i--) {
+		sel.remove(i);
+	}  
+	var size = data.length;
+	for (var i = 0; i < size; i++) {		
+		 var resultData = data[i]; 	   
+		 var opt = document.createElement('option');
+	     opt.appendChild(document.createTextNode(i));
+		 opt.text  = resultData.CustomerShortName;
+		 opt.value = resultData.CustomerShortName;
+		 sel.appendChild(opt);          
+	}             
+	$("#multi_cusShortName").selectpicker("refresh");
+} 
 function addColOption(colName ){  
 	var sel = document.getElementById('multi_colVis');
 	for (i = sel.length - 1; i >= 0; i--) {
@@ -1908,5 +1800,137 @@ function addColOption(colName ){
 // 	}        
 	$("#multi_colVis").selectpicker("refresh");
 } 
+function saveDefault( ){  
+	var json = createJsonData();      
+    var  obj = JSON.parse(json);    
+	var arrayTmp = [];   
+	arrayTmp.push(obj);     
+	$.ajax({     
+		type: "POST",  
+		contentType: "application/json",  
+		data: JSON.stringify(arrayTmp),      
+		url: "PCMSMain/saveDefault", 
+		success: function(data) {   
+			if(data.length > 0){
+				var bean = data[0];   
+				if(bean.IconStatus == 'I'){
+					swal({   
+						title: "Success",    
+					 	text: bean.SystemStatus ,
+						icon: "info",
+						button: "confirm",
+   					});  
+				}
+				else{  
+					swal({   
+						title: "Warning ",    
+					 	text: bean.SystemStatus  , 
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+				}  
+			}
+		},   
+		error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+		},
+		done: function(e) {       
+		}   	   
+	});   
+} 
+function loadDefault(){  
+	$.ajax({     
+		type: "POST",  
+		contentType: "application/json",  
+// 		data: JSON.stringify(arrayTmp),      
+		url: "PCMSMain/loadDefault", 
+		success: function(data) {   
+			if(data.length > 0){
+				var bean = data[0];    
+				setSearchDefault(data); 
+			}
+			else{
+				swal({   
+					title: "Warning ",    
+				 	text: "No search default data."  , 
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
+		   		}) 
+			}
+		},   
+		error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+		},
+		done: function(e) {       
+		}   	   
+	});   
+} 
+function setSearchDefault(data){ 
+	var innnerText = data[0];      
+	document.getElementById("input_saleOrder").value = innnerText.SaleOrder;  
+	document.getElementById("input_article").value   = innnerText.ArticleFG;  
+	document.getElementById("input_prdOrder").value  = innnerText.ProductionOrder;   
+	document.getElementById("input_designNo").value  = innnerText.DesignFG;   
+	document.getElementById("input_material").value  = innnerText.MaterialNo;  
+	document.getElementById("input_labNo").value     = innnerText.LabNo;
+	
+	var saleCreateArray = innnerText.SaleOrderCreateDate.split(' - ') ;
+	if(saleCreateArray.length == 1){ $('#input_saleOrderDate').val('');     }
+	else{
+		$("#input_saleOrderDate").data('daterangepicker').setStartDate(saleCreateArray[0] );
+		$("#input_saleOrderDate").data('daterangepicker').setEndDate(saleCreateArray[1]);  
+	} 
+	var prdOrderArray = innnerText.ProductionOrderCreateDate.split(' - ') ;
+	if(prdOrderArray.length == 1){ $('#input_prdOrderDate').val('');     }
+	else{
+		$("#input_prdOrderDate").data('daterangepicker').setStartDate(prdOrderArray[0]);
+		$("#input_prdOrderDate").data('daterangepicker').setEndDate(prdOrderArray[1]); 
+	}     
+	var dueDateArray = innnerText.DueDate.split(' - ') ;   
+	if(dueDateArray.length == 1){ $('#input_dueDate').val('');     }
+	else{   
+		$("#input_dueDate").data('daterangepicker').setStartDate(dueDateArray[0]);
+		$("#input_dueDate").data('daterangepicker').setEndDate(dueDateArray[1]);
+	}       
+	var saleStatus = innnerText.SaleStatus;
+	if(saleStatus == ''){ 
+		document.getElementById("rad_all").checked = true;
+	}
+	else if(saleStatus == 'O'){ 
+		document.getElementById("rad_inProc").checked = true;
+	}
+	else{//saleStatus == 'C'
+		document.getElementById("rad_closed").checked = true;
+	}   
+	 
+// 	console.log(innnerText.SaleNumber,innnerText.DeliveryStatus)
+	document.getElementById('SL_saleNumber').value=innnerText.SaleNumber;
+	document.getElementById('SL_delivStatus').value=innnerText.DeliveryStatus;
+	
+	 document.getElementById("check_DM").checked = false;
+	 document.getElementById("check_EX").checked = false;
+	 document.getElementById("check_HW").checked = false;
+	 var distChannel = innnerText.DistChannel.split('|');
+	 for( let i = 0 ;i < distChannel.length ; i++){
+		 if(distChannel[i] == 'DM'){ document.getElementById("check_DM").checked = true; }
+		 else if(distChannel[i] == 'EX'){ document.getElementById("check_EX").checked = true;  }
+		 else if(distChannel[i] == 'HW'){ document.getElementById("check_HW").checked = true;  }
+	 }             
+	 var customer = innnerText.CustomerName.split('|'); 
+	 var customerShort = innnerText.CustomerShortName.split('|'); 
+	 var userStatusList = innnerText.UserStatus.split('|'); 
+	 $('#multi_cusName').selectpicker('val', customer);    
+	 $('#multi_cusShortName').selectpicker('val', customerShort);    
+	 $('#multi_userStatus').selectpicker('val', userStatusList);      
+	$('#multi_cusName').selectpicker('refresh');     
+	$('#multi_cusShortName').selectpicker('refresh');     
+	$('#multi_userStatus').selectpicker('refresh');      
+}      
+
+// function preLoaderHandler (){         
+// 	   preloader.style.display = 'none';  
+// 	} 
 </script>
 </html>

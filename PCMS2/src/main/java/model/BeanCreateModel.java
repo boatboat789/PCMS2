@@ -131,4 +131,9 @@ public class BeanCreateModel {
 		ColumnHiddenDetail bean = this.dao._genColumnHiddenDetail(map);
 		return bean;
 	}
+
+	public PCMSTableDetail _genSearchTableDetail(Map<String, Object> map) {
+		PCMSTableDetail bean = this.dao._genSearchTableDetail(map);
+		return bean;
+	}
 }

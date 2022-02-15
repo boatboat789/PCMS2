@@ -5,6 +5,9 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import dao.BeanCreateModelDao;
@@ -115,9 +118,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			DueDate = sdf2.format(timestamp1);
 		} 
 		String Prepare = "", Preset = "", DyePlan = "", DyeActual = "", Dryer = "", Finishing = "", Inspectation = "",
-				CFMPlanDate = "", CFMDateActual = "", DeliveryDate = "";
+				CFMPlanDate = "", CFMDateActual = "", DeliveryDate = "",Relax = "";
 		if (map.get("Prepare") != null) {
 			Prepare = (String) map.get("Prepare");
+		}
+		if (map.get("Relax") != null) {
+			Relax = (String) map.get("Relax");
 		}
 		if (map.get("Preset") != null) {
 			Preset = (String) map.get("Preset");
@@ -158,6 +164,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String LabNo = "";
 		if (map.get("LabNo") != null) {
 			LabNo = (String) map.get("LabNo");
+		}
+		String CustomerName = "";
+		if (map.get("CustomerName") != null) {
+			CustomerName = (String) map.get("CustomerName");
 		}
 		String CustomerShortName = "";
 		if (map.get("CustomerShortName") != null) {
@@ -206,7 +216,86 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
-				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate);
+				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
+				CustomerName);
+	}
+	public PCMSTableDetail _genSearchTableDetail(Map<String, Object> map) {
+		String SaleOrder = "";
+		if (map.get("SaleOrder") != null) {
+			SaleOrder = (String) map.get("SaleOrder");
+		} 
+		String DesignFG = "";
+		if (map.get("DesignFG") != null) {
+			DesignFG = (String) map.get("DesignFG");
+		}
+		String ArticleFG = "";
+		if (map.get("ArticleFG") != null) {
+			ArticleFG = (String) map.get("ArticleFG");
+		}
+		String DistChannel = "";
+		if (map.get("DistChannel") != null) {
+			DistChannel = (String) map.get("DistChannel");
+		}  
+		String ProductionOrder = "";
+		if (map.get("ProductionOrder") != null) {
+			ProductionOrder = (String) map.get("ProductionOrder");
+		}  
+		String UserStatus = "";
+		if (map.get("UserStatus") != null) {
+			UserStatus = (String) map.get("UserStatus");
+		} 
+		String DueDate = "";
+		if (map.get("DueDate") != null) {
+			DueDate = (String) map.get("DueDate");
+		} 
+		String LabNo = "";
+		if (map.get("LabNo") != null) {
+			LabNo = (String) map.get("LabNo");
+		}
+		String CustomerName = "";
+		if (map.get("CustomerName") != null) {
+			CustomerName = (String) map.get("CustomerName");
+		}
+		String CustomerShortName = "";
+		if (map.get("CustomerShortName") != null) {
+			CustomerShortName = (String) map.get("CustomerShortName");
+		}
+		String SaleNumber = "";
+		if (map.get("SaleNumber") != null) {
+			SaleNumber = (String) map.get("SaleNumber");
+		}  
+		String SaleCreateDate = "";
+		if (map.get("SaleCreateDate") != null) {
+			SaleCreateDate = (String) map.get("SaleCreateDate");
+		}  
+		String PrdCreateDate = "";
+		if (map.get("PrdCreateDate") != null) {
+			PrdCreateDate = (String) map.get("PrdCreateDate");
+		}  
+		String MaterialNo = "";
+		if (map.get("MaterialNo") != null) {
+			MaterialNo = (String) map.get("MaterialNo");
+		}
+		String DeliveryStatus = "";
+		if (map.get("DeliveryStatus") != null) {
+			DeliveryStatus = (String) map.get("DeliveryStatus");
+		}
+		String SaleStatus = "";
+		if (map.get("SaleStatus") != null) {
+			SaleStatus = (String) map.get("SaleStatus");
+		} 
+		int No = 0;
+		if (map.get("No") != null) {
+			No = (int) map.get("No");
+		} 
+		String UserId = "";
+		if (map.get("UserId") != null) {
+			UserId = (String) map.get("UserId");
+		} 
+		return new PCMSTableDetail(SaleOrder, DesignFG, ArticleFG, DistChannel , ProductionOrder, 
+				UserStatus , DueDate, LabNo, CustomerShortName, SaleNumber ,
+				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus ,CustomerName
+				,No,UserId);
 	}
 
 	@Override
@@ -1249,6 +1338,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		else {  
 			BillSendWeightQuantity =  BillSendWeightQuantity + " | " + BillSendMRQuantity + " | "+ BillSendYDQuantity ;
 		}  
+		String Volumn = "";
+		if (map.get("Volumn") != null) {
+			BigDecimal value = (BigDecimal) map.get("Volumn");
+			Double doubleVal = value.doubleValue();
+			Volumn = formatter.format(doubleVal);
+		}   
 		Remark = RemarkOne + RemarkTwo   + RemarkThree;
 		return new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
@@ -1256,7 +1351,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				DueDate, LotNo, LabNo, LabStatus, CFMPlanLabDate, CFMActualLabDate, CFMCusAnsLabDate, UserStatus,
 				TKCFM, CFMPlanDate, CFMSendDate, CFMAnswerDate, 
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
-				Remark,CFMLastest,ProductionOrder);
+				Remark,CFMLastest,ProductionOrder,Volumn);
 	}
 	@Override
 	public InputDateDetail _genInputDateDetail(Map<String, Object> map) {  
@@ -1306,7 +1401,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String ColVisibleSummary = "";
 		if (map.get("ColVisibleSummary") != null) {
 			ColVisibleSummary = (String) map.get("ColVisibleSummary");
-		}
-		return new ColumnHiddenDetail(UserId, ColVisibleDetail,ColVisibleSummary);
+		} 
+////		 String[] ColList = null  ;  
+//		 List<String> ColList = null;
+//		 if(!ColVisibleSummary.equals("")) {
+////			 ColList = ColVisibleSummary.split(",");
+//			 ColList = new ArrayList<String>(Arrays.asList(ColVisibleSummary.split(",")));
+//		 } 
+		return new ColumnHiddenDetail(UserId, ColVisibleDetail,ColVisibleSummary );
 	}
 }

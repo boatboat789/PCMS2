@@ -2,8 +2,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@ page isELIgnored="false"%>  
-<div id="navbar">
-	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">    
+<div id="navbar"> 
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="    padding: 2px 10px;">    
 		<!-- Brand/logo -->  
 		<img src="resources/images/icons/logo.png"
 			style="width: 50px; height: auto;    display: -webkit-box;" />

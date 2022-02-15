@@ -342,11 +342,14 @@ padding: 10px ;
   font-size: 14px;
   white-space: nowrap; 
   font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+  BACKGROUND-COLOR: beige;     
 }  
-.multipleTabNav{
+.multipleTabNav{    
 	padding:0px !important;      
 } 
-/* .navbar-nav {    */
+/* .navbar-nav {    */    
 /*     display: contents !important;      */
+/* } */      
+/* .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) { */
+/*     width: auto;     */
 /* } */

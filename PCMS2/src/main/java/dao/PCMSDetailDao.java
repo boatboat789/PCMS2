@@ -26,6 +26,14 @@ public interface PCMSDetailDao {
 
 	ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user);
 
-	ArrayList<PCMSAllDetail> getUserStatusList(); 
+	ArrayList<PCMSAllDetail> getUserStatusList();
+
+	ArrayList<PCMSAllDetail> getCustomerNameList();
+
+	ArrayList<PCMSAllDetail> getCustomerShortNameList();
+
+	ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList);
+
+	ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList); 
 
 }

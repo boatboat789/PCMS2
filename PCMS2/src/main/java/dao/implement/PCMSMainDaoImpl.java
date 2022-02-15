@@ -77,6 +77,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "	    ELSE CAST(DAY(n.Prepare) AS VARCHAR(2)) + '/' +  CAST(MONTH(n.Prepare)AS VARCHAR(2)) END AS Prepare \r\n"
 			+ "	  , CASE WHEN (o.Preset is NULL) THEN null \r\n"
 			+ "	    ELSE CAST(DAY(o.Preset) AS VARCHAR(2)) + '/' +  CAST(MONTH(o.Preset)AS VARCHAR(2)) END AS Preset   \r\n  "
+			+ "	  , CASE WHEN (p.Relax is NULL) THEN null \r\n"
+			+ "	    ELSE CAST(DAY(p.Relax) AS VARCHAR(2)) + '/' +  CAST(MONTH(p.Relax)AS VARCHAR(2)) END AS Relax   \r\n  "
 //    		+ "	     , CAST(DAY(h.Prepare) AS VARCHAR(2)) + '/' +  CAST(MONTH(h.Prepare)AS VARCHAR(2)) AS Prepare \r\n"
 //    		+ "	     , CAST(DAY(i.Preset) AS VARCHAR(2)) + '/' +  CAST(MONTH(i.Preset)AS VARCHAR(2)) AS Preset \r\n"
 //    		+ "	     , CAST(DAY(c.WorkDate) AS VARCHAR(2)) + '/' +  CAST(MONTH(c.WorkDate)AS VARCHAR(2)) AS DyePlan \r\n"
@@ -103,7 +105,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 //			+ "	  ,CAST(DAY(GETDATE()) AS VARCHAR(2)) + '/' +  CAST(MONTH(GETDATE()  )AS VARCHAR(2)) as ShipDatePlan  \r\n"
 			+ "	  , CASE WHEN (z.LotShipping is NULL) THEN null \r\n"
 			+ "	    ELSE CAST(DAY(z.LotShipping) AS VARCHAR(2)) + '/' +  CAST(MONTH(z.LotShipping)AS VARCHAR(2)) END AS LotShipping \r\n"
-			+ "	  ,b.LabNo,a.CustomerShortName,a.SaleNumber\r\n"
+			+ "	  ,b.LabNo,a.CustomerName,a.CustomerShortName,a.SaleNumber\r\n"
 //    		+ "	  ,a.SaleFullName\r\n"
 			+ "   ,CASE PATINDEX('%[^0 ]%', a.[SaleNumber]  + ' ‘') \r\n" + "    		 WHEN 0 THEN ''   \r\n"
 			+ "    		 ELSE SUBSTRING(a.[SaleNumber] , 5, LEN(a.[SaleNumber])) +':'+a.[SaleFullName]\r\n"
@@ -200,7 +202,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "            GROUP BY [ProductionOrder] ,[SaleOrder] ,[SaleLine] ) \r\n  "
 			+ "  as z on z.ProductionOrder = b.ProductionOrder \r\n      and z.SaleLine = b.SaleLine \r\n "
 			+ "      and z.SaleOrder = b.SaleOrder \r\n";
-	private String leftJoinIToO = 
+	private String leftJoinIToP = 
 			  " left join ( select distinct a.ProductionOrder , WorkDate \r\n"
 			+ "              from  [PPMM].[dbo].[OperationWorkDate]  as a\r\n"
 			+ "              inner join (select ProductionOrder ,   max(Operation) as Operation   \r\n"
@@ -242,7 +244,10 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "            where a.Operation  = 5 ) as n on b.ProductionOrder = n.ProductionOrder \r\n"
 			+ " left join ( select distinct ProductionOrder , OperationEndDate as Preset  \r\n"
 			+ "            from  [PPMM].[dbo].[DataFromSap] as a\r\n"
-			+ "            where a.Operation = 50  ) as o on b.ProductionOrder = o.ProductionOrder \r\n " ;
+			+ "            where a.Operation = 50  ) as o on b.ProductionOrder = o.ProductionOrder \r\n "
+			+ " left join ( select distinct ProductionOrder , OperationEndDate as Relax  \r\n"
+			+ "            from  [PPMM].[dbo].[DataFromSap] as a\r\n"
+			+ "            where a.Operation = 20  ) as p on b.ProductionOrder = p.ProductionOrder " ;
 	private String selectPreset = " [ProductionOrder],[PostingDate],[WorkCenter]\r\n"
 			+ "      ,[Operation],[No],[DataStatus] \r\n";
 	private String selectDyeing = "[ProductionOrder],[PostingDate],[Operation]\r\n"
@@ -284,7 +289,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String where = " where  ";
 		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
 				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
-				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="";
+				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="";
 		PCMSTableDetail bean = poList.get(0);
 		customerName = bean.getCustomerName();
 		customerShortName = bean.getCustomerShortName();
@@ -295,26 +300,26 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		saleNumber = bean.getSaleNumber();
 		labNo = bean.getLabNo();
 		articleFG = bean.getArticleFG();
+		dueDate = bean.getDueDate();
 		designFG = bean.getDesignFG();
 		userStatus = bean.getUserStatus();
+		List<String> userStatusList = bean.getUserStatusList();
+		List<String> cusNameList = bean.getCustomerNameList();
+		List<String> cusShortNameList = bean.getCustomerShortNameList();
 		prdOrder = bean.getProductionOrder();
 		prdCreateDate = bean.getProductionOrderCreateDate();   
 		deliveryStatus = bean.getDeliveryStatus();
 		saleStatus = bean.getSaleStatus();
 		dist = bean.getDistChannel();
-		where +=  " CustomerName like '%" + customerName + "%' and\r\n"
-				+ " CustomerShortName like '%" + customerShortName + "%' and \r\n" 
-				+ " MaterialNo like '" + materialNo  + "%' and\r\n" 
+		where +=    " MaterialNo like '" + materialNo  + "%' and\r\n" 
 				+ " a.SaleOrder like '" + saleOrder + "%' \r\n"
 //				  + " a.SaleLine like '"+saleLine+"%' and\r\n"
 		;
-		if (!saleCreateDate.equals("")) {  
-
+		if (!saleCreateDate.equals("")) {   
 			String[] dateArray = saleCreateDate.split("-");
 			where += "and ( SaleCreateDate >= CONVERT(DATE,'" + dateArray[0].trim() + "',103)  and \r\n"
 					+ " SaleCreateDate <= CONVERT(DATE,'" + dateArray[1].trim() + "',103) ) \r\n";
-		}
-
+		} 
 		if(!saleNumber.equals("")) { where += " and A.SaleNumber like '"+saleNumber+"%' \r\n" ; }
 		if (!labNo.equals("")) {
 			where += " and b.LabNo like '" + labNo + "%'  \r\n";
@@ -324,9 +329,44 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		}
 		if (!designFG.equals("")) {
 			where += " and a.DesignFG like '" + designFG + "%'  \r\n";
+		} 
+		if (cusNameList.size() > 0) { 
+			where += " and  ( ";
+			String text = "";
+			for (int i = 0; i < cusNameList.size(); i++) {
+				text = cusNameList.get(i);
+				where += " CustomerName = '" +text + "' ";
+				if (i != cusNameList.size() - 1) {
+					where += " or ";
+				} ;
+			}
+			where += " ) \r\n";
 		}
-		if (!userStatus.equals("")) {
-			where += " and b.UserStatus like '" + userStatus + "%'  \r\n";
+		if (cusShortNameList.size() > 0) { 
+			where += " and  ( ";
+			String text = "";
+			for (int i = 0; i < cusShortNameList.size(); i++) {
+				text = cusShortNameList.get(i);
+				where += " CustomerShortName = '" +text + "' ";
+				if (i != cusShortNameList.size() - 1) {
+					where += " or ";
+				} ;
+			}
+			where += " ) \r\n";
+		}
+		if (userStatusList.size() > 0) {
+//			where += " and b.UserStatus like '" + userStatus + "%'  \r\n";
+			where += " and  ( ( b.ProductionOrder is null and b.UserStatus is null ) or ( b.ProductionOrder is not null and ";
+			String text = "";
+			for (int i = 0; i < userStatusList.size(); i++) {
+				text = userStatusList.get(i);
+				where += " b.UserStatus = '" +text + "' ";
+				if (i != userStatusList.size() - 1) {
+					where += " or ";
+				} ;
+			}
+			where += " 		) \r\n";
+			where += " ) \r\n";
 		}
 		if (!prdOrder.equals("")) {
 			where += " and b.ProductionOrder like '" + prdOrder + "%'  \r\n ";
@@ -335,6 +375,10 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			String[] dateArray = prdCreateDate.split("-");
 			where += " and ( PrdCreateDate >= CONVERT(DATE,'" + dateArray[0].trim() + "',103)  and \r\n"
 					+ " PrdCreateDate <= CONVERT(DATE,'" + dateArray[1].trim() + "',103) )  \r\n";
+		}if(!dueDate.equals("")) {  
+			String[] dateArray = dueDate.split("-");
+			where += " and ( DueDate >= CONVERT(DATE,'"+ dateArray[0].trim()+"',103)  and \r\n"
+					+ " DueDate <= CONVERT(DATE,'"+ dateArray[1].trim()+"',103) )  \r\n" ;
 		}
 		if (!deliveryStatus.equals("")) {
 			where += " and a.DeliveryStatus like '" + deliveryStatus + "%'  \r\n";
@@ -343,9 +387,10 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			where += " and a.SaleStatus like '" + saleStatus + "%'  \r\n";
 		}
 		if (!dist.equals("")) {
-			String[] array = dist.split(",");
+			String[] array = dist.split("\\|");     
 			where += " and  ( ";
 			for (int i = 0; i < array.length; i++) {
+//				System.out.println(array[i]);
 				where += " a.DistChannel = '" + array[i] + "' ";
 				if (i != array.length - 1) {
 					where += " or ";
@@ -364,7 +409,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.leftJoinH
 				+ this.leftJoinX
 				+ this.leftJoinZ 
-				+ this.leftJoinIToO
+				+ this.leftJoinIToP
 				+ where
 				+ "  and x.ProductionOrder is null \r\n"
 				+ " union "
@@ -385,9 +430,9 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.leftJoinG
 				+ this.leftJoinH
 				+ this.leftJoinZ  
-				+ this.leftJoinIToO  
+				+ this.leftJoinIToP   
 				+ where   
-				+ " Order by a.SaleOrder , SaleLine"; 
+				+ " Order by a.DueDate ,a.CustomerShortName";     
 //		  System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<PCMSTableDetail>();
@@ -888,11 +933,276 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				bean.setIconStatus("I");
 				bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
-			System.out.println("insertLabNoDetail"+e.getMessage());
+			System.out.println("saveColSettingToServer"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		}  
 		list.add(bean);
 		return list;
 	}
+
+	@Override
+	public ArrayList<PCMSAllDetail> getCustomerNameList() {
+		ArrayList<PCMSAllDetail> list = null; 
+		String sql = 
+				  "SELECT distinct [CustomerName] \r\n"  
+				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n " 
+				+ " order by [CustomerName] \r\n";  
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<PCMSAllDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSAllDetail(map));
+		} 
+		return list;
+	}
+
+	@Override
+	public ArrayList<PCMSAllDetail> getCustomerShortNameList() {
+		ArrayList<PCMSAllDetail> list = null; 
+		String sql =   
+				  "SELECT distinct [CustomerShortName]  \r\n"  
+				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n " 
+				+ " order by  [CustomerShortName] \r\n"; 
+		  
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<PCMSAllDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSAllDetail(map));
+		} 
+		return list;
+	}
+	private String forPage = "Summary"; 
+	@Override 
+	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) { 
+		ArrayList<PCMSTableDetail> list = null;
+		String where = " where  ";
+		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
+				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
+				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
+				userId = "" ;
+		PCMSTableDetail bean = poList.get(0);  
+//		System.out.println(bean.toString());
+		userId = bean.getUserId();
+		List<String> userStatusList = bean.getUserStatusList();
+		List<String> cusNameList = bean.getCustomerNameList();
+		List<String> cusShortNameList = bean.getCustomerShortNameList(); 
+		if (cusNameList.size() > 0) {  
+			String text = "";
+			for (int i = 0; i < cusNameList.size(); i++) {
+				text = cusNameList.get(i);
+				customerName += text  ;
+				if (i != cusNameList.size() - 1) {
+					customerName += "|";
+				} ;
+			} ;
+		}
+		if (cusShortNameList.size() > 0) {  
+			String text = "";
+			for (int i = 0; i < cusShortNameList.size(); i++) {
+				text = cusShortNameList.get(i);
+				customerShortName += text;
+				if (i != cusShortNameList.size() - 1) {
+					customerShortName += "|";
+				} ;
+			}
+			where += " ) \r\n";
+		}
+		if (userStatusList.size() > 0) {  
+			String text = "";
+			for (int i = 0; i < userStatusList.size(); i++) {
+				text = userStatusList.get(i);
+				userStatus +=  text ;
+				if (i != userStatusList.size() - 1) {
+					userStatus += "|";
+				} ;
+			} ;
+		}     
+		 
+		poList.get(0).setUserStatus(userStatus);
+		poList.get(0).setCustomerName(customerName);
+		poList.get(0).setCustomerShortName(customerShortName); 
+		ArrayList<PCMSTableDetail> beanCheck = this.getSearchSettingDetail(userId,this.forPage);
+		if(beanCheck.size() == 0) {
+			list = this.insertSearchSettingDetai(poList);
+		}
+		else {
+			list = this.updateSearchSettingDetai(poList);
+		} 
+		return list; 
+	}
+
+	private ArrayList<PCMSTableDetail> updateSearchSettingDetai(ArrayList<PCMSTableDetail> poList) {
+		// TODO Auto-generated method stub
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();    
+		ArrayList<PCMSTableDetail> list = new ArrayList<PCMSTableDetail>(); 
+		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
+				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
+				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
+				userId = "" ;
+		PCMSTableDetail bean = poList.get(0); 
+		userId = bean.getUserId();
+		materialNo = bean.getMaterialNo();
+		saleOrder = bean.getSaleOrder();
+		saleCreateDate = bean.getSaleOrderCreateDate();
+		saleNumber = bean.getSaleNumber();
+		labNo = bean.getLabNo();
+		articleFG = bean.getArticleFG();
+		dueDate = bean.getDueDate();
+		designFG = bean.getDesignFG();  
+		prdOrder = bean.getProductionOrder();
+		prdCreateDate = bean.getProductionOrderCreateDate();   
+		deliveryStatus = bean.getDeliveryStatus();
+		saleStatus = bean.getSaleStatus();
+		dist = bean.getDistChannel();    
+		customerName = bean.getCustomerName();
+		customerShortName = bean.getCustomerShortName();
+		userStatus = bean.getUserStatus();  
+		int no = 1;   
+		try {      
+			String sql = 
+					"UPDATE [dbo].[SearchSetting]\r\n"
+					+ "   SET [No] = ?  ,[CustomerName] = ?,[CustomerShortName] = ?\r\n"
+					+ "      ,[SaleOrder] = ? ,[ArticleFG] = ? ,[DesignFG] =  ? \r\n"
+					+ "      ,[ProductionOrder] = ? ,[SaleNumber] = ? ,[MaterialNo] = ?\r\n"
+					+ "      ,[LabNo] = ? ,[DeliveryStatus] = ? ,[DistChannel] = ?\r\n"
+					+ "      ,[SaleStatus] = ? ,[DueDate] = ? ,[SaleCreateDate] = ? \r\n"
+					+ "      ,[PrdCreateDate] = ? ,[UserStatus] = ? \r\n"
+					+ "      where  [EmployeeID] = ? and [ForPage] = ?" ;     	
+			prepared = connection.prepareStatement(sql);    
+			prepared.setString(1, userId);
+			prepared.setInt(1, no);
+			prepared.setString(2, customerName);
+			prepared.setString(3, customerShortName);  
+			prepared.setString(4, saleOrder);  
+			prepared.setString(5, articleFG);  
+			prepared.setString(6, designFG);  
+			prepared.setString(7, prdOrder);  
+			prepared.setString(8, saleNumber);  
+			prepared.setString(9, materialNo);  
+			prepared.setString(10, labNo);  
+			prepared.setString(11, deliveryStatus);  
+			prepared.setString(12, dist);  
+			prepared.setString(13, saleStatus);  
+			prepared.setString(14, dueDate);  
+			prepared.setString(15, saleCreateDate);  
+			prepared.setString(16, prdCreateDate);  
+			prepared.setString(17, userStatus);
+			prepared.setString(18, userId);
+			prepared.setString(19, this.forPage);
+			prepared.executeUpdate();   
+			bean.setIconStatus("I");
+			bean.setSystemStatus("save Success.");
+		} catch (SQLException e) {
+			System.out.println("updateSearchSettingDetai"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		list.add(bean);
+		return list;
+	}
+
+	private ArrayList<PCMSTableDetail> insertSearchSettingDetai(ArrayList<PCMSTableDetail> poList) {
+		// TODO Auto-generated method stub
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();    
+		ArrayList<PCMSTableDetail> list = new ArrayList<PCMSTableDetail>(); 
+		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
+				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
+				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
+				userId = "" ;
+		PCMSTableDetail bean = poList.get(0); 
+		userId = bean.getUserId();
+		materialNo = bean.getMaterialNo();
+		saleOrder = bean.getSaleOrder();
+		saleCreateDate = bean.getSaleOrderCreateDate();
+		saleNumber = bean.getSaleNumber();
+		labNo = bean.getLabNo();
+		articleFG = bean.getArticleFG();
+		dueDate = bean.getDueDate();
+		designFG = bean.getDesignFG();  
+		prdOrder = bean.getProductionOrder();
+		prdCreateDate = bean.getProductionOrderCreateDate();   
+		deliveryStatus = bean.getDeliveryStatus();
+		saleStatus = bean.getSaleStatus();
+		dist = bean.getDistChannel();    
+		customerName = bean.getCustomerName();
+		customerShortName = bean.getCustomerShortName();
+		userStatus = bean.getUserStatus();  
+		int no = 1;   
+		try {      
+			String sql = 
+					"INSERT INTO [dbo].[SearchSetting]\r\n"
+					+ "           ( [EmployeeID] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
+					+ "           ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
+					+ "           ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
+					+ "           ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[ForPage] \r\n"
+					+ "           )\r\n"
+					+ "     VALUES\r\n"
+					+ "           ( "
+					+ "            ? , ? , ? , ? , ?, "
+					+ "            ? , ? , ? , ? , ?,"
+					+ "            ? , ? , ? , ? , ?,"
+					+ "            ? , ? , ? , ?"
+					+ "           )"  ;     	
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, userId);
+				prepared.setInt(2, no);
+				prepared.setString(3, customerName);
+				prepared.setString(4, customerShortName);  
+				prepared.setString(5, saleOrder);  
+				prepared.setString(6, articleFG);  
+				prepared.setString(7, designFG);  
+				prepared.setString(8, prdOrder);  
+				prepared.setString(9, saleNumber);  
+				prepared.setString(10, materialNo);  
+				prepared.setString(11, labNo);  
+				prepared.setString(12, deliveryStatus);  
+				prepared.setString(13, dist);  
+				prepared.setString(14, saleStatus);  
+				prepared.setString(15, dueDate);  
+				prepared.setString(16, saleCreateDate);  
+				prepared.setString(17, prdCreateDate);  
+				prepared.setString(18, userStatus);  
+				prepared.setString(19, this.forPage);  
+				prepared.executeUpdate();   
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.out.println("insertSearchSettingDetai"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		list.add(bean);
+		return list;
+	}
+
+	@Override  
+	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList) {
+		// TODO Auto-generated method stub
+		String userId = poList.get(0).getUserId();
+		ArrayList<PCMSTableDetail> bean = this.getSearchSettingDetail(userId,this.forPage);
+		return bean;
+	}
+	public ArrayList<PCMSTableDetail> getSearchSettingDetail(String userId,String forPage) {
+		ArrayList<PCMSTableDetail> list = null; 
+		String sql =   
+				  "SELECT "    
+				  + " [EmployeeID] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
+				  + "      ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
+				  + "      ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
+				  + "      ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus]\r\n"
+				  + "  FROM [PCMS].[dbo].[SearchSetting]\r\n"
+				  + " where EmployeeID = '"+userId+"' and ForPage = '"+forPage+ "' "; 
+//		  System.out.println(sql);
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<PCMSTableDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genSearchTableDetail(map));
+		} 
+		return list;
+	} 
+	 
 }

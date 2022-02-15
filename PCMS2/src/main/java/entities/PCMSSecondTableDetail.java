@@ -47,6 +47,7 @@ public class PCMSSecondTableDetail {
 	private String UserId;
 	private String ProductionOrder;
 	private String CaseSave;
+	private String Volumn;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -56,7 +57,7 @@ public class PCMSSecondTableDetail {
 				String cFMCusAnsLabDate, String userStatus, String tKCFM, String cFMPlanDate, String cFMSendDate,
 				String cFMAnswerDate, String cFMNumber, String cFMStatus, String cFMRemark, String deliveryDate,
 				String shipDate, String remarkOne, String remarkTwo, String remarkThree,String Remark,String CFMLastest,
-				String ProductionOrder) {
+				String ProductionOrder,String Volumn) {
 			super();
 			this.OrderAmount = OrderAmount;
 			this.ProductionOrder = ProductionOrder;
@@ -100,10 +101,35 @@ public class PCMSSecondTableDetail {
 			RemarkOne = remarkOne;
 			RemarkTwo = remarkTwo;
 			RemarkThree = remarkThree;
+			this.Volumn = Volumn;
 		}
 		
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
+		}
+
+		public String getBillSendMRQuantity() {
+			return BillSendMRQuantity;
+		}
+
+		public void setBillSendMRQuantity(String billSendMRQuantity) {
+			BillSendMRQuantity = billSendMRQuantity;
+		}
+
+		public String getBillSendYDQuantity() {
+			return BillSendYDQuantity;
+		}
+
+		public void setBillSendYDQuantity(String billSendYDQuantity) {
+			BillSendYDQuantity = billSendYDQuantity;
+		}
+
+		public String getVolumn() {
+			return Volumn;
+		}
+
+		public void setVolumn(String volumn) {
+			Volumn = volumn;
 		}
 
 		public String getOrderAmount() {

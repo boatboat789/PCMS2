@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.List;
+
 public class PCMSTableDetail {
 	private String SaleOrder;
 	private String SaleLine;
@@ -13,7 +15,7 @@ public class PCMSTableDetail {
 	private String BillQuantity;
 	private String SaleUnit;
 	private String ProductionOrder;
-	private String TotalQuantity;
+	private String TotalQuantity;  
 	private String GreigeInDate;
 	private String UserStatus;
 	private String LabStatus;
@@ -31,8 +33,8 @@ public class PCMSTableDetail {
 	private String DeliveryDate;   // Input on web 
 	private String LotShipping;  
 	
-	private String LabNo;
-	private String CustomerName;
+	private String LabNo; 
+	private String CustomerName; 
 	private String CustomerShortName;
 	private String SaleNumber;
 	private String SaleFullName;
@@ -43,7 +45,15 @@ public class PCMSTableDetail {
 	private String DeliveryStatus; 
 	private String SaleStatus ;
 	private String LotNo;
-	private String ShipDate ; 
+	private String ShipDate ;  
+	private String UserId ;   
+	private List<String> UserStatusList; 
+	private List<String> CustomerNameList; 
+	private List<String> CustomerShortNameList; 
+	private String IconStatus;
+	private String SystemStatus;
+	private String Relax;
+	private int No;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -51,7 +61,7 @@ public class PCMSTableDetail {
 			String finishing, String inspectation, String CFMPlanDate, String cFMDateActual, String DeliveryDate,
 			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus,String LotNo,String ShipDate) {
+			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName) {
 		super();
 		this.ShipDate = ShipDate;
 		SaleOrder = saleOrder;
@@ -91,9 +101,82 @@ public class PCMSTableDetail {
 		DeliveryStatus = deliveryStatus;
 		SaleStatus = saleStatus;
 		this.LotNo = LotNo;
+		this.CustomerName = customerName;
+		this.Relax = Relax;
 	}
 	public PCMSTableDetail() {
 		// TODO Auto-generated constructor stub
+	} 
+	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel,
+			String productionOrder, String userStatus, String dueDate, String labNo, String customerShortName,
+			String saleNumber, String saleCreateDate, String prdCreateDate, String materialNo, String deliveryStatus,
+			String saleStatus, String customerName,int no,String userId) { 
+		this.No = no;
+		this.UserId = userId;
+		SaleOrder = saleOrder; 
+		DesignFG = designFG;
+		ArticleFG = articleFG;
+		DistChannel = distChannel; 
+		ProductionOrder = productionOrder; 
+		UserStatus = userStatus; 
+		DueDate = dueDate;  
+		LabNo = labNo;
+		this.CustomerName = customerName;
+		this.CustomerShortName = customerShortName;
+		SaleNumber = saleNumber; 
+		SaleOrderCreateDate = saleCreateDate;
+		ProductionOrderCreateDate = prdCreateDate;
+		MaterialNo = materialNo;
+		DeliveryStatus = deliveryStatus;
+		SaleStatus = saleStatus; 
+	}
+	public int getNo() {
+		return No;
+	}
+	public void setNo(int no) {
+		No = no;
+	}
+	public String getIconStatus() {
+		return IconStatus;
+	}
+	public void setIconStatus(String iconStatus) {
+		IconStatus = iconStatus;
+	}
+	public String getSystemStatus() {
+		return SystemStatus;
+	}
+	public void setSystemStatus(String systemStatus) {
+		SystemStatus = systemStatus;
+	}
+	public String getUserId() {
+		return UserId;
+	}
+	public void setUserId(String userId) {
+		UserId = userId;
+	}
+	public String getRelax() {
+		return Relax;
+	}
+	public void setRelax(String relax) {
+		Relax = relax;
+	}
+	public List<String> getCustomerNameList() {
+		return CustomerNameList;
+	}
+	public void setCustomerNameList(List<String> customerNameList) {
+		CustomerNameList = customerNameList;
+	}
+	public List<String> getCustomerShortNameList() {
+		return CustomerShortNameList;
+	}
+	public void setCustomerShortNameList(List<String> CustomerShortNameList) {
+		this.CustomerShortNameList = CustomerShortNameList;
+	}
+	public List<String>  getUserStatusList() {
+		return UserStatusList;
+	}
+	public void setUserStatusList(List<String>  userStatusList) {
+		UserStatusList = userStatusList;
 	}
 	public String getShipDate() {
 		return ShipDate;

@@ -18,7 +18,7 @@ public class SqlInfo implements DatabaseInfo {
 	private static final String _url = "jdbc:sqlserver://10.11.44.101;database=PCMS;useUnicode=true;characterEncoding=UTF-8;";
 	private static final String _username = "94687"; 
 	private static final String _password = "Boat789";
-//			        
+////			        
 //	private static final String _url = "jdbc:sqlserver://localhost:1433;database=PCMS;integratedSecurity=true;"; 
 //	private static final String _username = " ";
 //	private static final String _password = " "; 

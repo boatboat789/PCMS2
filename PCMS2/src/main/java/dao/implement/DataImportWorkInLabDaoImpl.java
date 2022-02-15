@@ -100,15 +100,15 @@ public class DataImportWorkInLabDaoImpl implements DataImportDao {
 	               this.clearData();  
 	               this.insertData(datas); 
 	               this.database.update("EXEC spd_UpsertToWorkInLab	");
-	               System.out.println("EXEC spd_UpsertToWorkInLab"); 
+//	               System.out.println("EXEC spd_UpsertToWorkInLab"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
 	            this.message = "File Not Found";
-	            System.out.println("success4");
+	            System.err.println("success4");
 	         } catch (IOException var32) {
 	            this.message = "Read file Error";
-	            System.out.println("success5");
+	            System.err.println("success5");
 	         } finally {
 	        	    try { if(buffer != null) { buffer.close(); } } catch(IOException e) { }
 	                try { if(reader != null) { reader.close(); } } catch(IOException e) { }

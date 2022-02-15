@@ -59,6 +59,8 @@ public class MainController {
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
+		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
+		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
 		return mv;   
 	}   
 }

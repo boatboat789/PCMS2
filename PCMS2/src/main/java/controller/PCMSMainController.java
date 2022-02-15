@@ -13,6 +13,9 @@ import javax.servlet.http.HttpSession;
  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,15 +48,32 @@ public class PCMSMainController {
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
-		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
+		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));    
+		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
+		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
 		return mv;
 	}    
 	
+	@RequestMapping(value ="/fakeSubmit",  method = RequestMethod.POST)        
+    public void submitForm(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+    		@Validated @ModelAttribute("PCMSTable") PCMSTableDetail pd, BindingResult br) throws IOException  
+    {  
+//		fake pass value for submit
+//		PCMSMainModel model = new PCMSMainModel();   
+//		Gson g = new Gson(); 
+//		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
+//		poList.add(pd);   
+//        System.out.println(pd.getSaleOrder()+"d");
+//        response.setContentType("application/json");
+//		PrintWriter out = response.getWriter(); 
+//		out.println(g.toJson(model.getPrdDetailByRow( poList)));  
+		
+    }  
 	@RequestMapping(  value = "/searchByDetail",  method = RequestMethod.POST )
 	public void doGetSearchByDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
-			@RequestBody String data) throws IOException {
-		PCMSMainModel model = new PCMSMainModel();
-		 
+			@RequestBody String data ) throws IOException {
+		PCMSMainModel model = new PCMSMainModel();  
+//		 System.out.println(data);          
 		Gson g = new Gson(); 
 		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
 		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
@@ -71,11 +91,15 @@ public class PCMSMainController {
 			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
 			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
 			pd.setMaterialNo(userArray[i].getMaterialNo());
-			pd.setLabNo(userArray[i].getLabNo());
-			pd.setUserStatus(userArray[i].getUserStatus());
+			pd.setLabNo(userArray[i].getLabNo()); 
+//			pd.setUserStatus(userArray[i].getUserStatus());
+			pd.setUserStatusList(userArray[i].getUserStatusList());
+			pd.setCustomerNameList(userArray[i].getCustomerNameList());
+			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
 			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
+			pd.setDueDate(userArray[i].getDueDate());
 			poList.add(pd);   
 		} 
 		response.setContentType("application/json");
@@ -142,5 +166,81 @@ public class PCMSMainController {
 //		System.out.println("he");
 		out.println(g.toJson(model.saveColSettingToServer( pd)));  
 //		out.println();  
+	}
+	@RequestMapping(  value = "/saveDefault",  method = RequestMethod.POST )
+	public void doGetSaveDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data ) throws IOException {
+		PCMSMainModel model = new PCMSMainModel();            
+		Gson g = new Gson(); 
+		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
+		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
+		int i = 0; 
+		String user = (String) session.getAttribute("user"); 
+		for (i = 0; i < userArray.length; i++) {
+			PCMSTableDetail pd = new PCMSTableDetail();
+			pd.setCustomerName(userArray[i].getCustomerName());
+			pd.setCustomerShortName(userArray[i].getCustomerShortName());
+			pd.setSaleNumber(userArray[i].getSaleNumber());
+			pd.setSaleOrder(userArray[i].getSaleOrder());  
+			pd.setProductionOrder(userArray[i].getProductionOrder());  
+			pd.setArticleFG(userArray[i].getArticleFG()); 
+			pd.setDesignFG(userArray[i].getDesignFG()); 
+			pd.setSaleOrder(userArray[i].getSaleOrder()); 
+			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
+			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
+			pd.setMaterialNo(userArray[i].getMaterialNo());
+			pd.setLabNo(userArray[i].getLabNo()); 
+			pd.setUserStatus(userArray[i].getUserStatus());
+			pd.setUserStatusList(userArray[i].getUserStatusList());
+			pd.setCustomerNameList(userArray[i].getCustomerNameList());
+			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
+			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
+			pd.setDistChannel(userArray[i].getDistChannel());
+			pd.setSaleStatus(userArray[i].getSaleStatus());
+			pd.setDueDate(userArray[i].getDueDate());
+			pd.setUserId(user);
+			poList.add(pd);   
+		}  
+//		System.out.println(user);
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.saveDefault( poList)));  
+	}
+	@RequestMapping(  value = "/loadDefault",  method = RequestMethod.POST )
+	public void doGetLoadDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {
+		PCMSMainModel model = new PCMSMainModel();            
+		Gson g = new Gson(); 
+//		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
+		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
+		String user = (String) session.getAttribute("user"); 
+		int i = 0; 
+//		for (i = 0; i < userArray.length; i++) {
+			PCMSTableDetail pd = new PCMSTableDetail();
+//			pd.setCustomerName(userArray[i].getCustomerName());
+//			pd.setCustomerShortName(userArray[i].getCustomerShortName());
+//			pd.setSaleNumber(userArray[i].getSaleNumber());
+//			pd.setSaleOrder(userArray[i].getSaleOrder());  
+//			pd.setProductionOrder(userArray[i].getProductionOrder());  
+//			pd.setArticleFG(userArray[i].getArticleFG()); 
+//			pd.setDesignFG(userArray[i].getDesignFG()); 
+//			pd.setSaleOrder(userArray[i].getSaleOrder()); 
+//			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
+//			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
+//			pd.setMaterialNo(userArray[i].getMaterialNo());
+//			pd.setLabNo(userArray[i].getLabNo()); 
+//			pd.setUserStatus(userArray[i].getUserStatus());
+//			pd.setUserStatusList(userArray[i].getUserStatusList());
+//			pd.setCustomerNameList(userArray[i].getCustomerNameList());
+//			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
+//			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
+//			pd.setDistChannel(userArray[i].getDistChannel());
+//			pd.setSaleStatus(userArray[i].getSaleStatus());
+//			pd.setDueDate(userArray[i].getDueDate());
+			pd.setUserId(user);
+			poList.add(pd);   
+//		} 
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.loadDefault( poList)));  
 	}
 }

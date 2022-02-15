@@ -71,6 +71,12 @@ td.dt-custom-td140 {
 	max-width: 140px !important;    
     overflow-wrap: break-word;
 }
+td.dt-custom-td240 {           
+	width: 240px !important; 
+	min-width: 240px !important;
+	max-width: 240px !important; 
+    overflow-wrap: break-word;   
+}
 td.dt-custom-td400 {           
 	width: 400px !important; 
 	min-width: 400px !important;
@@ -144,8 +150,45 @@ tr.dtrg-group.dtrg-start td {
 }              
 table.dataTable.compact thead th, table.dataTable.compact thead td{
 	padding: 2px 6px;
-}       
+}        
+/* table.dataTable.compact tbody th, table.dataTable.compact tbody td { */
+/*     padding: 4px;     */
+/* }  */
 .dataTables_scrollBody {
     background-color: whitesmoke;
-}       
- 
+}    
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e9ecf0;
+}             
+ table.dataTable thead th, table.dataTable thead td {     
+    background-color: #c0eaf9;
+} 
+/* fix column color case  */
+tr.even td {    
+    background-color: white;     
+}
+tr.odd td {
+   background-color: #e9ecf0;         
+}        
+table.dataTable tbody tr.selected {  
+/*     color: white !important; */   
+    background-color: #b0bed9 !important;
+}
+    
+table.dataTable tbody tr.odd.selected {  
+/*     color: white !important; */   
+    background-color: #b0bed9 !important;
+}
+.fixed-column{
+    vertical-align: middle; 
+    position: sticky;    
+    right: 0px;
+}     
+table.dataTable tbody tr.selected td {
+    /*    background-color: #B0BED9 !important;*/
+    background-color: #b0c4de !important;
+    color: white;
+}  
+.table .compact {
+	padding: 2px;
+}

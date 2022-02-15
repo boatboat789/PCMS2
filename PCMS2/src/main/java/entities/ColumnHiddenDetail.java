@@ -6,15 +6,15 @@ public class ColumnHiddenDetail {
 	private String UserId;
 	private String ColVisibleDetail;
 	private String ColVisibleSummary;
-	 private List<String> ColList;
-	 private String IconStatus;
-		private String SystemStatus;
+	private List<String> ColList;
+	private String IconStatus;
+	private String SystemStatus;
 
-	public ColumnHiddenDetail(String userId, String ColVisibleDetail,String ColVisibleSummary) {
+	public ColumnHiddenDetail(String userId, String ColVisibleDetail,String ColVisibleSummary ) {
 		super();
 		UserId = userId;
 		this.ColVisibleDetail = ColVisibleDetail;
-		this.ColVisibleSummary = ColVisibleSummary;
+		this.ColVisibleSummary = ColVisibleSummary; 
 	}
 	public ColumnHiddenDetail() {
 		// TODO Auto-generated constructor stub
