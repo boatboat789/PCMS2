@@ -120,4 +120,15 @@ public class PCMSDetailModel extends HttpServlet {
 		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
 		return list;
 	}
+
+	public ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList) {
+		// TODO Auto-generated method stub
+		ArrayList<PCMSSecondTableDetail> list = this.dao.saveInputDetail(poList);
+		return list;
+	}
+	public  ArrayList<PCMSSecondTableDetail> getDivisionList() {
+		// TODO Auto-generated method stub
+		ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionList();
+		return list;
+	}
 }

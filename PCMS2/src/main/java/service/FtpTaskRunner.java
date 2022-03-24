@@ -6,6 +6,7 @@ import dao.DataImportDao;
 import dao.implement.DataImportCFMDaoImpl;
 import dao.implement.DataImportDyeingDaoImpl;
 import dao.implement.DataImportFinishingDaoImpl;
+import dao.implement.DataImportGoodReceiveDaoImpl;
 import dao.implement.DataImportInspectDaoImpl;
 import dao.implement.DataImportMainGradeDaoImpl;
 import dao.implement.DataImportMainProdDaoImpl;
@@ -55,6 +56,7 @@ public class FtpTaskRunner {
    private DataImportDao importerMainProd;
    private DataImportDao importerMainSale;
    private DataImportDao importerMainGrade;
+   private DataImportDao importerGoodReceive;
    public FtpTaskRunner(Database database, FtpReceive ftp) {
       this.ftp = ftp;
       this.user = new UserDetail("SYSTEM", ""); 
@@ -77,6 +79,7 @@ public class FtpTaskRunner {
       this.importerMainProd = new DataImportMainProdDaoImpl(database, ftp); 
       this.importerMainSale = new DataImportMainSaleDaoImpl(database, ftp); 
       this.importerMainGrade = new DataImportMainGradeDaoImpl(database, ftp); 
+      this.importerGoodReceive = new DataImportGoodReceiveDaoImpl(database, ftp); 
    } 
    public void loadFTP() {
 	   System.out.println("PCMS2 :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
@@ -99,7 +102,7 @@ public class FtpTaskRunner {
 	   this.importerMainProd.loadDataFTP(this.user);
 	   this.importerMainSale.loadDataFTP(this.user); 
 	   this.importerMainGrade.loadDataFTP(this.user);
-	   
+	   this.importerGoodReceive.loadDataFTP(this.user);
 //	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
    } 
 }

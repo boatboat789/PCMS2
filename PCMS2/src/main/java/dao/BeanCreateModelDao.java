@@ -16,6 +16,7 @@ import entities.PODetail;
 import entities.PackingDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
+import entities.SORDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
@@ -66,5 +67,9 @@ public interface BeanCreateModelDao {
 	ColumnHiddenDetail _genColumnHiddenDetail(Map<String, Object> map);
 
 	PCMSTableDetail _genSearchTableDetail(Map<String, Object> map);
+
+	SORDetail _genSORDetail(Map<String, Object> map);
+
+	SORDetail _genSORFromPCMSDetail(Map<String, Object> map);
 
 }

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>            	               
-<iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>    
-<form target="fakeSubmit" method="post" action="PCMSMain/fakeSubmit" commandName="PCMSTable"  >    
+<iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
+<form target="fakeSubmit" method="post" action="Main/fakeSubmit" commandName="PCMSTable"  >    
 	<div id="wrapper-top" class="row" style="  margin: 2px 5px; background-color: azure;     zoom: 85%; " >   
 		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >            
 			<div class="row">                   
@@ -116,7 +116,18 @@
 						<option value="A" >NotYet Process</option>  
 					</select>
 					</div>      
-				</div>   
+				</div>  
+				<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >        
+					<label class=" label-input  margin-0"  style="    min-width: 100px; " for="multi_division">Division</label>             
+			  		<div >      
+						<select id="multi_division"   class="selectpicker" 
+						multiple 
+						data-selected-text-format="count > 1"     
+						data-live-search="true"  
+					 	data-actions-box="true">     
+						</select>
+					</div>      
+				</div>    
 			</div>       
 		</div>               
 		<!--  ROW 2 -->    
@@ -236,6 +247,9 @@
 			              	</button>      
 			              	<button id="btn_sfc" class="btn btn-primary" type="button"  >
 			                    SFC Detail
+			              	</button>    
+			              	<button id="btn_lockColumn" class="btn btn-primary" type="button"  >
+			                    Lock Column
 			              	</button>      
 						</div>       
 					</div>    

@@ -25,6 +25,7 @@ public class PCMSTableDetail {
 	private String Preset;
 	private String DyePlan;
 	private String DyeActual;
+	private String DyeStatus;
 	private String Dryer;
 	private String Finishing;
 	private String Inspectation;
@@ -50,10 +51,12 @@ public class PCMSTableDetail {
 	private List<String> UserStatusList; 
 	private List<String> CustomerNameList; 
 	private List<String> CustomerShortNameList; 
+	private List<String> DivisionList; 
 	private String IconStatus;
 	private String SystemStatus;
 	private String Relax;
 	private int No;
+	private String Division; 
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -61,7 +64,8 @@ public class PCMSTableDetail {
 			String finishing, String inspectation, String CFMPlanDate, String cFMDateActual, String DeliveryDate,
 			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName) {
+			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
+			String dyeStatus ) {
 		super();
 		this.ShipDate = ShipDate;
 		SaleOrder = saleOrder;
@@ -103,6 +107,8 @@ public class PCMSTableDetail {
 		this.LotNo = LotNo;
 		this.CustomerName = customerName;
 		this.Relax = Relax;
+		this.Division = Division;
+		this.DyeStatus = dyeStatus;
 	}
 	public PCMSTableDetail() {
 		// TODO Auto-generated constructor stub
@@ -110,7 +116,7 @@ public class PCMSTableDetail {
 	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel,
 			String productionOrder, String userStatus, String dueDate, String labNo, String customerShortName,
 			String saleNumber, String saleCreateDate, String prdCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus, String customerName,int no,String userId) { 
+			String saleStatus, String customerName,int no,String userId, String division) { 
 		this.No = no;
 		this.UserId = userId;
 		SaleOrder = saleOrder; 
@@ -129,6 +135,13 @@ public class PCMSTableDetail {
 		MaterialNo = materialNo;
 		DeliveryStatus = deliveryStatus;
 		SaleStatus = saleStatus; 
+		this.Division = division;
+	}
+	public String getDyeStatus() {
+		return DyeStatus;
+	}
+	public void setDyeStatus(String dyeStatus) {
+		DyeStatus = dyeStatus;
 	}
 	public int getNo() {
 		return No;
@@ -274,6 +287,12 @@ public class PCMSTableDetail {
 	public void setUserStatus(String userStatus) {
 		UserStatus = userStatus;
 	}
+	public String getDivision() {
+		return Division;
+	}
+	public void setDivision(String division) {
+		Division = division;
+	}
 	public String getLabStatus() {
 		return LabStatus;
 	}
@@ -411,6 +430,12 @@ public class PCMSTableDetail {
 	}
 	public void setCustomerName(String customerName) {
 		CustomerName = customerName;
+	}
+	public List<String> getDivisionList() {
+		return DivisionList;
+	}
+	public void setDivisionList(List<String> divisionList) {
+		DivisionList = divisionList;
 	} 
 	
 	

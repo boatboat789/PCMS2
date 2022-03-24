@@ -34,6 +34,10 @@ public interface PCMSDetailDao {
 
 	ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList);
 
-	ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList); 
+	ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList);
+
+	ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList);
+
+	ArrayList<PCMSSecondTableDetail> getDivisionList(); 
 
 }

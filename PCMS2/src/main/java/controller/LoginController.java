@@ -66,7 +66,7 @@ public class LoginController {
 		if(session.getAttribute("user") != null) { 
 			alertmsgText = "";
 			alerttypText ="";
-			redirect = "redirect:/PCMSMain" ;  
+			redirect = "redirect:/Main" ;  
 			return redirect;  
 //			user = (EmployeeDetail)session.getAttribute("user");
 		}
@@ -119,7 +119,7 @@ public class LoginController {
 		if(user.getFirstName() != null) {
 			alertmsgText = "";
 			alerttypText ="";
-			redirect = "redirect:/PCMSMain" ;  
+			redirect = "redirect:/Main" ;  
 			return redirect;  
 		 } 
 		else {

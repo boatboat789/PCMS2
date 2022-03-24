@@ -6,8 +6,7 @@
 			style ="width: 99%;             
 		    max-width: 99%;   
 		    min-width: 99%;       
-  		        margin: 5px             
-		     ">     
+  		        margin: 5px     ">     
 		    <!--  		    margin: 1.75rem auto;" -->    
 		<div class="modal-content">      
 			<div class="modal-header " style="    text-align: end;padding: 5px;background-color: beige;">

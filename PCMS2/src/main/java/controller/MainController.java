@@ -53,10 +53,11 @@ public class MainController {
 		String user = (String) session.getAttribute("user");  
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		 String[] arrayCol = null  ;
-		 if(list.size() == 0) { } 
+		 if(list.size() == 0) { }    
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));

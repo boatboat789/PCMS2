@@ -21,7 +21,7 @@
         <div class="logo" >
             <h1>  
                 <small style="color: #000000 !important;">
-                 	<b class="btitle">PCMS2</b>
+                 	<b class="btitle">PCMS v.2</b>
              	</small>
          	</h1>
          <h4 >

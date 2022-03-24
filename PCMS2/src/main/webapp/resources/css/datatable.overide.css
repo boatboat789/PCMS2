@@ -71,10 +71,22 @@ td.dt-custom-td140 {
 	max-width: 140px !important;    
     overflow-wrap: break-word;
 }
+td.dt-custom-td160 {   
+	width: 160px !important;
+	min-width: 160px !important;  	
+	max-width: 160px !important;    
+    overflow-wrap: break-word;
+}
 td.dt-custom-td240 {           
 	width: 240px !important; 
 	min-width: 240px !important;
 	max-width: 240px !important; 
+    overflow-wrap: break-word;   
+}
+td.dt-custom-td300 {            
+	width: 300px !important; 
+	min-width: 300px !important;
+	max-width: 300px !important; 
     overflow-wrap: break-word;   
 }
 td.dt-custom-td400 {           
@@ -192,3 +204,6 @@ table.dataTable tbody tr.selected td {
 .table .compact {
 	padding: 2px;
 }
+#MainTable > tbody > tr > td {  
+	padding: 2px;
+}                

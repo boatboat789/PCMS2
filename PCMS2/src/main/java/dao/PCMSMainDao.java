@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.ColumnHiddenDetail;
-import entities.PCMSAllDetail; 
+import entities.PCMSAllDetail;
+import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 
 public interface PCMSMainDao {
@@ -28,6 +29,8 @@ public interface PCMSMainDao {
 	ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList);
 
 	ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList);
+
+	ArrayList<PCMSSecondTableDetail> getDivisionList();
  
 
 }

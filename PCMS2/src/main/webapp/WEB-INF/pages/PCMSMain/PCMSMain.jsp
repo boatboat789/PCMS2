@@ -5,14 +5,14 @@
 <%@ page isELIgnored="false"%> 
 <!DOCTYPE html>
 <html>
-<head>  
+<head>   
 	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  
-	<title>PCMS - Main</title>            	    
+	<title>PCMS - Summary</title>            	    
 	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>       
 	<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
 	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
 </head>      
-<body>       	         
+<body>       	         	
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>      
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>    
     <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>    
@@ -41,6 +41,7 @@
 				                <th class=" " style="vertical-align: middle;">PS </th>      
 				                <th class=" " style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
+				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> Status</span> </th> 
 				                <th class=" " style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
 				                <th class=" " style="vertical-align: middle;">FN  </th> 
 				                <th class=" " style="vertical-align: middle;">Inspect </th>  
@@ -59,10 +60,10 @@
 <!-- 		<div id="wrapper-bot" class="row">   -->
 		 
 <!-- 		</div>        -->   
-      <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
+    <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include> 
-		<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
-</body>                
+	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
+</body>                  
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>   
 <script src="<c:url value="/resources/js/General.js" />"></script>   
   <style>
@@ -85,7 +86,8 @@ var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;v
 var columnsHeader  = [];
 var colList ;
 var userStatusList ;  	
-var cusNameList ;  	
+var cusNameList ; 
+var divisionList ; 
 var cusShortNameList ;  	
 var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
@@ -99,6 +101,8 @@ var urlInspect = domain+"/InspectSystem/search/home.html";
 var urlInspectObj = domain+"/InspectSystem/search/home.html"; 
 var urlQCMS = domain+"/QCMS/first.html"; 
 var urlQCMSObj = domain+"/QCMS/request/search.html"; 
+var soTmpExcel ;   
+var soLineTmpExcel;
 // console.log(window.location.host)
 // console.log(window.location.hostname)
 // console.log(window.location.origin)   
@@ -143,12 +147,12 @@ $('#input_prdOrderDate').daterangepicker({
 //     createGroupBoxByDateRequiredLab(arrayTmp)
   }); 
 $('#input_saleOrderDate').daterangepicker({
-	   opens: 'right', 	
-	    locale: {
-	        format: 'DD/MM/YYYY',   
-    	    cancelLabel: 'Clear'
-	      },       
-		  drops : "auto",        
+	opens: 'right', 	
+	locale: {
+		format: 'DD/MM/YYYY',   
+		cancelLabel: 'Clear'
+	},       
+	drops : "auto",        
 // 		  autoUpdateInput: false,        
 // 	 	  autoApply: true,                    
 	  } 
@@ -166,21 +170,11 @@ $('#input_dueDate').daterangepicker({
 	  } 
 , function(start, end, label) {   
 });  
-$(document) .ready( function() {
-// 	 $('#loading').fadeOut(2000,function(){
-//          $('#loading').fadeIn(1000);
-//      });  
+$(document) .ready( function() { 
 <%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
-// 		var ctx = "${pageContext.request.contextPath}";
-// 		console.log(window.location.hostname)       ;       
-// 		console.log(ctx2)       ;            
-// 		console.log(window.location.protocol)
-// 		console.log( window.location.pathname);
-
- 
-<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>
-// 	  ;    
-	   
+// 		var ctx = "${pageContext.request.contextPath}";   
+// 		console.log(ctx2)       ;               
+<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%> 
 // 	var saleNumberList = JSON.parse('${SaleNumberList}');
 // 	userStatusList = JSON.parse('${UserStatusList}');  
 // 	$('#SL_userStatus').selectpicker();             
@@ -190,6 +184,7 @@ $(document) .ready( function() {
 // 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
 // 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
 // 	  });        
+	document.getElementById("btn_lockColumn").style.display = "none";
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
 	$('#input_dueDate').val('');
@@ -207,6 +202,8 @@ $(document) .ready( function() {
 	} );
     $('#btn_search').on( 'click', function () {      
     	$("#submit_button").click()
+    	soLineTmp = '';            
+		soTmp = '';   
     	searchByDetail();          
  	} );                             
     $('#btn_colSetting').on( 'click', function () {      
@@ -223,9 +220,9 @@ $(document) .ready( function() {
  	} ); 
 	$('#save_col_button').on( 'click', function () {       
 	    var selectedItem = $('#multi_colVis').val();    // get selected list  
-		setColVisible(columnsHeader,selectedItem);
+		setColVisibleTable(columnsHeader,selectedItem);
 		saveColSettingToServer(selectedItem);     
-		get_visible_columns()
+		getVisibleColumnsTable()
  	} ); 
 	//--------------------------------------- SEARCH ----------------------------------------------
     $('#btn_lbms').on( 'click', function () {       
@@ -418,29 +415,30 @@ $(document) .ready( function() {
 			    {"data" : "Relax",  "title": 'Relax'},                 //15
 			    {"data" : "Preset",  "title": 'PS'},                 //16
 			    {"data" : "DyePlan",  "title": 'Dye [Plan]'},            //17
-			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},     
+			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},        //18
+			    {"data" : "DyeStatus",  "title": 'Dye Status'},          //19
 			    {"data" : "Dryer" ,  "title": 'Dryer Date'},     
 			    {"data" : "Finishing",  "title": 'FN'},  
-			    {"data" : "Inspectation",  "title": 'Inspect'},       //21 
-			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},        //22 
-			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},        //23
-			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //24
-			    {"data" : "LotShipping",  "title": 'Shipping'}         //25    
+			    {"data" : "Inspectation",  "title": 'Inspect'},       //22 
+			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},        //23 
+			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},        //24
+			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //25
+			    {"data" : "LotShipping",  "title": 'Shipping'}         //26    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       
 //	     col,      	           
 			columnDefs :  [	       
-				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25],                
+				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26],                
 //	 			  	  className : 'data-custom-main',        
 //	 		  	 	  type: 'string'      
 					} ,            
-				{ targets :  [25],                   
+				{ targets :  [26],                   
 				  	  className : 'p-r-15',                  
 					} ,   
 				{ targets :  [6,7,10],                         
 			  	  type : 'num',                  
 				} ,   
-					{ targets :  [17,22,24],                            
+					{ targets :  [17,23,25],                            
 //	 				  	  className : 'bg-color-azure',                  
 						} ,   
 //	 			{ targets : [ 13],  
@@ -604,7 +602,7 @@ $(document) .ready( function() {
 			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ],                
 			  	  className : 'data-custom-padding0505',    
 // 		  	 	  type: 'string'      
-				} ,                    
+			} ,                    
 		],     order: [[ 0, "desc" ]]
  	 });      
     fnTable = $('#fnTable').DataTable({     
@@ -917,22 +915,61 @@ $(document) .ready( function() {
 // 		console.log(this.value)    
 // 		MainTable.column($(this).data('index')).search(this.value).draw(); 
 // 	});           
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {        
-// 		console.log(this.value)        
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
 		let searchVal = this.value;      
-		if(searchVal  == ' '){                       
-// 			console.log(" DyePlan = ''" )  
+		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
+// 		console.log($(this),$(this).data('index'),indexAfterReCol)
+// 		11 , 14-25 date
+// 		13 DUEDATE     
+		let regrex = '';   
+		let splitText = searchVal.split('/');
+		let size = splitText.length;
+		if(searchVal  == ''){       
+			MainTable.column(indexAfterReCol).search(searchVal).draw();  
+// 			MainTable.column(indexAfterReCol).search( '^', true, false ).draw();  
+		}         
+		else if(searchVal  == ' '){                
 // 			var rows = MainTable.Select($(this).data('index')+" = ''"); 
-			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();; 
-		}      
+// 			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();; 
+			MainTable.column(indexAfterReCol).search( '^$', true, false ).draw();  
+		}           
+		else if(indexAfterReCol == 11 || indexAfterReCol == 14 || indexAfterReCol == 15 ||indexAfterReCol == 16 ||
+				indexAfterReCol == 17 ||indexAfterReCol == 18 ||indexAfterReCol == 20 ||indexAfterReCol == 21 ||
+				indexAfterReCol == 22 ||indexAfterReCol == 23 ||indexAfterReCol == 24 ||indexAfterReCol == 25 ||
+				indexAfterReCol == 26  ){
+			if(size == 1){ regrex = '^'+searchVal+'';  }
+			else if(size == 2){
+				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
+				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
+				else{ regrex = '^'+searchVal+'$';  } 
+			}    
+			else{regrex = ''+searchVal+''; }
+			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
+// 			regrex = '^'+searchVal+'$';
+// 			MainTable   
+// 			.column(indexAfterReCol)
+// 			.search('^([/][0-9]{1}|[/][0-9]{2}|[0-9]{1}[/][0-9]{1}|[0-9]{1}[/][0-9]{2}|[0-9]{2}[/][0-9]{2}|[0-9]{2}[/][0-9]{2})$', true, false ).draw();
+// 	  		.search( regrex, true, false ).draw();  
+// 			console.log(search('^([/][0-9]{1}|[/][0-9]{2}|[0-9]{1}[/][0-9]{1}|[0-9]{1}[/][0-9]{2}|[0-9]{2}[/][0-9]{2}|[0-9]{2}[/][0-9]{2})$', true, false ))
+		}    
+		else if(indexAfterReCol == 13){
+			if(size == 1){ regrex = '^'+searchVal+'';  }
+			else if(size == 2){
+				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
+				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
+				else{ regrex = '^'+searchVal+'';  } 
+			}       
+			else{regrex = ''+searchVal+''; }
+			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
+		}
 		else{
-			MainTable.column($(this).data('index')).search(searchVal).draw(); 
+// 			MainTable.column($(this).data('index')).search(searchVal).draw(); 
 // 			MainTable.column($(this).data('index')).search( '^'+searchVal+'$', true, false ).draw(); 
+			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}
 		
 	});      
-// 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
-	        
+// 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable; 
 	$("#MainTable_filter").hide();  
 // 	$("#presetTable_filter").hide();  
 	$("#dyeingTable_filter").hide();  
@@ -962,15 +999,19 @@ $(document) .ready( function() {
 	$('#multi_userStatus').selectpicker();     
 	$('#multi_colVis').selectpicker();   
 	$('#multi_cusName').selectpicker();     
-	$('#multi_cusShortName').selectpicker();   
+	$('#multi_cusShortName').selectpicker(); 
+	$('#multi_division').selectpicker();  
 	colList = JSON.parse('${ColList}'); 
 	cusNameList = JSON.parse('${CusNameList}');   	
 	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
 	userStatusList = JSON.parse('${UserStatusList}');       
+	divisionList = JSON.parse('${DivisionList}');       
 	columnsHeader = MainTable.settings().init().columns;  
-	var saleNumberList = JSON.parse('${SaleNumberList}'); 
+	var saleNumberList = JSON.parse('${SaleNumberList}');
+	
   	addSelectOption(saleNumberList)
-	addUserStatusOption(userStatusList );        
+	addUserStatusOption(userStatusList );      
+  	addDivisionOption(divisionList );      
 	addCusNameOption(cusNameList );      
 	addCusShortNameOption(cusShortNameList );       
 	addColOption(columnsHeader )  
@@ -982,6 +1023,8 @@ $(document) .ready( function() {
 	$('#multi_cusName').selectpicker('refresh');
 	$('#multi_cusShortName option').attr("selected","selected");
 	$('#multi_cusShortName').selectpicker('refresh');
+	$('#multi_division option').attr("selected","selected");
+	$('#multi_division').selectpicker('refresh');
 	
  
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
@@ -1030,7 +1073,8 @@ function searchByDetail(){
 	var labNo = document.getElementById("input_labNo").value .trim();    
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
-	var customerShort = $('#multi_cusShortName').val(); 
+	var customerShort = $('#multi_cusShortName').val();
+	var division = $('#multi_division').val(); 
 // 	console.log(userStatus)    
 	var deliStatus = document.getElementById("SL_delivStatus").value .trim();      
 	var dmCheck = document.getElementById("check_DM").checked;         
@@ -1052,10 +1096,10 @@ function searchByDetail(){
 // 	}
 // 	else if( saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
 // 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {    
-	 if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 )
+	 if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)
 	 	&& (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
-   			dueDate == '')
+   			dueDate == ''  )
   			)  { 
 		swal({
    		    title: 'Warning',
@@ -1109,6 +1153,7 @@ function createJsonData(){
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;     
 	var dist = "";    
+	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
@@ -1129,6 +1174,7 @@ function createJsonData(){
 	   ',"UserStatusList":'+JSON.stringify(userStatus)+       
 	   ',"CustomerNameList":'+JSON.stringify(customer)+   
 	   ',"CustomerShortNameList":'+JSON.stringify(customerShort)+   
+	   ',"DivisionList":'+JSON.stringify(division)+   
 	   ',"DeliveryStatus":'+JSON.stringify(deliStatus)+            
 	   ',"SaleStatus":'+JSON.stringify(saleStatus)+  
 	   ',"DistChannel":'+JSON.stringify(dist) + 
@@ -1171,44 +1217,53 @@ function exportCSV(data){
     /* XLS Rows Data */    
     xlsHeader.push("CustomerName");
     xlsHeader.push("CustomerShortName");      
+    soLineTmpExcel = '';
+    soTmpExcel = '';
     var xlsRows = data   
     let indexArray = 0,colType = '';
-    createXLSLFormatObj.push(xlsHeader);            ; 
+    createXLSLFormatObj.push(xlsHeader);     
     var sizeMap = mapsDataHeader.size;
+    let caseDupli = 0;
     $.each(xlsRows, function(index, value) {    
-        var innerRowData = [];   
-        
-        $.each(value, function(data, val) {                  
-            if(mapsDataHeader.size != 0){               
+        var innerRowData = [];         
+        caseDupli = checkSaleOrderLine( value);
+        $.each(value, function(data, val) {     
+            if(mapsDataHeader.size != 0){                   
             	 indexArray = mapsDataHeader.get(data); 
-            	 colType = mapsColumnHeader.get(data); 
+            	 colType = mapsColumnHeader.get(data);  
+            	 console.log(innerRowData[indexArray] ,val)
 			  	if(indexArray !== undefined){             
 					if (colType === undefined){  
 						innerRowData[indexArray] = val;      
 					}
-					else if (colType == 'num'){    
-						if(val == ''){ innerRowData[indexArray] = parseFloat(0);       } 
- 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, ''))  ; }
+					else if (colType == 'num'){   
+						if(data == 'SaleQuantity' || data == 'BillQuantity'){  
+							if(caseDupli == 0 || caseDupli == 2){   
+								if(val.trim() == ''){ innerRowData[indexArray] = '';  }
+		 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
+							}      
+							else{ innerRowData[indexArray] = ''; }
+						}
+						else{
+							if(val == ''){ innerRowData[indexArray] = parseFloat(0);       }
+	 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
+						} 
 					}      
 					else if (colType == 'date-euro'){       
 						if(val == ''){ innerRowData[indexArray] = ''   ;   }
  						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
-					}
-			  		         
+					}                
 			  	}   
-			  	else if(data == 'CustomerName'){innerRowData[sizeMap] = val  ;     
-	 
-			  	}
-			  	else if(data == 'CustomerShortName'){innerRowData[sizeMap+1] =val ; }
-			  	
+			  	else if(data == 'CustomerName'){innerRowData[sizeMap] = val  ;      }
+			  	else if(data == 'CustomerShortName'){innerRowData[sizeMap+1] =val ; } 
             }
         });  
         createXLSLFormatObj.push(innerRowData);
     }); 
     /* File Name */
-    var filename = "PCMSMain.xlsx"; 
-    /* Sheet Name */
-    var ws_name = "PCMSMain";     
+    var filename = "PCMS-Main.xlsx"; 
+    /* Sheet Name */  
+    var ws_name = "Main";     
     if (typeof console !== 'undefined') console.log(new Date());
     var wb = XLSX.utils.book_new(),
 //         ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);   
@@ -1218,17 +1273,31 @@ function exportCSV(data){
     /* Write workbook and Download */
     if (typeof console !== 'undefined') console.log(new Date());
     XLSX.writeFile(wb, filename);
-    if (typeof console !== 'undefined') console.log(new Date()); 
-	  
-}   
- 
+    if (typeof console !== 'undefined') console.log(new Date());   
+}           
+function checkSaleOrderLine( val){       
+	if(soLineTmpExcel == '' && soTmpExcel == ''  ){     
+		soLine = val.SaleLine;     
+		soTmpExcel = val.SaleOrder;   
+		caseDupli = 0; 
+	}  
+	else if(soLineTmpExcel == val.SaleLine && soTmpExcel   == val.SaleOrder  ){
+		caseDupli = 1; 
+	}   
+	else{           
+		soLineTmpExcel = val.SaleLine;     
+		soTmpExcel = val.SaleOrder;   
+		caseDupli = 2 
+	}  
+	return caseDupli;
+}
 function getPrdDetailByRow(arrayTmp) {     
 // 	console.log(arrayTmp)
 	$.ajax({   
 		type: "POST",
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "PCMSMain/getPrdDetailByRow", 
+		url: "Main/getPrdDetailByRow", 
 		success: function(data) {      
 // 			MainTable.clear();          
 // 			MainTable.rows.add(data);     
@@ -1260,9 +1329,11 @@ function clearInput(){
 	$('#multi_userStatus').val('default').selectpicker('deselectAll');  
 	$('#multi_cusName').val('default').selectpicker('deselectAll');      
 	$('#multi_cusShortName').val('default').selectpicker('deselectAll');   
+	$('#multi_division').val('default').selectpicker('deselectAll');   
 	$('#multi_userStatus').selectpicker('refresh');     
 	$('#multi_cusName').selectpicker('refresh');
 	$('#multi_cusShortName').selectpicker('refresh'); 
+	$('#multi_division').selectpicker('refresh');       
 }
 function searchByDetailToServer(arrayTmp) {   
 // 	console.log(arrayTmp)
@@ -1270,11 +1341,11 @@ function searchByDetailToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",   
 		data: JSON.stringify(arrayTmp),           
-		url: "PCMSMain/searchByDetail", 
+		url: "Main/searchByDetail", 
 		success: function(data) { 
 // 			console.log(data)
 			
-// 			get_visible_columns();
+// 			getVisibleColumnsTable();
 			MainTable.clear();        
 			MainTable.rows.add(data);     
 			MainTable.draw();  
@@ -1588,7 +1659,7 @@ function saveInputDateToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),         
-		url: "PCMSMain/saveInputDate", 
+		url: "Main/saveInputDate", 
 		success: function(data) {  
 			if(data.length > 0){
 				var bean = data[0]; 
@@ -1632,13 +1703,13 @@ function settingColumnOption(columns ,colVisible){
 // 		console.log(columns)
 // 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
 // 		addColOption(columns ) 
-		setColVisible(columnsHeader,colVisible);    
+		setColVisibleTable(columnsHeader,colVisible);    
 		$('#multi_colVis').selectpicker('val', colVisible);     
 	}
-	get_visible_columns()     
+	getVisibleColumnsTable()     
 }
         
-function get_visible_columns() {   
+function getVisibleColumnsTable() {   
 // 	columnsHeader = MainTable.settings().init().columns;
    	mapsDataHeader.clear();   
    	mapsTitleHeader.clear();
@@ -1665,7 +1736,7 @@ function get_visible_columns() {
 	}    
 // 	console.log(mapsDataHeader )
 }     
-function setColVisible(mainCol,colVisible) {    
+function setColVisibleTable(mainCol,colVisible) {    
 // 	console.log(colVisible)   
 // 	console.log(mainCol)  
 	let index ; 
@@ -1692,7 +1763,7 @@ function saveColSettingToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "PCMSMain/saveColSettingToServer", 
+		url: "Main/saveColSettingToServer", 
 		success: function(data) {  
 // 			MainTable.clear();           
 // 			MainTable.rows.add(data);      
@@ -1724,10 +1795,33 @@ function saveColSettingToServer(arrayTmp) {
 		done: function(e) {       
 		}   	   
 	});   
-}   
+}     
 function addUserStatusOption(data ){ 
 	// The DOM way. 
 	var sel = document.getElementById("multi_userStatus"); 
+	for (i = sel.length - 1; i >= 0; i--) {
+		sel.remove(i);
+	}  
+	 let opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอจัดLot]';
+	 opt.value = 'รอจัดLot';
+	 sel.appendChild(opt);          	  
+	     
+	var size = data.length; 
+	for (var i = 0; i < size; i++) {		   
+		 var resultData = data[i]; 	   
+		 opt = document.createElement('option');
+	     opt.appendChild(document.createTextNode(i));
+		 opt.text  = resultData.UserStatus;
+		 opt.value = resultData.UserStatus;
+		 sel.appendChild(opt);          
+	}             
+	$("#multi_userStatus").selectpicker("refresh");
+}    
+function addDivisionOption(data ){ 
+	// The DOM way. 
+	var sel = document.getElementById("multi_division"); 
 	for (i = sel.length - 1; i >= 0; i--) {
 		sel.remove(i);
 	}  
@@ -1736,11 +1830,11 @@ function addUserStatusOption(data ){
 		 var resultData = data[i]; 	   
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.UserStatus;
-		 opt.value = resultData.UserStatus;
+		 opt.text  = resultData.Division;
+		 opt.value = resultData.Division;
 		 sel.appendChild(opt);          
 	}             
-	$("#multi_userStatus").selectpicker("refresh");
+	$("#multi_division").selectpicker("refresh");
 }    
 function addCusNameOption(data ){ 
 	// The DOM way. 
@@ -1809,7 +1903,7 @@ function saveDefault( ){
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "PCMSMain/saveDefault", 
+		url: "Main/saveDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
@@ -1844,7 +1938,7 @@ function loadDefault(){
 		type: "POST",  
 		contentType: "application/json",  
 // 		data: JSON.stringify(arrayTmp),      
-		url: "PCMSMain/loadDefault", 
+		url: "Main/loadDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];    
@@ -1920,13 +2014,16 @@ function setSearchDefault(data){
 	 }             
 	 var customer = innnerText.CustomerName.split('|'); 
 	 var customerShort = innnerText.CustomerShortName.split('|'); 
-	 var userStatusList = innnerText.UserStatus.split('|'); 
+	 var userStatusList = innnerText.UserStatus.split('|');  
+	 var divisionList = innnerText.Division.split('|'); 
 	 $('#multi_cusName').selectpicker('val', customer);    
 	 $('#multi_cusShortName').selectpicker('val', customerShort);    
 	 $('#multi_userStatus').selectpicker('val', userStatusList);      
+	 $('#multi_division').selectpicker('val', divisionList);      
 	$('#multi_cusName').selectpicker('refresh');     
 	$('#multi_cusShortName').selectpicker('refresh');     
 	$('#multi_userStatus').selectpicker('refresh');      
+	$('#multi_division').selectpicker('refresh');  
 }      
 
 // function preLoaderHandler (){         

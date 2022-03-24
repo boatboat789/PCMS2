@@ -11,7 +11,8 @@ import com.google.gson.JsonElement;
 import dao.PCMSMainDao;
 import dao.implement.PCMSMainDaoImpl;
 import entities.ColumnHiddenDetail;
-import entities.PCMSAllDetail; 
+import entities.PCMSAllDetail;
+import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
@@ -100,6 +101,12 @@ public class PCMSMainModel extends HttpServlet {
 	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
+		return list;
+	}
+
+	public  ArrayList<PCMSSecondTableDetail> getDivisionList() {
+		// TODO Auto-generated method stub
+		ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionList();
 		return list;
 	}
 }

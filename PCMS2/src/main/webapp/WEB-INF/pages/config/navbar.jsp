@@ -9,8 +9,8 @@
 			style="width: 50px; height: auto;    display: -webkit-box;" />
 		<!-- Links -->  
 		<ul class="navbar-nav">      
-			<li class="nav-item"><a class="nav-link" href="PCMSMain">PCMS - Summary</a></li>  
- 			<li class="nav-item"><a class="nav-link" href="PCMSDetail">PCMS - Detail</a></li>  
+			<li class="nav-item"><a class="nav-link" href="Main">PCMS - Summary</a></li>  
+ 			<li class="nav-item"><a class="nav-link" href="Detail">PCMS - Detail</a></li>  
 		</ul>
        <ul class="nav navbar-nav navbar-right ml-auto">
    			<li class="dropdown text-small nav-profile">

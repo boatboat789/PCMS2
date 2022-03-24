@@ -25,6 +25,7 @@ import entities.PODetail;
 import entities.PackingDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
+import entities.SORDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
@@ -35,7 +36,8 @@ import entities.WorkInLabDetail;
 public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm:ss");
+	public SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm:ss"); 
 	DecimalFormat df = new DecimalFormat("0.00");       
 	DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
 	@Override  
@@ -212,12 +214,21 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			java.util.Date timestamp1 = (Date) map.get("ShipDate");
 			ShipDate = sdf2.format(timestamp1);
 		}
+		String Division = "";
+		if (map.get("Division") != null) {
+			java.util.Date timestamp1 = (Date) map.get("Division");
+			ShipDate = sdf2.format(timestamp1);
+		}  
+		String DyeStatus = "";
+		if (map.get("DyeStatus") != null) {
+			DyeStatus = (String) map.get("DyeStatus");  
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer,
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
-				CustomerName);
+				CustomerName,Division,DyeStatus);
 	}
 	public PCMSTableDetail _genSearchTableDetail(Map<String, Object> map) {
 		String SaleOrder = "";
@@ -289,13 +300,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			No = (int) map.get("No");
 		} 
 		String UserId = "";
-		if (map.get("UserId") != null) {
+		if (map.get("UserId") != null) { 
 			UserId = (String) map.get("UserId");
+		} String Division = "";
+		if (map.get("Division") != null) {
+			Division = (String) map.get("Division");
 		} 
 		return new PCMSTableDetail(SaleOrder, DesignFG, ArticleFG, DistChannel , ProductionOrder, 
 				UserStatus , DueDate, LabNo, CustomerShortName, SaleNumber ,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus ,CustomerName
-				,No,UserId);
+				,No,UserId,Division);
 	}
 
 	@Override
@@ -1236,6 +1250,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("LabNo") != null) {
 			LabNo = (String) map.get("LabNo");
 		}
+		
 		String LabStatus = "";
 		if (map.get("LabStatus") != null) {
 			LabStatus = (String) map.get("LabStatus");
@@ -1261,7 +1276,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String TKCFM = "";
 		if (map.get("TKCFM") != null) {
-			TKCFM = (String) map.get("TKCFM");
+			java.util.Date timestamp1 = (Date) map.get("TKCFM");
+			TKCFM = sdf2.format(timestamp1);
 		}
 		String CFMPlanDate = ""; 
 		if (map.get("CFMPlanDate") != null) {
@@ -1344,14 +1360,62 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			Double doubleVal = value.doubleValue();
 			Volumn = formatter.format(doubleVal);
 		}   
+		String ReplacedRemark   = "";
+		if (map.get("ReplacedRemark") != null) {
+			ReplacedRemark = (String) map.get("ReplacedRemark");
+		}
+		String StockRemark   = "";
+		if (map.get("StockRemark") != null) {
+			StockRemark = (String) map.get("StockRemark");
+		}
 		Remark = RemarkOne + RemarkTwo   + RemarkThree;
+		String QuantityKG   = "";
+		if (map.get("GRSumKG") != null) { 
+			BigDecimal value = (BigDecimal) map.get("GRSumKG");
+			Double doubleVal = value.doubleValue();
+			QuantityKG = formatter.format(doubleVal);
+		}
+		String QuantityYD   = "";
+		if (map.get("GRSumYD") != null) { 
+			BigDecimal value = (BigDecimal) map.get("GRSumYD");
+			Double doubleVal = value.doubleValue();
+			QuantityYD = formatter.format(doubleVal);
+		}
+		String QuantityMR   = "";
+		if (map.get("GRSumMR") != null) { 
+			BigDecimal value = (BigDecimal) map.get("GRSumMR");
+			Double doubleVal = value.doubleValue();
+			QuantityMR = formatter.format(doubleVal);
+		}String GRQuantity = "";
+		if((QuantityKG.trim().equals("") && QuantityYD.trim().equals("") && QuantityMR.trim().equals(""))||
+	       (QuantityKG.trim().equals("0.00") && QuantityYD.trim().equals("0.00") && QuantityMR.trim().equals("0.00"))
+	       ) {
+			GRQuantity = "";  
+		}    
+		else {  
+			GRQuantity =  QuantityKG + " | " + QuantityMR + " | "+ QuantityYD ;
+		}   
+		String VolumnFGAmount   = "";
+		if (map.get("VolumnFGAmount") != null) { 
+			BigDecimal value = (BigDecimal) map.get("VolumnFGAmount");
+			Double doubleVal = value.doubleValue();
+			VolumnFGAmount = formatter.format(doubleVal);
+		}
+		String DyePlan   = "";
+		if (map.get("DyePlan") != null) {
+			DyePlan = (String) map.get("DyePlan");
+		}
+		String DyeActual   = "";
+		if (map.get("DyeActual") != null) {
+			DyeActual = (String) map.get("DyeActual");
+		}
 		return new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
 				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
 				DueDate, LotNo, LabNo, LabStatus, CFMPlanLabDate, CFMActualLabDate, CFMCusAnsLabDate, UserStatus,
 				TKCFM, CFMPlanDate, CFMSendDate, CFMAnswerDate, 
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
-				Remark,CFMLastest,ProductionOrder,Volumn);
+				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual);
 	}
 	@Override
 	public InputDateDetail _genInputDateDetail(Map<String, Object> map) {  
@@ -1381,11 +1445,19 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			InputFrom = (String) map.get("InputFrom");
 		}
 		String CreateDate = "";
-		if (map.get("CreateDate") != null) {
+		if (map.get("CreateDate") != null) {   
 		    Timestamp timestamp1 = (Timestamp)map.get("CreateDate");
 			CreateDate = this.sdf3.format(timestamp1);
 		} 
-		return new InputDateDetail(ProductionOrder, SaleOrder, SaleLine, PlanDate, CreateBy,CreateDate ,InputFrom);
+		int countAll = 0;
+		if (map.get("countAll") != null) {
+			countAll = (int) map.get("countAll");
+		} 
+		String LotNo = "";
+		if (map.get("LotNo") != null) {
+			LotNo = (String) map.get("LotNo");
+		}
+		return new InputDateDetail(ProductionOrder, SaleOrder, SaleLine, PlanDate, CreateBy,CreateDate ,InputFrom,countAll,LotNo);
 	}
 
 	@Override
@@ -1409,5 +1481,49 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 //			 ColList = new ArrayList<String>(Arrays.asList(ColVisibleSummary.split(",")));
 //		 } 
 		return new ColumnHiddenDetail(UserId, ColVisibleDetail,ColVisibleSummary );
+	}
+	@Override
+	public SORDetail _genSORDetail(Map<String, Object> map) {
+		String SaleOrder = "";
+		if (map.get("SO_NO") != null) {
+			SaleOrder = (String) map.get("SO_NO");
+		}
+		String SaleLine = "";
+		if (map.get("SO_Line") != null) {
+			SaleLine = (String) map.get("SO_Line");
+		} 
+		String CFMDate = "";
+		if (map.get("CFM") != null) {
+			java.util.Date timestamp1 = (Date) map.get("CFM");
+			CFMDate = sdf2.format(timestamp1); 
+		}   
+		String LastUpdate = "";
+		if (map.get("LastUpdateCFM") != null) {
+		    Timestamp timestamp1 = (Timestamp)map.get("LastUpdateCFM");
+		    LastUpdate = this.sdf4.format(timestamp1);
+		}  
+		return new SORDetail(SaleOrder, SaleLine, CFMDate, LastUpdate);
+	}
+	@Override
+	public SORDetail _genSORFromPCMSDetail(Map<String, Object> map) {
+		String SaleOrder = "";
+		if (map.get("SaleOrder") != null) {
+			SaleOrder = (String) map.get("SaleOrder");
+		}
+		String SaleLine = "";
+		if (map.get("SaleLine") != null) {
+			SaleLine = (String) map.get("SaleLine");
+		} 
+		String CFMDate = "";
+		if (map.get("CFMDate") != null) {
+			java.util.Date timestamp1 = (Date) map.get("CFMDate");
+			CFMDate = sdf2.format(timestamp1);
+		}   
+		String LastUpdate = "";
+		if (map.get("LastUpdate") != null) {
+		    Timestamp timestamp1 = (Timestamp)map.get("LastUpdate");
+		    LastUpdate = this.sdf3.format(timestamp1);
+		}  
+		return new SORDetail(SaleOrder, SaleLine, CFMDate, LastUpdate);
 	}
 }

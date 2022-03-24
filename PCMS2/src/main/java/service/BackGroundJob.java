@@ -9,8 +9,10 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import entities.SORDetail;
 import info.FtpSapInfo;
 import info.SqlInfo;
+import model.SORModel;
 //import model.ColorManagementModel;
 //import model.MaterialMasterModel;
 import th.in.totemplate.core.net.FtpReceive;
@@ -26,6 +28,8 @@ public class BackGroundJob {
 //	@Scheduled(fixedDelay = 10000)       
 	@Scheduled(cron = "0 4/10 * * * *")    
 	public void sortBackGround1() {	
+		SORModel model = new SORModel();
+		model.upSertSORToPCMS(); 
 		LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
 		FTP_DIRECTORY = context.getInitParameter("FTP_PATH");
 		// Creating a File object
@@ -38,10 +42,12 @@ public class BackGroundJob {
 		} catch (ClassNotFoundException | SQLException e) { 
 			e.printStackTrace();
 		}    
+		 
 	}     
+//	@Scheduled(fixedDelay = 10000)     
 //	@Scheduled(cron = "0 0 1 * * *")    
-//	public void sortBackGroundTwo() { 
-//		MaterialMasterModel model = new MaterialMasterModel();
-//		model.insertMaterialToTmpMaterial( ); 
-//	}  
+	public void sortBackGroundTwo() { 
+		SORModel model = new SORModel();
+		model.upSertSORToPCMS();
+	}  
 }

@@ -8,11 +8,12 @@ public class InputDateDetail {
 	private String CreateBy;
 	private String CreateDate;
 	private String InputFrom;
+	private String LotNo;
 	private String IconStatus;
 	private String SystemStatus;
-
+	private int CountPlanDate;
 	public InputDateDetail(String productionOrder, String saleOrder, String saleLine, String planDate 
-			 , String createBy ,String CreateDate,String InputFrom) {
+			 , String createBy ,String CreateDate,String InputFrom,int CountPlanDate,String LotNo) {
 		super();
 		ProductionOrder = productionOrder;
 		SaleOrder = saleOrder;
@@ -21,6 +22,16 @@ public class InputDateDetail {
 		CreateBy = createBy; 
 		this.CreateDate = CreateDate;
 		this.InputFrom = InputFrom;
+		this.CountPlanDate = CountPlanDate;
+		this.LotNo = LotNo;
+	}
+
+	public String getLotNo() {
+		return LotNo;
+	}
+
+	public void setLotNo(String lotNo) {
+		LotNo = lotNo;
 	}
 
 	public String getCreateDate() {
@@ -29,6 +40,14 @@ public class InputDateDetail {
 
 	public void setCreateDate(String createDate) {
 		CreateDate = createDate;
+	}
+
+	public int getCountPlanDate() {
+		return CountPlanDate;
+	}
+
+	public void setCountPlanDate(int CountPlanDate) {
+		this.CountPlanDate = CountPlanDate;
 	}
 
 	public InputDateDetail() {

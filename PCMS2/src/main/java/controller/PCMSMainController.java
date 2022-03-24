@@ -29,9 +29,9 @@ import model.PCMSDetailModel;
 import model.PCMSMainModel;
 
 @Controller
-@RequestMapping(value = { "/PCMSMain" }) 
+@RequestMapping(value = { "/Main" }) 
 public class PCMSMainController {
-	@Autowired
+	@Autowired 
 	private ServletContext context;  
 	private String LOCAL_DIRECTORY;
 	private String FTP_DIRECTORY; 
@@ -47,6 +47,7 @@ public class PCMSMainController {
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));    
 		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
@@ -95,6 +96,7 @@ public class PCMSMainController {
 //			pd.setUserStatus(userArray[i].getUserStatus());
 			pd.setUserStatusList(userArray[i].getUserStatusList());
 			pd.setCustomerNameList(userArray[i].getCustomerNameList());
+			pd.setDivisionList(userArray[i].getDivisionList());
 			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
 			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
 			pd.setDistChannel(userArray[i].getDistChannel());
@@ -198,6 +200,7 @@ public class PCMSMainController {
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
+			pd.setDivisionList(userArray[i].getDivisionList());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  

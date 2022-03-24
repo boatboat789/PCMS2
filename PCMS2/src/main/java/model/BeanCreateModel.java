@@ -18,6 +18,7 @@ import entities.PODetail;
 import entities.PackingDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
+import entities.SORDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
@@ -32,11 +33,14 @@ public class BeanCreateModel {
 		this.dao = new BeanCreateModelDaoImpl();
 	}
 
+	public SORDetail _genSORDetail(Map<String, Object> map) {
+		SORDetail bean = this.dao._genSORDetail(map);
+		return bean;
+	}
 	public PCMSTableDetail _genPCMSTableDetail(Map<String, Object> map) {
 		PCMSTableDetail bean = this.dao._genPCMSTableDetail(map);
 		return bean;
 	}
-
 	public PCMSAllDetail _genPCMSAllDetail(Map<String, Object> map) {
 		PCMSAllDetail bean = this.dao._genPCMSAllDetail(map);
 		return bean;
@@ -70,7 +74,7 @@ public class BeanCreateModel {
 	public FinishingDetail _genFinishingDetail(Map<String, Object> map) {
 		FinishingDetail bean = this.dao._genFinishingDetail(map);
 		return bean;
-	}
+	}  
 
 	public PackingDetail _genPackingDetail(Map<String, Object> map) {
 		PackingDetail bean = this.dao._genPackingDetail(map);

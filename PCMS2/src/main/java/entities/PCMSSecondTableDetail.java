@@ -48,6 +48,15 @@ public class PCMSSecondTableDetail {
 	private String ProductionOrder;
 	private String CaseSave;
 	private String Volumn;
+	private String ReplacedRemark;
+	private String IconStatus;
+	private String SystemStatus;
+	private String StockRemark;
+	private String GRQuantity;
+	private String VolumnFGAmount;
+	
+	private String DyePlan;
+	private String DyeActual;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -57,8 +66,12 @@ public class PCMSSecondTableDetail {
 				String cFMCusAnsLabDate, String userStatus, String tKCFM, String cFMPlanDate, String cFMSendDate,
 				String cFMAnswerDate, String cFMNumber, String cFMStatus, String cFMRemark, String deliveryDate,
 				String shipDate, String remarkOne, String remarkTwo, String remarkThree,String Remark,String CFMLastest,
-				String ProductionOrder,String Volumn) {
+				String ProductionOrder,String Volumn,String ReplacedRemark,String StockRemark,String GRQuantity 
+				,String VolumnFGAmount ,String DyePlan,String DyeActual
+				) {
 			super();
+			this.DyePlan = DyePlan;
+			this.DyeActual = DyeActual;
 			this.OrderAmount = OrderAmount;
 			this.ProductionOrder = ProductionOrder;
 			this.Remark = Remark;
@@ -102,14 +115,82 @@ public class PCMSSecondTableDetail {
 			RemarkTwo = remarkTwo;
 			RemarkThree = remarkThree;
 			this.Volumn = Volumn;
+			this.ReplacedRemark = ReplacedRemark;
+			this.StockRemark = StockRemark;
+			this.GRQuantity = GRQuantity;
+			this.VolumnFGAmount = VolumnFGAmount;
 		}
 		
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
 		}
 
+		public String getDyePlan() {
+			return DyePlan;
+		}
+
+		public void setDyePlan(String dyePlan) {
+			DyePlan = dyePlan;
+		}
+
+		public String getDyeActual() {
+			return DyeActual;
+		}
+
+		public void setDyeActual(String dyeActual) {
+			DyeActual = dyeActual;
+		}
+
+		public String getVolumnFGAmount() {
+			return VolumnFGAmount;
+		}
+
+		public void setVolumnFGAmount(String volumnFGAmount) {
+			VolumnFGAmount = volumnFGAmount;
+		}
+
+		public String getGRQuantity() {
+			return GRQuantity;
+		}
+
+		public void setGRQuantity(String gRQuantity) {
+			GRQuantity = gRQuantity;
+		}
+
+		public String getStockRemark() {
+			return StockRemark;
+		}
+
+		public void setStockRemark(String stockRemark) {
+			StockRemark = stockRemark;
+		}
+
 		public String getBillSendMRQuantity() {
 			return BillSendMRQuantity;
+		}
+
+		public String getReplacedRemark() {
+			return ReplacedRemark;
+		}
+
+		public String getIconStatus() {
+			return IconStatus;
+		}
+
+		public void setIconStatus(String iconStatus) {
+			IconStatus = iconStatus;
+		}
+
+		public String getSystemStatus() {
+			return SystemStatus;
+		}
+
+		public void setSystemStatus(String systemStatus) {
+			SystemStatus = systemStatus;
+		}
+
+		public void setReplacedRemark(String ReplacedRemark) {
+			this.ReplacedRemark = ReplacedRemark;
 		}
 
 		public void setBillSendMRQuantity(String billSendMRQuantity) {

@@ -12,6 +12,7 @@
 		                <td style="vertical-align: middle;">CreateBy</td> 
 		                <td style="vertical-align: middle;">CreateDate</td> 
 		                <td style="vertical-align: middle;">InputFrom</td> 
+		                <td style="vertical-align: middle;">Lot</td> 
 		        	</tr>  
 		        </thead>     
 		        <tbody> 

@@ -29,7 +29,7 @@ import model.PCMSMainModel;
 import model.PCMSDetailModel;
 
 @Controller
-@RequestMapping(value = { "/PCMSDetail" }) 
+@RequestMapping(value = { "/Detail" }) 
 public class PCMSDetailController {
 	@Autowired
 	private ServletContext context;  
@@ -40,19 +40,16 @@ public class PCMSDetailController {
 		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
-		PCMSDetailModel model = new PCMSDetailModel();
-//		System.out.println("1");
+		PCMSDetailModel model = new PCMSDetailModel(); 
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ;   
-//		 System.out.println("dddddddddd" +list.toString());
-//		 System.out.println("dddddddddd" +list.size());
-		 if(list.size() == 0) {     
-//			 String colVis = ""; 
+		 String[] arrayCol = null  ;    
+		 if(list.size() == 0) {      
 			 arrayCol = null; 
 		 } 
 		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }  
 		mv.setViewName("PCMSDetail/PCMSDetail");  
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
@@ -85,6 +82,7 @@ public class PCMSDetailController {
 			pd.setLabNo(userArray[i].getLabNo());
 //			pd.setUserStatus(userArray[i].getUserStatus());
 			pd.setUserStatusList(userArray[i].getUserStatusList());
+			pd.setDivisionList(userArray[i].getDivisionList());
 			pd.setCustomerNameList(userArray[i].getCustomerNameList());
 			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
 			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
@@ -116,6 +114,7 @@ public class PCMSDetailController {
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setCaseSave(userArray[i].getCaseSave());   
+			pd.setLotNo(userArray[i].getLotNo());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -123,6 +122,32 @@ public class PCMSDetailController {
 		PrintWriter out = response.getWriter();
 //		System.out.println("he");
 		out.println(g.toJson(model.saveInputDate( poList)));  
+	}
+	@RequestMapping(  value = "/saveInputDetail",  method = RequestMethod.POST )
+	public void doGetSaveInputDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data) throws IOException {
+		PCMSDetailModel model = new PCMSDetailModel();
+		String user = (String) session.getAttribute("user");
+		Gson g = new Gson(); 
+		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
+		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<PCMSSecondTableDetail>();
+		int i = 0; 
+		for (i = 0; i < userArray.length; i++) {
+			PCMSSecondTableDetail pd = new PCMSSecondTableDetail();
+			pd.setProductionOrder(userArray[i].getProductionOrder());
+			pd.setSaleOrder(userArray[i].getSaleOrder());
+			pd.setSaleLine(userArray[i].getSaleLine());
+			pd.setReplacedRemark(userArray[i].getReplacedRemark()) ; 
+			pd.setStockRemark(userArray[i].getStockRemark()) ; 
+			pd.setGrade(userArray[i].getGrade()) ;
+			pd.setCaseSave(userArray[i].getCaseSave()) ;
+			pd.setLotNo(userArray[i].getLotNo());
+			pd.setUserId(user);
+			poList.add(pd);   
+		}  
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.saveInputDetail( poList)));  
 	}
 	@RequestMapping(  value = "/getCFMPlanDateDetail",  method = RequestMethod.POST )
 	public void doGetCFMPlanDate(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
@@ -257,6 +282,7 @@ public class PCMSDetailController {
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
+			pd.setDivisionList(userArray[i].getDivisionList());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
