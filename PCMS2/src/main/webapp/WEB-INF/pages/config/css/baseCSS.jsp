@@ -13,3 +13,9 @@
 	<link  href="<c:url value="/resources/vendor/font-awesome-4.7.0/css/font-awesome.css" />" rel="stylesheet" type="text/css">
 <%-- 	<link href="<c:url value="/resources/css/operation_page.css" />" rel="stylesheet" type="text/css">    --%>
 	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css">   
+	
+	        
+	<script src="<c:url value="/resources/vendor/CryptoJSv3.1.2/rollups/aes.js"/>"></script>     
+  	<script src="<c:url value="/resources/vendor/CryptoJSv3.1.2/rollups/pbkdf2.js"/>"></script>     
+  
+	       

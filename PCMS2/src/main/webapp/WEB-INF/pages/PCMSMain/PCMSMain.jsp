@@ -65,18 +65,21 @@
 	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
 </body>                  
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>   
-<script src="<c:url value="/resources/js/General.js" />"></script>   
+<script src="<c:url value="/resources/js/General.js" />"></script>     
+<%-- <script src="<c:url value="/resources/js/Encrypt.js" />"></script>    --%>
   <style>
   .p-r-15 {padding-right: 15px !important; }
   </style>
 <!-- <script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>    -->
-<script>       
+<script>              	   
+var userId = '' ; 
+<%-- JSON.stringify(<%= session.getAttribute("user")%> ) --%>
 var preloader = document.getElementById('loader');  
 var today = new Date();        //modalForm
 var dd = String('0' + today.getDate()).slice(-2); 
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
-var startDate = dd+'/'+mm+'/'+yyyy; 
+var startDate = dd+'/'+mm+'/'+yyyy;      
 var MainTable ;  
 var poTable ;       
 var mapsDataHeader  = new Map();  
@@ -170,7 +173,7 @@ $('#input_dueDate').daterangepicker({
 	  } 
 , function(start, end, label) {   
 });  
-$(document) .ready( function() { 
+$(document) .ready( function() {  
 <%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
 // 		var ctx = "${pageContext.request.contextPath}";   
 // 		console.log(ctx2)       ;               
@@ -183,16 +186,17 @@ $(document) .ready( function() {
 //   	addSelectOption(saleNumberList)
 // 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
 // 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-// 	  });        
+// 	  });               
+	userId = JSON.parse('${UserID}');   ;    
 	document.getElementById("btn_lockColumn").style.display = "none";
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
 	$('#input_dueDate').val('');
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');
-	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+ 	$('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');     
-	  });     
+  	});     
 	//--------------------------------------- SEARCH ----------------------------------------------
 	$('#btn_saveDefault').on( 'click', function () {       
 	     saveDefault();
@@ -248,7 +252,18 @@ $(document) .ready( function() {
 		   		})
 			}      
 			else {
-				  goToLBMS(tblData);
+				  
+				  var arrayTmp = [];        
+					arrayTmp.push();     
+					$.ajax({
+					   type: "POST",     
+						contentType: "application/json",         
+						url: "Main/getEncrypted/"+userId,      
+					    data : JSON.stringify(arrayTmp),             
+					    success : function(data) {   
+					    	goToLBMS(tblData,userId,data);   
+					    }   	
+					});      
 			}   
 		} 
  	} ); 
@@ -308,7 +323,18 @@ $(document) .ready( function() {
 		   		})
 			}      
 			else {
-				goToInspect(tblData); 
+				
+				var arrayTmp = [];        
+				arrayTmp.push();     
+				$.ajax({
+				   type: "POST",     
+					contentType: "application/json",         
+					url: "Main/getEncrypted/"+userId,      
+				    data : JSON.stringify(arrayTmp),             
+				    success : function(data) {   
+				    	goToInspect(tblData,userId,data); 
+				    }   	
+				});      
 			}   
 		}  
  	} ); 
@@ -334,8 +360,19 @@ $(document) .ready( function() {
 		   		    buttons: false,
 		   		})
 			}      
-			else {
-				goToSFC(tblData);
+			else { 
+				var arrayTmp = [];        
+				arrayTmp.push();     
+				$.ajax({
+				   type: "POST",     
+					contentType: "application/json",         
+					url: "Main/getEncrypted/"+userId,      
+				    data : JSON.stringify(arrayTmp),             
+				    success : function(data) {   
+				    	goToSFC(tblData,userId,data);   
+				    }   	
+				});         
+					
 			}   
 		}
 			 
@@ -363,7 +400,18 @@ $(document) .ready( function() {
 		   		})
 			}      
 			else {
-				 goToQCMS(tblData);
+				 
+				 var arrayTmp = [];        
+					arrayTmp.push();     
+					$.ajax({
+					   type: "POST",     
+						contentType: "application/json",         
+						url: "Main/getEncrypted/"+userId,      
+					    data : JSON.stringify(arrayTmp),             
+					    success : function(data) {    
+					    	goToQCMS(tblData,userId,data);
+					    }   	
+					});      
 			}   
 		} 
  	} );  
@@ -1008,7 +1056,7 @@ $(document) .ready( function() {
 	divisionList = JSON.parse('${DivisionList}');       
 	columnsHeader = MainTable.settings().init().columns;  
 	var saleNumberList = JSON.parse('${SaleNumberList}');
-	
+	 
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
   	addDivisionOption(divisionList );      
@@ -1477,24 +1525,22 @@ function setModalDetail(data){
 	document.getElementById("input_remarkCM").value = innnerText.RemarkOne+" "+innnerText.RemarkTwo+" "+innnerText.RemarkThree;   
 	document.getElementById("input_remarkAfterCloseCM").value = innnerText.RemAfterCloseOne+" "+innnerText.RemAfterCloseTwo+" "+innnerText.RemAfterCloseThree;    
 }    
-function goToLBMS(tblData){    
+function goToLBMS(tblData,pUserId,data){     
+	let obj = createEncryptObj(pUserId);      
 	var prdOrder = tblData[0].ProductionOrder
-	var article = tblData[0].ArticleFG
-// 	var prdOrder = document.getElementById('input_prdOrder').value ;
+	var article = tblData[0].ArticleFG 
 	var color = tblData[0].Color 
-	$.ajax({
-//   	    url: "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory",  
+	$.ajax({   
   	    url: urlLBMS,
   	    type : 'GET',   
-  	    data : { "comeFrom": "PCMS" },   
+  	    data : { 
+  	    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+	    	},   
   	    success : function(data) {   
 //   	    	var url = "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory"; 
   	  		var url = urlLBMSObj; 
   	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {   
-  	    		 
-  	    		
-  	    		
+  	    	tab.onload = function() {    
 				tab.document.getElementById('input_article').value = article;     
 			 	tab.document.getElementById('input_color').value = color  ;  //'S2A001'  
 				tab.searchHistory();     
@@ -1514,40 +1560,33 @@ function goToLBMS(tblData){
    	    	});        
    	    } 
    	}); 
-}
-function timeFunction() {
-    setTimeout(function(){ alert("After 2 seconds!"); }, 2000);
-}
-function goToSFC(tblData){ 
+} 
+function goToSFC(tblData,pUserId,data){         
+// 	let obj = createEncryptObj(pUserId);        
+// 	var JSONObject= '{'+    
+// 	    '"SaleOrder":"'+ obj.encrypted  + '"'+   
+// 	   '} ';                     
+// 	console.log(JSONObject)             
+// 	var  aaaa = JSON.parse(JSONObject);     
 	var prdOrder = tblData[0].ProductionOrder
-	$.ajax({
-// 	    url: "http://localhost:8080/SFC/",    
+	$.ajax({    
 	    url: urlSFC,
 	    type : 'GET',      
-	    data : {
-	    	"comeFrom": "PCMS"           
-	    },          
-	    success : function(data) {    
-//   	    	var url = "http://localhost:8080/SFC/HistoryWork"; 
+	    data : {     
+			"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+	    },               
+	    success : function(data) {     
   	    	var url = urlSFCObj; 
   	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {               
-//	  	    		console.log(tab.document.getElementById('input_searchProductionOrder'))
-					tab.document.getElementById('input_searchProductionOrder').value = prdOrder;  
-// 					console.log(tab.document.getElementById('id_searchPrdBtn'))    
+  	    	tab.onload = function() {                
+					tab.document.getElementById('input_searchProductionOrder').value = prdOrder;       
 					tab.searchByPrdOrder(prdOrder);                
    	    	};        
 	    }   	
-	});      
-// 	test3T();
+	});       
 } 
-function goToInspect(tblData){
-// 1. FOR CREATE SESSION BY AJAX
-// BCOZ SESSION IS NULL IN AJAX
-// 2. FOR CREATE USER LOGIN IN SESSION IN SUCCESS
-// SESSION ALREADY GENERATE SO WE CAN ADD USER ATRRIBUTE
-// 3. 
-// GO TO PAGE WHERE WE WANT   
+function goToInspect(tblData,pUserId,data){ 
+// 	let obj = createEncryptObj(pUserId);    
 	var prdOrder = tblData[0].ProductionOrder
 	$.ajax({
 // 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
@@ -1555,7 +1594,7 @@ function goToInspect(tblData){
 	    type : 'GET',      
 // 	    async : false,
 	    data : {
-	    	"comeFrom": "PCMS"           
+	    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
 	    },    
 	    success : function(data) { 
 // 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
@@ -1569,23 +1608,18 @@ function goToInspect(tblData){
 	});      
 // 	test3T(); 
 }  
-function goToQCMS(tblData){
-	// 1. FOR CREATE SESSION BY AJAX
-	// BCOZ SESSION IS NULL IN AJAX
-	// 2. FOR CREATE USER LOGIN IN SESSION IN SUCCESS
-	// SESSION ALREADY GENERATE SO WE CAN ADD USER ATRRIBUTE
-	// 3. 
-	// GO TO PAGE WHERE WE WANT   
+function goToQCMS(tblData,pUserId,data){ 
+	let obj = createEncryptObj(pUserId);    
 		var article = tblData[0].ArticleFG
 		var lotNo = tblData[0].LotNo
-		var color = tblData[0].Color
+		var color = tblData[0].Color 
 		$.ajax({
 //	 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
 		    url: urlQCMSObj,
 		    type : 'GET',      
 //	 	    async : false,
-		    data : {
-		    	"comeFrom": "PCMS"            
+		    data : {    
+		    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
 		    },    
 		    success : function(data) { 
 //	 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
@@ -1736,9 +1770,7 @@ function getVisibleColumnsTable() {
 	}    
 // 	console.log(mapsDataHeader )
 }     
-function setColVisibleTable(mainCol,colVisible) {    
-// 	console.log(colVisible)   
-// 	console.log(mainCol)  
+function setColVisibleTable(mainCol,colVisible) {     
 	let index ; 
 	let colName = '';  
    let i = 0;

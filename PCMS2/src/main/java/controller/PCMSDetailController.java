@@ -48,6 +48,7 @@ public class PCMSDetailController {
 		 } 
 		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }  
 		mv.setViewName("PCMSDetail/PCMSDetail");  
+		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));

@@ -91,7 +91,8 @@
 /*     background-color: white;    */  
 /* }      */
 </style> 
-<script>     
+<script>       	   
+var userId = '' ; 
 var preloader = document.getElementById('loader');    
 var today = new Date();        //modalForm  
 var dd = String('0' + today.getDate()).slice(-2); 
@@ -196,6 +197,9 @@ $(document) .ready( function() {
 // 	showThing();       
 // 	document.getElementById("div_toOtherPath").style.display = "none"; 
 // document.getElementById("btn_lockColumn").style.display = "none";
+
+
+userId = JSON.parse('${UserID}');   ;    
 	document.getElementById("btn_prdDetail").style.display = "none";
 	document.getElementById("btn_lbms").style.display = "none";
 	document.getElementById("btn_qcms").style.display = "none";

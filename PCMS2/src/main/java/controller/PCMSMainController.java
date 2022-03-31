@@ -3,9 +3,26 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.DigestException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Set;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +33,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 import entities.ColumnHiddenDetail;
+import entities.EncryptedDetail;
 import entities.PCMSTableDetail;
 import model.PCMSDetailModel;
 import model.PCMSMainModel;
@@ -31,6 +50,7 @@ import model.PCMSMainModel;
 @Controller
 @RequestMapping(value = { "/Main" }) 
 public class PCMSMainController {
+//	private String myPassword = "PCMSDISPLAY";
 	@Autowired 
 	private ServletContext context;  
 	private String LOCAL_DIRECTORY;
@@ -42,10 +62,11 @@ public class PCMSMainController {
 		PCMSMainModel model = new PCMSMainModel();
 		String user = (String) session.getAttribute("user");
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ;
+		 String[] arrayCol = null  ; 
 		 if(list.size() == 0) { arrayCol = null  ;} 
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		mv.setViewName("PCMSMain/PCMSMain");  
+		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
@@ -246,4 +267,143 @@ public class PCMSMainController {
 		PrintWriter out = response.getWriter(); 
 		out.println(g.toJson(model.loadDefault( poList)));  
 	}
+	@RequestMapping(  value = "/getEncrypted/{userId}",  method = RequestMethod.POST )
+	public void doGetEncrypted(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data ,@PathVariable(value="userId") String id ) throws Exception {   
+		Gson g = new Gson(); 
+//		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
+//		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
+//		int i = 0;  
+//
+//        String ciphertextFromJavascript = "";
+//		for (i = 0; i < userArray.length; i++) {
+//			PCMSTableDetail pd = new PCMSTableDetail();    
+//			pd.setSaleOrder(userArray[i].getSaleOrder());
+//			System.out.println(userArray[i].getSaleOrder());
+//
+//	         ciphertextFromJavascript = userArray[i].getSaleOrder();    
+//			
+//		}  
+//		String secret = "PCMSDISPLAY";  
+//		byte[] cipherData = Base64.getDecoder().decode(ciphertextFromJavascript);
+//		byte[] saltData = Arrays.copyOfRange(cipherData, 8, 16);
+//
+//		MessageDigest md5 = MessageDigest.getInstance("MD5");
+//		final byte[][] keyAndIV = GenerateKeyAndIV(32, 16, 1, saltData, secret.getBytes(StandardCharsets.UTF_8), md5);
+//		SecretKeySpec key = new SecretKeySpec(keyAndIV[0], "AES");   
+//		IvParameterSpec iv = new IvParameterSpec(keyAndIV[1]);
+//
+//		byte[] encrypted = Arrays.copyOfRange(cipherData, 16, cipherData.length);
+//		Cipher aesCBC = Cipher.getInstance("AES/CBC/PKCS5Padding");
+//		aesCBC.init(Cipher.DECRYPT_MODE, key, iv);
+//		byte[] decryptedData = aesCBC.doFinal(encrypted);   
+//		String decryptedText = new String(decryptedData, StandardCharsets.UTF_8);
+//
+//		System.out.println(decryptedText);  
+	    String toEncrypt = id;
+		if(toEncrypt != null) {
+            if(toEncrypt.length() > 0) {
+                try {
+                    toEncrypt = Base64.getEncoder().encodeToString(toEncrypt.getBytes(StandardCharsets.UTF_8)) + "=";
+                    
+                    String secretPass = "PCMSDISPLAY";
+                    String secretSalt = "OHSHIT";
+                    byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0,
+                                  0, 0, 0, 0, 0, 0, 0, 0 };
+                    IvParameterSpec ivspec = new IvParameterSpec(iv);
+                    
+                    SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+                    KeySpec spec = new PBEKeySpec(secretPass.toCharArray(), secretSalt.getBytes(), 65536, 256);
+                    SecretKey secretTemp = factory.generateSecret(spec);
+                    SecretKeySpec secretKey = new SecretKeySpec(secretTemp.getEncoded(), "AES");
+
+                    Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+                    
+//                    System.out.println(Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes(StandardCharsets.UTF_8))));
+                    toEncrypt = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes(StandardCharsets.UTF_8)));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }  
+            }
+        }
+//		System.out.println(toEncrypt); 
+//		 String secretPass = "PCMSDISPLAY";
+//         String secretSalt = "OHSHIT";
+//         String plaintext = "";
+//         try {
+//             byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0,
+//                           0, 0, 0, 0, 0, 0, 0, 0 };
+//             IvParameterSpec ivspec = new IvParameterSpec(iv); 
+//             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+//             KeySpec keySpec = new PBEKeySpec(secretPass.toCharArray(), secretSalt.getBytes(), 65536, 256);
+//             SecretKey secretTemp = factory.generateSecret(keySpec);
+//             SecretKeySpec secretKey = new SecretKeySpec(secretTemp.getEncoded(), "AES"); 
+//             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+//             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec); 
+//             plaintext = new String(cipher.doFinal(Base64.getDecoder().decode(toEncrypt)));
+//             plaintext = plaintext.substring(0, plaintext.length() - 1);
+//             plaintext = new String(Base64.getDecoder().decode(plaintext));  
+//         } catch (Exception e) {
+//             e.printStackTrace();
+//         }
+//		System.out.println(plaintext);
+		
+		
+		EncryptedDetail bean = new EncryptedDetail();
+		bean.setEncrypted(toEncrypt);
+		
+		
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(bean));  
+//		out.println( toEncrypt );  
+	}  
+//	public byte[][] GenerateKeyAndIV(int keyLength, int ivLength, int iterations, byte[] salt, byte[] password, MessageDigest md) {
+//
+//	    int digestLength = md.getDigestLength();
+//	    int requiredLength = (keyLength + ivLength + digestLength - 1) / digestLength * digestLength;
+//	    byte[] generatedData = new byte[requiredLength];
+//	    int generatedLength = 0; 
+//	    try {
+//	        md.reset();
+//
+//	        // Repeat process until sufficient data has been generated
+//	        while (generatedLength < keyLength + ivLength) {
+//
+//	            // Digest data (last digest if available, password data, salt if available)
+//	            if (generatedLength > 0)
+//	                md.update(generatedData, generatedLength - digestLength, digestLength);
+//	            md.update(password);
+//	            if (salt != null)
+//	                md.update(salt, 0, 8);
+//	            md.digest(generatedData, generatedLength, digestLength);
+//
+//	            // additional rounds
+//	            for (int i = 1; i < iterations; i++) {
+//	                md.update(generatedData, generatedLength, digestLength);
+//	                md.digest(generatedData, generatedLength, digestLength);
+//	            }
+//
+//	            generatedLength += digestLength;
+//	        }
+//
+//	        // Copy key and IV into separate byte arrays
+//	        byte[][] result = new byte[2][];
+//	        result[0] = Arrays.copyOfRange(generatedData, 0, keyLength);
+//	        if (ivLength > 0)
+//	            result[1] = Arrays.copyOfRange(generatedData, keyLength, keyLength + ivLength);
+//
+//	        return result;
+//
+//	    } catch (DigestException e) {
+//	        throw new RuntimeException(e);
+//
+//	    } finally {
+//	        // Clean out temporary data
+//	        Arrays.fill(generatedData, (byte)0);
+//	    }
+//	}
 }

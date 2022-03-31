@@ -56,6 +56,7 @@ public class MainController {
 		 if(list.size() == 0) { }    
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		mv.setViewName("PCMSMain/PCMSMain");  
+		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
