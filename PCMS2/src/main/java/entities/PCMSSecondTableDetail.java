@@ -57,6 +57,8 @@ public class PCMSSecondTableDetail {
 	
 	private String DyePlan;
 	private String DyeActual;
+	private String PCRemark;
+	private String SwitchRemark ;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -66,8 +68,8 @@ public class PCMSSecondTableDetail {
 				String cFMCusAnsLabDate, String userStatus, String tKCFM, String cFMPlanDate, String cFMSendDate,
 				String cFMAnswerDate, String cFMNumber, String cFMStatus, String cFMRemark, String deliveryDate,
 				String shipDate, String remarkOne, String remarkTwo, String remarkThree,String Remark,String CFMLastest,
-				String ProductionOrder,String Volumn,String ReplacedRemark,String StockRemark,String GRQuantity 
-				,String VolumnFGAmount ,String DyePlan,String DyeActual
+				String ProductionOrder,String Volumn,String ReplacedRemark,String StockRemark,String GRQuantity ,
+				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark
 				) {
 			super();
 			this.DyePlan = DyePlan;
@@ -119,6 +121,8 @@ public class PCMSSecondTableDetail {
 			this.StockRemark = StockRemark;
 			this.GRQuantity = GRQuantity;
 			this.VolumnFGAmount = VolumnFGAmount;
+			this.PCRemark = PCRemark;
+			this.SwitchRemark = SwitchRemark;
 		}
 		
 		public PCMSSecondTableDetail() {
@@ -477,11 +481,27 @@ public class PCMSSecondTableDetail {
 		public void setRemarkTwo(String remarkTwo) {
 			RemarkTwo = remarkTwo;
 		}
-		public String getRemarkThree() {
+		public String getRemarkThree() {  
 			return RemarkThree;
 		}
 		public void setRemarkThree(String remarkThree) {
 			RemarkThree = remarkThree;
+		}
+
+		public String getPCRemark() {
+			return PCRemark;
+		}
+
+		public void setPCRemark(String pCRemark) {
+			PCRemark = pCRemark;
+		}
+
+		public String getSwitchRemark() {
+			return SwitchRemark;
+		}
+
+		public void setSwitchRemark(String switchRemark) {
+			SwitchRemark = switchRemark;
 		}
 		
 }

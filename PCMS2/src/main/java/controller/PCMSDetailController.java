@@ -143,6 +143,8 @@ public class PCMSDetailController {
 			pd.setGrade(userArray[i].getGrade()) ;
 			pd.setCaseSave(userArray[i].getCaseSave()) ;
 			pd.setLotNo(userArray[i].getLotNo());
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -167,7 +169,9 @@ public class PCMSDetailController {
 			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
-			pd.setCaseSave(userArray[i].getCaseSave());   
+			pd.setCaseSave(userArray[i].getCaseSave());    
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -194,6 +198,8 @@ public class PCMSDetailController {
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setCaseSave(userArray[i].getCaseSave());   
+			pd.setSwitchRemark(userArray[i].getSwitchRemark());
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -220,6 +226,7 @@ public class PCMSDetailController {
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setCaseSave(userArray[i].getCaseSave());   
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  

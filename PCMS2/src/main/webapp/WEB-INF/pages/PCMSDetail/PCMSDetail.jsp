@@ -63,7 +63,10 @@
 								<th class="row-table" style="vertical-align: middle;">Delivery<span class="c"style="display: block;">(วันที่นัดส่ง)</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Bill Date </th> 
 				                <th class="row-table" style="vertical-align: middle;">EFFECT </th>     
-				                <th class="row-table" style="vertical-align: middle;">ReplacedRemark </th>     
+				                <th class="row-table" style="vertical-align: middle;">PC Remark </th>  
+				                <th class="row-table" style="vertical-align: middle;">Replaced Remark </th>
+				                    
+				                <th class="row-table" style="vertical-align: middle;">SwitchRemark </th>          
 				                <th class="row-table" style="vertical-align: middle;">StockRemark </th>  
 				        	</tr>     
 				        </thead>       	        
@@ -298,15 +301,19 @@ userId = JSON.parse('${UserID}');   ;
 				    {"data" : "DeliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},      //36
 				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //37 
 				    {"data" : "Remark","title":"EFFECT"},                                             //38
-				    {"data" : "ReplacedRemark","title":"ReplacedRemark"},                             //39
-				    {"data" : "StockRemark","title":"StockRemark"},                                   //40
+					{"data" : "PCRemark","title":"PCRemark"},                                         //39
+				    {"data" : "ReplacedRemark","title":"ReplacedRemark"},                             //40
+				    {"data" : "SwitchRemark","title":"SwitchRemark"},                                   //41
+				    {"data" : "StockRemark","title":"StockRemark"},                                   //42
+
+				    
 			],        	             
 			columnDefs :  [	   
 				{ targets : [ 4,20 , 21,28 ,37 ],                    
-				  	  className : 'dt-custom-td80',         
+				  	  className : 'dt-custom-td80',    	     
 				  	  type: 'date-euro'  
 					} ,                              
-				{ targets : [ 11,12,13,14,22,29  ],                        
+				{ targets : [ 11,12,13,14,22,24,29  ],                        
 				  	  className : 'dt-custom-td100',    
 				  	  type: 'string'     
 				} ,   
@@ -333,8 +340,8 @@ userId = JSON.parse('${UserID}');   ;
 				{ targets : [3 ,6,23,33,35],                    
 			  	  	className : 'dt-custom-td140',      
 			  	  	type: 'string'   
-					} ,       
-				{ targets : [5],                    
+					} ,         
+				{ targets : [5 ],                    
 			  	  	className : 'dt-custom-td160',      
 			  	  	type: 'string'   
 					} ,            
@@ -346,7 +353,7 @@ userId = JSON.parse('${UserID}');   ;
 			  	  	className : 'dt-custom-td300',         
 			  	  	type: 'string'  
 					} ,            
-				{ targets : [  38,39,40],                       
+				{ targets : [  38,39,40,41,42],                       
 			  	  	className : 'dt-custom-td450 p-r-15',      
 			  	  	type: 'string'  
 					} ,   
@@ -406,9 +413,9 @@ userId = JSON.parse('${UserID}');   ;
 					  orderable: false,    
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
-							if(row.LotNo.trim() == "รอจัด Lot"){ 
-								htmlEx = ''; 
-							}
+				   				if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
+									htmlEx = ''; 
+								}
 							else{
 								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.CFMPlanLabDate+ '" autocomplete="off" >';
 							}
@@ -419,9 +426,9 @@ userId = JSON.parse('${UserID}');   ;
 				  orderable: false,
 				   	  render: function (data, type, row) {	
 				   		var htmlEx = '' 
-				   		if(row.LotNo.trim() == "รอจัด Lot"){ 
-							htmlEx = ''; 
-						}
+				   			if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
+								htmlEx = ''; 
+							}
 						else{
 							htmlEx = '<input class="form-control CFMPlanDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanDate" type="text"  value = "' + row.CFMPlanDate+ '" autocomplete="off" >';
 						}
@@ -432,7 +439,7 @@ userId = JSON.parse('${UserID}');   ;
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
-			   		if(row.LotNo.trim() == "รอจัด Lot"){ 
+			   		if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
 						htmlEx = ''; 
 					}
 					else{   
@@ -440,21 +447,36 @@ userId = JSON.parse('${UserID}');   ;
 					}
 					return  htmlEx      
 					}	       
-				} ,    
+				},    
 				{ targets : [ 39 ],     
+				   	  render: function (data, type, row) {	     
+				   		var htmlEx = ''    
+						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.PCRemark+ '" autocomplete="off" >'; 
+						return  htmlEx      
+						}       
+					}
+				,         
+				{ targets : [ 40 ],     
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = ''    
 					htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
 					}       
 				} ,     
-				{ targets : [ 40 ],     
+				{ targets : [ 41 ],     
+			   	  	render: function (data, type, row) {	     
+					var htmlEx = ''    
+					htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
+					return  htmlEx      
+					}       
+				} ,    
+				{ targets : [ 42 ],     
 			   	  	render: function (data, type, row) {	     
 					var htmlEx = ''    
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.StockRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
 					}       
-				} ,         
+				} ,    
 			], 
 			createdRow : function(row, data, index) {
 	// 			$('td', row).eq(22).addClass('bg-color-azure');
@@ -726,8 +748,135 @@ userId = JSON.parse('${UserID}');   ;
 // // 		}
 // // 		else if(columnSelect == 16){
 // // 			jsonMoreThanOneToServer(arrayTmp)	  
-// // 		}   
+// // 		}      
 // 	} ); 
+  
+  $("#MainTable").on("keydown blur",".SwitchRemarkInput", function (e) { 
+		var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();      
+		var rowData = MainTable.row($row).data(); 
+		var oldValue = rowData.SwitchRemark;  
+        var newValue = $(this).val();      
+		 if (event.keyCode === 13) {         
+			 e.stopImmediatePropagation();
+			 e.preventDefault();         
+			 checkReplaced = 1 ;      
+			swal({ 
+				  title: "Are you sure to change SwitchRemark?",
+				  text: "From : "+oldValue+" to "+newValue+" ",
+				  icon: "warning",
+				  buttons: true,  
+				  dangerMode: true,						   																																								  
+				})
+				.then((willDelete) => { 
+				  if (willDelete) {     
+					  rowData.SwitchRemark  = newValue;    
+					  MainTable.row(idx).invalidate() ; 
+// 					  MainTable.row(idx).invalidate().draw();  
+ 				 		var json = createInputDateJsonData(rowData,'SwitchRemark' ); 
+ 			 			var  obj = JSON.parse(json);    
+ 			 			var arrayTmp = [];  
+ 						arrayTmp.push(obj);       
+ 						saveInputDetailToServer(arrayTmp);     
+				  } else { 
+					  rowData.SwitchRemark  = oldValue; 
+					  MainTable.row(idx).invalidate() ; 
+				  }
+			});      
+			checkReplaced= 0;   
+		}                      
+		else if (event.type === 'blur'  && check1 == 0){    
+			 e.stopImmediatePropagation();
+			 e.preventDefault();         
+			 checkReplaced = 1 ;      
+			swal({ 
+				  title: "Are you sure to change SwitchRemark?",
+				  text: "From : "+oldValue+" to "+newValue+" ",
+				  icon: "warning",
+				  buttons: true,  
+				  dangerMode: true,						   																																								  
+				})
+				.then((willDelete) => { 
+				  if (willDelete) {     
+					  rowData.SwitchRemark  = newValue;
+					  MainTable.row(idx).invalidate() ; 
+// 					  MainTable.row(idx).invalidate().draw();  
+ 				 		var json = createInputDateJsonData(rowData,'SwitchRemark'); 
+ 			 			var  obj = JSON.parse(json);      
+ 			 			var arrayTmp = [];  
+ 						arrayTmp.push(obj);       
+ 						saveInputDetailToServer(arrayTmp);     
+				  } else { 
+					  rowData.SwitchRemark  = oldValue;
+					  MainTable.row(idx).invalidate() ;  
+				  }
+			});      
+			checkReplaced= 0;   
+		} 
+	});  
+  $("#MainTable").on("keydown blur",".PCRemarkInput", function (e) { 
+		var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();      
+		var rowData = MainTable.row($row).data(); 
+		var oldValue = rowData.PCRemark;  
+        var newValue = $(this).val();      
+		 if (event.keyCode === 13) {         
+			 e.stopImmediatePropagation();
+			 e.preventDefault();         
+			 checkReplaced = 1 ;      
+			swal({ 
+				  title: "Are you sure to change PCRemark?",
+				  text: "From : "+oldValue+" to "+newValue+" ",
+				  icon: "warning",
+				  buttons: true,  
+				  dangerMode: true,						   																																								  
+				})
+				.then((willDelete) => { 
+				  if (willDelete) {     
+					  rowData.PCRemark  = newValue;    
+					  MainTable.row(idx).invalidate() ; 
+// 					  MainTable.row(idx).invalidate().draw();  
+ 				 		var json = createInputDateJsonData(rowData,'PCRemark' ); 
+ 			 			var  obj = JSON.parse(json);    
+ 			 			var arrayTmp = [];  
+ 						arrayTmp.push(obj);       
+ 						saveInputDetailToServer(arrayTmp);     
+				  } else { 
+					  rowData.PCRemark  = oldValue; 
+					  MainTable.row(idx).invalidate() ; 
+				  }
+			});      
+			checkReplaced= 0;   
+		}                      
+		else if (event.type === 'blur'  && check1 == 0){    
+			 e.stopImmediatePropagation();
+			 e.preventDefault();         
+			 checkReplaced = 1 ;      
+			swal({ 
+				  title: "Are you sure to change PCRemark?",
+				  text: "From : "+oldValue+" to "+newValue+" ",
+				  icon: "warning",
+				  buttons: true,  
+				  dangerMode: true,						   																																								  
+				})
+				.then((willDelete) => { 
+				  if (willDelete) {     
+					  rowData.PCRemark  = newValue;
+					  MainTable.row(idx).invalidate() ; 
+// 					  MainTable.row(idx).invalidate().draw();  
+ 				 		var json = createInputDateJsonData(rowData,'PCRemark'); 
+ 			 			var  obj = JSON.parse(json);      
+ 			 			var arrayTmp = [];  
+ 						arrayTmp.push(obj);       
+ 						saveInputDetailToServer(arrayTmp);     
+				  } else { 
+					  rowData.PCRemark  = oldValue;
+					  MainTable.row(idx).invalidate() ;  
+				  }
+			});      
+			checkReplaced= 0;   
+		} 
+	});  
   $("#MainTable").on("keydown blur",".ReplacedRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
 		var idx = MainTable.row($row).index();      
@@ -747,8 +896,8 @@ userId = JSON.parse('${UserID}');   ;
 				})
 				.then((willDelete) => { 
 				  if (willDelete) {     
-					  rowData.ReplacedRemark  = newValue;MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
+					  rowData.ReplacedRemark  = newValue;
+					  MainTable.row(idx).invalidate() ;   
  				 		var json = createInputDateJsonData(rowData,'ReplacedRemark' ); 
  			 			var  obj = JSON.parse(json);    
  			 			var arrayTmp = [];  
@@ -789,8 +938,7 @@ userId = JSON.parse('${UserID}');   ;
 			});      
 			checkReplaced= 0;   
 		} 
-	});  
-
+	});   
   $("#MainTable").on("keydown blur",".StockRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
 		var idx = MainTable.row($row).index();    
@@ -858,7 +1006,8 @@ userId = JSON.parse('${UserID}');   ;
 					})
 					.then((willDelete) => { 
 					  if (willDelete) {     
-						  rowData.StockRemark  = newValue;MainTable.row(idx).invalidate() ; 
+						  rowData.StockRemark  = newValue;
+						  MainTable.row(idx).invalidate() ; 
 	// 					  MainTable.row(idx).invalidate().draw();  
 	 				 		var json = createInputDateJsonData(rowData,'StockRemark'); 
 	 			 			var  obj = JSON.parse(json);      
@@ -866,7 +1015,8 @@ userId = JSON.parse('${UserID}');   ;
 	 						arrayTmp.push(obj);       
 	 						saveInputDetailToServer(arrayTmp);     
 					  } else { 
-						  rowData.StockRemark  = oldValue;MainTable.row(idx).invalidate() ; 
+						  rowData.StockRemark  = oldValue;
+						  MainTable.row(idx).invalidate() ; 
 	// 					  MainTable.row(idx).invalidate().draw();    
 					  }
 				});      
@@ -987,7 +1137,7 @@ userId = JSON.parse('${UserID}');   ;
 					  if (willDelete) {  
 						  rowData.CFMPlanLabDate  = newValue;
 // 						  MainTable.row(idx).invalidate().draw();  
- MainTable.row(idx).invalidate() ;  
+							MainTable.row(idx).invalidate() ;  
 	 				 		var json = createInputDateJsonData(rowData,'CFMPlanLabDate'); 
 	 			 			var  obj = JSON.parse(json);    
 	 			 			var arrayTmp = [];  
@@ -1178,7 +1328,8 @@ userId = JSON.parse('${UserID}');   ;
 					})     
 					.then((willDelete) => {
 						if (willDelete) {  
-							 rowData.DeliveryDate  = newValue;MainTable.row(idx).invalidate() ; 
+							 rowData.DeliveryDate  = newValue;
+							 MainTable.row(idx).invalidate() ; 
 // 							 MainTable.row(idx).invalidate().draw();  
 							 var json = createInputDateJsonData(rowData,'DeliveryDate'); 
 		 			 			var  obj = JSON.parse(json);    
@@ -1186,7 +1337,8 @@ userId = JSON.parse('${UserID}');   ;
 		 						arrayTmp.push(obj);   
 		 						saveInputDateToServer(arrayTmp);  
 						} else { 
-							 rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
+							 rowData.DeliveryDate  = oldValue;
+							 MainTable.row(idx).invalidate() ; 
 // 							 MainTable.row(idx).invalidate().draw(); 
 						}
 					});    
@@ -1247,7 +1399,8 @@ userId = JSON.parse('${UserID}');   ;
 		 						arrayTmp.push(obj);   
 		 						saveInputDateToServer(arrayTmp);  
 						  } else { 
-							  rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
+							  rowData.DeliveryDate  = oldValue;
+							  MainTable.row(idx).invalidate() ; 
 // 							  MainTable.row(idx).invalidate().draw(); 
 						  }
 						});    
@@ -1379,12 +1532,21 @@ function searchByDetail(){
 // 	   		})
 // 		}
 // 	 else 
-		 if(
-			 (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)
-			 	&& (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-	   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
-	   			dueDate == '')
-	   			)  {      
+// 	console.log(userStatus) 
+		if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
+  			)  { 
+		swal({
+   		    title: 'Warning',
+   		    text: 'Need select some field for search.',
+   		    icon: 'warning',   
+   		    timer: 1000,
+   		    buttons: false,
+   		})
+	}
+	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+  			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
+   			dueDate == ''  )
+  			)  { 
 		swal({
    		    title: 'Warning',
    		    text: 'Need input some field for search.',
@@ -1392,7 +1554,8 @@ function searchByDetail(){
    		    timer: 1000,
    		    buttons: false,
    		})
-	} 
+	}
+
 	else{
 		var json = createJsonData(); 
 	    var  obj = JSON.parse(json);    
@@ -1410,9 +1573,12 @@ function createInputDateJsonData(val,caseSave){
 	var SaleLine = val.SaleLine; 
 	var ProductionOrder = val.ProductionOrder; 
 	var ReplacedRemark = val.ReplacedRemark; 
+	var PCRemark = val.PCRemark; 
 	var StockRemark = val.StockRemark; 
 	var LotNo = val.LotNo; 
 	var Grade = val.Grade; 
+
+	var SwitchRemark = val.SwitchRemark; 
 	var json = '{"ProductionOrder":'+JSON.stringify(ProductionOrder)+ 
 	   ',"CFMPlanLabDate":'+JSON.stringify(CFMPlanLabDate)+  
 	   ',"CFMPlanDate":'+JSON.stringify(CFMPlanDate)+  
@@ -1422,8 +1588,10 @@ function createInputDateJsonData(val,caseSave){
 	   ',"CaseSave": '+JSON.stringify(caseSave)+ 
 	   ',"ReplacedRemark": '+JSON.stringify(ReplacedRemark)+    
 	   ',"StockRemark": '+JSON.stringify(StockRemark)+
+	   ',"PCRemark":'+JSON.stringify(PCRemark)+
 	   ',"Grade": '+JSON.stringify(Grade)+
 	   ',"LotNo": '+JSON.stringify(LotNo)+
+	   ',"SwitchRemark": '+JSON.stringify(SwitchRemark)+
 	   '} ';         
 // 	   console.log(json)   
 	   return json; 
@@ -2005,9 +2173,14 @@ function addUserStatusOption(data ){
 	}  
 	let opt = document.createElement('option');
     opt.appendChild(document.createTextNode(i));
-	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอจัดLot]';
-	 opt.value = 'รอจัดLot';
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอจัด Lot]';
+	 opt.value = 'รอจัด Lot';
 	 sel.appendChild(opt);           
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[ขาย stock]';
+	 opt.value = 'ขาย stock'; 
+	 sel.appendChild(opt); 
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
 		 var resultData = data[i]; 	   

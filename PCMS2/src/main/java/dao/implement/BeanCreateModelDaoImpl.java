@@ -1409,13 +1409,22 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DyeActual") != null) {
 			DyeActual = (String) map.get("DyeActual");
 		}
+		String PCRemark   = "";
+		if (map.get("PCRemark") != null) {
+			PCRemark = (String) map.get("PCRemark");
+		}
+		String SwitchRemark   = "";
+		if (map.get("SwitchRemark") != null) {
+			SwitchRemark = (String) map.get("SwitchRemark");
+		}
 		return new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
 				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
 				DueDate, LotNo, LabNo, LabStatus, CFMPlanLabDate, CFMActualLabDate, CFMCusAnsLabDate, UserStatus,
 				TKCFM, CFMPlanDate, CFMSendDate, CFMAnswerDate, 
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
-				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual);
+				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
+				PCRemark,SwitchRemark);
 	}
 	@Override
 	public InputDateDetail _genInputDateDetail(Map<String, Object> map) {  

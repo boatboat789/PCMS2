@@ -34,25 +34,25 @@ public class FilterLogin implements Filter {
 	      
 //	      boolean passAuthen = false;
 //          boolean isResource = req.getRequestURI().matches(".*(css|jpg|png|gif|js)$"); 
-	      String comeFrom = req.getParameter("comeFrom");
+//	      String comeFrom = req.getParameter("comeFrom");
 	      
 	      if (loggedIn||loginRequest||loginAuthRequest||isStaticResource) {  
 //    	  if (loggedIn||loginRequest||loginAuthRequest) {  
 	    	  chain.doFilter(request, response); 
 	      }
-	      else if(comeFrom != null  ){
-	    	  ses = req.getSession();  
-//	    	  System.out.println(comeFrom);
-	    	  if(comeFrom.equals("PCMS")){ 
-				EmployeeDetail user = new EmployeeDetail( );	
-				user.setId("PCMSDISPLAY");  
-                ses.setAttribute("user", user.getId());
-                ses.setAttribute("userObject", user);
-//	        	        System.out.println("ses : "+ses);
-//	        	        System.out.println("ses.getAttribute(\"user\") : "+ses.getAttribute("user"));
-//	        	        System.out.println("ses.getAttribute(\"permit\") : "+ses.getAttribute("userObject")); 
-	        	} 
-	        }
+//	      else if(comeFrom != null  ){
+//	    	  ses = req.getSession();  
+////	    	  System.out.println(comeFrom);
+//	    	  if(comeFrom.equals("PCMS")){ 
+//				EmployeeDetail user = new EmployeeDetail( );	
+//				user.setId("PCMSDISPLAY");  
+//                ses.setAttribute("user", user.getId());
+//                ses.setAttribute("userObject", user);
+////	        	        System.out.println("ses : "+ses);
+////	        	        System.out.println("ses.getAttribute(\"user\") : "+ses.getAttribute("user"));
+////	        	        System.out.println("ses.getAttribute(\"permit\") : "+ses.getAttribute("userObject")); 
+//	        	} 
+//	        }
 	      else {    
     		 res.sendRedirect(loginURL);
    			}	   

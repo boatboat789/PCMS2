@@ -43,7 +43,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     		+ "Price,\r\n"
     		+ "SaleUnit,\r\n"
     		+ "OrderAmount,\r\n"
-    		+ "SaleQuantity,\r\n"
+    		+ "SaleQuantity,\r\n"   
     		+ "RemainQuantity,\r\n"
     		+ "RemainAmount,\r\n"
     		+ "TotalQuantity,\r\n"    
@@ -54,11 +54,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     		+ "c.BillSendYDQuantity,\r\n"    
     		+ "CustomerDue,\r\n"
     		+ "DueDate,\r\n"  
-//    		+ "LotNo,\r\n"
-    		+  "  CASE  \r\n"
-  			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[LotNo]  \r\n"  
-  			+ "		  ELSE 'รอจัด Lot'  \r\n"
-  			+ "		  END AS [LotNo] ,\r\n"   
+    		+ " b.ProductionOrder,\r\n"   
+    		+ "b.LotNo,\r\n"
+//    		+  "  CASE  \r\n"
+//  			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[LotNo]  \r\n"
+//  			+ "	      WHEN a.[SaleStatus] = 'C' THEN 'ขาย stock'\r\n"  
+//  			+ "		  ELSE 'รอจัด Lot'  \r\n"
+//  			+ "		  END AS [LotNo] ,\r\n"   
     		+ "b.LabNo,\r\n" 
     		+ "LabStatus,\r\n"
     		+ "e.CFMPlanLabDate,\r\n"
@@ -66,22 +68,17 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     		+ " lb.[CFMAnswerDate] as CFMCusAnsLabDate,\r\n"
     		+ "UserStatus ,\r\n"
     		+ "j.CFMDate as TKCFM,\r\n" 
-    		+ "CASE  \r\n"
-    		+ "		WHEN g.[ProductionOrder] is not null THEN g.CFMPlanDate  \r\n"
-    		+ "		ELSE f.CFMPlanDateOne \r\n"
-    		+ "		END AS CFMPlanDate ,  \r\n"
+//    		+ "CASE  \r\n"
+//    		+ "		WHEN g.[ProductionOrder] is not null THEN g.CFMPlanDate  \r\n"
+//    		+ "		ELSE f.CFMPlanDateOne \r\n"
+//    		+ "		END AS CFMPlanDate ,  \r\n"
+    		+ " g.CFMPlanDate AS CFMPlanDate ,  \r\n"
     		+ " CASE  \r\n"
     		+ "		WHEN h.[ProductionOrder] is not null THEN H.DeliveryDate  \r\n"
     		+ "		ELSE b.CFTYPE \r\n"
     		+ "		END AS DeliveryDate , \r\n"
     		+ "d.CFMSendDate,\r\n" 
-    		+ "d.CFMAnswerDate,\r\n"
-    		
-    		
-//    		+ "CFMNumber,\r\n"
-//    		+ "CFMStatus,\r\n"
-//    		+ "CFMRemark,\r\n" 
-
+    		+ "d.CFMAnswerDate,\r\n" 
     		+ "CASE  \r\n"
     		+ "		WHEN i.CFMStatus is not null THEN i.CFMStatus  \r\n"
     		+ "		ELSE d.CFMStatus\r\n"
@@ -115,10 +112,32 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     		+ "		  , CASE WHEN (N.WorkDate is NULL) THEN null \r\n"
 			+ "	    ELSE CAST(DAY(N.WorkDate) AS VARCHAR(2)) + '/' +   CAST(MONTH(N.WorkDate)AS VARCHAR(2))  END AS DyePlan  \r\n"
 			+ "		 , CASE WHEN (O.DyeActual is NULL) THEN null \r\n"
-			+ "	    ELSE CAST(DAY(O.DyeActual) AS VARCHAR(2)) + '/' +   CAST(MONTH(O.DyeActual)AS VARCHAR(2))  END AS DyeActual \r\n"; 
-        
-    private String leftJoinB = " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n";
-	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");  
+			+ "	    ELSE CAST(DAY(O.DyeActual) AS VARCHAR(2)) + '/' +   CAST(MONTH(O.DyeActual)AS VARCHAR(2))  END AS DyeActual \r\n"
+			+ ",PCRemark,q.[SwitchRemark]"; 
+           
+//    private String leftJoinB = " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n";
+    private String leftJoinB =    
+			" left join  ( SELECT a.[SaleOrder] , a.[Saleline]  ,[TotalQuantity] ,[Unit]\r\n"
+			+ " ,[RemAfterCloseOne] ,[RemAfterCloseTwo] ,[RemAfterCloseThree] ,[LabStatus] ,[UserStatus]\r\n"
+			+ " ,a.[DesignFG],a.[ArticleFG],[BookNo],[Center] \r\n"
+			+ " ,[Batch],[LabNo],[RemarkOne],[RemarkTwo],[RemarkThree],[BCAware]\r\n"
+			+ " ,[OrderPuang] ,[RefPrd],[GreigeInDate] ,[BCDate],[Volumn]\r\n"
+			+ " ,[CFdate],[CFType],[Shade],[LotShipping],[BillSendQuantity],[Grade],[DataStatus]\r\n"
+			+ " ,[PrdCreateDate],[GreigeArticle],[GreigeDesign],[GreigeMR],[GreigeKG]\r\n"
+			+ "				 ,CASE  \r\n"
+			+ "						  WHEN b.[ProductionOrder] is not null THEN b.[ProductionOrder]  \r\n"
+			+ "						  WHEN a.[SaleStatus] = 'C' THEN 'ขาย stock'\r\n"
+			+ "						  ELSE 'รอจัด Lot'  \r\n"
+			+ "						  END AS [ProductionOrder]  \r\n"
+			+ "				 ,CASE  \r\n"
+			+ "						  WHEN b.[ProductionOrder] is not null THEN b.[LotNo] \r\n"
+			+ "						  WHEN a.[SaleStatus] = 'C' THEN 'ขาย stock'\r\n"
+			+ "						  ELSE 'รอจัด Lot'  \r\n"
+			+ "						  END AS [LotNo]  \r\n"
+			+ "			from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ "			left join [PCMS].[dbo].[FromSapMainProd] as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder\r\n"
+			+ "			) as b on  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine \r\n";
+    public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");  
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm"); 
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	private String leftJoinC = " left join [PCMS].[dbo].[FromSapMainGrade] as c on b.ProductionOrder = c.ProductionOrder 	 \r\n"; 
@@ -166,12 +185,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
   		  + "				          on a.ProductionOrder = b.ProductionOrder and a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
   		  + "				         and a.[CreateDate] = b.[MaxCreateDate] \r\n"
   		+ "			) as e on e.ProductionOrder = b.ProductionOrder and e.SaleOrder = a.SaleOrder and e.SaleLine = a.SaleLine\r\n"  ;   
-	private String leftJoinF = 
-  		  	" left join (SELECT distinct  a.[ProductionOrder] \r\n"
-  		  	+ "			,max(a.SubmitDate) as CFMPlanDateOne\r\n"
-  		  	+ "			FROM [PCMS].[dbo].[FromSapSubmitDate]  as a \r\n"
-  		  	+ "         where [DataStatus] = 'O' "
-  		  	+ "			group by a.[ProductionOrder] ) as f on b.ProductionOrder = f.ProductionOrder \r\n"  ;   
+//	private String leftJoinF = 
+//  		  	" left join (SELECT distinct  a.[ProductionOrder] \r\n"
+//  		  	+ "			,max(a.SubmitDate) as CFMPlanDateOne\r\n"
+//  		  	+ "			FROM [PCMS].[dbo].[FromSapSubmitDate]  as a \r\n"
+//  		  	+ "         where [DataStatus] = 'O' "
+//  		  	+ "			group by a.[ProductionOrder] ) as f on b.ProductionOrder = f.ProductionOrder \r\n"  ;   
 	private String leftJoinG = 
   		  	" left join ( SELECT distinct    a.[ProductionOrder] \r\n"  
   		  	+ "  			 ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] AS CFMPlanDate \r\n"
@@ -251,6 +270,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "            where a.Operation >= 100 and a.Operation <= 103 \r\n"
 			+ "            ) as O on b.ProductionOrder = O.ProductionOrder\r\n"
 			 ;
+	private String leftJoinP = " left join [PCMS].[dbo].[InputPCRemark] AS P on P.ProductionOrder = b.ProductionOrder and K.SaleOrder = a.SaleOrder and P.SaleLine = a.SaleLine\r\n ";
+	private String leftJoinQ = " left join [PCMS].[dbo].[InputSwitchRemark] as q on a.SaleLine = q.SaleLine and q.SaleOrder = a.SaleOrder  \r\n";
+	private String leftJoinR = " left join [PCMS].[dbo].[InputSwitchRemark] as r on a.SaleLine = r.SaleLine and r.SaleOrder = a.SaleOrder  \r\n"; 
 	public PCMSDetailDaoImpl(Database database) {
 		this.database = database;  
 		this.message = "";     
@@ -325,24 +347,24 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			}
 			where += " ) \r\n"; 
 		}
-		if (userStatusList.size() > 0) {
-//			where += " and b.UserStatus like '" + userStatus + "%'  \r\n";
-			where += " and  ( ( b.ProductionOrder is null and b.UserStatus is null ) or ( b.ProductionOrder is not null and ";
-//			where += " and  ( ";
-			String text = "";
-			for (int i = 0; i < userStatusList.size(); i++) {
-				text = userStatusList.get(i);
-				if(text.equals("รอจัดLot")) {
-					check = 1;
-				}
-				where += " b.UserStatus = '" +text + "' ";
-				if (i != userStatusList.size() - 1) {
-					where += " or ";
-				} ;
-			}
-			where += " 		) \r\n";
-			where += " ) \r\n";
-		}
+//		if (userStatusList.size() > 0) {
+////			where += " and b.UserStatus like '" + userStatus + "%'  \r\n";
+//			where += " and  ( ( b.ProductionOrder is null and b.UserStatus is null ) or ( b.ProductionOrder is not null and ";
+////			where += " and  ( ";
+//			String text = "";
+//			for (int i = 0; i < userStatusList.size(); i++) {
+//				text = userStatusList.get(i);
+//				if(text.equals("รอจัด Lot") || text.equals("ขาย stock")) {
+//					check = 1;
+//				}
+//				where += " b.UserStatus = '" +text + "' ";
+//				if (i != userStatusList.size() - 1) {
+//					where += " or ";
+//				} ;
+//			}
+//			where += " 		) \r\n";
+//			where += " ) \r\n";
+//		}
 		if (divisionList.size() > 0) {  
 			where += " and  ( ";
 			String text = "";
@@ -381,10 +403,49 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				if(i != array.length - 1) { where += " or " ;};
 			}
 			where += " ) \r\n" ; 
-		}    
-		if(check == 0) {   
-			where += "   and b.ProductionOrder is not null \r\n";
+		}   
+//		if (userStatusList.size() > 0) {
+////			where += " and b.UserStatus like '" + userStatus + "%'  \r\n";
+//			where += " and  ( ( b.ProductionOrder is null and b.UserStatus is null ) or ( b.ProductionOrder is not null and ";
+////			where += " and  ( ";
+//			String text = "";
+//			for (int i = 0; i < userStatusList.size(); i++) {
+//				text = userStatusList.get(i);
+//				if(text.equals("รอจัด Lot") || text.equals("ขาย stock")) {
+//					check = 1;
+//				}
+//				where += " b.UserStatus = '" +text + "' ";
+//				if (i != userStatusList.size() - 1) {
+//					where += " or ";
+//				} ;
+//			}
+//			where += " 		) \r\n";
+//			where += " ) \r\n";
+//		}
+			if (userStatusList.size() > 0) {
+			where += " and \r\n" ; 
+			where += "  ( b.ProductionOrder is not null and ( \r\n";
+			String text = "";
+			for (int i = 0; i < userStatusList.size(); i++) {
+				text = userStatusList.get(i); 
+				if(text.equals("รอจัด Lot")  ) { 
+					where += " b.ProductionOrder = '" +text + "' ";
+				}
+				else if( text.equals("ขาย stock")) { 
+					where += " b.ProductionOrder = '" +text + "' ";
+				}
+				else { 
+					where += " b.UserStatus = '" +text + "' ";
+				} 
+				if (i != userStatusList.size() - 1) {
+					where += " or ";   
+				} ;
+			}
+			where += ") 		) \r\n";
 		}
+//		if(check == 0) {   
+//			where += "   and b.ProductionOrder is not null \r\n";
+//		}
 		String sql = "SELECT DISTINCT  "       
 					+ this.select
 					+ " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n " 
@@ -393,7 +454,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ this.leftJoinX     
 					+ this.leftJoinCFMLastD    
 					+ this.leftJoinE
-					+ this.leftJoinF
+//					+ this.leftJoinF
 					+ this.leftJoinG
 					+ this.leftJoinH
 					+ this.leftJoinCFMLastNoStatI
@@ -403,6 +464,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ this.leftJoinM
 					+ this.leftJoinl
 					+ this.leftJoinNToO
+					+ this.leftJoinP
+					+ this.leftJoinQ
 					+ where  
 					+ " and ( c.DataStatus <> 'X'  OR C.DataStatus IS NULL ) "          
 //					+ " and x.ProductionOrder is null "
@@ -418,11 +481,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ "		 inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
 					+ "		 where b.DataStatus <> 'X') as a  \r\n " 
 //					+ this.leftJoinB 
-					+ "  left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"  
+					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"  
 					+ this.leftJoinC	      
 					+ this.leftJoinCFMLastD   
 					+ this.leftJoinE   
-					+ this.leftJoinF
+//					+ this.leftJoinF
 					+ this.leftJoinG   
 					+ this.leftJoinH
 					+ this.leftJoinCFMLastNoStatI    
@@ -430,19 +493,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ this.leftJoinJ
 					+ this.leftJoinK
 					+ this.leftJoinM       
-					+ this.leftJoinl
-					+ this.leftJoinNToO
+					+ this.leftJoinl 
+					+ this.leftJoinNToO 
+					+ this.leftJoinP
+					+ this.leftJoinQ
 					+ where    
 					+ " and ( c.DataStatus <> 'X'  OR C.DataStatus IS NULL ) "      
-					+ " Order by a.CustomerShortName, a.DueDate,b.[ProductionOrder]";
-//					+ " Order by a.SaleOrder, SaleLine,b.ProductionOrder,c.Grade ";      
-//		System.out.println(sql 	);              
+					+ " Order by a.CustomerShortName, a.DueDate,b.[ProductionOrder]";     
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<PCMSSecondTableDetail>(); 
 		for (Map<String, Object> map : datas) {  
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));   	
-		}       
-//		System.out.println("OH IT'K");
+		}        
 		return list;	
 	} 
  
@@ -450,12 +513,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	@Override
 	public ArrayList<PCMSTableDetail> getSaleNumberList() {
 		ArrayList<PCMSTableDetail> list = null;
-		String sql = "SELECT DISTINCT  " + "	   a.SaleNumber\r\n"
-				+ "   ,CASE PATINDEX('%[^0 ]%', a.[SaleNumber]  + ' ‘') \r\n" + "    		 WHEN 0 THEN ''   \r\n"
+		String sql = "SELECT DISTINCT  " 
+				+ "	   a.SaleNumber\r\n"
+				+ "   ,CASE PATINDEX('%[^0 ]%', a.[SaleNumber]  + ' ‘') \r\n" 
+				+ "    		 WHEN 0 THEN ''   \r\n"
 				+ "    		 ELSE SUBSTRING(a.[SaleNumber] , 5, LEN(a.[SaleNumber])) +':'+[SaleFullName]\r\n"
-				+ "    		 END AS [SaleFullName]   " + "   FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n "
-				+ " where SaleNumber <> '00000000'" + " Order by [SaleNumber]";
-//		 
+				+ "    		 END AS [SaleFullName]   " 
+				+ "   FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n "
+				+ " where SaleNumber <> '00000000'" 
+				+ " Order by [SaleNumber]"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<PCMSTableDetail>();
 		for (Map<String, Object> map : datas) {
@@ -509,50 +575,48 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		if(check > 0) {
 			beanInput.setIconStatus("I");
 			beanInput.setSystemStatus("Date : "+planDate+" already confirm.Try to refresh again."); 
-		}
-		
+		}  
 		else {
 			try {    
-					String sql = 
-							  " insert into "
-							+ fromTable
-							+ " ( "
-							+ "		[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[PlanDate]  ,[CreateBy]  , "  //5
-							+ "		[CreateDate] ,[LotNo] " 
-							+ "     ) "//24   
-							+ " 	values(? , ? , ? , ? , ?"//  1
-							+ "			  ,? , ? "
-							+ " ) ;"; 
-						 
-						prepared = connection.prepareStatement(sql);   
-						prepared.setString(1, bean.getProductionOrder());
-						prepared.setString(2, bean.getSaleOrder());
-						prepared.setString(3, saleLine); 
-						if (planDate.equals("undefined") || planDate.equals("")  || !isValidDate(planDate)) {
-							prepared.setNull(4, java.sql.Types.DATE);
-						} 
-						else {
-							date = sdf2.parse(planDate);
-							prepared.setDate(4, convertJavaDateToSqlDate(date) );
-						}   
-						prepared.setString(5, bean.getUserId());
-						prepared.setTimestamp(6, new Timestamp(time));;   
-						prepared.setString(7, bean.getLotNo());
-						prepared.executeUpdate();  
-						if(caseSave.equals("CFMPlanDate")) {
-							beanInput.setIconStatus("I0");
-						}
-						else { 
-							beanInput.setIconStatus("I1");
-						} 
-						beanInput.setSystemStatus("Update Success."); 
-						if(listCount.size() > 0) {
-							beanInput.setCountPlanDate(listCount.get(0).getCountPlanDate()+1);
-						}
-						else { 
-							beanInput.setCountPlanDate(1);
-						}    
-						 
+				String sql = 
+						  " insert into "
+						+ fromTable
+						+ " ( "
+						+ "		[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[PlanDate]  ,[CreateBy]  , "  //5
+						+ "		[CreateDate] ,[LotNo] " 
+						+ "     ) "//24   
+						+ " 	values(? , ? , ? , ? , ?"//  1
+						+ "			  ,? , ? "
+						+ " ) ;"; 
+					 
+					prepared = connection.prepareStatement(sql);   
+					prepared.setString(1, bean.getProductionOrder());
+					prepared.setString(2, bean.getSaleOrder());
+					prepared.setString(3, saleLine); 
+					if (planDate.equals("undefined") || planDate.equals("")  || !isValidDate(planDate)) {
+						prepared.setNull(4, java.sql.Types.DATE);
+					} 
+					else {
+						date = sdf2.parse(planDate);
+						prepared.setDate(4, convertJavaDateToSqlDate(date) );
+					}   
+					prepared.setString(5, bean.getUserId());
+					prepared.setTimestamp(6, new Timestamp(time));;   
+					prepared.setString(7, bean.getLotNo());
+					prepared.executeUpdate();  
+					if(caseSave.equals("CFMPlanDate")) {
+						beanInput.setIconStatus("I0");
+					}
+					else { 
+						beanInput.setIconStatus("I1");
+					} 
+					beanInput.setSystemStatus("Update Success."); 
+					if(listCount.size() > 0) {
+						beanInput.setCountPlanDate(listCount.get(0).getCountPlanDate()+1);
+					}
+					else { 
+						beanInput.setCountPlanDate(1);
+					}     	 
 			}catch (SQLException | ParseException e) {
 				System.err.println(e.getMessage());
 				beanInput.setIconStatus("E");
@@ -583,10 +647,20 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			valueChange = bean.getStockRemark(); 
 			tableName = "[InputStockRemark]";
 			bean = this.upSertRemarkCaseWithGrade(tableName,valueChange,bean);
-		}
+		}  
+		else if(caseSave.equals("PCRemark")){
+			valueChange = bean.getPCRemark();
+			tableName = "[InputPCRemark]";
+			bean = this.upSertRemarkCaseOne(tableName,valueChange,bean);
+		} 
 		else if(caseSave.equals("ReplacedRemark")){
 			valueChange = bean.getReplacedRemark();
 			tableName = "[InputReplacedRemark]";
+			bean = this.upSertRemarkCaseOne(tableName,valueChange,bean);
+		}     
+		else if(caseSave.equals("SwitchRemark")){
+			valueChange = bean.getSwitchRemark();
+			tableName = "[InputSwitchRemark]";
 			bean = this.upSertRemarkCaseOne(tableName,valueChange,bean);
 		} 
 		poList.clear();
@@ -742,18 +816,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and "
 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and "
 		  + "       a.[SaleLine] = '" + saleLine+ "' "
-		  + " union \r\n "
-		  + " SELECT [ProductionOrder]\r\n"
-		  + "      ,[SaleOrder]\r\n"
-		  + "      ,[SaleLine]\r\n"
-		  + "      ,SubmitDate as [PlanDate]\r\n"  
-		  + "      ,'' AS [CreateBy]\r\n"
-		  + "      ,null AS [CreateDate]\r\n"
-	      + "	    , '0:SAP' as InputFrom \r\n"
-	      + "   ,'' AS LotNo \r\n"
-		  + " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n" 
-		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and SubmitDate is not null "
-  		  + "   and [DataStatus] = 'O' "
+//		  + " union \r\n "
+//		  + " SELECT [ProductionOrder]\r\n"
+//		  + "      ,[SaleOrder]\r\n"
+//		  + "      ,[SaleLine]\r\n"
+//		  + "      ,SubmitDate as [PlanDate]\r\n"  
+//		  + "      ,'' AS [CreateBy]\r\n"
+//		  + "      ,null AS [CreateDate]\r\n"
+//	      + "	    , '0:SAP' as InputFrom \r\n"
+//	      + "   ,'' AS LotNo \r\n"
+//		  + " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n" 
+//		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and SubmitDate is not null "
+//  		  + "   and [DataStatus] = 'O' "
 		  + "    ORDER BY InputFrom ,CreateDate desc ";
 				
 		 

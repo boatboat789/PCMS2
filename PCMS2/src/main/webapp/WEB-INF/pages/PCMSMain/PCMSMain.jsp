@@ -1144,8 +1144,18 @@ function searchByDetail(){
 // 	}
 // 	else if( saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
 // 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {    
-	 if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)
-	 	&& (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+	console.log(userStatus) 
+	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
+  			)  { 
+		swal({
+   		    title: 'Warning',
+   		    text: 'Need select some field for search.',
+   		    icon: 'warning',
+   		    timer: 1000,
+   		    buttons: false,
+   		})
+	}
+	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
    			dueDate == ''  )
   			)  { 
@@ -1526,7 +1536,7 @@ function setModalDetail(data){
 	document.getElementById("input_remarkAfterCloseCM").value = innnerText.RemAfterCloseOne+" "+innnerText.RemAfterCloseTwo+" "+innnerText.RemAfterCloseThree;    
 }    
 function goToLBMS(tblData,pUserId,data){     
-	let obj = createEncryptObj(pUserId);      
+// 	let obj = createEncryptObj(pUserId);      
 	var prdOrder = tblData[0].ProductionOrder
 	var article = tblData[0].ArticleFG 
 	var color = tblData[0].Color 
@@ -1534,7 +1544,8 @@ function goToLBMS(tblData,pUserId,data){
   	    url: urlLBMS,
   	    type : 'GET',   
   	    data : { 
-  	    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+  	    	"comeFrom": data.Encrypted  ,   
+//   	        "comeFrom": "PCMS"
 	    	},   
   	    success : function(data) {   
 //   	    	var url = "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory"; 
@@ -1552,7 +1563,7 @@ function goToLBMS(tblData,pUserId,data){
 // 					tab.document.getElementById('byPrdTable_filter').value = prdOrder  ;
 // 					tab.$("#byPrdTable_filter input").value(prdOrder);     
 					tab.$('#byPrdTable').DataTable().search(prdOrder).draw();
-					},1000);                      
+					},500);                      
 // 				console.log( tab.$('#byPrdTable').DataTable()  )  
    	    	};     
 	   		tab.addEventListener('load', (event) => { 
@@ -1573,7 +1584,8 @@ function goToSFC(tblData,pUserId,data){
 	    url: urlSFC,
 	    type : 'GET',      
 	    data : {     
-			"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+			"comeFrom": data.Encrypted  ,   
+// 		    "comeFrom":"PCMS"
 	    },               
 	    success : function(data) {     
   	    	var url = urlSFCObj; 
@@ -1588,13 +1600,15 @@ function goToSFC(tblData,pUserId,data){
 function goToInspect(tblData,pUserId,data){ 
 // 	let obj = createEncryptObj(pUserId);    
 	var prdOrder = tblData[0].ProductionOrder
+// 	console.log(tblData[0].ProductionOrder,data.Encrypted)
 	$.ajax({
 // 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
-	    url:urlInspect,
+	    url: urlInspect,
 	    type : 'GET',      
 // 	    async : false,
 	    data : {
-	    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+	    	"comeFrom": data.Encrypted  ,      	
+// 	    	"comeFrom": "PCMS"
 	    },    
 	    success : function(data) { 
 // 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
@@ -1609,7 +1623,7 @@ function goToInspect(tblData,pUserId,data){
 // 	test3T(); 
 }  
 function goToQCMS(tblData,pUserId,data){ 
-	let obj = createEncryptObj(pUserId);    
+// 	let obj = createEncryptObj(pUserId);    
 		var article = tblData[0].ArticleFG
 		var lotNo = tblData[0].LotNo
 		var color = tblData[0].Color 
@@ -1619,7 +1633,8 @@ function goToQCMS(tblData,pUserId,data){
 		    type : 'GET',      
 //	 	    async : false,
 		    data : {    
-		    	"comeFrom": data.Encrypted  ,   // 	    	"comeFrom": "PCMS"
+		    	"comeFrom": data.Encrypted  ,   
+// 		    		    	"comeFrom": "PCMS"
 		    },    
 		    success : function(data) { 
 //	 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
@@ -1629,7 +1644,10 @@ function goToQCMS(tblData,pUserId,data){
 		    	      tab.document.getElementById('article').value = article  ;  //'S2A001'
 		    	      tab.document.getElementById('lotNumber').value = lotNo  ;  //'S2A001'
 		    	      tab.document.getElementById('color').value = color  ;  //'S2A001' 
-		    	      tab.document.getElementById('btnSearchRequest').click();       
+		    	      setTimeout(function(){     
+  
+			    	      	tab.document.getElementById('btnSearchRequest').click();  
+						},500);         
 	    	    };      
 		    }    
 		});      
@@ -1833,13 +1851,17 @@ function addUserStatusOption(data ){
 	var sel = document.getElementById("multi_userStatus"); 
 	for (i = sel.length - 1; i >= 0; i--) {
 		sel.remove(i);
-	}  
+	}     
 	 let opt = document.createElement('option');
      opt.appendChild(document.createTextNode(i));
-	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอจัดLot]';
-	 opt.value = 'รอจัดLot';
-	 sel.appendChild(opt);          	  
-	     
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอจัด Lot]';
+	 opt.value = 'รอจัด Lot';
+	 sel.appendChild(opt);       
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[ขาย stock]';
+	 opt.value = 'ขาย stock'; 
+	 sel.appendChild(opt);           
 	var size = data.length; 
 	for (var i = 0; i < size; i++) {		   
 		 var resultData = data[i]; 	   

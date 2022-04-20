@@ -8,6 +8,7 @@ import dao.implement.DataImportDyeingDaoImpl;
 import dao.implement.DataImportFinishingDaoImpl;
 import dao.implement.DataImportGoodReceiveDaoImpl;
 import dao.implement.DataImportInspectDaoImpl;
+import dao.implement.DataImportMainBillBatchDaoImpl;
 import dao.implement.DataImportMainGradeDaoImpl;
 import dao.implement.DataImportMainProdDaoImpl;
 import dao.implement.DataImportMainProdSaleDaoImpl;
@@ -57,6 +58,8 @@ public class FtpTaskRunner {
    private DataImportDao importerMainSale;
    private DataImportDao importerMainGrade;
    private DataImportDao importerGoodReceive;
+   
+   private DataImportDao importerBillBatch;
    public FtpTaskRunner(Database database, FtpReceive ftp) {
       this.ftp = ftp;
       this.user = new UserDetail("SYSTEM", ""); 
@@ -80,29 +83,32 @@ public class FtpTaskRunner {
       this.importerMainSale = new DataImportMainSaleDaoImpl(database, ftp); 
       this.importerMainGrade = new DataImportMainGradeDaoImpl(database, ftp); 
       this.importerGoodReceive = new DataImportGoodReceiveDaoImpl(database, ftp); 
+      this.importerBillBatch = new DataImportMainBillBatchDaoImpl(database, ftp); 
    } 
    public void loadFTP() {
 	   System.out.println("PCMS2 :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
-	   this.importerNC.loadDataFTP(this.user);
-	   this.importerReceipe.loadDataFTP(this.user);
-	   this.importerSubmitDate.loadDataFTP(this.user);
-	   this.importerSaleInput.loadDataFTP(this.user);
-	   this.importerSale.loadDataFTP(this.user);
-	   this.importerCFM.loadDataFTP(this.user);
-	   this.importerWaitTest.loadDataFTP(this.user);
-	   this.importerWorkInLab.loadDataFTP(this.user);
-	   this.importerSendTestQC.loadDataFTP(this.user);
-	   this.importerPacking.loadDataFTP(this.user); 
-	   this.importerInspect.loadDataFTP(this.user);  
-	   this.importerFinishing.loadDataFTP(this.user);
-	   this.importerDyeing.loadDataFTP(this.user);
-	   this.importerPreset.loadDataFTP(this.user);
-	   this.importerPO.loadDataFTP(this.user);   
-	   this.importerMainProdSale.loadDataFTP(this.user);
-	   this.importerMainProd.loadDataFTP(this.user);
-	   this.importerMainSale.loadDataFTP(this.user); 
-	   this.importerMainGrade.loadDataFTP(this.user);
-	   this.importerGoodReceive.loadDataFTP(this.user);
-//	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
+//	   this.importerNC.loadDataFTP(this.user);	
+//	   this.importerReceipe.loadDataFTP(this.user);
+//	   this.importerSubmitDate.loadDataFTP(this.user);
+//	   this.importerSaleInput.loadDataFTP(this.user);
+//	   this.importerSale.loadDataFTP(this.user);
+//	   this.importerCFM.loadDataFTP(this.user);
+//	   this.importerWaitTest.loadDataFTP(this.user);
+//	   this.importerWorkInLab.loadDataFTP(this.user);
+//	   this.importerSendTestQC.loadDataFTP(this.user);
+//	   this.importerPacking.loadDataFTP(this.user); 	
+//	   this.importerInspect.loadDataFTP(this.user);  
+//	   this.importerFinishing.loadDataFTP(this.user);
+//	   this.importerDyeing.loadDataFTP(this.user);	
+//	   this.importerPreset.loadDataFTP(this.user);
+//	   this.importerPO.loadDataFTP(this.user);   
+	   
+//	   this.importerMainProd.loadDataFTP(this.user);		
+//	   this.importerMainSale.loadDataFTP(this.user); 
+//	   this.importerMainProdSale.loadDataFTP(this.user);
+//	   this.importerMainGrade.loadDataFTP(this.user);
+//	   this.importerGoodReceive.loadDataFTP(this.user);
+	   this.importerBillBatch.loadDataFTP(this.user);
+	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
    } 
 }
