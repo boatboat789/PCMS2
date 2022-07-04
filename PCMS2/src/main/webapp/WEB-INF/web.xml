@@ -10,8 +10,7 @@
 	<display-name>Production Control Monitoring System</display-name>
 <!--  
     Context parameter
---> 
-
+-->  
     <context-param>  
         <param-name>APP_ENCODING</param-name>
         <param-value>UTF-8</param-value>

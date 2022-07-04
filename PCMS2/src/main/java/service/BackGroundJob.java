@@ -2,14 +2,11 @@ package service;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Date;
-
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import entities.SORDetail;
 import info.FtpSapInfo;
 import info.SqlInfo;
 import model.SORModel;
@@ -26,7 +23,8 @@ public class BackGroundJob {
 	private ServletContext context; 
 	public BackGroundJob() {  } 
 //	@Scheduled(fixedDelay = 10000)       
-//	@Scheduled(cron = "0 4/10 * * * *")    
+	@Scheduled(cron = "0 4/10 * * * *")    
+//	@Scheduled(cron = "0 4/10 0-22 * * *")    
 	public void sortBackGround1() {	
 		SORModel model = new SORModel();
 		model.upSertSORToPCMS(); 
@@ -45,7 +43,7 @@ public class BackGroundJob {
 		 
 	}     
 //	@Scheduled(fixedDelay = 10000)     
-//	@Scheduled(cron = "0 0 1 * * *")    
+	@Scheduled(cron = "0 0 1 * * *")    
 	public void sortBackGroundTwo() { 
 		SORModel model = new SORModel();
 		model.upSertSORToPCMS();

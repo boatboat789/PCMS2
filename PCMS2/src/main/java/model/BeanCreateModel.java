@@ -18,11 +18,13 @@ import entities.PODetail;
 import entities.PackingDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
+import entities.ReplacedProdOrderDetail;
 import entities.SORDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
+import entities.SwitchProdOrderDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 
@@ -138,6 +140,16 @@ public class BeanCreateModel {
 
 	public PCMSTableDetail _genSearchTableDetail(Map<String, Object> map) {
 		PCMSTableDetail bean = this.dao._genSearchTableDetail(map);
+		return bean;
+	}
+
+	public ReplacedProdOrderDetail _genReplacedProdOrderDetail(Map<String, Object> map) {
+		ReplacedProdOrderDetail bean = this.dao._genReplacedProdOrderDetail(map);
+		return bean;
+	}
+
+	public SwitchProdOrderDetail _genSwitchProdOrderDetail(Map<String, Object> map) {
+		SwitchProdOrderDetail bean = this.dao._genSwitchProdOrderDetail(map);
 		return bean;
 	}
 }

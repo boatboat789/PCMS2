@@ -115,12 +115,20 @@ body {
 .bg-idle{
     background-color: #6c757d52 ;
 }   
+
 .border-sketch{      
     border: 3px solid #333333; 
     border-radius: 2% 6% 5% 4% / 1% 1% 2% 4%;  
     position: relative; 
+}       
+.btn-cancelSW{      	
+    font-size: 13px;
+    font-weight: bold;      
+} 
+.btn-cancelRP{
+    font-size: 13px;
+    font-weight: bold;
 }
- 
 .content-split{
     border: 2px solid #5B5B5B;
     padding: 20px;

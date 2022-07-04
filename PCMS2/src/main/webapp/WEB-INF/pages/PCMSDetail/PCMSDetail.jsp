@@ -1,4 +1,5 @@
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+ 
+ <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -9,13 +10,12 @@
 	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  
 	<title>PCMS - Detail</title>            	               
 	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>          
-		<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
-		<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
+	<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
+	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
 </head>          
 <body>       	     
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>            
-<%--     <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>        --%>
     <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>      
 	<div id="wrapper-center" class="row" style="margin: 0 5px;">      
 		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="    font-size: 12.5px;padding: 0px;margin: 0px 0px;    " >        
@@ -49,8 +49,8 @@
 				                <th class="row-table" style="vertical-align: middle;">Lab No </th> 
 				                <th class="row-table" style="vertical-align: middle;">Lab Status</th> 
 				                <th class="row-table" style="vertical-align: middle;">Lot </th>   
-				                 <th class="row-table" style="vertical-align: middle;">DyePlan </th> 
-				                 <th class="row-table" style="vertical-align: middle;">DyeActual </th> 
+			                 	<th class="row-table" style="vertical-align: middle;">DyePlan </th> 
+			                 	<th class="row-table" style="vertical-align: middle;">DyeActual </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันนัด<span class="c"style="display: block;">CFM LAB</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันส่ง<span class="c"style="display: block;"> CFM LAB</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันที่ลูกค้า <span class="c"style="display: block;"> ตอบ LAB</span> 	 </th> 
@@ -68,6 +68,7 @@
 				                    
 				                <th class="row-table" style="vertical-align: middle;">SwitchRemark </th>          
 				                <th class="row-table" style="vertical-align: middle;">StockRemark </th>  
+				                <th class="row-table" style="vertical-align: middle;">StockLoad </th>  
 				        	</tr>     
 				        </thead>       	        
 				        <tbody>       	
@@ -84,7 +85,8 @@
     <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include>  
 	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/InputDateDetail/modalMain.jsp"></jsp:include>  
-	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/LockColumnDetail/LockColumnDetail.jsp"></jsp:include>  
+	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/LockColumnDetail/LockColumnDetail.jsp"></jsp:include>   
+	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/RemarkSWModal/modalMain.jsp"></jsp:include>  
 </body>               
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>  
 <script src="<c:url value="/resources/js/General.js" />"></script>     
@@ -122,6 +124,7 @@ var soTmpExcel ;
 var soLineTmpExcel;
 var caseDupli;
 var InputDateTable ;
+var SWMainTable ;
 var collapsedGroups = {};        
 var columnsHeader  = [];
 var domain = "http://"+window.location.hostname+":8080"; 
@@ -305,15 +308,19 @@ userId = JSON.parse('${UserID}');   ;
 				    {"data" : "ReplacedRemark","title":"ReplacedRemark"},                             //40
 				    {"data" : "SwitchRemark","title":"SwitchRemark"},                                   //41
 				    {"data" : "StockRemark","title":"StockRemark"},                                   //42
+				    {"data" : "StockLoad","title":"StockLoad"},                                   //43
 
 				    
 			],        	             
-			columnDefs :  [	   
-				{ targets : [ 4,20 , 21,28 ,37 ],                    
+			columnDefs :  [	
+			    { targets: [ 1 ],
+		          orderData: [ 1, 2,24 ]  
+		        },   	
+				{ targets : [ 4,20 , 21,28 ,37 ],                        
 				  	  className : 'dt-custom-td80',    	     
 				  	  type: 'date-euro'  
 					} ,                              
-				{ targets : [ 11,12,13,14,22,24,29  ],                        
+				{ targets : [ 11,12,13,14,22,24,29 ,32 ,41],                        
 				  	  className : 'dt-custom-td100',    
 				  	  type: 'string'     
 				} ,   
@@ -334,7 +341,7 @@ userId = JSON.parse('${UserID}');   ;
 			  	  type: 'date-euro'  
 				} ,   
 				{ targets : [ 36 ],                      
-			  	  className : 'DeliveryDateParent dt-custom-td80',       
+			  	  className : 'DeliveryDateParent dt-custom-td100',       
 			  	  type: 'date-euro'  
 				} ,   
 				{ targets : [3 ,6,23,33,35],                    
@@ -353,10 +360,22 @@ userId = JSON.parse('${UserID}');   ;
 			  	  	className : 'dt-custom-td300',         
 			  	  	type: 'string'  
 					} ,            
-				{ targets : [  38,39,40,41,42],                       
+				{ targets : [  38,39,40 ,42,43],                       
 			  	  	className : 'dt-custom-td450 p-r-15',      
 			  	  	type: 'string'  
 					} ,   
+					{ targets:[1]  ,       
+						render: function (data, type, row) {	     
+							let html = '<div name="n_'+row.SaleOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.SaleOrder+'</div>'
+							return  html; 
+					   	  }    
+					},  
+					{ targets:[2]  ,            
+						render: function (data, type, row) {	     
+							let html = '<div name="n_'+row.SaleLine+' data-toggle="tooltip"  title="' + row.TypePrd + '"> '+row.SaleLine+'</div>'
+							return  html; 
+					   	  }    
+					},  
 				{ targets : [ 11 ],            
 			   	  render: function (data, type, row) {	   
 						var htmlEx = '';  
@@ -408,12 +427,19 @@ userId = JSON.parse('${UserID}');   ;
 				   		}   
 						return  htmlEx
 				   	  }    
-					} ,  
+					} , 
+					         	
+					{ targets:[24]  ,       
+						render: function (data, type, row) {	     
+							let html = '<div name="n_'+row.LotNo+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.LotNo+'</div>'
+							return  html; 
+					   	  }    
+					},  
 				{ targets : [ 27 ],    
 					  orderable: false,    
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
-				   				if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
+				   				if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"		){ 
 									htmlEx = ''; 
 								}
 							else{
@@ -425,48 +451,71 @@ userId = JSON.parse('${UserID}');   ;
 				{ targets : [ 31 ],    
 				  orderable: false,
 				   	  render: function (data, type, row) {	
-				   		var htmlEx = '' 
-				   			if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
-								htmlEx = ''; 
-							}
-						else{
-							htmlEx = '<input class="form-control CFMPlanDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanDate" type="text"  value = "' + row.CFMPlanDate+ '" autocomplete="off" >';
-						}
-						return  htmlEx
+// 				   		var htmlEx = '' 
+// 				   			if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock"	){ 
+// 								htmlEx = ''; 
+// 							}
+// 						else{
+// 							htmlEx = '<input class="form-control CFMPlanDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanDate" type="text"  value = "' + row.CFMPlanDate+ '" autocomplete="off" >';
+// 						} 
+						return  row.CFMPlanDate
 				   	  }    
-					} ,  
+					} ,    
 				{ targets : [ 36 ],    
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
-			   		if(row.LotNo.trim() == "รอจัด Lot"	 || row.LotNo.trim() == "ขาย stock"	){ 
+			   		if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	){ 
 						htmlEx = ''; 
 					}
 					else{   
 						htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.DeliveryDate+ '" autocomplete="off" >';
 					}
-					return  htmlEx      
+					return  htmlEx           
 					}	       
-				},    
+				},        
 				{ targets : [ 39 ],     
 				   	  render: function (data, type, row) {	     
 				   		var htmlEx = ''    
 						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.PCRemark+ '" autocomplete="off" >'; 
 						return  htmlEx      
 						}       
-					}
+					}       
 				,         
 				{ targets : [ 40 ],     
 			   	  render: function (data, type, row) {	     
-			   		var htmlEx = ''    
-					htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
-					return  htmlEx      
+			   		var htmlEx = '';
+			   		if( ( row.TypePrd == "Replaced" && row.TypePrdRemark == "MAIN")  || ( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN") ){ 
+// 						htmlEx = '<button type="button" class="btn btn-warning btn-cancelSW">ยกเลิกโยกขาย</button>'; 
+						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
+					}         
+			   		else if(row.LotNo  == "รอจัด Lot"	  || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	|| row.LotNo  == "" ){ 
+			   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
+					} 
+					else if(row.TypePrd == "Switch" || row.TypePrd == "Replaced" || row.TypePrd == "OrderPuang" || row.TypePrdRemark == "SUB" || row.TypePrdRemark == ""){ 
+						htmlEx = ''; 
+					}         
+					else{   
+						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
+					}
+			   		return  htmlEx          
 					}       
 				} ,     
-				{ targets : [ 41 ],     
-			   	  	render: function (data, type, row) {	     
-					var htmlEx = ''    
-					htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
+				{ targets : [ 41 ],         
+			   	  	render: function (data, type, row) {	          
+					var htmlEx = ''           
+					if( ( row.TypePrd == "Switch" && row.TypePrdRemark == "MAIN")  || ( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN") ){ 
+// 						htmlEx = '<button type="button" class="btn btn-warning btn-cancelSW">ยกเลิกโยกขาย</button>'; 
+						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
+					}        
+					else if(row.TypePrd == "Replaced" || row.TypePrd == "OrderPuang"
+							||row.LotNo == "รอจัด Lot"	 || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	
+							|| row.TypePrdRemark == "SUB" || row.TypePrdRemark == ""){ 
+						htmlEx = ''; 
+					}     
+					else{   
+						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
+					}
 					return  htmlEx      
 					}       
 				} ,    
@@ -475,16 +524,44 @@ userId = JSON.parse('${UserID}');   ;
 					var htmlEx = ''    
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.StockRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
-					}       
-				} ,    
+					}         
+				} ,        { targets : [ 43 ],     
+			   	  	render: function (data, type, row) {	     
+						var htmlEx = ''    
+						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="30"  name="StockLoadInput" type="text"  value = "' + row.StockLoad+ '" autocomplete="off" >'; 
+						return  htmlEx      
+						}       
+					} ,          
 			], 
 			createdRow : function(row, data, index) {
-	// 			$('td', row).eq(22).addClass('bg-color-azure');
-	//   	        $('td', row).eq(27).addClass('bg-color-azure');    
+    // 				$('td', row).eq(22).addClass('bg-color-azure');  
+	//   	        $('td', row).eq(27).addClass('bg-color-azure');        
 	//   	        $('td', row).eq(31).addClass('bg-color-azure'); 
+	     		
+// 				if (data["TypePrd"] == "OrderPuang" ) { $(row).addClass('bg-color-azure'); } 
 	// 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
 	// 			else if (data["OperationStartDate"] != "") { $(row).addClass('bg-start-im'); } 
-				if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
+	
+				if(mapsDataHeader.size != 0){       
+					if (data["TypePrd"] == "OrderPuang" ) { 	
+						$('td', row).eq(mapsDataHeader.get("SaleOrder")).addClass('bg-orderpuang');
+						$('td', row).eq(mapsDataHeader.get("SaleLine")).addClass('bg-orderpuang');
+						$('td', row).eq(mapsDataHeader.get("LotNo")).addClass('bg-orderpuang');
+					}  
+					else if (data["TypePrd"] == "Switch" ) { 	
+						$('td', row).eq(mapsDataHeader.get("SaleOrder")).addClass('bg-switch');      
+						$('td', row).eq(mapsDataHeader.get("SaleLine")).addClass('bg-switch');
+						$('td', row).eq(mapsDataHeader.get("LotNo")).addClass('bg-switch');     
+					}
+					else if (data["TypePrd"] == "Replaced" ) { 	
+						$('td', row).eq(mapsDataHeader.get("SaleOrder")).addClass('bg-replaced');
+						$('td', row).eq(mapsDataHeader.get("SaleLine")).addClass('bg-replaced');
+						$('td', row).eq(mapsDataHeader.get("LotNo")).addClass('bg-replaced');
+					}
+					$('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');
+				}
+				
+// 				if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
 			},     
 			drawCallback: function( settings ){  },   
 			initComplete: function () { }  
@@ -543,6 +620,39 @@ userId = JSON.parse('${UserID}');   ;
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
 	});   
+	SWMainTable = $('#SWMainTable').DataTable({  
+    	scrollY: '100px',            
+    	scrollX: true,           
+    	paging: false,      
+//  	    select : true,               
+//  	 	scrollCollapse: true,            
+//  	   	orderCellsTop : true,
+// 		orderClasses : false,     	
+		lengthChange: false,         	  
+		columns : 	
+ 	   		[   {"data" : "TypePrd"  },               
+			    {"data" : "ProductionOrder"  },     
+			    {"data" : "SwitchRemark"     },         
+		],        	         
+		columnDefs :  [   
+			{ targets : [0,1, 2 ], type: 'string'      
+			} ,         
+			{ targets : [ 2 ],     
+			   	  render: function (data, type, row) {	     
+			   		var htmlEx = '';
+			   		if(row.TypePrd == "MAIN"  ){  
+			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
+			   			}
+					else{   
+						 htmlEx = '';
+					}
+			   		return  htmlEx      
+				}       
+			} ,     
+		],        
+		ordering: false,
+		 createdRow : function(row, data, index) {      },   
+ 	 });  
     InputDateTable = $('#InputDateTable').DataTable({  
     	scrollY:       '400px',        
     	scrollX: true,          
@@ -575,6 +685,7 @@ userId = JSON.parse('${UserID}');   ;
 // 			 $(row).addClass("data-custom-padding0505");
 		 },   
  	 });  
+    
     InputDateTable.on( 'order.dt search.dt', function () {
     	InputDateTable.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             cell.innerHTML = i+1;
@@ -616,8 +727,9 @@ userId = JSON.parse('${UserID}');   ;
 // 	addUserStatusOption(userStatusList );     
 // 	$('#SL_userStatus').selectpicker('val', userStatusList); 
 	
-	
-	$("#MainTable_filter").hide();      
+	    
+	$("#MainTable_filter").hide();    
+	$("#SWMainTable_filter").hide();      
 // 	$("#MainTable_info").hide();      
 	  
 	$("#InputDateTable_filter").hide();  
@@ -625,22 +737,17 @@ userId = JSON.parse('${UserID}');   ;
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
     	MainTable.columns.adjust();  
     	InputDateTable.columns.adjust();  
+    	SWMainTable.columns.adjust();  
     });         
     $('.modal').on('shown.bs.modal', function() {   
 		MainTable.columns.adjust();  
 		InputDateTable.columns.adjust();  
+		SWMainTable.columns.adjust();  
 	})   	     
  //--------------------------------------- SEARCH ----------------------------------------------
- 	$('#btn_lockColumn').on( 'click', function () {     
-//  	   	$("#submit_button").click()  
-//     	searchByDetail();   
-// 		 var selectedItem = $('#multi_colVis').val();    // get selected list  
-// 		$('#multi_lockCol').selectpicker();         
-// 		 var userStatusList = innnerText.UserStatus.split('|');  
-// 	 	$('#multi_lockCol').selectpicker('val', selectedItem);         
+ 	$('#btn_lockColumn').on( 'click', function () {              
  		$('#multi_lockCol').selectpicker('refresh');       
- 		$('#modalLockColumnDetail').modal('show');            
-//  		MainTable.colReorder.reset();    
+ 		$('#modalLockColumnDetail').modal('show');       
  	} );   
     $('#btn_setLockCol').on( 'click', function () {     
 	    var selectedItem = $('#multi_lockCol').val();    // get selected list  
@@ -688,7 +795,7 @@ userId = JSON.parse('${UserID}');   ;
 	     loadDefault();
 	} );
  	$('#btn_clear').on( 'click', function () {       
-	     clearInput();
+	     clearInput();   
 	 	} );  
 	$('#save_col_button').on( 'click', function () {      
 // 		MainTable.colReorder.reset();         
@@ -725,11 +832,26 @@ userId = JSON.parse('${UserID}');   ;
  	$('#btn_colSetting').on( 'click', function () {      
 //  		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
  		$('#modalColSetting').modal('show');    
- 	} );      
-    $('#btn_download').on( 'click', function () {      
+ 	} );          
+    $('#btn_download').on( 'click', function () {           
     	var ObjMarkup = MainTable.data().toArray(); 
-    	exportCSV(ObjMarkup)            
+    	exportCSV(ObjMarkup)                 
  	} );   
+//     $('#MainTable tbody ').on( 'click', '.btn-cancelSW', function () { 
+//         var $row = $(this).parents("tr");
+// 		var idx = MainTable.row($row).index();  
+// 		var rowData = MainTable.row($row).data(); 
+// // 		var oldValue = rowData.SwitchRemark.trim();  
+// // 		var prodOrder = rowData.ProductionOrder.trim();  
+// //         var newValue = $(this).val().trim();               
+// 		var json = createInputDateJsonData(rowData,'SWCancel'); 
+// 		var  obj = JSON.parse(json);       
+// 		var arrayTmp = [];  
+// 		arrayTmp.push(obj);        
+// 		getSwitchProdOrderListByRowProd(arrayTmp);         
+// // 		MainTable.rows(idx).remove().draw(false);        
+//     } );  
+    
   //--------------------------------------- SEARCH ----------------------------------------------
 //     MainTable.on( 'autoFill', function ( e, datatable, cells ) {   
 // // 		var arrayTmp = []
@@ -737,7 +859,7 @@ userId = JSON.parse('${UserID}');   ;
 // // 		var columnSelect ;
 // // 	    for (i = 0; i < cells.length; i++) { 
 // // 	      var data = MainTable.row(cells[i][0].index.row).data(); 
-// // 	      arrayTmp.push(data);   
+// // 	      arrayTmp.push(data);   	
 // // 	      columnSelect = cells[i][0].index.column;
 // // 	    }   
 // // 		if(columnSelect == 14){
@@ -753,67 +875,85 @@ userId = JSON.parse('${UserID}');   ;
   
   $("#MainTable").on("keydown blur",".SwitchRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();      
+		var idx = MainTable.row($row).index();  
 		var rowData = MainTable.row($row).data(); 
-		var oldValue = rowData.SwitchRemark;  
-        var newValue = $(this).val();      
-		 if (event.keyCode === 13) {         
+		var oldValue = rowData.SwitchRemark.trim();  
+		var prodOrder = rowData.ProductionOrder.trim();  
+        var newValue = $(this).val().trim();      
+		if (event.keyCode === 13) {         
 			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change SwitchRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
+			 e.preventDefault();      
+			 if(oldValue == newValue){ }
+			 else if(prodOrder != newValue){
+				handlerInputField("SwitchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
+			 }
+			 else{
+				swal({   
+		   		    title: 'Warning',      
+		   		    text: "ProductionOrder can't switch same productionOrder.",    
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
 				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.SwitchRemark  = newValue;    
-					  MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
- 				 		var json = createInputDateJsonData(rowData,'SwitchRemark' ); 
- 			 			var  obj = JSON.parse(json);    
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.SwitchRemark  = oldValue; 
-					  MainTable.row(idx).invalidate() ; 
-				  }
-			});      
-			checkReplaced= 0;   
+			  	rowData.SwitchRemark  = oldValue;
+			  	MainTable.row(idx).invalidate() ;  
+			 } 
 		}                      
 		else if (event.type === 'blur'  && check1 == 0){    
 			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change SwitchRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
-				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.SwitchRemark  = newValue;
-					  MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
- 				 		var json = createInputDateJsonData(rowData,'SwitchRemark'); 
- 			 			var  obj = JSON.parse(json);      
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.SwitchRemark  = oldValue;
-					  MainTable.row(idx).invalidate() ;  
-				  }
-			});      
-			checkReplaced= 0;   
+			 e.preventDefault();          
+			 if(oldValue == newValue){ }
+			 else if(prodOrder != newValue){
+				handlerInputField("SwitchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
+			 }
+			 else{
+				 swal({   
+			   		    title: 'Warning',      
+			   		    text: "ProductionOrder can't switch same productionOrder.",    
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+			  	rowData.SwitchRemark = oldValue;
+			  	MainTable.row(idx).invalidate() ;  
+			 } 
 		} 
 	});  
+     
+  function handlerInputField(fieldName ,oldValue,newValue,checkField,rowData ,MainTable,idx){
+	  let dataArray ;
+	  checkField = 1 ;    
+	  let objTmp = {   
+		    fieldName:  fieldName,
+			rowData: rowData,          
+			newValue: newValue,       
+			oldValue: oldValue,      
+		    idx: idx,  
+	  };  
+		 swal({ 
+			  title: "Are you sure to change "+fieldName+" ?",
+			  text: "From : "+oldValue+" to "+newValue+" ",
+			  icon: "warning",
+			  buttons: true,      
+			  dangerMode: true,						   								   																																	  
+			})
+			.then((willDelete) => {  
+			  if (willDelete) {          
+			  	setValueWithFieldName(fieldName,rowData,newValue)
+				MainTable.row(idx).invalidate() ;  
+		 		var json = createInputDateJsonData(rowData,fieldName ); 
+	 			var  obj = JSON.parse(json);    
+	 			var arrayTmp = [];            
+				arrayTmp.push(obj);           
+				saveInputDetailToServer(arrayTmp,objTmp);   
+					 
+			  } else {  
+				  setValueWithFieldName(fieldName,rowData,oldValue)
+				  MainTable.row(idx).invalidate() ; 
+			  }
+		});      
+		 checkField= 0;  
+  }
   $("#MainTable").on("keydown blur",".PCRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
 		var idx = MainTable.row($row).index();      
@@ -822,59 +962,34 @@ userId = JSON.parse('${UserID}');   ;
         var newValue = $(this).val();      
 		 if (event.keyCode === 13) {         
 			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change PCRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
-				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.PCRemark  = newValue;    
-					  MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
- 				 		var json = createInputDateJsonData(rowData,'PCRemark' ); 
- 			 			var  obj = JSON.parse(json);    
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.PCRemark  = oldValue; 
-					  MainTable.row(idx).invalidate() ; 
-				  }
-			});      
-			checkReplaced= 0;   
+			 e.preventDefault();  
+			 if(oldValue == newValue){  }
+			 else { handlerInputField("PCRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx) }
 		}                      
 		else if (event.type === 'blur'  && check1 == 0){    
+			 e.stopImmediatePropagation();	
+			 e.preventDefault();       
+			 if(oldValue == newValue){  }
+			 else { handlerInputField("PCRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)    }
+		} 
+	});  
+  $("#MainTable").on("keydown blur",".StockLoadInput", function (e) { 
+		var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();      
+		var rowData = MainTable.row($row).data(); 
+		var oldValue = rowData.StockLoad;  
+      var newValue = $(this).val();      
+		 if (event.keyCode === 13) {         
 			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change PCRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
-				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.PCRemark  = newValue;
-					  MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
- 				 		var json = createInputDateJsonData(rowData,'PCRemark'); 
- 			 			var  obj = JSON.parse(json);      
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.PCRemark  = oldValue;
-					  MainTable.row(idx).invalidate() ;  
-				  }
-			});      
-			checkReplaced= 0;   
+			 e.preventDefault();  
+			 if(oldValue == newValue){  }
+			 else { handlerInputField("StockLoad" ,oldValue,newValue,check1,rowData ,MainTable,idx) }
+		}                      
+		else if (event.type === 'blur'  && check1 == 0){    
+			 e.stopImmediatePropagation();	
+			 e.preventDefault();       
+			 if(oldValue == newValue){  }
+			 else { handlerInputField("StockLoad" ,oldValue,newValue,check1,rowData ,MainTable,idx)    }
 		} 
 	});  
   $("#MainTable").on("keydown blur",".ReplacedRemarkInput", function (e) { 
@@ -883,61 +998,63 @@ userId = JSON.parse('${UserID}');   ;
 		var rowData = MainTable.row($row).data(); 
 		var oldValue = rowData.ReplacedRemark;  
         var newValue = $(this).val();      
-		 if (event.keyCode === 13) {         
+        var checkDigit = true;
+		 if (event.keyCode === 13) {         	
 			 e.stopImmediatePropagation();
 			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change ReplacedRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
-				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.ReplacedRemark  = newValue;
-					  MainTable.row(idx).invalidate() ;   
- 				 		var json = createInputDateJsonData(rowData,'ReplacedRemark' ); 
- 			 			var  obj = JSON.parse(json);    
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.ReplacedRemark  = oldValue;
-// 					  MainTable.row(idx).invalidate().draw(); 
-					  MainTable.row(idx).invalidate() ; 
-				  }
-			});      
-			checkReplaced= 0;   
-		}                      
+			 checkReplaced = 1 ;    
+			 if(oldValue == newValue){  }
+			 else {
+				let mainSplit = newValue.split(",");
+				for(let i = 0 ; i < mainSplit.length; i++) {
+					let subSplit = mainSplit[i].split("="); 
+					if(subSplit.length > 1){       
+						let volume = subSplit[1].trim()   
+						checkDigit = checkIfDigitOnly(volume)
+					}
+					if(checkDigit){ }
+					else{ break;   } 
+				}
+				if(!checkDigit)  {
+					swal({   
+			   		    title: 'Warning',
+			   		    text: 'After = only numbers are required.',    
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+				}
+				else{ handlerInputField("ReplacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
+			 }
+		 }            
 		else if (event.type === 'blur'  && check1 == 0){    
 			 e.stopImmediatePropagation();
 			 e.preventDefault();         
-			 checkReplaced = 1 ;      
-			swal({ 
-				  title: "Are you sure to change ReplacedRemark?",
-				  text: "From : "+oldValue+" to "+newValue+" ",
-				  icon: "warning",
-				  buttons: true,  
-				  dangerMode: true,						   																																								  
-				})
-				.then((willDelete) => { 
-				  if (willDelete) {     
-					  rowData.ReplacedRemark  = newValue;MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw();  
- 				 		var json = createInputDateJsonData(rowData,'ReplacedRemark'); 
- 			 			var  obj = JSON.parse(json);      
- 			 			var arrayTmp = [];  
- 						arrayTmp.push(obj);       
- 						saveInputDetailToServer(arrayTmp);     
-				  } else { 
-					  rowData.ReplacedRemark  = oldValue;MainTable.row(idx).invalidate() ; 
-// 					  MainTable.row(idx).invalidate().draw(); 
-				  }
-			});      
-			checkReplaced= 0;   
-		} 
+			 checkReplaced = 1 ;    
+			 if(oldValue == newValue){  }
+			 else {
+			 	let mainSplit = newValue.split(",");
+				for(let i = 0 ; i < mainSplit.length; i++) {
+					let subSplit = mainSplit[i].split("="); 
+					if(subSplit.length > 1){       
+						let volume = subSplit[1].trim()   
+						checkDigit = checkIfDigitOnly(volume)
+					}
+					if(checkDigit){ }
+					else{ break; } 
+				}
+				if(!checkDigit)  {
+					swal({   
+			  		    title: 'Warning',
+			  		    text: 'After = only numbers are required..',    
+			  		    icon: 'warning',
+			  		    timer: 1000,
+			  		    buttons: false,
+			  		})
+				}
+				else{ handlerInputField("ReplacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
+			 }
+		}    
 	});   
   $("#MainTable").on("keydown blur",".StockRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
@@ -947,81 +1064,33 @@ userId = JSON.parse('${UserID}');   ;
         var newValue = $(this).val();      
 		 if (event.keyCode === 13) {         
 			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 if(rowData.Grade == ''){
-		        	swal({
-			   		    title: 'Warning',
-			   		    text: 'This StockRemark need grade for input.',    
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-		        }
-			 else{
-				 checkReplaced = 1 ;      
-				 swal({ 
-					  title: "Are you sure to change StockRemark ?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
-					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
-					})
-					.then((willDelete) => { 
-					  if (willDelete) {     
-						  rowData.StockRemark  = newValue;MainTable.row(idx).invalidate() ; 
-	// 					  MainTable.row(idx).invalidate().draw();  
-	 				 		var json = createInputDateJsonData(rowData,'StockRemark' ); 
-	 			 			var  obj = JSON.parse(json);    
-	 			 			var arrayTmp = [];  
-	 						arrayTmp.push(obj);       
-	 						saveInputDetailToServer(arrayTmp);     
-					  } else { 
-						  rowData.StockRemark  = oldValue;MainTable.row(idx).invalidate() ; 
-	// 					  MainTable.row(idx).invalidate().draw(); 
-					  }
-				});      
-				checkReplaced= 0;   
-			 }
+			 e.preventDefault();    
+			 if(oldValue == newValue){  }
+			 else if(rowData.Grade == ''){
+	        	swal({
+		   		    title: 'Warning',
+		   		    text: 'This StockRemark need grade for input.',    
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
+		   		})
+			 } 
+			 else{ handlerInputField("StockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)  }
 		}                      
 		else if (event.type === 'blur'  && check1 == 0){    
 			 e.stopImmediatePropagation();
 			 e.preventDefault();      
-			 if(rowData.Grade == ''){
-		        	swal({   
-			   		    title: 'Warning',
-			   		    text: 'This StockRemark need grade for input.',    
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
+			 if(oldValue == newValue){  }
+			 else if(rowData.Grade == ''){
+	        	swal({   
+		   		    title: 'Warning',
+		   		    text: 'This StockRemark need grade for input.',    
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
+		   		})
 			 }
-			 else{
-				 checkReplaced = 1 ;      
-				swal({ 
-					  title: "Are you sure to change StockRemark?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
-					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
-					})
-					.then((willDelete) => { 
-					  if (willDelete) {     
-						  rowData.StockRemark  = newValue;
-						  MainTable.row(idx).invalidate() ; 
-	// 					  MainTable.row(idx).invalidate().draw();  
-	 				 		var json = createInputDateJsonData(rowData,'StockRemark'); 
-	 			 			var  obj = JSON.parse(json);      
-	 			 			var arrayTmp = [];  
-	 						arrayTmp.push(obj);       
-	 						saveInputDetailToServer(arrayTmp);     
-					  } else { 
-						  rowData.StockRemark  = oldValue;
-						  MainTable.row(idx).invalidate() ; 
-	// 					  MainTable.row(idx).invalidate().draw();    
-					  }
-				});      
-				checkReplaced= 0;   
-			 }    
+			 else{ handlerInputField("StockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
 		}  
 	});  
 	 $("#MainTable").on("keydown blur",".CFMPlanLabDateInput", function (e) { 
@@ -1031,19 +1100,13 @@ userId = JSON.parse('${UserID}');   ;
 		var oldValue = rowData.CFMPlanLabDate;     
         var newValue = $(this).val();     
 		 if (event.keyCode === 13) {         
-			 e.stopImmediatePropagation();
-			 e.preventDefault();       
+			e.stopImmediatePropagation();
+			e.preventDefault();       
 			check1 = 1 ;    
 			newValue  = checkDateFormatInput( newValue,oldValue)  
-// 			if(newValue == ''){ 
-//              	rowData.CFMPlanLabDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// //      			MainTable.row(idx).invalidate().draw();  
-//              }
-// 			else 
 			if(newValue == 'E0'){ 
              	rowData.CFMPlanLabDate  = oldValue;
-             	MainTable.row(idx).invalidate() ; 
-//      			MainTable.row(idx).invalidate().draw();  
+             	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
              }
 			else if(newValue == 'E1'){ 
 				swal({
@@ -1072,10 +1135,10 @@ userId = JSON.parse('${UserID}');   ;
 					  buttons: true,  
 					  dangerMode: true,						   																																								  
 					})
-					.then((willDelete) => {
-// 						console.log(willDelete)        
+					.then((willDelete) => {        
 					  if (willDelete) {     
-						  rowData.CFMPlanLabDate  = newValue;MainTable.row(idx).invalidate() ; 
+						  rowData.CFMPlanLabDate  = newValue;
+						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw();  
 	 				 		var json = createInputDateJsonData(rowData,'CFMPlanLabDate'); 
 	 			 			var  obj = JSON.parse(json);    
@@ -1083,7 +1146,8 @@ userId = JSON.parse('${UserID}');   ;
 	 						arrayTmp.push(obj);       
 	 						saveInputDateToServer(arrayTmp);      
 					  } else { 
-						  rowData.CFMPlanLabDate  = oldValue;MainTable.row(idx).invalidate() ; 
+						  rowData.CFMPlanLabDate  = oldValue;
+						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw(); 
 					  }
 				});    
@@ -1095,12 +1159,7 @@ userId = JSON.parse('${UserID}');   ;
 			check1= 1; 
 			newValue  = checkDateFormatInput( newValue,oldValue)   
  			 e.stopImmediatePropagation();
-			 e.preventDefault();       
-// 			 if(newValue == ''){ 
-// 	             	rowData.CFMPlanLabDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// // 	     			MainTable.row(idx).invalidate().draw();  
-// 	             }
-// 				else 
+			 e.preventDefault();        
 			if(newValue == 'E0'){ 
              	rowData.CFMPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ; 
@@ -1144,7 +1203,8 @@ userId = JSON.parse('${UserID}');   ;
 	 						arrayTmp.push(obj);       
 	 						saveInputDateToServer(arrayTmp);        
 					  } else {       
-						  rowData.CFMPlanLabDate  = oldValue; MainTable.row(idx).invalidate() ;  
+						  rowData.CFMPlanLabDate  = oldValue; 
+						  MainTable.row(idx).invalidate() ;  
 // 						  MainTable.row(idx).invalidate().draw(); 
 					  }
 				}); 
@@ -1152,134 +1212,122 @@ userId = JSON.parse('${UserID}');   ;
              check1= 0;  
 		} 
 	});  
-	 $("#MainTable").on("keydown blur",".CFMPlanDateInput", function (e) { 
-			var $row = $(this).parents("tr");
-			var idx = MainTable.row($row).index();    
-			var rowData = MainTable.row($row).data();	 
-			var oldValue = rowData.CFMPlanDate;
-	        var newValue = $(this).val();           
-			if (event.keyCode === 13) {     
-				check2 = 1 ;    
-				 e.stopImmediatePropagation();
-				 e.preventDefault();       
-				newValue  = checkDateFormatInput( newValue,oldValue)   
-// 				if(newValue == ''){ 
+// 	 $("#MainTable").on("keydown blur",".CFMPlanDateInput", function (e) { 
+// 			var $row = $(this).parents("tr");
+// 			var idx = MainTable.row($row).index();    
+// 			var rowData = MainTable.row($row).data();	 
+// 			var oldValue = rowData.CFMPlanDate;
+// 	        var newValue = $(this).val();           
+// 			if (event.keyCode === 13) {     
+// 				check2 = 1 ;    
+// 				e.stopImmediatePropagation();
+// 				e.preventDefault();       
+// 				newValue  = checkDateFormatInput( newValue,oldValue)    
+// 				if(newValue == 'E0'){ 
 // 	             	rowData.CFMPlanDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// // 	     			MainTable.row(idx).invalidate().draw();      
+// // 	     			MainTable.row(idx).invalidate().draw();  
 // 	             }
-// 				else 
-				if(newValue == 'E0'){ 
-	             	rowData.CFMPlanDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// 	     			MainTable.row(idx).invalidate().draw();  
-	             }
-				else if(newValue == 'E1'){
-					swal({     	
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}
-				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}      
-				else if(newValue == 'E3'){ }
-				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
-						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
-						})     
-						.then((willDelete) => {
-						  if (willDelete) {  
-							  rowData.CFMPlanDate  = newValue;MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw();  
-							  var json = createInputDateJsonData(rowData,'CFMPlanDate'); 
-		 			 			var  obj = JSON.parse(json);    
-		 			 			var arrayTmp = [];  
-		 						arrayTmp.push(obj);   
-		 						saveInputDateToServer(arrayTmp);  
-						  } else { 
-							  rowData.CFMPlanDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw(); 
-						  }
-						});    
-				}	
-				check2= 0;   
-			}
-			else if (event.type === 'blur'  && check2 == 0){    
-				check2= 1; 
-	 			 e.stopImmediatePropagation();  
-				 e.preventDefault();       
-				 newValue  = checkDateFormatInput( newValue,oldValue)    
-// 				 if(newValue == ''){ 
-// 		             	rowData.CFMPlanDate  = oldValue;
-// 		             	MainTable.row(idx).invalidate() ; 
+// 				else if(newValue == 'E1'){
+// 					swal({     	
+// 			   		    title: 'Warning',
+// 			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+// 			   		    icon: 'warning',
+// 			   		    timer: 1000,
+// 			   		    buttons: false,
+// 			   		})
+// 				}
+// 				else if(newValue == 'E2'){
+// 					swal({
+// 			   		    title: 'Warning',
+// 			   		    text: 'Date need greater than equal today.',
+// 			   		    icon: 'warning',
+// 			   		    timer: 1000,
+// 			   		    buttons: false,
+// 			   		})
+// 				}      
+// 				else if(newValue == 'E3'){ }
+// 				else{
+// 					swal({
+// 						  title: "Are you sure to change date?",
+// 						  text: "From : "+oldValue+" to "+newValue,  		
+// 						  icon: "warning",
+// 						  buttons: true,
+// 						  dangerMode: true,																																														  
+// 					})     
+// 						.then((willDelete) => {
+// 						  if (willDelete) {  
+// 							  rowData.CFMPlanDate  = newValue;MainTable.row(idx).invalidate() ; 
+// // 							  MainTable.row(idx).invalidate().draw();  
+// 							  var json = createInputDateJsonData(rowData,'CFMPlanDate'); 
+// 		 			 			var  obj = JSON.parse(json);    
+// 		 			 			var arrayTmp = [];  
+// 		 						arrayTmp.push(obj);   
+// 		 						saveInputDateToServer(arrayTmp);  
+// 						  } else { 
+// 							  rowData.CFMPlanDate  = oldValue;MainTable.row(idx).invalidate() ; 
+// // 							  MainTable.row(idx).invalidate().draw(); 
+// 						  }
+// 						});    
+// 				}	
+// 				check2= 0;   
+// 			}
+// 			else if (event.type === 'blur'  && check2 == 0){    
+// 				check2= 1; 
+// 	 			 e.stopImmediatePropagation();  
+// 				 e.preventDefault();       
+// 				 newValue  = checkDateFormatInput( newValue,oldValue)     
+// 				if(newValue == 'E0'){ 
+// 	             	rowData.CFMPlanDate  = oldValue;
+// 	             	MainTable.row(idx).invalidate() ; 
 // // 		     			MainTable.row(idx).invalidate().draw();  
 // 	             }
-// 				else 
-				if(newValue == 'E0'){ 
-	             	rowData.CFMPlanDate  = oldValue;
-	             	MainTable.row(idx).invalidate() ; 
-// 		     			MainTable.row(idx).invalidate().draw();  
-	             }
-				 else if(newValue == 'E1'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-				   		    icon: 'warning',
-				   		    timer: 1000,
-				   		    buttons: false,
-				   		})
-					}
-					else if(newValue == 'E2'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Date need greater than equal today.',
-				   		    icon: 'warning',
-				   		    timer: 1000,
-				   		    buttons: false,
-				   		})
-					}      
-					else if(newValue == 'E3'){ }
-					else{
-						swal({
-							  title: "Are you sure to change date?",
-							  text: "From : "+oldValue+" to "+newValue,  		
-							  icon: "warning",
-							  buttons: true,
-							  dangerMode: true,																																														  
-							})     
-							.then((willDelete) => {
-							  if (willDelete) {  
-								  rowData.CFMPlanDate  = newValue;
-								  MainTable.row(idx).invalidate() ; 
-// 								  MainTable.row(idx).invalidate().draw();   
-								  var json = createInputDateJsonData(rowData,'CFMPlanDate'); 
-			 			 			var  obj = JSON.parse(json);    
-			 			 			var arrayTmp = [];  
-			 						arrayTmp.push(obj);   
-			 						saveInputDateToServer(arrayTmp);  
-							  } else { 
-								  rowData.CFMPlanDate  = oldValue;
-								  MainTable.row(idx).invalidate() ; 
-// 								  MainTable.row(idx).invalidate().draw(); 
-							  }
-							});    
-						
-					}    
-	             check2= 0; 
-			}    
-		});       
+// 				 else if(newValue == 'E1'){
+// 						swal({
+// 				   		    title: 'Warning',
+// 				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+// 				   		    icon: 'warning',
+// 				   		    timer: 1000,
+// 				   		    buttons: false,
+// 				   		})
+// 					}
+// 					else if(newValue == 'E2'){
+// 						swal({
+// 				   		    title: 'Warning',
+// 				   		    text: 'Date need greater than equal today.',
+// 				   		    icon: 'warning',
+// 				   		    timer: 1000,
+// 				   		    buttons: false,
+// 				   		})
+// 					}      
+// 					else if(newValue == 'E3'){ }
+// 					else{
+// 						swal({
+// 							  title: "Are you sure to change date?",
+// 							  text: "From : "+oldValue+" to "+newValue,  		
+// 							  icon: "warning",
+// 							  buttons: true,
+// 							  dangerMode: true,																																														  
+// 						})     
+// 							.then((willDelete) => {
+// 							  if (willDelete) {  
+// 								  rowData.CFMPlanDate  = newValue;
+// 								  MainTable.row(idx).invalidate() ; 
+// // 								  MainTable.row(idx).invalidate().draw();   
+// 								  var json = createInputDateJsonData(rowData,'CFMPlanDate'); 
+// 			 			 			var  obj = JSON.parse(json);    
+// 			 			 			var arrayTmp = [];  
+// 			 						arrayTmp.push(obj);   
+// 			 						saveInputDateToServer(arrayTmp);  
+// 							  } else { 
+// 								  rowData.CFMPlanDate  = oldValue;
+// 								  MainTable.row(idx).invalidate() ; 
+// // 								  MainTable.row(idx).invalidate().draw(); 
+// 							  }
+// 							});     
+// 					}    
+// 	             check2= 0; 
+// 			}    
+// 		});       
 	 $("#MainTable").on("keydown blur",".DeliveryDateInput", function (e) { 
 			var $row = $(this).parents("tr");
 			var idx = MainTable.row($row).index();    
@@ -1288,14 +1336,9 @@ userId = JSON.parse('${UserID}');   ;
 	        var newValue = $(this).val();           
 			if (event.keyCode === 13) {      
 				check3 = 1 ;    
-				 e.stopImmediatePropagation();
-				 e.preventDefault();       
-				newValue  = checkDateFormatInput( newValue,oldValue)   
-// 				if(newValue == ''){ 
-// 	             	rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// // 	     			MainTable.row(idx).invalidate().draw();  
-// 	             }
-// 				else 
+				e.stopImmediatePropagation();
+				e.preventDefault();       
+				newValue  = checkDateFormatInput( newValue,oldValue)    
 				if(newValue == 'E0'){ 
 	             	rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
 // 	     			MainTable.row(idx).invalidate().draw();  
@@ -1351,14 +1394,10 @@ userId = JSON.parse('${UserID}');   ;
 				check3= 1; 
 				e.stopImmediatePropagation();
 				e.preventDefault();         
-				newValue  = checkDateFormatInput( newValue,oldValue)   
-// 				if(newValue == ''){ 
-// 	             	rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
-// // 	     			MainTable.row(idx).invalidate().draw();  
-// 	             }
-// 				else 
+				newValue  = checkDateFormatInput( newValue,oldValue)    
 				if(newValue == 'E0'){ 
-	             	rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
+	             	rowData.DeliveryDate  = oldValue;
+	             	MainTable.row(idx).invalidate() ; 
 // 	     			MainTable.row(idx).invalidate().draw();  
 	             }   
 				else if(newValue == 'E1'){
@@ -1424,41 +1463,14 @@ userId = JSON.parse('${UserID}');   ;
 // 	    }
 	       
 // 	})      
-	$('#MainTable').on('dblclick','td',function(e){
-// 		scroll_to_contact_form_fn()  
-	    var row_object  = MainTable.row(this).data();            
-// 	    var $row = $(this).parents("tr");
-// 	    var $rowT = $(this).closest(".CFMPlanLabParent");
-// 	    var $rowT1 = $(this).closest(".CFMPlanDateParent");
-// 	    var $rowT2 = $(this).closest(".DeliveryDateParent");
-	          
-	    var $rowC =$(this).attr('class')
-// 	    var $rowC1 =$(this).parent().attr('CFMPlanDateParent')
-// 	    var $rowC2 =$(this).parent().attr('DeliveryDateParent')
-// 		var idx = MainTable.row($row).index();    
-// 		var rowData = MainTable.row($row).data();	
-// 		console.log($row)
-// 		console.log(idx)
-// 		console.log(rowData)    
-//     	var row_clicked     = $(this).closest('tr'); 
-//     	console.log(row_clicked)    
-//     	console.log($rowT) 
-//     	console.log($rowT1)     
-//     	console.log($rowT2)     
-//     	console.log($rowC) 
-//     	console.log($rowC1)     
-//     	console.log($rowC2)  
-// 		console.log($rowC)
-	    if(MainTable.cell(this).index() === undefined){
-	    	 
-	    }     
+	$('#MainTable').on('dblclick','td',function(e){ 
+	    var row_object  = MainTable.row(this).data();             
+	    var $rowC =$(this).attr('class') 
+	    if(MainTable.cell(this).index() === undefined){  }     
 	    else {  
 	    	let myArray = $rowC.split(" ");
-	    	let classInput = myArray[1];
-// 	    	console.log(myArray)   
-// 	    	console.log(classInput)    
+	    	let classInput = myArray[1];  
 	    	if(classInput == 'CFMPlanLabDateParent' || classInput == 'CFMPlanDateParent' || classInput == 'DeliveryDateParent'){      
-//	 	    	 var colIdx = MainTable.cell(this).index().column; 
 			    var arrTmp = [];   
 				arrTmp.push(row_object);
 				getInputDate(arrTmp,classInput);
@@ -1466,8 +1478,7 @@ userId = JSON.parse('${UserID}');   ;
 	    	
 	    }
 	       
-	})      
-// 	preLoaderHandler()          
+	})                
 	preLoaderHandler( preloader)   
 });      
 function clearInput(){
@@ -1522,19 +1533,7 @@ function searchByDetail(){
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
 	 if( hwCheck ){ if(dist != "") {dist = dist + "|"} dist = "HW";}     
-// 	 if(  customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0){
-// 			swal({
-// 	   		    title: 'Warning',
-// 	   		    text: 'Customer CustomerShortName and UserStatus need atleast 1 selected rwo.',
-// 	   		    icon: 'warning',
-// 	   		    timer: 1000,
-// 	   		    buttons: false,
-// 	   		})
-// 		}
-// 	 else 
-// 	console.log(userStatus) 
-		if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
-  			)  { 
+	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
 		swal({
    		    title: 'Warning',
    		    text: 'Need select some field for search.',
@@ -1543,18 +1542,18 @@ function searchByDetail(){
    		    buttons: false,
    		})
 	}
-	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-  			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
-   			dueDate == ''  )
-  			)  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need input some field for search.',
-   		    icon: 'warning',
-   		    timer: 1000,
-   		    buttons: false,
-   		})
-	}
+// 	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+//   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
+//    			dueDate == ''  )
+//   			)  { 
+// 		swal({
+//    		    title: 'Warning',
+//    		    text: 'Need input some field for search.',
+//    		    icon: 'warning',
+//    		    timer: 1000,
+//    		    buttons: false,
+//    		})
+// 	}
 
 	else{
 		var json = createJsonData(); 
@@ -1579,6 +1578,7 @@ function createInputDateJsonData(val,caseSave){
 	var Grade = val.Grade; 
 
 	var SwitchRemark = val.SwitchRemark; 
+	var StockLoad = val.StockLoad; 
 	var json = '{"ProductionOrder":'+JSON.stringify(ProductionOrder)+ 
 	   ',"CFMPlanLabDate":'+JSON.stringify(CFMPlanLabDate)+  
 	   ',"CFMPlanDate":'+JSON.stringify(CFMPlanDate)+  
@@ -1591,7 +1591,8 @@ function createInputDateJsonData(val,caseSave){
 	   ',"PCRemark":'+JSON.stringify(PCRemark)+
 	   ',"Grade": '+JSON.stringify(Grade)+
 	   ',"LotNo": '+JSON.stringify(LotNo)+
-	   ',"SwitchRemark": '+JSON.stringify(SwitchRemark)+
+	   ',"SwitchRemark": '+JSON.stringify(SwitchRemark)+ 
+	   ',"StockLoad": '+JSON.stringify(StockLoad)+    
 	   '} ';         
 // 	   console.log(json)   
 	   return json; 
@@ -1649,58 +1650,56 @@ function createJsonData(){
 	   return json; 
 }
 function exportCSV(data){ 
-    var createXLSLFormatObj = []; 
+    var createXLSLFormatObj = [];   
     /* XLS Head Columns */      
-//     var xlsHeader = [
-//     	 "Division"            ,         
-//     	 "SaleOrder"           ,    
-//     	 "SaleLine"            , 
-//     	 "CustomerShortName"   , 
-//     	 "SaleCreateDate"      ,    
-//     	 "PurchaseOrder" ,   
-//     	 "MaterialNo" , 
-//     	 "CustomerMaterial" ,  
-//     	 "Price" , 
-//     	 "SaleUnit" , 
-//     	 "SaleQuantity" ,          
-//     	 "RemainQuantity" ,         
-//     	 "RemainAmount" , 
-//     	 "TotalQuantity" ,        
-//     	 "Grade" , 
-//     	 "BillSendWeightQuantity" , 
-//     	 "BillSendQuantity" ,        
-//     	 "CustomerDue" , 
-//     	 "DueDate" ,               
-//     	 "LotNo" , 
-//     	 "LabNo" ,  
-//     	 "LabStatus" ,              
-//     	 "CFMPlanLabDate" ,         
-//     	 "CFMActualLabDate" , 
-//     	 "CFMCusAnsLabDate" ,          
-//     	 "UserStatus" ,                  
-//     	 "TKCFM" ,                      
-//     	 "CFMPlanDate" ,   
-//     	 "CFMSendDate" ,             
-//     	 "CFMLastest" ,         
-//     	 "CFMNumber" ,          
-//     	 "DeliveryDate" ,       
-//     	 "ShipDate" ,              
-//     	 "Remark"  ];        
+//  var xlsHeader = [
+//  	 "Division"            ,         
+//  	 "SaleOrder"           ,    
+//  	 "SaleLine"            , 
+//  	 "CustomerShortName"   , 
+//  	 "SaleCreateDate"      ,    
+//  	 "PurchaseOrder" ,   
+//  	 "MaterialNo" , 
+//  	 "CustomerMaterial" ,  
+//  	 "Price" , 
+//  	 "SaleUnit" , 
+//  	 "SaleQuantity" ,          
+//  	 "RemainQuantity" ,         
+//  	 "RemainAmount" , 
+//  	 "TotalQuantity" ,        
+//  	 "Grade" , 
+//  	 "BillSendWeightQuantity" , 
+//  	 "BillSendQuantity" ,        
+//  	 "CustomerDue" , 
+//  	 "DueDate" ,               
+//  	 "LotNo" , 
+//  	 "LabNo" ,  
+//  	 "LabStatus" ,              
+//  	 "CFMPlanLabDate" ,         
+//  	 "CFMActualLabDate" , 
+//  	 "CFMCusAnsLabDate" ,          
+//  	 "UserStatus" ,                  
+//  	 "TKCFM" ,                      
+//  	 "CFMPlanDate" ,   
+//  	 "CFMSendDate" ,             
+//  	 "CFMLastest" ,         
+//  	 "CFMNumber" ,          
+//  	 "DeliveryDate" ,       
+//  	 "ShipDate" ,              
+//  	 "Remark"  ];      
     /* XLS Rows Data */
     let xlsHeader = Array.from( mapsTitleHeader.keys() ); 
-    var xlsRows = data    
-    
-       
-// 	console.log(mapsDataHeader);               
-// 	console.log(mapsTitleHeader); 
-// 	console.log(mapsColumnHeader);  
-// 	console.log(columnsHeader)	;   
+    var xlsRows = data     
     createXLSLFormatObj.push(xlsHeader);
+//     createXLSLFormatObj.push(xlsHeader);    
     let indexArray = 0,colType = '';       
     let caseDupli = 0;
+
+    soLineTmpExcel = '' ;
+    soTmpExcel = '';
     $.each(xlsRows, function(index, value) { 
         var innerRowData = [];           
-        caseDupli = checkSaleOrderLine( value);
+        caseDupli = checkSaleOrderLine( value); 
         $.each(value, function(data, val) {     	
 //             innerRowData.push(val);         
         	 if(mapsDataHeader.size != 0){    
@@ -1711,8 +1710,8 @@ function exportCSV(data){
  					if (colType === undefined){  
  						innerRowData[indexArray] = val;        
  					}                
- 					else if (colType == 'num'){         
- 						if(data == 'Volumn' || data == 'Price' || data == 'SaleQuantity' || data == 'RemainQuantity' || data == 'RemainAmount' || data == 'OrderAmount'){  
+ 					else if (colType == 'num'){          
+ 						if(data == 'Price' || data == 'SaleQuantity' || data == 'RemainQuantity' || data == 'RemainAmount' || data == 'OrderAmount'){  
 							if(caseDupli == 0 || caseDupli == 2){   
 								if(val.trim() == ''){ innerRowData[indexArray] = '';  }
 		 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
@@ -1731,74 +1730,9 @@ function exportCSV(data){
  			  		 
  			  	}  
              }
-        });        
-// // innerRowData.push(value.Division);        
-// // innerRowData.push(value.SaleOrder);    
-// // innerRowData.push(value.SaleLine);
-// // innerRowData.push(value.CustomerShortName); 
-// // innerRowData.push(value.SaleCreateDate);   
-// // innerRowData.push(value.PurchaseOrder);    
-// // innerRowData.push(value.MaterialNo);  
-// // innerRowData.push(value.CustomerMaterial); 
-// // innerRowData.push(value.Price); 
-// // innerRowData.push(value.SaleUnit);  
-// // innerRowData.push(value.SaleQuantity);           
-// // innerRowData.push(value.RemainQuantity);          
-// // innerRowData.push(value.RemainAmount);  
-// // innerRowData.push(value.TotalQuantity);         
-// // innerRowData.push(value.Grade);  
-// // innerRowData.push(value.BillSendWeightQuantity);  
-// // innerRowData.push(value.BillSendQuantity);         
-// // innerRowData.push(value.CustomerDue);  
-// // innerRowData.push(value.DueDate);                
-// // innerRowData.push(value.LotNo);  
-// // innerRowData.push(value.LabNo);   
-// // innerRowData.push(value.LabStatus);               
-// // innerRowData.push(value.CFMPlanLabDate);          
-// // innerRowData.push(value.CFMActualLabDate);  
-// // innerRowData.push(value.CFMCusAnsLabDate);           
-// // innerRowData.push(value.UserStatus);                   
-// // innerRowData.push(value.TKCFM);                       
-// // innerRowData.push(value.CFMPlanDate);  
-// // innerRowData.push(value.CFMSendDate);          
-// // innerRowData.push(value.CFMLastest);          
-// // innerRowData.push(value.CFMNumber);           
-// // innerRowData.push(value.DeliveryDate);        
-// // innerRowData.push(value.ShipDate);                  
-// // innerRowData.push(value.Remark);           
-//         innerRowData.push(value);         
+        });         
         createXLSLFormatObj.push(innerRowData);
-    });   
-//     for (let i = 0; i < xlsRows.length; i++) {
-//     $.each(xlsRows, function(index, value) { 
-//         var innerRowData = [];     
-//         $.each(value, function(data, val) {            
-//         	 if(mapsDataHeader.size != 0){    
-//         		 indexArray = mapsDataHeader.get(data);
-//         		 colType = mapsColumnHeader.get(data);      
-//         		 if(indexArray !== undefined){          
-//  					if (colType === undefined){  
-//  						innerRowData[indexArray] = val;      
-//  					}    
-//  					else if (colType == 'num'){    
-//  	     			    {"data" : "RemainQuantity" ,  "title":"Remain Qty." ,'type': 'num'},            //11
-// 		 	     			    {"data" : "RemainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num' },  
-//  	     			    {"data" : "OrderAmount" ,     "title":"Amt.(THB)",'type': 'num' },    
-//  						if(data == "SaleQuantity" || )
-//  						if(val == ''){ innerRowData[indexArray] = parseFloat(0); }
-//  						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; }
- 			  			 
-//  					}      
-//  					else if (colType == 'date-euro'){          
-//  						if(val == ''){ innerRowData[indexArray] = ''   ;   }
-//  						else{ innerRowData[indexArray] =stringToDate(val)   ; }   
-//  					}
- 			  		 
-//  			  	}  
-//              }
-//         });     
-//         createXLSLFormatObj.push(innerRowData);
-//     }); 
+    });    
     /* File Name */
     var filename = "PCMS-Detail.xlsx"; 
     /* Sheet Name */       
@@ -1811,59 +1745,7 @@ function exportCSV(data){
         			dateNF:"dd/MM/yyyy",
         			rawNumbers: true
        			}
-       		);  
-//     	ws = XLSX.utils.json_to_sheet(createXLSLFormatObj, {dateNF:"dd/MM/yyyy"});   
-	    /* Add worksheet to workbook */   
-// 	    ws['!cols'] = fitToColumn(arrayOfArray);
-	    
-	       	
-// for (i in ws) {
-//     if (typeof(ws[i]) != "object") continue;      
-//     let cell = XLSX.utils.decode_cell(i); 
-// // 	console.log(cell)
-//     ws[i].s = { // styling for all cells
-//         font: {
-//             name: "arial"        
-//         },
-//         alignment: {
-//             vertical: "center",
-//             horizontal: "center",
-//             wrapText: '1', // any truthy value here
-//         },
-//         border: {
-//             right: {
-//                 style: "thin",
-//                 color: "000000"
-//             },
-//             left: {
-//                 style: "thin",
-//                 color: "000000"
-//             },
-//         }
-//     }; 
-//     if (cell.c == 0) { // first column
-//         ws[i].s.numFmt = "DD/MM/YYYY HH:MM"; // for dates
-//         ws[i].z = "DD/MM/YYYY HH:MM";
-//     } else { 
-//         ws[i].s.numFmt = "00.00"; // other numbers
-//     } 
-//     if (cell.r == 0 ) { // first row
-//         ws[i].s.border.bottom = { // bottom border
-//             style: "thin",
-//             color: "000000"
-//         };
-//     } 
-//     if (cell.r % 2) { // every other row
-//         ws[i].s.fill = { // background color
-//             patternType: "solid",
-//             fgColor: { rgb: "b2b2b2" },
-//             bgColor: { rgb: "b2b2b2" } 
-//         };
-//     }
-    	
-// 	console.log(i,cell,ws[i].s)
-// }
-//     console.log(ws)     
+       		);   
     XLSX.utils.book_append_sheet(wb, ws, ws_name);     
     /* Write workbook and Download */
     if (typeof console !== 'undefined') console.log(new Date());
@@ -1872,9 +1754,9 @@ function exportCSV(data){
 }     
 function checkSaleOrderLine( val){       
 	if(soLineTmpExcel == '' && soTmpExcel == ''  ){     
-		soLine = val.SaleLine;     
+		soLineTmpExcel = val.SaleLine;     
 		soTmpExcel = val.SaleOrder;   
-		caseDupli = 0; 
+		caseDupli = 0;      
 	}  
 	else if(soLineTmpExcel == val.SaleLine && soTmpExcel   == val.SaleOrder  ){
 		caseDupli = 1; 
@@ -1885,22 +1767,14 @@ function checkSaleOrderLine( val){
 		caseDupli = 2 
 	}  
 	return caseDupli;
-}
-function fitToColumn(arrayOfArray) {
-    // get maximum character of each column
-    return arrayOfArray[0].map((a, i) => ({ wch: Math.max(...arrayOfArray.map(a2 => a2[i] ? a2[i].toString().length : 0)) }));
-}
-function saveColSettingToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
+} 
+function saveColSettingToServer(arrayTmp) {    
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/saveColSettingToServer", 
-		success: function(data) {  
-// 			MainTable.clear();           
-// 			MainTable.rows.add(data);      
-// 			MainTable.columns.adjust().draw();   
+		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.IconStatus == 'I'){
@@ -1930,13 +1804,15 @@ function saveColSettingToServer(arrayTmp) {
 	});   
 }  
 function saveInputDateToServer(arrayTmp) {   
+	var currentdate = new Date(); 
+	 
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/saveInputDate", 
 		success: function(data) {  
-			if(data.length > 0){
+			if(data.length > 0){  
 				var bean = data[0]; 
 				if(bean.IconStatus == 'I0'){    
 					if( bean.CountPlanDate >= 35){
@@ -1974,46 +1850,96 @@ function saveInputDateToServer(arrayTmp) {
 			   		    buttons: false,
 			   		})
 				}  
-			}
-// 			MainTable.clear();           
-// 			MainTable.rows.add(data);      
-// 			MainTable.columns.adjust().draw();       
+			} 
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
 		},
 		done: function(e) {       
-		}   	
+		}   	  
 	});   
 }    
-
-function saveInputDetailToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
+function getSwitchProdOrderDetailByPrd( dataP) {  
+// 	var prodOrderSW= dataP[0].SwitchRemark;
+// 	var prodOrder= dataP[0].ProductionOrder;
+// 	if(prodOrderSW == ''){   }
+// 	else{         
+// 		$.ajax({   
+// 			type: "POST",  
+// 			contentType: "application/json",  
+// 			data: JSON.stringify(arrayTmp),      
+// 			url: "Detail/getSwitchProdOrderListByPrd", 
+// 			success: function(data) {   
+// 				if(data.length > 0){        
+// //	 				var bean = data[0]; 
+// //	 				 MainTable.row.add(bean).draw(false);  
+// 		     		let indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
+// 		    	 		return prodOrder === MainTable.row(value).data().ProductionOrder;// return 'P2D031' === MainTable.row(value).data()[1];
+// 			      	} );               
+// 		     		MainTable.rows(indexes).remove().draw(false);      
+// 		     	 	indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
+// 		    	 		return prodOrderSW === MainTable.row(value).data().ProductionOrder; 
+// 		      		} );     
+// 	     			MainTable.rows(indexes).remove().draw(false);       
+// 				 	MainTable.rows.add(data).draw(false); // Add new data
+// 				}	          
+// 			},   
+// 			error: function(e) {
+// 				swal("Fail", "Please contact to IT", "error");
+// 			},
+// 			done: function(e) {         
+// 			}   	
+// 		});          
+// 	}       
+//			var bean = data[0]; 
+//			 MainTable.row.add(bean).draw(false);       
+	let i = 0;
+	for (i = 0  ; i < dataP.length; i++) {      
+		var prodOrder= dataP[i].ProductionOrder; 
+// 		console.log(prodOrder)
+		let indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
+			return prodOrder === MainTable.row(value).data().ProductionOrder;// return 'P2D031' === MainTable.row(value).data()[1];
+      	} );                   
+		MainTable.rows(indexes).remove() ; 
+	}             
+ 	MainTable.rows.add(dataP).draw(false); // Add new data 
+}    
+function saveInputDetailToServer(arrayTmp,objTmp) {    
 	$.ajax({   
-		type: "POST",  
-		contentType: "application/json",  
+		type: "POST",  	
+		contentType: "application/json",       
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/saveInputDetail", 
-		success: function(data) {  
+// 		async: false,
+		success: function(data) { 
 // 			console.log(data)
-			if(data.length > 0){  
-				var bean = data[0]; 
-				if(bean.IconStatus == 'I'){
+			if(data.length > 0){   
+				var bean = data[0];       
+				if(bean.IconStatus == 'I'){ 
 					swal({
 						title: "Success",    
 					 	text: bean.SystemStatus ,
 						icon: "info",
-						button: "confirm",
+						button: "confirm",  
    					});  
+					 
+					if(objTmp.fieldName == 'SwitchRemark' || objTmp.fieldName == 'ReplacedRemark'){ 
+						getSwitchProdOrderDetailByPrd( data) ;
+			   		}
 				}
-				else{  
+				else{       
 					swal({   
-						title: "Warning ",    
+						title: "Warning ",        
 					 	text: bean.SystemStatus  , 
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
+			   		    icon: 'warning',     
+// 			   		    timer: 2000,
+// 			   		    buttons: false,
+			   		    button: "confirm",    
+			   		})    
+			   		if(objTmp.fieldName == 'SwitchRemark' || objTmp.fieldName == 'ReplacedRemark' ){ 
+			   			setValueWithFieldName(objTmp.fieldName,objTmp.rowData,objTmp.oldValue)
+				  		MainTable.row(objTmp.idx).invalidate() ; 
+			   		}
 				}  
 			}     
 		},   
@@ -2022,10 +1948,9 @@ function saveInputDetailToServer(arrayTmp) {
 		},
 		done: function(e) {       
 		}   	
-	});   
+	});     
 }    
-function searchByDetailToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
+function searchByDetailToServer(arrayTmp) {    
 	$.ajax({
 		type: "POST",  
 		contentType: "application/json",  
@@ -2051,8 +1976,7 @@ function checkDateFormatInput( value ,oldvalue) {
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
     var datearray = value.split("/");
     var dateInput = '';     
-    var result = ''    
-    console.log(value,oldvalue)   
+    var result = ''     
     if (value == oldvalue) { result = 'E3';  }
     else if (value.trim() == '') { result = '';  }   
 //  	else if (value == oldvalue) { result = 'E3';  }
@@ -2181,6 +2105,16 @@ function addUserStatusOption(data ){
 	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[ขาย stock]';
 	 opt.value = 'ขาย stock'; 
 	 sel.appendChild(opt); 
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รับจ้างถัก]';
+	 opt.value = 'รับจ้างถัก'; 
+	 sel.appendChild(opt);  
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[Lot ขายแล้ว]';
+	 opt.value = 'Lot ขายแล้ว'; 
+	 sel.appendChild(opt);  
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
 		 var resultData = data[i]; 	   
@@ -2636,7 +2570,67 @@ function getByValue(map, searchValue) {
   for (let [key, value] of map.entries()) {
     if (value === searchValue)
       return key;
-  }
-}
+  }  
+}     
+function setValueWithFieldName(fieldName, rowData,value) {      
+	  if(fieldName == 'SwitchRemark'){rowData.SwitchRemark = value ;  }
+	  else if(fieldName == 'PCRemark'){rowData.PCRemark = value  ;  }
+	  else if(fieldName == 'ReplacedRemark'){rowData.ReplacedRemark = value  ; }
+	  else if(fieldName == 'StockRemark'){rowData.StockRemark = value  ; } 
+	  else if(fieldName == 'StockLoad'){rowData.StockLoad = value  ; } 
+	}
+function checkIfDigitOnly(_string) {
+	var check = true;   
+	const pattern = /^[0-9]+$/;   
+    if(pattern.test(_string)) {
+//         console.log("String contains only numbers")
+    }
+    else {
+//         console.log("String does not contain only numbers") 
+    	check = false;
+    } 
+    return check;
+}function getSwitchProdOrderListByRowProd(arrayTmp) {    
+	$.ajax({   
+		type: "POST",  
+		contentType: "application/json",  
+		data: JSON.stringify(arrayTmp),          
+		url: "Detail/getSwitchProdOrderListByRowProd", 
+		async: false,
+		success: function(data) {  
+			if(data.length > 0){  
+				var bean = data[0];  
+				if(bean.IconStatus == 'E'){ 
+					swal({   
+						title: "Warning ",        
+					 	text: bean.SystemStatus  , 
+			   		    icon: 'warning',
+// 			   		    timer: 2000,  
+// 			   		    buttons: false,   
+			   		    button: "confirm",
+			   		})
+				}
+				else{       
+			   		SWMainTable.clear();              
+					SWMainTable.rows.add(data);     
+					SWMainTable.columns.adjust().draw(false); 
+					$('#modalRemarkSW').modal('show');  
+// 					swal({
+// 						title: "Success",    
+// 					 	text: bean.SystemStatus ,
+// 						icon: "info",
+// 						button: "confirm",   
+//    					});  
+				}  
+				 
+			}     
+		},   
+		error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+		},
+		done: function(e) {       
+		}   	
+	});       
+}    
 </script> 
 </html>

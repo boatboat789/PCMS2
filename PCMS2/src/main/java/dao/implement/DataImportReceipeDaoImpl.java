@@ -78,7 +78,7 @@ public class DataImportReceipeDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPRECEIPE")) {  
+      if (fullname.contains("ZSAPRECEIPE.txt")) {  
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
 	         try {  

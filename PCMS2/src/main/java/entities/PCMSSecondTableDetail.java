@@ -59,6 +59,14 @@ public class PCMSSecondTableDetail {
 	private String DyeActual;
 	private String PCRemark;
 	private String SwitchRemark ;
+	private String TypePrd ; 
+	private String TypePrdRemark ;  
+	private int CountInSW;
+	private String SaleOrderSW;
+	private String SaleLineSW;
+	private String ProductionOrderSW;
+	private String ProductionOrderRP;
+	private String StockLoad;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -69,7 +77,8 @@ public class PCMSSecondTableDetail {
 				String cFMAnswerDate, String cFMNumber, String cFMStatus, String cFMRemark, String deliveryDate,
 				String shipDate, String remarkOne, String remarkTwo, String remarkThree,String Remark,String CFMLastest,
 				String ProductionOrder,String Volumn,String ReplacedRemark,String StockRemark,String GRQuantity ,
-				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark
+				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark,
+				String TypePrd , String StockLoad
 				) {
 			super();
 			this.DyePlan = DyePlan;
@@ -123,10 +132,76 @@ public class PCMSSecondTableDetail {
 			this.VolumnFGAmount = VolumnFGAmount;
 			this.PCRemark = PCRemark;
 			this.SwitchRemark = SwitchRemark;
+			this.TypePrd = TypePrd;
+			this.StockLoad = StockLoad;
 		}
 		
+		public String getStockLoad() {
+			return StockLoad;
+		}
+
+		public void setStockLoad(String stockLoad) {
+			StockLoad = stockLoad;
+		}
+
+		public String getProductionOrderRP() {
+			return ProductionOrderRP;
+		}
+
+		public void setProductionOrderRP(String productionOrderRP) {
+			ProductionOrderRP = productionOrderRP;
+		}
+
+		public String getTypePrdRemark() {
+			return TypePrdRemark;
+		}
+
+		public void setTypePrdRemark(String typePrdRemark) {
+			TypePrdRemark = typePrdRemark;
+		}
+
+		public String getSaleOrderSW() {
+			return SaleOrderSW;
+		}
+
+		public void setSaleOrderSW(String saleOrderSW) {
+			SaleOrderSW = saleOrderSW;
+		}
+
+		public String getSaleLineSW() {
+			return SaleLineSW;
+		}
+
+		public void setSaleLineSW(String saleLineSW) {
+			SaleLineSW = saleLineSW;
+		}
+
+		public String getProductionOrderSW() {
+			return ProductionOrderSW;
+		}
+
+		public void setProductionOrderSW(String productionOrderSW) {
+			ProductionOrderSW = productionOrderSW;
+		}
+
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
+		}
+
+		public int getCountInSW() {
+			return CountInSW;
+		}
+
+		public void setCountInSW(int countInSW) {
+			CountInSW = countInSW;
+		}
+
+		public String getTypePrd() {
+			return TypePrd;
+		}
+
+		public void setTypePrd(String typePrd) {
+			TypePrd = typePrd;
 		}
 
 		public String getDyePlan() {

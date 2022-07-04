@@ -57,6 +57,8 @@ public class PCMSTableDetail {
 	private String Relax;
 	private int No;
 	private String Division; 
+	private String TypePrd;  
+	private String TypePrdRemark ;  
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -65,7 +67,7 @@ public class PCMSTableDetail {
 			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
-			String dyeStatus ) {
+			String dyeStatus,String typePrd,String typePrdRemark) {
 		super();
 		this.ShipDate = ShipDate;
 		SaleOrder = saleOrder;
@@ -109,6 +111,8 @@ public class PCMSTableDetail {
 		this.Relax = Relax;
 		this.Division = Division;
 		this.DyeStatus = dyeStatus;
+		this.TypePrd = typePrd;
+		this.TypePrdRemark = typePrdRemark;
 	}
 	public PCMSTableDetail() {
 		// TODO Auto-generated constructor stub
@@ -136,6 +140,18 @@ public class PCMSTableDetail {
 		DeliveryStatus = deliveryStatus;
 		SaleStatus = saleStatus; 
 		this.Division = division;
+	} 
+	public String getTypePrdRemark() {
+		return TypePrdRemark;
+	}
+	public void setTypePrdRemark(String typePrdRemark) {
+		TypePrdRemark = typePrdRemark;
+	}
+	public String getTypePrd() {
+		return TypePrd;
+	}
+	public void setTypePrd(String typePrd) {
+		TypePrd = typePrd;
 	}
 	public String getDyeStatus() {
 		return DyeStatus;

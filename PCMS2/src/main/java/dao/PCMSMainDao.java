@@ -1,8 +1,6 @@
 package dao;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import entities.ColumnHiddenDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;

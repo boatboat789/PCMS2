@@ -109,6 +109,9 @@ public class PCMSAllDetail {
 		this.GreigeDesign = GreigeDesign;
 		this.ColorCustomer = ColorCustomer;
 	}
+	public PCMSAllDetail() {
+		// TODO Auto-generated constructor stub
+	}
 	public String getColorCustomer() {
 		return ColorCustomer;
 	}

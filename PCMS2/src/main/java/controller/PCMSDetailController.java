@@ -1,12 +1,8 @@
 package controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +20,6 @@ import com.google.gson.Gson;
 import entities.ColumnHiddenDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
-import model.PCMSDetailModel;
-import model.PCMSMainModel;
 import model.PCMSDetailModel;
 
 @Controller
@@ -145,6 +139,7 @@ public class PCMSDetailController {
 			pd.setLotNo(userArray[i].getLotNo());
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
+			pd.setStockLoad(userArray[i].getStockLoad());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -172,6 +167,7 @@ public class PCMSDetailController {
 			pd.setCaseSave(userArray[i].getCaseSave());    
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
+			pd.setStockLoad(userArray[i].getStockLoad());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -335,5 +331,61 @@ public class PCMSDetailController {
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
 		out.println(g.toJson(model.loadDefault( poList)));  
+	}
+	@RequestMapping(  value = "/getSwitchProdOrderListByPrd",  method = RequestMethod.POST )
+	public void doGetSwitchProdOrderListByPrd(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data) throws IOException {
+		PCMSDetailModel model = new PCMSDetailModel();
+		String user = (String) session.getAttribute("user");
+		Gson g = new Gson(); 
+		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
+		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<PCMSSecondTableDetail>();
+		int i = 0; 
+		for (i = 0; i < userArray.length; i++) {
+			PCMSSecondTableDetail pd = new PCMSSecondTableDetail();
+			pd.setProductionOrder(userArray[i].getProductionOrder());
+			pd.setSaleOrder(userArray[i].getSaleOrder());
+			pd.setSaleLine(userArray[i].getSaleLine());
+			pd.setReplacedRemark(userArray[i].getReplacedRemark()) ; 
+			pd.setStockRemark(userArray[i].getStockRemark()) ; 
+			pd.setGrade(userArray[i].getGrade()) ;
+			pd.setCaseSave(userArray[i].getCaseSave()) ;
+			pd.setLotNo(userArray[i].getLotNo());
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setSwitchRemark(userArray[i].getSwitchRemark());
+			pd.setUserId(user);
+			poList.add(pd);   
+		}  
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.getSwitchProdOrderListByPrd(poList)));  
+	}
+	@RequestMapping(  value = "/getSwitchProdOrderListByRowProd",  method = RequestMethod.POST )
+	public void doGetSwitchProdOrderListByRowProd(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data) throws IOException {
+		PCMSDetailModel model = new PCMSDetailModel();
+		String user = (String) session.getAttribute("user");
+		Gson g = new Gson(); 
+		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
+		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<PCMSSecondTableDetail>();
+		int i = 0; 
+		for (i = 0; i < userArray.length; i++) {
+			PCMSSecondTableDetail pd = new PCMSSecondTableDetail();
+			pd.setProductionOrder(userArray[i].getProductionOrder());
+			pd.setSaleOrder(userArray[i].getSaleOrder());
+			pd.setSaleLine(userArray[i].getSaleLine());
+			pd.setReplacedRemark(userArray[i].getReplacedRemark()) ; 
+			pd.setStockRemark(userArray[i].getStockRemark()) ; 
+			pd.setGrade(userArray[i].getGrade()) ;
+			pd.setCaseSave(userArray[i].getCaseSave()) ;
+			pd.setLotNo(userArray[i].getLotNo());
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setSwitchRemark(userArray[i].getSwitchRemark());
+			pd.setUserId(user);
+			poList.add(pd);   
+		}  
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.getSwitchProdOrderListByRowProd(poList)));  
 	}
 }

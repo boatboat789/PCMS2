@@ -2,11 +2,7 @@ package model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServlet;
-
-import com.google.gson.JsonElement;
 
 import dao.PCMSMainDao;
 import dao.implement.PCMSMainDaoImpl;
@@ -71,13 +67,11 @@ public class PCMSMainModel extends HttpServlet {
 		// TODO Auto-generated method stub   
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
-	}
-
+	} 
 	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
 		ArrayList<ColumnHiddenDetail> list = this.dao.getColVisibleDetail(user);
 		return list;
-	}
-
+	} 
 	public  ArrayList<ColumnHiddenDetail>  saveColSettingToServer(ColumnHiddenDetail pd) {
 		ArrayList<ColumnHiddenDetail> list = this.dao.saveColSettingToServer(pd);
 		return list;
@@ -91,8 +85,7 @@ public class PCMSMainModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameList();
 		return list;
-	}
-
+	} 
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);

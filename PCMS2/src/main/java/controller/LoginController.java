@@ -1,5 +1,7 @@
 	package controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 
 import javax.naming.NamingException;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
-
 import entities.EmployeeDetail;
 import info.AdInfo;
 import th.in.totemplate.core.authen.ActiveDirectory;
@@ -31,7 +32,7 @@ public class LoginController {
 	public String getLoginModel(Model  model, HttpSession session, HttpServletRequest request, 
 			HttpServletResponse response ) { 
 		model.addAttribute("alertmsg", alertmsgText);
-		model.addAttribute("alerttyp", alerttypText); 
+		model.addAttribute("alerttyp", alerttypText);  
 		return "login";
 	} 
 	@RequestMapping(value = { "/logout" }, method = { RequestMethod.GET })
@@ -62,12 +63,27 @@ public class LoginController {
 		final EmployeeDetail user = new EmployeeDetail( );	
 		final TempLogin temp = new TempLogin();
 		String redirect = "";
+		String path = null;
+		try {
+			path = new URL(request.getHeader("referer")).getPath();
+//			path = path.replaceFirst("/", "");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String oriPath = path.substring(request.getContextPath().length());
 //		String userName = "";
 		if(session.getAttribute("user") != null) { 
 			alertmsgText = "";
 			alerttypText ="";
-			redirect = "redirect:/Main" ;  
-			return redirect;  
+			if(oriPath == "") {
+				redirect = "redirect:/Main" ;  
+				return redirect;  
+			}
+			else {
+				redirect = "redirect:"+oriPath ;  
+				return redirect;  
+			} 
 //			user = (EmployeeDetail)session.getAttribute("user");
 		}
 		else {  
@@ -110,17 +126,29 @@ public class LoginController {
 		            System.err.println(this.getClass().getName()+" - "+e.getMessage());
 		            e.printStackTrace();
 		        }   
-			}
-		} 
-		    
-//		   System.out.println(session.getAttribute("user"));
-//		   System.out.println(user.getFirstName());
-//		   System.out.println(temp.getStatus());
-		if(user.getFirstName() != null) {
+			} 
+		}    
+//		System.out.println("/login/loginAuth : "+request.getHeader("referer"));
+//		System.out.println("/login/loginAuth : "+request.getRequestURI());   
+//		System.out.println("/login/loginAuth : "+request.getParameter("from"));
+//		System.out.println("/login/loginAuth : "+session.getAttribute("SPRING_SECURITY_SAVED_REQUEST"));
+//		System.out.println("/login/loginAuth path : "+ path ); 
+//		System.out.println("/login/loginAuth : "+ request.getRequestURL() ); 
+//		System.out.println("/login/loginAuth : "+ request.getContextPath() ); 
+//		System.out.println("/login/loginAuth : "+ request.getRequestURI().substring(request.getContextPath().length())); 
+//		System.out.println("/login/loginAuth : "+ path.substring(request.getContextPath().length())); 
+		 
+		if(user.getFirstName() != null) {  
 			alertmsgText = "";
 			alerttypText ="";
-			redirect = "redirect:/Main" ;  
-			return redirect;  
+			if(oriPath == "") {
+				redirect = "redirect:/Main" ;  
+				return redirect;  
+			}
+			else {
+				redirect = "redirect:"+oriPath ;  
+				return redirect;  
+			} 
 		 } 
 		else {
 			redirect = "redirect:/login" ;  
@@ -148,5 +176,5 @@ public class LoginController {
 	    public TempLogin() { this.status = false; } 
 	    public void setStatus(boolean status) { this.status = status; }
 	    public boolean getStatus() { return this.status; }
-	} 
+	}  
 }

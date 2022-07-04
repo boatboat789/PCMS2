@@ -1,11 +1,5 @@
 package dao.implement;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,15 +11,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import dao.DataImportDao;
 import dao.DataImportSORDao;
-import entities.ColumnHiddenDetail;
-import entities.DataImport;
-import entities.PCMSTableDetail;
 import entities.SORDetail;
-import entities.UserDetail;
 import model.BeanCreateModel;
-import th.in.totemplate.core.net.FtpReceive;
 import th.in.totemplate.core.sql.Database;
 
 public class DataImportSORDaoImpl implements DataImportSORDao {

@@ -22,34 +22,34 @@
 					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%;   font-size: 12.5px;width:100%">
 				        <thead>          
 				            <tr>
-				                <th class=" " style="vertical-align: middle;">SO No. </span></th>
-				                <th class=" " style="vertical-align: middle;">SO Line</th> 
-				                <th class=" " style="vertical-align: middle;">Article No</th>
-				                <th class=" " style="vertical-align: middle;">Design No </th>
-				                <th class=" " style="vertical-align: middle;">ATT<span class="c"style="display: block;"> Color</span> </th>  
-				                <th class=" " style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Color</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Order<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Shipped	<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Unit </th> 
-				                <th class=" " style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
-				                <th class=" " style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Prepare	 </th>  
-				                <th class=" " style="vertical-align: middle;">Relax	 </th>  
-				                <th class=" " style="vertical-align: middle;">PS </th>      
-				                <th class=" " style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Dye <span class="c"style="display: block;"> Status</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class=" " style="vertical-align: middle;">FN  </th> 
-				                <th class=" " style="vertical-align: middle;">Inspect </th>  
-				                <th class=" " style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
-				                <th class=" " style="vertical-align: middle;">Delivery Date </th> 
-				                <th class=" " style="vertical-align: middle;">Shipping </th>   
-				        	</tr>   
+				                <th class="row-table" style="vertical-align: middle;">SO No. </th>
+				                <th class="row-table" style="vertical-align: middle;">SO Line</th> 
+				                <th class="row-table" style="vertical-align: middle;">Article No</th>
+				                <th class="row-table" style="vertical-align: middle;">Design No </th>
+				                <th class="row-table" style="vertical-align: middle;">ATT<span class="c"style="display: block;"> Color</span> </th>  
+				                <th class="row-table" style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Color</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Order<span class="c"style="display: block;"> Qty.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Shipped	<span class="c"style="display: block;"> Qty.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Unit </th> 
+				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Prepare	 </th>  
+				                <th class="row-table" style="vertical-align: middle;">Relax	 </th>  
+				                <th class="row-table" style="vertical-align: middle;">PS </th>      
+				                <th class="row-table" style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> Status</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">FN  </th> 
+				                <th class="row-table" style="vertical-align: middle;">Inspect </th>  
+				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Delivery Date </th> 
+				                <th class="row-table" style="vertical-align: middle;">Shipping </th>   
+				        	</tr>      
 				        </thead>          	         
 <!-- 				        <tbody>     -->
 <!-- 				        </tbody>        --> 
@@ -95,15 +95,17 @@ var cusShortNameList ;
 var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
-var domain = "http://"+window.location.hostname+":8080";
-var urlLBMS = domain+"/LBMS/";     
-var urlLBMSObj = domain+"/LBMS/LabHistory"; 
-var urlSFC = domain+"/SFC/"; 
-var urlSFCObj = domain+"/SFC/HistoryWork"; 
-var urlInspect = domain+"/InspectSystem/search/home.html"; 
-var urlInspectObj = domain+"/InspectSystem/search/home.html"; 
-var urlQCMS = domain+"/QCMS/first.html"; 
-var urlQCMSObj = domain+"/QCMS/request/search.html"; 
+// var domain = "http://"+window.location.hostname+":8080";
+var domain ;
+var urlLBMS ;     
+var urlLBMSObj ; 
+var urlSFC ; 
+var urlSFCObj  ; 
+var urlInspect ; 
+var urlInspectObj ; 
+var urlQCMS ; 
+var urlQCMSObj ; 
+ 
 var soTmpExcel ;   
 var soLineTmpExcel;
 // console.log(window.location.host)
@@ -187,6 +189,25 @@ $(document) .ready( function() {
 // 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
 // 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
 // 	  });               
+	
+	// ---------------------------------------- set---------------------------------------------
+	let os = JSON.parse('${OS}');  
+// 	console.log(os)
+	let result = os.includes("win");
+	console.log(result)     
+	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
+	else{ domain = "https://"+window.location.hostname;  } 
+// 	domain = domain+window.location.hostname+:"8080";
+	urlLBMS = domain+"/LBMS/";     
+	urlLBMSObj = domain+"/LBMS/LabHistory"; 
+	urlSFC = domain+"/SFC/"; 
+	urlSFCObj = domain+"/SFC/HistoryWork"; 
+	urlInspect = domain+"/InspectSystem/search/home.html"; 
+	urlInspectObj = domain+"/InspectSystem/search/home.html"; 
+	urlQCMS = domain+"/QCMS/first.html"; 
+	urlQCMSObj = domain+"/QCMS/request/search.html";
+// 	console.log(domain)
+	// ---------------------------------------- set---------------------------------------------
 	userId = JSON.parse('${UserID}');   ;    
 	document.getElementById("btn_lockColumn").style.display = "none";
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
@@ -242,13 +263,13 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == 'รอจัด Lot' ){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    buttons: false, 
 		   		})
 			}      
 			else {
@@ -280,7 +301,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == 'รอจัด Lot' ){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -313,7 +334,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == 'รอจัด Lot' ){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -351,7 +372,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder == 'รอจัด Lot' ){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -390,7 +411,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder 
-			if(prdOrder == 'รอจัด Lot' ){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -428,12 +449,12 @@ $(document) .ready( function() {
 	 	    select : true,           
 	 	   	scrollX: true,              
 //	  	    scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง 
-	 	  scrollY: '55vh' , //ขนาดหน้าจอแนวตั้ง       
+	 	  	scrollY: '55vh' , //ขนาดหน้าจอแนวตั้ง       
 	 	   	scrollCollapse: true,   
 		   	orderCellsTop : true,           
 			orderClasses : false,           
 //	 		lengthChange: false,              
-	// "deferRender": true,              	
+// 			"deferRender": true,              	
 //	 		filter:false,       
 			lengthChange : false,     
 			pageLength: 1000,	 
@@ -484,38 +505,176 @@ $(document) .ready( function() {
 				  	  className : 'p-r-15',                  
 					} ,   
 				{ targets :  [6,7,10],                         
-			  	  type : 'num',                  
+			  	  type : 'num',                 
 				} ,   
-					{ targets :  [17,23,25],                            
-//	 				  	  className : 'bg-color-azure',                  
-						} ,   
+				{ targets:[9]  ,       
+					render: function (data, type, row) {	   
+						let html = '<div  name="n_'+row.ProductionOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.ProductionOrder+'</div>'
+						return  html; 
+				   	  }    
+				},   
+// 				{ targets :  [12],                               
+// 	 				 className : 'dt-custom-td140',      
+// 			  	  	type: 'string'                  
+// 				} ,   
 //	 			{ targets : [ 13],  
 //	 				type: 'date-euro'          
 //	 				} , 
 							 
 			 	{ targets : [ 13 ],      
-					  type: 'date-euro'          ,
-				   	  render: function (data, type, row) {	     
-//	 			   		  var html = ''  
-//	 			   		  console.log(row,type)
-//	 				   		if(row.DueDate != "") {  
-//	 			 	    		var datearray = row.DueDate.split("/");
-//	 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-//	 					  	    if (dueDate < today){     
-//	 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
-//	 	//		 		  	    	$(row).addClass('dt-custom-overdue');    
-//	 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
-//	 					        }
-//	 					  	    else{
-//	 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
-//	 					  	    }
-//	 			  	    	}   
-//	 				   		else{
-//	 				   			html = ' <div >' + row.DueDate+ '</div>' 
-//	 				   		}     
-							return  row.DueDate;
-				   	  }    
-					} ,     
+					  type: 'date-euro' ,    
+// 				   	  render: function (data, type, row) {	     
+// //	 			   		  var html = ''   
+// //	 				   		if(row.DueDate != "") {  
+// //	 			 	    		var datearray = row.DueDate.split("/");
+// //	 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+// //	 					  	    if (dueDate < today){     
+// //	 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue');  
+// //	 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
+// //	 					        }
+// //	 					  	    else{
+// //	 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
+// //	 					  	    }
+// //	 			  	    	}   
+// //	 				   		else{	
+// //	 				   			html = ' <div >' + row.DueDate+ '</div>' 
+// //	 				   		}     
+// 							return  row.DueDate;
+// 				   	  }    
+					} , 
+// 					{ targets : [ 14 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Prepare;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
+// 	 			  	    	}       
+//  							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 15 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Relax;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 16 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Preset;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 17 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.DyePlan;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 18 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.DyeActual;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 20 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Dryer;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/"); 
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 21 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Finishing;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 22 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.Inspectation;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 23 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.CFMPlanDate;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 24 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.CFMDateActual;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 25 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.DeliveryDate;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+// 					{ targets : [ 26 ],      
+// 						  type: 'String' ,    
+// 	 				   	  render: function (data, type, row) {	 
+// 							let dateDDMM = row.LotShipping;
+// 	 				   		if(dateDDMM != "") {  
+// 	 			 	    		var datearray = dateDDMM.split("/");
+// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
+// 	 			  	    	}       
+// 							return dateDDMM;
+// 	 				   	  }    
+// 					} , 
+						
 			], 
 //	 		 order: [[2, 'asc'], [1, 'asc']],  
 //	 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
@@ -528,32 +687,37 @@ $(document) .ready( function() {
 //	   	        $('td', row).eq(21).addClass('bg-color-azure');    
 //	   	        $('td', row).eq(23).addClass('bg-color-azure');   
 //	   			console.log(data.DueDate, index )                   
-	  			if(mapsDataHeader.size != 0){     
-//	   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
-	  				if(data["DueDate"] != "") {      
+// 	  			if(mapsDataHeader.size != 0){     
+// //	   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
+// 	  				if(data["DueDate"] != "") {      
+// 		 	    		var datearray = data["DueDate"].split("/");
+// 			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;    
+// 				  	    if (sevenDayAgo >= dueDate   ){             
+// 				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
+// 				        }
+// 	  	    		}        
+// 	  			}   
+	  			if(mapsDataHeader.size != 0){       
+					if (data["TypePrd"] == "OrderPuang" ) { 	         	 
+						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-orderpuang'); 
+					}  
+					else if (data["TypePrd"] == "Switch" ) { 	 
+						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-switch');     
+					}   	
+					else if (data["TypePrd"] == "Replaced" ) { 	 
+						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-replaced');
+					}
+					if(data["DueDate"] != "") {      
 		 	    		var datearray = data["DueDate"].split("/");
-			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-//	 		  	    	console.log(sevenDayAgo >= dueDate,sevenDayAgo ,dueDate)
+			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;    
 				  	    if (sevenDayAgo >= dueDate   ){             
 				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
 				        }
-	  	    		}        
-	  			}
-	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
-	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');      }
-	  			if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');      }
-//	   			console.log(data["SaleOrder"], index )              
-//	 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
-//	 			console.log(row  )      
-//	   	    	if(data["DueDate"] != "") {  
-//	  	    		var datearray = data["DueDate"].split("/");
-//	 	  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-//	 		  	    if (dueDate < today){     
-//	 		  	    	 $('td', row).eq(13).addClass('dt-custom-overdue'); 
-	// // 		  	    	$(row).addClass('dt-custom-overdue');    
-//	 		        }
-//	   	    	}
-//	 			if (data["OperationStartDate"] != "") { $(row).addClass('dt-custom-overdue'); } 
+	  	    		}       
+					$('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');
+					$('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');
+					$('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure'); 
+				} 
 			},
 			drawCallback: function( settings ) { 
 //	 			console.log(settings)
@@ -569,7 +733,7 @@ $(document) .ready( function() {
  
  
     poTable = $('#poTable').DataTable({  
-    	scrollY:       '400px',        
+    	scrollY: '400px',        
     	scrollX: true,      
     	paging: false,      
 //  	    select : true,               
@@ -1143,8 +1307,7 @@ function searchByDetail(){
 //    		})
 // 	}
 // 	else if( saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-// 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {    
-	console.log(userStatus) 
+// 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {     
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
 		swal({
@@ -1155,18 +1318,18 @@ function searchByDetail(){
    		    buttons: false,
    		})
 	}
-	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-  			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
-   			dueDate == ''  )
-  			)  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need input some field for search.',
-   		    icon: 'warning',
-   		    timer: 1000,
-   		    buttons: false,
-   		})
-	}
+// 	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
+//   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
+//    			dueDate == ''  )
+//   			)  { 
+// 		swal({
+//    		    title: 'Warning',
+//    		    text: 'Need input some field for search.',
+//    		    icon: 'warning',
+//    		    timer: 1000,
+//    		    buttons: false,
+//    		})
+// 	}
 
 	else if (dist == ''){
 		swal({
@@ -1182,7 +1345,6 @@ function searchByDetail(){
 	    var  obj = JSON.parse(json);    
 		var arrayTmp = [];   
 		arrayTmp.push(obj);      
-// 		console.log(obj)
 		searchByDetailToServer(arrayTmp); 
 	}
 } 
@@ -1282,14 +1444,14 @@ function exportCSV(data){
     createXLSLFormatObj.push(xlsHeader);     
     var sizeMap = mapsDataHeader.size;
     let caseDupli = 0;
+    soLineTmpExcel = '' ;soTmpExcel = '';
     $.each(xlsRows, function(index, value) {    
         var innerRowData = [];         
         caseDupli = checkSaleOrderLine( value);
         $.each(value, function(data, val) {     
             if(mapsDataHeader.size != 0){                   
             	 indexArray = mapsDataHeader.get(data); 
-            	 colType = mapsColumnHeader.get(data);  
-            	 console.log(innerRowData[indexArray] ,val)
+            	 colType = mapsColumnHeader.get(data);   
 			  	if(indexArray !== undefined){             
 					if (colType === undefined){  
 						innerRowData[indexArray] = val;      
@@ -1324,8 +1486,8 @@ function exportCSV(data){
     var ws_name = "Main";     
     if (typeof console !== 'undefined') console.log(new Date());
     var wb = XLSX.utils.book_new(),
-//         ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);   
-    	ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj, {dateNF:"dd/MM/yyyy",rawNumbers: true});  
+//  ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);   
+   	ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj, {dateNF:"dd/MM/yyyy",rawNumbers: true});  
     /* Add worksheet to workbook */ 
     XLSX.utils.book_append_sheet(wb, ws, ws_name); 
     /* Write workbook and Download */
@@ -1335,7 +1497,7 @@ function exportCSV(data){
 }           
 function checkSaleOrderLine( val){       
 	if(soLineTmpExcel == '' && soTmpExcel == ''  ){     
-		soLine = val.SaleLine;     
+		soLineTmpExcel = val.SaleLine;     
 		soTmpExcel = val.SaleOrder;   
 		caseDupli = 0; 
 	}  
@@ -1349,8 +1511,7 @@ function checkSaleOrderLine( val){
 	}  
 	return caseDupli;
 }
-function getPrdDetailByRow(arrayTmp) {     
-// 	console.log(arrayTmp)
+function getPrdDetailByRow(arrayTmp) {      
 	$.ajax({   
 		type: "POST",
 		contentType: "application/json",  
@@ -1359,8 +1520,7 @@ function getPrdDetailByRow(arrayTmp) {
 		success: function(data) {      
 // 			MainTable.clear();          
 // 			MainTable.rows.add(data);     
-// 			MainTable.draw();  
-// 			console.log(data)
+// 			MainTable.draw();   
 			setModalDetail(data);   
 		},   
 		error: function(e) {
@@ -1400,13 +1560,13 @@ function searchByDetailToServer(arrayTmp) {
 		contentType: "application/json",   
 		data: JSON.stringify(arrayTmp),           
 		url: "Main/searchByDetail", 
-		success: function(data) { 
-// 			console.log(data)
-			
-// 			getVisibleColumnsTable();
+		success: function(data) {  
+// 			getVisibleColumnsTable(); 
+// 			console.log(new Date())  
 			MainTable.clear();        
-			MainTable.rows.add(data);     
-			MainTable.draw();  
+			MainTable.rows.add(data);           
+			MainTable.draw();     
+// 			console.log(new Date(	))  
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
@@ -1569,17 +1729,17 @@ function goToLBMS(tblData,pUserId,data){
 	   		tab.addEventListener('load', (event) => { 
 
    	    	});        
-   	    } 
+   	    } ,	
+	    error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+			console.log(e)
+		},
+		done: function(e) {       
+		}   
    	}); 
-} 
-function goToSFC(tblData,pUserId,data){         
-// 	let obj = createEncryptObj(pUserId);        
-// 	var JSONObject= '{'+    
-// 	    '"SaleOrder":"'+ obj.encrypted  + '"'+   
-// 	   '} ';                     
-// 	console.log(JSONObject)             
-// 	var  aaaa = JSON.parse(JSONObject);     
-	var prdOrder = tblData[0].ProductionOrder
+}    
+function goToSFC(tblData,pUserId,data){          
+	var prdOrder = tblData[0].ProductionOrder  
 	$.ajax({    
 	    url: urlSFC,
 	    type : 'GET',      
@@ -1594,7 +1754,13 @@ function goToSFC(tblData,pUserId,data){
 					tab.document.getElementById('input_searchProductionOrder').value = prdOrder;       
 					tab.searchByPrdOrder(prdOrder);                
    	    	};        
-	    }   	
+	    },	
+	    error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+			console.log(e)
+		},
+		done: function(e) {       
+		}   	
 	});       
 } 
 function goToInspect(tblData,pUserId,data){ 
@@ -1618,7 +1784,13 @@ function goToInspect(tblData,pUserId,data){
 	    	      tab.document.getElementById('prdNumber').value = prdOrder  ;  //'S2A001'
 	    	      tab.document.getElementById('btnSearch').click();     
     	    };      
-	    }
+	    },	
+	    error: function(e) {
+			swal("Fail", "Please contact to IT", "error");
+			console.log(e)
+		},
+		done: function(e) {       
+		}   
 	});      
 // 	test3T(); 
 }  
@@ -1860,7 +2032,17 @@ function addUserStatusOption(data ){
 	 opt = document.createElement('option');
      opt.appendChild(document.createTextNode(i));
 	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[ขาย stock]';
-	 opt.value = 'ขาย stock'; 
+	 opt.value = 'ขาย stock';
+	 sel.appendChild(opt);    
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รับจ้างถัก]';
+	 opt.value = 'รับจ้างถัก'; 
+	 sel.appendChild(opt);       
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[Lot ขายแล้ว]';
+	 opt.value = 'Lot ขายแล้ว'; 
 	 sel.appendChild(opt);           
 	var size = data.length; 
 	for (var i = 0; i < size; i++) {		   

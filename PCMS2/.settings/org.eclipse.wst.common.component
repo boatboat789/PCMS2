@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-                                    
+                                                    
+    
+    
+    
+    
     
     
     
@@ -8,51 +12,6 @@
     
     
     <wb-module deploy-name="PCMS2">
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-                                                                        
-        
-        
-        
-        
-        
-        
-        
-        <dependent-module archiveName="core-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
-                                                                                                            
-            
-            
-            
-            
-            
-            
-            
-            <dependency-type>uses</dependency-type>
                                                                                                         
         
         
@@ -61,8 +20,75 @@
         
         
         
+        
+        
+        
+        
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+                                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+                                
+        
+        
+        <wb-resource deploy-path="/" source-path="/src/main/webapp/WEB-INF/pages/config/PCMSDetailModal/Modal/webapp"/>
+                        
+        
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+                                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <dependent-module archiveName="core-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
+                                                                                                                                                            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <dependency-type>uses</dependency-type>
+                                                                                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         </dependent-module>
-                                                                        
+                                                                                                        
+        
+        
+        
+        
         
         
         
@@ -71,12 +97,20 @@
         
         
         <property name="java-output-path" value="/PCMS2/target/classes"/>
-                                        
+                                                                        
+        
+        
+        
+        
         
         
         
         <property name="context-root" value="PCMS2"/>
-                                                                    
+                                                                                                    
+    
+    
+    
+    
     
     
     
@@ -85,7 +119,11 @@
     
     
     </wb-module>
-                                
+                                                
+
+
+
+
 
 
 

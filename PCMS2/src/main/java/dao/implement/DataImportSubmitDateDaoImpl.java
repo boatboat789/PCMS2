@@ -78,7 +78,7 @@ public class DataImportSubmitDateDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPSUBMITDATE")) {  
+      if (fullname.contains("ZSAPSUBMITDATE.txt")) {  
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
 	         try {  

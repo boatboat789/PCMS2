@@ -1,23 +1,12 @@
 package controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.security.DigestException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Set;
-
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
@@ -44,7 +33,6 @@ import com.google.gson.Gson;
 import entities.ColumnHiddenDetail;
 import entities.EncryptedDetail;
 import entities.PCMSTableDetail;
-import model.PCMSDetailModel;
 import model.PCMSMainModel;
 
 @Controller
@@ -54,7 +42,7 @@ public class PCMSMainController {
 	@Autowired 
 	private ServletContext context;  
 	private String LOCAL_DIRECTORY;
-	private String FTP_DIRECTORY; 
+	private String FTP_DIRECTORY;  
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView test(HttpSession session) {       
 		ModelAndView mv = new ModelAndView();
@@ -64,8 +52,10 @@ public class PCMSMainController {
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		 String[] arrayCol = null  ; 
 		 if(list.size() == 0) { arrayCol = null  ;} 
-		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
+		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }    
+		String OS = System.getProperty("os.name").toLowerCase();	  
 		mv.setViewName("PCMSMain/PCMSMain");  
+		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
@@ -74,8 +64,7 @@ public class PCMSMainController {
 		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
 		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
 		return mv;
-	}    
-	
+	}      
 	@RequestMapping(value ="/fakeSubmit",  method = RequestMethod.POST)        
     public void submitForm(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
     		@Validated @ModelAttribute("PCMSTable") PCMSTableDetail pd, BindingResult br) throws IOException  

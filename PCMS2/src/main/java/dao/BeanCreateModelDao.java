@@ -16,11 +16,13 @@ import entities.PODetail;
 import entities.PackingDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
+import entities.ReplacedProdOrderDetail;
 import entities.SORDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
+import entities.SwitchProdOrderDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 
@@ -71,5 +73,9 @@ public interface BeanCreateModelDao {
 	SORDetail _genSORDetail(Map<String, Object> map);
 
 	SORDetail _genSORFromPCMSDetail(Map<String, Object> map);
+
+	SwitchProdOrderDetail _genSwitchProdOrderDetail(Map<String, Object> map);
+
+	ReplacedProdOrderDetail _genReplacedProdOrderDetail(Map<String, Object> map);
 
 }

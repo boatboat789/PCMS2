@@ -78,7 +78,7 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPMAINPRD")) {  
+      if (fullname.contains("ZSAPMAINPRD.txt")) {  
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
 	         try {  
@@ -103,7 +103,8 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 //	               System.out.println("clear");
 	               this.insertData(datas);
 //	               System.out.println("wtf");
-	               this.database.update("EXEC spd_UpsertToMainProd");
+	               this.database.update("EXEC spd_UpsertToMainProd"); 
+	               this.database.update("EXEC spd_UpsertToTEMP_ProdWorkDate");
 //	               System.out.println("EXEC spd_UpsertToMainProd"); 
 	               success = true;
 	            }

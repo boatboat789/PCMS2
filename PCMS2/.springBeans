@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[3.9.18.202109140629-RELEASE]]></pluginVersion>
+	<pluginVersion><![CDATA[3.9.21.202203211437-RELEASE]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
@@ -10,7 +10,6 @@
 		<config>src/main/webapp/WEB-INF/PCMS2-servlet.xml</config>
 	</configs>
 	<autoconfigs>
-		<config>src/main/webapp/WEB-INF/applicationContext.xml</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

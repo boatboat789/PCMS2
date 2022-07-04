@@ -157,7 +157,7 @@ public class DataImportMainBillBatchDaoImpl implements DataImportDao {
    }
 
    private int clearData() {
-      String sql = "DELETE FROM [PCMS].[dbo].[SapTempMainGrade] ";
+      String sql = "DELETE FROM [PCMS].[dbo].[SapTempMainBillBatch] ";
       int value = this.database.update(sql, new Object[0]);
       return value;
    }

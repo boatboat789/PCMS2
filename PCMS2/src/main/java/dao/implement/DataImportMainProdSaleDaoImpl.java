@@ -28,7 +28,7 @@ public class DataImportMainProdSaleDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 3;
+      this.maxfield = 4;
    }
 
    public String getMessage() {
@@ -98,12 +98,9 @@ public class DataImportMainProdSaleDaoImpl implements DataImportDao {
 	               }
 	            }  
 	            if (!datas.isEmpty()) {
-	               this.clearData();  
-//	               System.out.println("clear");
-	               this.insertData(datas);  
-//	               System.out.println("dddddddddddddd");
-	               this.database.update("EXEC spd_UpsertToMainProdSale");
-//	               System.out.println("EXEC spd_UpsertToMainProdSale"); 
+	               this.clearData();   
+	               this.insertData(datas);   
+	               this.database.update("EXEC spd_UpsertToMainProdSale"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
@@ -128,10 +125,10 @@ public class DataImportMainProdSaleDaoImpl implements DataImportDao {
       if (!datas.isEmpty()) {
          try {
         	 String sql = "INSERT INTO [PCMS].[dbo].[SapTempMainProdSale] "
-             		+ " (F001, F002, F003 " 
+             		+ " (F001, F002, F003, F004 " 
              		+ " ) "
              		+ " VALUES ("
-             		+ "        ?, ?, ? " 
+             		+ "        ?, ?, ? , ?" 
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);

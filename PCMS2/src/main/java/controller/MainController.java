@@ -1,22 +1,13 @@
 package controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,7 +46,9 @@ public class MainController {
 		 String[] arrayCol = null  ;
 		 if(list.size() == 0) { }    
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
+		 String OS = System.getProperty("os.name").toLowerCase();	   
 		mv.setViewName("PCMSMain/PCMSMain");  
+		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));

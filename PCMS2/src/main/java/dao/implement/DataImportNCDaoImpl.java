@@ -78,7 +78,7 @@ public class DataImportNCDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPNC")) {  
+      if (fullname.contains("ZSAPNC.txt")) {  
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
 	         try {  

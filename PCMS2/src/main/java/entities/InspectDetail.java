@@ -1,6 +1,5 @@
 package entities;
-
-import java.sql.Date;
+ 
 
 public class InspectDetail {
 	private String PostingDate = ""; 

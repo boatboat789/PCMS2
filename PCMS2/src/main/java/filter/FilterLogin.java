@@ -5,14 +5,13 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import entities.EmployeeDetail;
 
 public class FilterLogin implements Filter { 
 	@Override
@@ -34,12 +33,10 @@ public class FilterLogin implements Filter {
 	      
 //	      boolean passAuthen = false;
 //          boolean isResource = req.getRequestURI().matches(".*(css|jpg|png|gif|js)$"); 
-//	      String comeFrom = req.getParameter("comeFrom");
-	      
-	      if (loggedIn||loginRequest||loginAuthRequest||isStaticResource) {  
-//    	  if (loggedIn||loginRequest||loginAuthRequest) {  
+//	      String comeFrom = req.getParameter("comeFrom"); 
+	      if (loggedIn||loginRequest||loginAuthRequest||isStaticResource) {    
 	    	  chain.doFilter(request, response); 
-	      }
+	      } 
 //	      else if(comeFrom != null  ){
 //	    	  ses = req.getSession();  
 ////	    	  System.out.println(comeFrom);
@@ -52,12 +49,15 @@ public class FilterLogin implements Filter {
 ////	        	        System.out.println("ses.getAttribute(\"user\") : "+ses.getAttribute("user"));
 ////	        	        System.out.println("ses.getAttribute(\"permit\") : "+ses.getAttribute("userObject")); 
 //	        	} 
-//	        }
-	      else {    
-    		 res.sendRedirect(loginURL);
-   			}	   
+//	        }	
+	      else {     
+//    		 res.sendRedirect(loginURL);             //CREATE NEW LINK FOR REDIRECT
+    		 RequestDispatcher dispatcher = request.getRequestDispatcher("login"); 
+             dispatcher.forward(request, response);  //GET OLD LINK FOR REDIRECT
+   			}	    
    }
 	@Override
    public void destroy() {
    }
+	
 }

@@ -7,8 +7,17 @@
 }         
 /* .table.table.table-bordered.table-striped.text-center.dataTable.no-footer{ */
 /* 	width: 100% !important; */
-/* } */
+/* } */               
 /* CLASS */
+.bg-orderpuang{    
+	background-color: #b3d8ff !important;
+}   
+.bg-switch{    
+	background-color: #d0ffcd !important;
+}
+.bg-replaced{    
+	background-color: #fffea7 !important;
+}
 .font-bold{
     font-weight: bold;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);

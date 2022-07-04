@@ -104,7 +104,7 @@ public class DataImportMainGradeDaoImpl implements DataImportDao {
 //	               System.out.println("clear");
 	               this.insertData(datas);
 //	               System.out.println("wtf");
-	               this.database.update("EXEC spd_UpsertToMainGrade");
+	               this.database.update("EXEC spd_UpsertToMainGrade");  
 //	               System.out.println("EXEC [spd_UpsertToMainGrade]"); 
 	               success = true;
 	            }
