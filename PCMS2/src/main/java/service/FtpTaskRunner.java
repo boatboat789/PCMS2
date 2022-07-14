@@ -105,7 +105,7 @@ public class FtpTaskRunner {
 	   this.importerGoodReceive.loadDataFTP(this.user);
 	   this.importerBillBatch.loadDataFTP(this.user);
 	   	
-	   this.importerMainSale.loadDataFTP(this.user); 
+	   this.importerMainSale.loadDataFTP(this.user);  
 	   this.importerMainProdSale.loadDataFTP(this.user);
 	   this.importerMainGrade.loadDataFTP(this.user);
 	   this.importerMainProd.loadDataFTP(this.user);	

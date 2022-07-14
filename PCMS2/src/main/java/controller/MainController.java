@@ -42,11 +42,11 @@ public class MainController {
 		Gson g = new Gson();    
 		PCMSMainModel model = new PCMSMainModel();
 		String user = (String) session.getAttribute("user");  
-		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ;
-		 if(list.size() == 0) { }    
-		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
-		 String OS = System.getProperty("os.name").toLowerCase();	   
+		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		String[] arrayCol = null  ;
+		if(list.size() == 0) { }    
+		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
+		String OS = System.getProperty("os.name").toLowerCase();	   
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));

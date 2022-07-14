@@ -263,7 +263,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -301,7 +301,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -334,7 +334,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -372,7 +372,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -411,7 +411,7 @@ $(document) .ready( function() {
 		}         
 		else {
 			var prdOrder = tblData[0].ProductionOrder 
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	||prdOrder == "Lot ขายแล้ว"){
+			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
 		   		    text: 'Need to select atleast 1 row.',
@@ -2043,6 +2043,17 @@ function addUserStatusOption(data ){
      opt.appendChild(document.createTextNode(i));
 	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[Lot ขายแล้ว]';
 	 opt.value = 'Lot ขายแล้ว'; 
+	 sel.appendChild(opt);           
+	 
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[พ่วงแล้วรอสวม]';
+	 opt.value = 'พ่วงแล้วรอสวม'; 
+	 sel.appendChild(opt);           
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอสวมเคยมี Lot]';
+	 opt.value = 'รอสวมเคยมี Lot'; 
 	 sel.appendChild(opt);           
 	var size = data.length; 
 	for (var i = 0; i < size; i++) {		   

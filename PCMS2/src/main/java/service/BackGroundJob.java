@@ -23,7 +23,7 @@ public class BackGroundJob {
 	private ServletContext context; 
 	public BackGroundJob() {  } 
 //	@Scheduled(fixedDelay = 10000)       
-	@Scheduled(cron = "0 4/10 * * * *")    
+	@Scheduled(cron = "0 4/10 * * * *")     
 //	@Scheduled(cron = "0 4/10 0-22 * * *")    
 	public void sortBackGround1() {	
 		SORModel model = new SORModel();

@@ -439,7 +439,8 @@ userId = JSON.parse('${UserID}');   ;
 					  orderable: false,    
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
-				   				if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"		){ 
+				   				if(row.LotNo == "รอจัด Lot"   || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"
+			   					|| row.LotNo == "พ่วงแล้วรอสวม"	|| row.LotNo == "รอสวมเคยมี Lot"){ 
 									htmlEx = ''; 
 								}
 							else{
@@ -465,7 +466,8 @@ userId = JSON.parse('${UserID}');   ;
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
-			   		if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	){ 
+			   		if(row.LotNo  == "รอจัด Lot"	 || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"
+			   			|| row.LotNo == "พ่วงแล้วรอสวม"	|| row.LotNo == "รอสวมเคยมี Lot"){ 
 						htmlEx = ''; 
 					}
 					else{   
@@ -489,7 +491,7 @@ userId = JSON.parse('${UserID}');   ;
 // 						htmlEx = '<button type="button" class="btn btn-warning btn-cancelSW">ยกเลิกโยกขาย</button>'; 
 						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
 					}         
-			   		else if(row.LotNo  == "รอจัด Lot"	  || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	|| row.LotNo  == "" ){ 
+			   		else if(row.LotNo  == "รอจัด Lot"	  || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	|| row.LotNo  == ""|| row.LotNo == "พ่วงแล้วรอสวม"	|| row.LotNo == "รอสวมเคยมี Lot" ){ 
 			   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.ReplacedRemark+ '" autocomplete="off" >'; 
 					} 
 					else if(row.TypePrd == "Switch" || row.TypePrd == "Replaced" || row.TypePrd == "OrderPuang" || row.TypePrdRemark == "SUB" || row.TypePrdRemark == ""){ 
@@ -509,7 +511,7 @@ userId = JSON.parse('${UserID}');   ;
 						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.SwitchRemark+ '" autocomplete="off" >'; 
 					}        
 					else if(row.TypePrd == "Replaced" || row.TypePrd == "OrderPuang"
-							||row.LotNo == "รอจัด Lot"	 || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"	
+							||row.LotNo == "รอจัด Lot"	 || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว" || row.LotNo == "พ่วงแล้วรอสวม"	|| row.LotNo == "รอสวมเคยมี Lot"	
 							|| row.TypePrdRemark == "SUB" || row.TypePrdRemark == ""){ 
 						htmlEx = ''; 
 					}     
@@ -1107,7 +1109,7 @@ userId = JSON.parse('${UserID}');   ;
 			if(newValue == 'E0'){ 
              	rowData.CFMPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
-             }
+			}
 			else if(newValue == 'E1'){ 
 				swal({
 		   		    title: 'Warning',
@@ -1140,11 +1142,11 @@ userId = JSON.parse('${UserID}');   ;
 						  rowData.CFMPlanLabDate  = newValue;
 						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw();  
-	 				 		var json = createInputDateJsonData(rowData,'CFMPlanLabDate'); 
-	 			 			var  obj = JSON.parse(json);    
-	 			 			var arrayTmp = [];  
-	 						arrayTmp.push(obj);       
-	 						saveInputDateToServer(arrayTmp);      
+						  var json = createInputDateJsonData(rowData,'CFMPlanLabDate'); 
+						  var  obj = JSON.parse(json);    
+						  var arrayTmp = [];  
+						  arrayTmp.push(obj);       
+						  saveInputDateToServer(arrayTmp);      
 					  } else { 
 						  rowData.CFMPlanLabDate  = oldValue;
 						  MainTable.row(idx).invalidate() ; 
@@ -1340,7 +1342,8 @@ userId = JSON.parse('${UserID}');   ;
 				e.preventDefault();       
 				newValue  = checkDateFormatInput( newValue,oldValue)    
 				if(newValue == 'E0'){ 
-	             	rowData.DeliveryDate  = oldValue;MainTable.row(idx).invalidate() ; 
+	             	rowData.DeliveryDate  = oldValue;
+	             	MainTable.row(idx).invalidate() ; 
 // 	     			MainTable.row(idx).invalidate().draw();  
 	             }else if(newValue == 'E1'){
 						swal({
@@ -1433,10 +1436,10 @@ userId = JSON.parse('${UserID}');   ;
 							  MainTable.row(idx).invalidate() ; 
 // 							  MainTable.row(idx).invalidate().draw();   
 							  var json = createInputDateJsonData(rowData,'DeliveryDate'); 
-		 			 			var  obj = JSON.parse(json);    
-		 			 			var arrayTmp = [];  
-		 						arrayTmp.push(obj);   
-		 						saveInputDateToServer(arrayTmp);  
+		 			 		  var  obj = JSON.parse(json);    
+		 			 		  var arrayTmp = [];  
+		 					  arrayTmp.push(obj);   
+		 					  saveInputDateToServer(arrayTmp);  
 						  } else { 
 							  rowData.DeliveryDate  = oldValue;
 							  MainTable.row(idx).invalidate() ; 
@@ -1803,9 +1806,7 @@ function saveColSettingToServer(arrayTmp) {
 		}   	
 	});   
 }  
-function saveInputDateToServer(arrayTmp) {   
-	var currentdate = new Date(); 
-	 
+function saveInputDateToServer(arrayTmp) {    
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
@@ -1894,13 +1895,22 @@ function getSwitchProdOrderDetailByPrd( dataP) {
 //			var bean = data[0]; 
 //			 MainTable.row.add(bean).draw(false);       
 	let i = 0;
+// 	console.log(dataP)
 	for (i = 0  ; i < dataP.length; i++) {      
 		var prodOrder= dataP[i].ProductionOrder; 
-// 		console.log(prodOrder)
+		var saleOrder = dataP[i].SaleOrder; 
+		var saleLine = dataP[i].SaleLine; 
+		var typePrd= dataP[i].TypePrd;  
 		let indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
-			return prodOrder === MainTable.row(value).data().ProductionOrder;// return 'P2D031' === MainTable.row(value).data()[1];
+			if( MainTable.row(value).data().ProductionOrder == 'รอจัด Lot'){
+				return ( saleOrder === MainTable.row(value).data().SaleOrder && saleLine === MainTable.row(value).data().SaleLine );
+			}
+			else {
+				return ( prodOrder === MainTable.row(value).data().ProductionOrder && MainTable.row(value).data().TypePrd !== "OrderPuang" );// return 'P2D031' === MainTable.row(value).data()[1];
+			}
+			 // 			return prodOrder === MainTable.row(value).data().ProductionOrder; 
       	} );                   
-		MainTable.rows(indexes).remove() ; 
+		MainTable.rows(indexes).remove() ;   
 	}             
  	MainTable.rows.add(dataP).draw(false); // Add new data 
 }    
@@ -1911,8 +1921,7 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/saveInputDetail", 
 // 		async: false,
-		success: function(data) { 
-// 			console.log(data)
+		success: function(data) {  
 			if(data.length > 0){   
 				var bean = data[0];       
 				if(bean.IconStatus == 'I'){ 
@@ -1978,8 +1987,7 @@ function checkDateFormatInput( value ,oldvalue) {
     var dateInput = '';     
     var result = ''     
     if (value == oldvalue) { result = 'E3';  }
-    else if (value.trim() == '') { result = '';  }   
-//  	else if (value == oldvalue) { result = 'E3';  }
+    else if (value.trim() == '') { result = '';  }    
     // EX DD/MM/YYYY
  	else if(moment(value , 'DD/MM/YYYY',true).isValid()){   	 
  		dateInput = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
@@ -2010,9 +2018,7 @@ function checkDateFormatInput( value ,oldvalue) {
         else if(isNumeric(day) && isBlank(datearray[1])){  
            	var stringMonth = addLeadingZero((today.getMonth()+1)) ;      
             value = stringDay+'/'+stringMonth+'/'+ today.getFullYear(); 
-            dateInput = new Date(stringMonth+'/'+stringDay+'/'+ today.getFullYear()) ;   
-//             console.log(value ,dateInput)   
-//             console.log(!moment(value , 'DD/MM/YYYY',true).isValid() ,dateInput < date)
+            dateInput = new Date(stringMonth+'/'+stringDay+'/'+ today.getFullYear()) ;    
             if(!moment(value , 'DD/MM/YYYY',true).isValid() ){
     			value = 'E1';
             }
@@ -2020,11 +2026,9 @@ function checkDateFormatInput( value ,oldvalue) {
             	value = 'E2';
             }
 		}	
-        else{ value = ''; }  
-		 
+        else{ value = ''; }   
 		result = value;   
-	}    
-//     console.log(value)
+	}     
 	return result;
 } 
 function formatDate(date) {
@@ -2115,6 +2119,17 @@ function addUserStatusOption(data ){
 	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[Lot ขายแล้ว]';
 	 opt.value = 'Lot ขายแล้ว'; 
 	 sel.appendChild(opt);  
+	 
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[พ่วงแล้วรอสวม]';
+	 opt.value = 'พ่วงแล้วรอสวม'; 
+	 sel.appendChild(opt);           
+	 opt = document.createElement('option');
+     opt.appendChild(document.createTextNode(i));
+	 opt.text  = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0[รอสวมเคยมี Lot]';
+	 opt.value = 'รอสวมเคยมี Lot'; 
+	 sel.appendChild(opt);      
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
 		 var resultData = data[i]; 	   

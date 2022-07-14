@@ -72,15 +72,15 @@ public class LoginController {
 			e.printStackTrace();
 		}
 		String oriPath = path.substring(request.getContextPath().length());
-//		String userName = "";
-		if(session.getAttribute("user") != null) { 
+//		String userName = ""; 
+		if(session.getAttribute("user") != null) {  
 			alertmsgText = "";
 			alerttypText ="";
-			if(oriPath == "") {
+			if(oriPath.equals("")||oriPath.equals("/login")) { 
 				redirect = "redirect:/Main" ;  
 				return redirect;  
 			}
-			else {
+			else { 
 				redirect = "redirect:"+oriPath ;  
 				return redirect;  
 			} 
@@ -137,15 +137,17 @@ public class LoginController {
 //		System.out.println("/login/loginAuth : "+ request.getContextPath() ); 
 //		System.out.println("/login/loginAuth : "+ request.getRequestURI().substring(request.getContextPath().length())); 
 //		System.out.println("/login/loginAuth : "+ path.substring(request.getContextPath().length())); 
-		 
+ 
 		if(user.getFirstName() != null) {  
 			alertmsgText = "";
 			alerttypText ="";
-			if(oriPath == "") {
+			if(oriPath.equals("")||oriPath.equals("/login")) { 
+//			System.out.println("2");
 				redirect = "redirect:/Main" ;  
 				return redirect;  
 			}
 			else {
+//				System.out.println("3");
 				redirect = "redirect:"+oriPath ;  
 				return redirect;  
 			} 
@@ -169,6 +171,7 @@ public class LoginController {
 //	        	model.addAttribute("alertmsg", "Username or Password is incorrect"  );   
 	        }
 		}  
+//		System.out.println("4");
 		return redirect;  
 	}  
 	class TempLogin {

@@ -285,17 +285,17 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 //			+ "	begin\r\n"
 //			+ "		Drop Table #TempUCAL\r\n"
 //			+ "	end ;\r\n"
-			+ "  SELECT distinct -- a.[ProductionOrder]  ,[UserStatus]  ,d.[Grade]  ,countGRFinish ,isAnita ,CoaApproveDate  ,[CFMStatus],[DistChannel],\r\n"
-			+ "	  a.[ProductionOrder], a.saleorder,SumBill,CoaApproveDate,isAnita,StockLoad,countGRFinish,D.GRADE\r\n"
-			+ "	    , a.ProductionOrderRPM \r\n"
+			+ "SELECT distinct -- a.[ProductionOrder]  ,[UserStatus]  ,d.[Grade]  ,countGRFinish ,isAnita ,CoaApproveDate  ,[CFMStatus],[DistChannel],\r\n"
+			+ "	  a.[ProductionOrder], a.saleorder,SumBill,CoaApproveDate,isAnita,StockLoad,countGRFinish,a.GRADE\r\n"
+			+ "	    , a.ProductionOrderRPM  \r\n"
 			+ "		, CoaApproveDateRPM , StockLoadRPM, countGRFinishRPM, GradeRPM, a.Volumn\r\n"
-			+ "		, CFMStatusRPM,\r\n"
+			+ "		, CFMStatusRPM,SumGR,\r\n"
 			+ "	  	  CASE \r\n"
 			+ "	    when --a.UserStatus = 'ขายแล้ว' or   \r\n"
 			+ "			 a.UserStatus = 'ยกเลิก' or a.UserStatus = 'ปิดเพื่อแก้ไข' or  a.UserStatus = 'รับเข้าST.(P/S)' or\r\n"
-			+ "			 a.UserStatus = 'ตัดเกรดZ' or a.UserStatus = 'Over' or a.UserStatus = 'ขายเหลือ' or a.UserStatus = 'Lab' \r\n"
-			+ "		THEN a.UserStatus\r\n"
-			+ "		when ( d.[grade] = 'A' OR d.[grade] = 'C' ) AND countGRFinish = 1 and [DistChannel] = 'DM' AND a.[ProductionOrderRP] IS NULL THEN \r\n"
+			+ "			 a.UserStatus = 'ตัดเกรดZ' or a.UserStatus = 'Over' or a.UserStatus = 'ขายเหลือ' or a.UserStatus = 'Lab' or \r\n"
+			+ "          a.UserStatus = 'HOLD,รอโอน' 		THEN a.UserStatus\r\n"
+			+ "		when ( a.[grade] = 'A' OR a.[grade] = 'C' ) AND countGRFinish = 1 and [DistChannel] = 'DM' AND a.[ProductionOrderRP] IS NULL THEN \r\n"
 			+ "			CASE \r\n"
 			+ "				WHEN CFMStatus = '' AND SumBill IS NULL THEN 'รอตอบ CFM' \r\n"
 			+ "				WHEN ( CFMStatus = 'N' or CFMStatus = 'N/Y' or CFMStatus = 'N,Y' ) AND CoaApproveDate IS NULL AND SumBill IS NULL THEN 'รอสรุปจาก QA'   \r\n"
@@ -309,19 +309,19 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "								WHEN isAnita = 1 THEN 'รอแจ้งส่ง'  \r\n"
 			+ "								ELSE 'รอขาย' \r\n"
 			+ "							end      \r\n"
-			+ "						WHEN Volumn <= SumBill THEN 'ขายแล้ว'  \r\n"
+			+ "						WHEN SumGR <= SumBill THEN 'ขายแล้ว'  \r\n"
 			+ "						WHEN SumBill > 0 THEN 'ขายแล้วบางส่วน'  \r\n"
 			+ "						ELSE a.UserStatus\r\n"
 			+ "					end \r\n"
 			+ "				WHEN  SumBill IS NOT NULL THEN \r\n"
 			+ "					CASE  \r\n"
-			+ "						WHEN Volumn <= SumBill THEN 'ขายแล้ว'  \r\n"
+			+ "						WHEN SumGR <= SumBill THEN 'ขายแล้ว'  \r\n"
 			+ "						WHEN SumBill > 0 THEN 'ขายแล้วบางส่วน'\r\n"
 			+ "						ELSE a.UserStatus   \r\n"
 			+ "					end \r\n"
 			+ "				ELSE a.UserStatus\r\n"
 			+ "			end\r\n"
-			+ "		when ( d.[grade] = 'A' OR d.[grade] = 'C' ) AND countGRFinish = 1 and [DistChannel] = 'EX' AND a.[ProductionOrderRP] IS NULL THEN \r\n"
+			+ "		when ( a.[grade] = 'A' OR a.[grade] = 'C' ) AND countGRFinish = 1 and [DistChannel] = 'EX' AND a.[ProductionOrderRP] IS NULL THEN \r\n"
 			+ "			CASE \r\n"
 			+ "				WHEN CFMStatus = '' AND SumBill IS NULL THEN 'รอตอบ CFM' \r\n"
 			+ "				WHEN ( CFMStatus = 'N' or CFMStatus = 'N/Y' or CFMStatus = 'N,Y' ) AND CoaApproveDate IS NULL AND  SumBill IS NULL  THEN 'รอสรุปจาก QA'  \r\n"
@@ -334,29 +334,34 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "								WHEN ( StockLoad is not null or StockLoad <> '' ) THEN 'รอเปิดบิล'    \r\n"
 			+ "								ELSE 'รอแจ้งส่ง'  \r\n"
 			+ "							end \r\n"
-			+ "						WHEN Volumn <= SumBill THEN 'ขายแล้ว'  \r\n"
+			+ "						WHEN SumGR <= SumBill THEN 'ขายแล้ว'  \r\n"
 			+ "						WHEN SumBill > 0 THEN 'ขายแล้วบางส่วน'\r\n"
 			+ "						ELSE a.UserStatus   \r\n"
 			+ "					end \r\n"
 			+ "				WHEN  SumBill IS NOT NULL THEN \r\n"
 			+ "					CASE  \r\n"
-			+ "						WHEN Volumn <= SumBill THEN 'ขายแล้ว'  \r\n"
+			+ "						WHEN SumGR <= SumBill THEN 'ขายแล้ว'  \r\n"
 			+ "						WHEN SumBill > 0 THEN 'ขายแล้วบางส่วน'\r\n"
 			+ "						ELSE a.UserStatus   \r\n"
 			+ "					end \r\n"
 			+ "				ELSE a.UserStatus\r\n"
 			+ "				end\r\n"
-			+ "		when d.[grade] = 'Z' THEN 'ตัดเกรด Z'   \r\n"
-			+ "		ELSE a.UserStatus END AS UserStatusCal \r\n"
-			+ "	   into #tempUCAL\r\n"
-			+ "	  FROM ( select a.ProductionOrder ,a.Volumn,a.UserStatus,a.SaleOrder,a.SaleLine,a.LotNo,ProductionOrderRPM,[ProductionOrderRP] \r\n"
+			+ "		when a.[grade] = 'Z' THEN 'ตัดเกรด Z'   \r\n"
+			+ "		ELSE a.UserStatus END AS UserStatusCal  \r\n"
+			+ "   into #tempUCAL \r\n "
+			+ "	  FROM (select distinct a.ProductionOrder ,a.Volumn,a.UserStatus,a.SaleOrder,a.SaleLine,a.LotNo,ProductionOrderRPM,[ProductionOrderRP] \r\n"
 			+ "	  , CoaApproveDate as CoaApproveDateRPM ,StockLoad AS StockLoadRPM,countGRFinish AS countGRFinishRPM, H.GRADE AS GradeRPM\r\n"
-			+ "	  , CFMStatus AS CFMStatusRPM,\r\n"
+			+ "	  , CFMStatus AS CFMStatusRPM,gs.[Grade],\r\n"
 			+ "					case\r\n"
 			+ "						WHEN Unit = 'KG' THEN SumBillKG   \r\n"
 			+ "						WHEN Unit = 'YD' THEN SumBillYD  \r\n"
 			+ "						ELSE SumBillMR\r\n"
-			+ "					end AS SumBill\r\n"
+			+ "					end AS SumBill,\r\n"
+			+ "					case\r\n"
+			+ "						WHEN Unit = 'KG' THEN SumGRKG   \r\n"
+			+ "						WHEN Unit = 'YD' THEN SumGRYD  \r\n"
+			+ "						ELSE SumGRMR\r\n"
+			+ "					end AS SumGR\r\n"
 			+ "			 from [PCMS].[dbo].[FromSapMainProd] as a\r\n"
 			+ "			 LEFT JOIN ( SELECT [ProductionOrder]  \r\n"
 			+ "						  ,SUM([QuantityKG]) AS SumBillKG\r\n"
@@ -365,6 +370,14 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "					  FROM [PCMS].[dbo].[FromSapMainBillBatch]\r\n"
 			+ "					  WHERE [DataStatus]  = 'O' and [ProductionOrder] <> '' \r\n"
 			+ "					  GROUP BY [ProductionOrder]  )AS BS ON A.ProductionOrder = BS.ProductionOrder \r\n"
+			+ "			  LEFT JOIN (SELECT DISTINCT [ProductionOrder] \r\n"
+			+ "			                 ,[Grade]\r\n"
+			+ "							,SUM([QuantityKG]) AS SumGRKG\r\n"
+			+ "							,SUM([QuantityYD]) AS SumGRYD\r\n"
+			+ "							,SUM([QuantityMR]) AS SumGRMR\r\n"
+			+ "					  FROM [PCMS].[dbo].[FromSapGoodReceive]\r\n"
+			+ "					  where DataStatus = 'O' and [ProductionOrder] <> '' \r\n"
+			+ "					  GROUP BY [ProductionOrder],[Grade]  )AS GS ON A.ProductionOrder = GS.ProductionOrder \r\n"
 			+ "			 left join (  SELECT distinct  a.ProductionOrder AS ProductionOrderRPM, [ProductionOrderRP]  ,b.SaleOrder,b.SaleLine\r\n"
 			+ "							, CoaApproveDate, StockLoad,countGRFinish, D.GRADE,CFMStatus \r\n"
 			+ "							FROM [PCMS].[dbo].[ReplacedProdOrder] as a\r\n"
@@ -376,9 +389,11 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "									  FROM [PPMM].[dbo].[DataFromSap]\r\n"
 			+ "									  WHERE OPERATION = '230' AND OperationStatus = 'PROCESS DONE'\r\n"
 			+ "									  group by ProductionOrder ) as C on A.ProductionOrder = C.ProductionOrder   \r\n"
-			+ "							left join (SELECT ProductionOrder , Grade \r\n"
-			+ "											from [PCMS].[dbo].[FromSapMainGrade] \r\n"
-			+ "											where DataStatus = 'O' ) as d on A.ProductionOrder = d.ProductionOrder	 \r\n"
+			+ "							LEFT JOIN (SELECT DISTINCT [ProductionOrder] \r\n"
+			+ "											 ,[Grade] \r\n"
+			+ "									  FROM [PCMS].[dbo].[FromSapGoodReceive]\r\n"
+			+ "									  where DataStatus = 'O' and [ProductionOrder] <> '' \r\n"
+			+ "									  )AS d ON A.ProductionOrder = d.ProductionOrder \r\n"
 			+ "							left join ( SELECT  [LotNumber]  ,max(CoaApproveDate)  as CoaApproveDate\r\n"
 			+ "											FROM [QCMS].[dbo].[RequestOrder]\r\n"
 			+ "											where CoaApproveDate is not null  \r\n"
@@ -395,9 +410,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "									FROM [PCMS].[dbo].[InputStockLoad] \r\n"
 			+ "									WHERE DataStatus = 'O' ) AS g on A.ProductionOrder = g.ProductionOrder and B.SaleOrder = g.SaleOrder and B.SaleLine = g.SaleLine    \r\n"
 			+ "							WHERE a.DataStatus = 'O'   ) as h on a.ProductionOrder = h.ProductionOrderRP\r\n"
-			+ "         where a.SaleOrder <> '' \r\n"
-//			+ "AND h.ProductionOrderRP is not null\r\n"
-
+			+ "         where a.SaleOrder <> ''	\r\n"
 			+ "			)as a\r\n"
 			+ "inner join (  SELECT a.[SaleOrder] ,a.[SaleLine] ,[SaleUnit] ,[DistChannel] , count (b.CustomerNo) as isAnita \r\n"
 			+ "					  FROM [PCMS].[dbo].[FromSapMainSale] AS A\r\n"
@@ -410,9 +423,9 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "				  FROM [PPMM].[dbo].[DataFromSap]\r\n"
 			+ "				  WHERE OPERATION = '230' AND OperationStatus = 'PROCESS DONE'\r\n"
 			+ "				  group by ProductionOrder ) as b on a.ProductionOrder = b.ProductionOrder   \r\n"
-			+ "left join (SELECT ProductionOrder , Grade \r\n"
-			+ "				from [PCMS].[dbo].[FromSapMainGrade] \r\n"
-			+ "				where DataStatus = 'O' ) as d on a.ProductionOrder = d.ProductionOrder	 \r\n"
+			+ "--left join (SELECT ProductionOrder , Grade \r\n"
+			+ "--				from [PCMS].[dbo].[FromSapMainGrade] \r\n"
+			+ "--				where DataStatus = 'O' ) as d on a.ProductionOrder = d.ProductionOrder	 \r\n"
 			+ "left join ( SELECT  [LotNumber]  ,max(CoaApproveDate)  as CoaApproveDate\r\n"
 			+ "				FROM [QCMS].[dbo].[RequestOrder]\r\n"
 			+ "				where CoaApproveDate is not null  \r\n"
@@ -428,7 +441,6 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "LEFT JOIN( SELECT [ProductionOrder] ,[SaleOrder] ,[SaleLine]  ,[StockLoad] \r\n"
 			+ "		FROM [PCMS].[dbo].[InputStockLoad] \r\n"
 			+ "		WHERE DataStatus = 'O' ) AS g on a.ProductionOrder = g.ProductionOrder and a.SaleOrder = g.SaleOrder and a.SaleLine = g.SaleLine   \r\n"
-			+ "  \r\n" 
 			+ "  \r\n";
 	private String createTempG = 
 			    " select distinct\r\n"
@@ -652,7 +664,112 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ " as UCAL on b.ProductionOrder = UCAL.ProductionOrder   AND (  m.Grade = UCAL.Grade    OR  m.Grade IS NULL )  \r\n"; 
 	private String leftJoinUCALRP = "    "
 			+ "   left join #TempUCALRP as UCALRP on b.ProductionOrder = UCALRP.ProductionOrder   AND (  m.Grade = UCALRP.Grade    OR  m.Grade IS NULL )    \r\n"; 
-	
+	private String innerJoinWaitLotB =    
+   		    "  INNER JOIN (\r\n"
+   		 + "	SELECT DISTINCT a.saleorder , a.saleline, c.SumVolMain ,b.SumVolUsed\r\n"
+   		 + "	,CASE  \r\n"
+   		 + " 			WHEN ISNULL(c.SumVolMain, 0 ) >  b.SumVolUsed THEN 'A'\r\n"
+   		 + "			WHEN ISNULL(c.SumVolMain, 0 ) <=  b.SumVolUsed THEN 'B' \r\n"
+   		 + "			ELSE  'C'\r\n"
+   		 + "	 		END AS SumVol \r\n"
+   		 + "			,'รอจัด Lot' as ProductionOrder\r\n"
+   		 + "			,CASE  \r\n"
+   		 + " 			WHEN ISNULL( SumVolOP, 0 ) >  0 THEN 'พ่วงแล้วรอสวม'\r\n"
+   		 + "			WHEN ISNULL( SumVolRP, 0 ) >  0 THEN 'รอสวมเคยมี Lot'\r\n"
+   		 + "			ELSE  'รอจัด Lot'\r\n"
+   		 + "	 		END AS LotNo  \r\n"
+   		 + "			,SumVolOP\r\n"
+   		 + "			,SumVolRP\r\n"
+   		 + "			,CountProdRP\r\n"
+   		 + "			--, 'รอจัด Lot' AS ProductionOrder \r\n"
+   		 + "              ,null as TotalQuantity \r\n"
+   		 + "				,'' as Grade \r\n"
+   		 + "				,null as BillSendWeightQuantity \r\n"
+   		 + "				,null as BillSendQuantity  \r\n"
+   		 + "				,null as BillSendMRQuantity \r\n"
+   		 + "				,null as BillSendYDQuantity  \r\n"
+   		 + "				,'' as LabNo\r\n"
+   		 + "				,'' as LabStatus\r\n"
+   		 + "				,null as CFMPlanLabDate\r\n"
+   		 + "				,null as CFMActualLabDate \r\n"
+   		 + "				,null as CFMCusAnsLabDate \r\n"
+   		 + "				,'' as UserStatus \r\n"
+   		 + "				,null as TKCFM \r\n"
+   		 + "				,null as CFMPlanDate \r\n"
+   		 + "				,null as DeliveryDate  \r\n"
+   		 + "				,null as CFMSendDate \r\n"
+   		 + "				,null as CFMAnswerDate \r\n"
+   		 + "				,'' as CFMStatus \r\n"
+   		 + "				,'' as CFMNumber  \r\n"
+   		 + "				,'' as CFMRemark  \r\n"
+   		 + "				,'' as RemarkOne \r\n"
+   		 + "				,'' as RemarkTwo \r\n"
+   		 + "				,'' as RemarkThree  \r\n"
+   		 + "				,'' as StockRemark \r\n"
+   		 + "				,null as  GRSumKG \r\n"
+   		 + "				,null as  GRSumYD \r\n"
+   		 + "				,null as  GRSumMR \r\n"
+   		 + "				,null as  DyePlan \r\n"
+   		 + "				,null as DyeActual   \r\n"
+   		 + "				,'' as [SwitchRemark] \r\n"
+   		 + "				,null as [PrdCreateDate]\r\n"
+   		 + "				, NULL AS Volumn   \r\n"
+   		 + "				, NULL AS VolumnFGAmount  	\r\n"   
+			+ "				, null as GreigeInDate \r\n" 
+			+ "				, null as Dryer \r\n"
+			+ "				, null as Finishing \r\n"
+			+ "				, null as Inspectation  \r\n"
+			+ "				, null as Prepare \r\n"
+			+ "				, null as Preset \r\n"
+			+ "				, null as Relax \r\n"
+			+ "				, null as CFMDateActual\r\n"
+//			+ "				, null as CFMPlanDate  \r\n"
+//			+ "				--, null as LotShipping \r\n"
+			+ "				, null as DyeStatus  \r\n"
+//			+ "				, null as LabNo\r\n"
+//			+ "             , null as PrdCreateDate\r\n"
+   		 
+   		 
+   		 + "	from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+   		 + "	left join ( SELECT DISTINCT A.SaleOrder , A.SaleLine ,ISNULL(SumVolOP, 0 ) + ISNULL(SumVolRP, 0 ) as SumVolUsed --,ISNULL(SumVolRP, 0 )\r\n"
+   		 + "				,SumVolOP,SumVolRP\r\n"
+   		 + "				FROM[PCMS].[dbo].[FromSapMainProd]  AS A\r\n"
+   		 + "				LEFT JOIN (  \r\n"
+   		 + "					SELECT DISTINCT A.[ProductionOrder] \r\n"
+   		 + "							,sum (A.[Volumn]) as SumVolOP \r\n"
+   		 + "						FROM [PCMS].[dbo].[FromSapMainProdSale] AS A \r\n"
+   		 + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
+   		 + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"
+   		 + "						GROUP BY A.[ProductionOrder] ) AS D ON D.ProductionOrder = A.ProductionOrder\r\n"
+   		 + "				LEFT JOIN (   \r\n"
+   		 + "						  SELECT a.ProductionOrderRP , sum(c.Volume) as SumVolRP  \r\n"
+   		 + "							from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
+   		 + "							left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+   		 + "							left join ( SELECT ProductionOrderRP  \r\n"
+   		 + "													, CASE  \r\n"
+   		 + "												WHEN ( Volume = 0 ) THEN b.Volumn  \r\n"
+   		 + "												ELSE a.Volume\r\n"
+   		 + "												END AS Volume  \r\n"
+   		 + "										from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
+   		 + "										left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+   		 + "										WHERE a.[DataStatus] = 'O' ) as c on a.ProductionOrderRP = c.ProductionOrderRP\r\n"
+   		 + "							WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z')  \r\n"
+   		 + "							group by a.ProductionOrderRP\r\n"
+   		 + "							) AS E ON A.ProductionOrder = E.ProductionOrderRP	 \r\n"
+   		 + "				)  as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder\r\n"
+   		 + "	LEFT JOIN ( \r\n"
+   		 + "				SELECT [SaleOrder] ,[SaleLine]  ,sum( [Volumn] ) as SumVolMain \r\n"
+   		 + "				  FROM [PCMS].[dbo].[FromSapMainProd]\r\n"
+   		 + "				  WHERE DataStatus = 'O'\r\n"
+   		 + "				  group by  [SaleOrder]  ,[SaleLine] ) AS C ON A.SaleOrder = C.SaleOrder AND A.SaleLine = C.SaleLine \r\n"
+   		 + "	left join ( select DISTINCT SaleOrder ,SaleLine ,COUNT(ProductionOrder) AS CountProdRP\r\n"
+   		 + "			from [PCMS].[dbo].[ReplacedProdOrder] \r\n"
+   		 + "			where DataStatus = 'O' and  ProductionOrder = 'รอจัด Lot' \r\n"
+   		 + "			GROUP BY  SaleOrder ,SaleLine \r\n"
+   		 + "			) AS D ON A.SaleOrder = D.SaleOrder AND A.SaleLine = D.SaleLine  \r\n"
+   		 + "	 where ( c.SumVolMain > 0   ) OR D.SaleOrder IS NOT NULL\r\n"
+   		 + ") AS B ON A.SaleOrder = B.SaleOrder AND A.SaleLine = B.SaleLine \r\n"
+   		 + "\r\n";
 //	private String leftJoinB = " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n";
 //	private String leftJoinB =    
 //			" left join  ( SELECT a.[SaleOrder] , a.[Saleline]  ,[TotalQuantity] ,[Unit]\r\n"
@@ -1121,7 +1238,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			String text = "";
 			for (int i = 0; i < userStatusList.size(); i++) {
 				text = userStatusList.get(i); 
-				if(text.equals("รอจัด Lot") || text.equals("ขาย stock") || text.equals("รับจ้างถัก") || text.equals("Lot ขายแล้ว") ) { 
+				if(text.equals("รอจัด Lot") || text.equals("ขาย stock") || text.equals("รับจ้างถัก") || text.equals("Lot ขายแล้ว")
+				|| text.equals("พ่วงแล้วรอสวม")|| text.equals("รอสวมเคยมี Lot") )  { 
 					tmpWhere += " b.LotNo = '" +text + "' ";
 					whereUCALRP += " b.LotNo = '" +text + "' ";
 					listUserStatus.add(" b.LotNo = '" +text + "' "); 
@@ -1147,30 +1265,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					} ;
 				}
 				whereWaitLot += " ) \r\n" ;  
-			} 
-//			if(cWaitLot && cSaleStock) {  
-//				tmpWhereWaitLot += " and ( \r\n" ; 
-//				tmpWhereWaitLot += " b.LotNo = 'รอจัด Lot' ";  
-//				tmpWhereWaitLot += " or " ; 
-//				tmpWhereWaitLot += " b.LotNo = 'ขาย stock'  \r\n" ; 
-//				tmpWhereWaitLot += " ) \r\n" ;  
-//				whereWaitLot += tmpWhereWaitLot;
-//				}
-//			else if(cWaitLot && !cSaleStock) { 
-//				tmpWhereWaitLot += " and ( \r\n" ; 
-//				tmpWhereWaitLot += " b.LotNo = 'รอจัด Lot' ";   
-//				tmpWhereWaitLot += " ) \r\n" ;  
-//				whereWaitLot += tmpWhereWaitLot;      
-//			}
-//			else if(!cWaitLot && cSaleStock) { 
-//				tmpWhereWaitLot += " and ( \r\n" ;  
-//				tmpWhereWaitLot += " b.LotNo = 'ขาย stock'  \r\n" ; 
-//				tmpWhereWaitLot += " ) \r\n" ;   
-//				whereWaitLot += tmpWhereWaitLot;
-//				}
-//			else if(!cWaitLot && !cSaleStock) {  
-//				
-//			}
+			}  
 			tmpWhere += ") 		) \r\n";  
 			whereUCALRP += ") 		) \r\n";  
 			where += tmpWhere;  
@@ -1179,32 +1274,34 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String sqlWaitLot = "SELECT DISTINCT  " 
 				+ this.selectWaitLot 	 
 				+  " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n " 
-				+ " inner join (select * , 'รอจัด Lot' AS LotNo\r\n"
-				+ "				, null as TotalQuantity  , null as UserStatus\r\n"
-				+ "				, null as LabStatus  \r\n"
-				+ "				, null as GreigeInDate \r\n"
-				+ "				, null as DyePlan  \r\n"
-				+ "				, null as DyeActual \r\n"
-				+ "				, null as Dryer \r\n"
-				+ "				, null as Finishing \r\n"
-				+ "				, null as Inspectation  \r\n"
-				+ "				, null as Prepare \r\n"
-				+ "				, null as Preset \r\n"
-				+ "				, null as Relax \r\n"
-				+ "				, null as CFMDateActual\r\n"
-				+ "				, null as CFMPlanDate  \r\n"
-				+ "				--, null as LotShipping \r\n"
-				+ "				, null as DyeStatus  \r\n"
-				+ "				, null as LabNo\r\n"
-				+ "             , null as PrdCreateDate\r\n"
-				+ "			    from [PCMS].[dbo].[ReplacedProdOrder] as a \r\n"
-				+ "			    where ProductionOrder = 'รอจัด Lot' and a.DataStatus = 'O') \r\n"
-				+ "              as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine   \r\n" 
+				+ this.innerJoinWaitLotB
+//				+ " inner join (select * , 'รอจัด Lot' AS LotNo\r\n"
+//				+ "				, null as TotalQuantity  , null as UserStatus\r\n"
+//				+ "				, null as LabStatus  \r\n"
+//				+ "				, null as GreigeInDate \r\n"
+//				+ "				, null as DyePlan  \r\n"
+//				+ "				, null as DyeActual \r\n"
+//				+ "				, null as Dryer \r\n"
+//				+ "				, null as Finishing \r\n"
+//				+ "				, null as Inspectation  \r\n"
+//				+ "				, null as Prepare \r\n"
+//				+ "				, null as Preset \r\n"
+//				+ "				, null as Relax \r\n"
+//				+ "				, null as CFMDateActual\r\n"
+//				+ "				, null as CFMPlanDate  \r\n"
+//				+ "				--, null as LotShipping \r\n"
+//				+ "				, null as DyeStatus  \r\n"
+//				+ "				, null as LabNo\r\n"
+//				+ "             , null as PrdCreateDate\r\n"
+//				+ "			    from [PCMS].[dbo].[ReplacedProdOrder] as a \r\n"
+//				+ "			    where ProductionOrder = 'รอจัด Lot' and a.DataStatus = 'O') \r\n"
+//				+ "              as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine   \r\n" 
 				+ this.leftJoinC  
 				+ this.leftJoinH  
-				+ this.leftJoinR 
-				+ this.leftJoinM 
+//				+ this.leftJoinR 
+//				+ this.leftJoinM 
 				+ whereWaitLot  
+				+ " and ( SumVol = 'B' OR countProdRP > 0 ) ";
 //				+ where
 				;
 		String sqlMain = "SELECT DISTINCT  " 
@@ -1225,7 +1322,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ whereBMain     
 				+ " and R.ProductionOrderSW is null \r\n"
 				+ " and ( b.SumVol <> 0 \r\n"
-				+ "		or ( (  b.ProductionOrder = 'รอจัด Lot'  or  b.ProductionOrder = 'ขาย stock'  or b.ProductionOrder = 'รับจ้างถัก' or b.ProductionOrder = 'Lot ขายแล้ว' )  and b.SumVol = 0  \r\n"
+				+ "		or ( (  b.LotNo = 'รอจัด Lot'  or  b.LotNo = 'ขาย stock' or b.LotNo = 'รับจ้างถัก' or b.LotNo = 'Lot ขายแล้ว' \r\n"
+				+ "				or b.LotNo = 'พ่วงแล้วรอสวม' or b.LotNo = 'รอสวมเคยมี Lot'  )  and b.SumVol = 0 \r\n"
 //				+ "		     ( countnRP is null and countSW is null and countnOP is null ) \r\n"
 
 				+ "		     and ( countnRP is null )  \r\n"
@@ -1272,13 +1370,13 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
 				+ "	          , b.ProductionOrder,a.CustomerName ,a.DesignFG,a.OrderAmount  \r\n" 
 				+ "           , 'SUB' as TypePrdRemark \r\n" 
-				+ "           ,a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
+				+ "           , a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
 				+ "           , CASE WHEN b.Volumn <> 0 THEN b.Volumn \r\n"
 				+ "             ELSE  0 \r\n"     
 				+ "             END AS Volumn \r\n"
-				+ "		 from [PCMS].[dbo].[FromSapMainSale] as a  \r\n"
-				+ "		 inner join ( \r\n"
-				+ "            SELECT CASE \r\n"
+				+ "		   from [PCMS].[dbo].[FromSapMainSale] as a  \r\n"
+				+ "		   inner join ( \r\n"
+				+ "             SELECT CASE \r\n"
 				+ "			          WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
 				+ "			          ELSE C.ProductionOrder\r\n"
 				+ "			          END AS [ProductionOrder]\r\n"
@@ -1315,15 +1413,15 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
 				+ "	          , b.ProductionOrderSW as ProductionOrder,a.CustomerName ,a.DesignFG,a.OrderAmount  \r\n"
-				+ "  		,a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
-				+ " 		, CASE \r\n"
+				+ "  		  , a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
+				+ " 		  , CASE \r\n"
 				+ "				when b.ProductionOrder = b.ProductionOrderSW then 'MAIN'\r\n"
 				+ "				ELSE 'SUB' \r\n"
-				+ "			END	TypePrdRemark  ,C.SumVol\r\n" 
+				+ "			    END	TypePrdRemark  ,C.SumVol\r\n" 
 				+ "		 	from [PCMS].[dbo].[FromSapMainSale] as a  \r\n"
 				+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleLine = b.SaleLineSW and a.SaleOrder = b.SaleOrderSW  \r\n \r\n"
 				+ "		 	LEFT JOIN ( \r\n"
-				+ "				 SELECT PRDORDERSW ,sum([Volumn]) as SumVol\r\n"
+				+ "				SELECT PRDORDERSW ,sum([Volumn]) as SumVol\r\n"
 				+ "				FROM ( SELECT A.[ProductionOrder] \r\n"
 				+ "					  ,CASE \r\n"
 				+ "						WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
@@ -1409,6 +1507,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ sqlRP  
 					+ " Order by a.CustomerShortName, a.DueDate,a.[SaleOrder], [SaleLine],b.[ProductionOrder] ";   
 //		System.out.println(sql);
+//		 System.out.println(createTempUCAL);
 //		System.out.println("Before SQL: "+new Date());
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<PCMSTableDetail>(); 
