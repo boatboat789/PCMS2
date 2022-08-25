@@ -104,7 +104,8 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 	               this.insertData(datas);
 //	               System.out.println("wtf");
 	               this.database.update("EXEC spd_UpsertToMainProd"); 
-	               this.database.update("EXEC spd_UpsertToTEMP_ProdWorkDate");
+	               this.database.update("EXEC spd_UpsertToTEMP_ProdWorkDate"); 
+	               this.database.update("EXEC spd_UpsertToTEMP_UserStatusOnWeb");
 //	               System.out.println("EXEC spd_UpsertToMainProd"); 
 	               success = true;
 	            }

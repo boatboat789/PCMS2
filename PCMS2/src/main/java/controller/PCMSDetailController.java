@@ -35,15 +35,16 @@ public class PCMSDetailController {
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		PCMSDetailModel model = new PCMSDetailModel(); 
-		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ;    
-		 if(list.size() == 0) {      
-			 arrayCol = null; 
-		 } 
-		 else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }  
+		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		String[] arrayCol = null  ;    
+		if(list.size() == 0) {      
+			arrayCol = null; 
+		} 
+		else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }  
 		mv.setViewName("PCMSDetail/PCMSDetail");  
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("DepList", g.toJson(model.getDelayedDepartmentList()));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
@@ -139,7 +140,10 @@ public class PCMSDetailController {
 			pd.setLotNo(userArray[i].getLotNo());
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
-			pd.setStockLoad(userArray[i].getStockLoad());
+			pd.setStockLoad(userArray[i].getStockLoad()); 
+			pd.setDelayedDepartment(userArray[i].getDelayedDepartment());
+			pd.setCauseOfDelay(userArray[i].getCauseOfDelay());
+			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -164,6 +168,7 @@ public class PCMSDetailController {
 			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
+			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());    
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
@@ -172,8 +177,7 @@ public class PCMSDetailController {
 			poList.add(pd);   
 		}  
 		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-//		System.out.println("he");
+		PrintWriter out = response.getWriter(); 
 		out.println(g.toJson(model.getCFMPlanDateDetail( poList)));  
 	}
 	@RequestMapping(  value = "/getCFMPlanLabDateDetail",  method = RequestMethod.POST )
@@ -193,6 +197,7 @@ public class PCMSDetailController {
 			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
+			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());   
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
@@ -200,8 +205,7 @@ public class PCMSDetailController {
 			poList.add(pd);   
 		}  
 		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-//		System.out.println("he");
+		PrintWriter out = response.getWriter(); 
 		out.println(g.toJson(model.getCFMPlanLabDateDetail( poList)));  
 	}
 	@RequestMapping(  value = "/getDeliveryPlanDateDetail",  method = RequestMethod.POST )
@@ -221,6 +225,7 @@ public class PCMSDetailController {
 			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
 			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
+			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());   
 			pd.setPCRemark(userArray[i].getPCRemark()) ;
 			pd.setUserId(user);
@@ -229,6 +234,33 @@ public class PCMSDetailController {
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
 		out.println(g.toJson(model.getDeliveryPlanDateDetail( poList)));  
+	}
+	@RequestMapping(  value = "/getSendCFMCusDateDetail",  method = RequestMethod.POST )
+	public void doGetSendCFMCusDateDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
+			@RequestBody String data) throws IOException {
+		PCMSDetailModel model = new PCMSDetailModel();
+		String user = (String) session.getAttribute("user");
+		Gson g = new Gson(); 
+		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
+		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<PCMSSecondTableDetail>();
+		int i = 0; 
+		for (i = 0; i < userArray.length; i++) {
+			PCMSSecondTableDetail pd = new PCMSSecondTableDetail();
+			pd.setProductionOrder(userArray[i].getProductionOrder());
+			pd.setSaleOrder(userArray[i].getSaleOrder());
+			pd.setSaleLine(userArray[i].getSaleLine());
+			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
+			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
+			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
+			pd.setCaseSave(userArray[i].getCaseSave());   
+			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setUserId(user);
+			poList.add(pd);   
+		}  
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.getSendCFMCusDateDetail( poList)));  
 	}
 	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
 	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,

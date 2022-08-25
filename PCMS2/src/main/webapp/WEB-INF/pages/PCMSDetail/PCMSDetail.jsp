@@ -55,14 +55,19 @@
 				                <th class="row-table" style="vertical-align: middle;">วันส่ง<span class="c"style="display: block;"> CFM LAB</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันที่ลูกค้า <span class="c"style="display: block;"> ตอบ LAB</span> 	 </th> 
 				                <th class="row-table" style="vertical-align: middle;">TK CFM </th> 
-				                <th class="row-table" style="vertical-align: middle;">วันที่นัด CFM </th>    
-				                <th class="row-table" style="vertical-align: middle;">วันที่ส่ง CFM จริง</th> 
+				                <th class="row-table" style="vertical-align: middle;">วันที่นัด CFM </th>  
+				               	<th class="row-table" style="vertical-align: middle;">Send CFM <span class="c"style="display: block;">Cus. Date</span>  </th>    
+				                   
+				                <th class="row-table" style="vertical-align: middle;">วันที่ส่ง CFM จริง</th>  
 				                <th class="row-table" style="vertical-align: middle;">User Status </th> 
-								<th class="row-table" style="vertical-align: middle;">Lastest<span class="c"style="display: block;">CFM Detail  </span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Lastest<span class="c"style="display: block;">CFM Number</span> </th> 
+								<th class="row-table" style="vertical-align: middle;">CFM Detail   </th> 
+				                <th class="row-table" style="vertical-align: middle;">CFM Number </th> 
+				                <th class="row-table" style="vertical-align: middle;">CFM Remark </th> 
 								<th class="row-table" style="vertical-align: middle;">Delivery<span class="c"style="display: block;">(วันที่นัดส่ง)</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Bill Date </th> 
 				                <th class="row-table" style="vertical-align: middle;">EFFECT </th>     
+				                <th class="row-table" style="vertical-align: middle;">Cause <span class="c"style="display: block;">of Delay</span>  </th>    
+				                <th class="row-table" style="vertical-align: middle;">Delayed <span class="c"style="display: block;">Department</span>  </th> 
 				                <th class="row-table" style="vertical-align: middle;">PC Remark </th>  
 				                <th class="row-table" style="vertical-align: middle;">Replaced Remark </th>
 				                    
@@ -116,6 +121,8 @@ var saleNumberList ;
 var userStatusList ; 
 var cusNameList ;  	
 var cusShortNameList ;  
+var selectOptionDepText ; 
+var depList ; 
 var divisionList ; 
 var colList ; 
 var soTmp ;   
@@ -204,8 +211,8 @@ $(document) .ready( function() {
 // 	document.getElementById("div_toOtherPath").style.display = "none"; 
 // document.getElementById("btn_lockColumn").style.display = "none";
 
-
-userId = JSON.parse('${UserID}');   ;    
+	 
+	userId = JSON.parse('${UserID}');   ;    
 	document.getElementById("btn_prdDetail").style.display = "none";
 	document.getElementById("btn_lbms").style.display = "none";
 	document.getElementById("btn_qcms").style.display = "none";
@@ -263,64 +270,67 @@ userId = JSON.parse('${UserID}');   ;
 	// 	 		focus: 'click',  
 	// 	 	 	columns: [ 22, 27, 31 ]
 	// 	    },      
-	 	   	columns :              
+	 	   	columns :                    
 	 	   		[      
 				    {"data" : "Division" ,        "title":"DIV"          },             //0
 				    {"data" : "SaleOrder" ,       "title":"SO No."           },         //1
 				    {"data" : "SaleLine"   ,      "title":"SO Line"          },         //2
-				    {"data" : "CustomerShortName","title":"Cust.(Name4)"  }, 
-				    {"data" : "SaleCreateDate" ,  "title":"SO Date"   ,'type': 'date-euro'   },    
-				    {"data" : "PurchaseOrder" ,   "title":"P/O" },      //5 
+				    {"data" : "CustomerShortName","title":"Cust.(Name4)"  },            //3
+				    {"data" : "SaleCreateDate" ,  "title":"SO Date"   ,'type': 'date-euro'   },           //4 
+				    {"data" : "PurchaseOrder" ,   "title":"P/O" },     								      //5 
 				    {"data" : "MaterialNo" ,      "title":"Material" },     
-				    {"data" : "CustomerMaterial" ,"title":"Customer Mat.No." },    //7
+				    {"data" : "CustomerMaterial" ,"title":"Customer Mat.No." },                           //7
 				    {"data" : "Price" ,           "title":"Price (THB)",'type': 'num' }, 
-				    {"data" : "SaleUnit" ,        "title":"Unit" }, 
+				    {"data" : "SaleUnit" ,        "title":"Unit" },                                      //9
 				    {"data" : "SaleQuantity" ,    "title":"Order Qty.",'type': 'num' },                  //10
-				    {"data" : "RemainQuantity" ,  "title":"Remain Qty." ,'type': 'num'},            //11
+				    {"data" : "RemainQuantity" ,  "title":"Remain Qty." ,'type': 'num'},                 //11
 				    {"data" : "RemainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num' }, 
-				    {"data" : "Volumn" ,          "title":"Volume FG",'type': 'num' },             //13
-				    {"data" : "VolumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },             //14
-				    {"data" : "Grade" ,           "title":"Grade" },                                        //15
-				    {"data" : "GRQuantity" ,      "title":"GR Qty<br>KG/MR/YD" } ,                             //16
-				    {"data" : "BillSendWeightQuantity" ,"title":"Bill Qty (Class)<br>KG/MR/YD" },   //17
-				    {"data" : "BillSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},          //18
-				    {"data" : "OrderAmount" ,     "title":"Amt.(THB)",'type': 'num' },               //19
-				    {"data" : "CustomerDue" ,     "title":"Due Cus.",'type': 'date-euro' }, 
-				    {"data" : "DueDate" ,         "title":"Due Date",'type': 'date-euro' },                   //21  
-				    {"data" : "LabNo",			  "title":"Lab No" },  
-				    {"data" : "LabStatus",		  "title":"Lab Status" },                                    //23
-				    {"data" : "LotNo",            "title":"Lot" },                                               //24  
+				    {"data" : "Volumn" ,          "title":"Volume FG",'type': 'num' },                   //13
+				    {"data" : "VolumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //14
+				    {"data" : "Grade" ,           "title":"Grade" },                                     //15
+				    {"data" : "GRQuantity" ,      "title":"GR Qty<br>KG/MR/YD" } ,                       //16
+				    {"data" : "BillSendWeightQuantity" ,"title":"Bill Qty (Class)<br>KG/MR/YD" },        //17
+				    {"data" : "BillSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},                    //18
+				    {"data" : "OrderAmount" ,     "title":"Amt.(THB)",'type': 'num' },                   //19
+				    {"data" : "CustomerDue" ,     "title":"Due Cus.",'type': 'date-euro' },              //20
+				    {"data" : "DueDate" ,         "title":"Due Date",'type': 'date-euro' },              //21  
+				    {"data" : "LabNo",			  "title":"Lab No" },                                    //22
+				    {"data" : "LabStatus",		  "title":"Lab Status" },                                //23
+				    {"data" : "LotNo",            "title":"Lot" },                                       //24  
 				    {"data" : "DyePlan","title":"Dye [Plan]" },                                          //25 
-				    {"data" : "DyeActual","title":"Dye [Actual]" },                                   //26 
-				    {"data" : "CFMPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },         //27
-				    {"data" : "CFMActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	 //28 
-				    {"data" : "CFMCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},           //29
-				    {"data" : "TKCFM","title":"TK CFM"},                       						  //30 
-				    {"data" : "CFMPlanDate","title":"Plan CFM Date",'type': 'date-euro'},             //31
-				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},           //32 
-				    {"data" : "UserStatus","title":"User Status"},                                    //33
-					{"data" : "CFMLastest","title":"Lastest CFM Detail"},                                //34   
-					{"data" : "CFMNumber","title":"Lastest CFM Number"},                              //35
-				    {"data" : "DeliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},      //36
-				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //37 
-				    {"data" : "Remark","title":"EFFECT"},                                             //38
-					{"data" : "PCRemark","title":"PCRemark"},                                         //39
-				    {"data" : "ReplacedRemark","title":"ReplacedRemark"},                             //40
-				    {"data" : "SwitchRemark","title":"SwitchRemark"},                                   //41
-				    {"data" : "StockRemark","title":"StockRemark"},                                   //42
-				    {"data" : "StockLoad","title":"StockLoad"},                                   //43
-
-				    
-			],        	             
-			columnDefs :  [	
+				    {"data" : "DyeActual","title":"Dye [Actual]" },                                      //26 
+				    {"data" : "CFMPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },             //27
+				    {"data" : "CFMActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //28 
+				    {"data" : "CFMCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //29
+				    {"data" : "TKCFM","title":"TK CFM"},                       						     //30 
+				    {"data" : "CFMPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //31  
+				    {"data" : "SendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //32 <-------------
+				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //33 
+				    {"data" : "UserStatus","title":"User Status"},                                       //34
+					{"data" : "CFMDetailAll","title":"CFM Detail"},                                      //35   
+					{"data" : "CFMNumberAll","title":"CFM Number"},                                      //36
+					{"data" : "RollNoRemarkAll","title":"CFM Remark"},                                //37<------------- 09/08/2022
+				    {"data" : "DeliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //38
+				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //39 
+				    {"data" : "Remark","title":"EFFECT"},                                             //40
+				    {"data" : "CauseOfDelay","title":"Cause of Delay"},                               //41<-------------
+				    {"data" : "DelayedDepartment","title":"Delayed Department"},                      //42<-------------
+					{"data" : "PCRemark","title":"PCRemark"},                                         //43
+				    {"data" : "ReplacedRemark","title":"ReplacedRemark"},                             //44
+				    {"data" : "SwitchRemark","title":"SwitchRemark"},                                 //45
+				    {"data" : "StockRemark","title":"StockRemark"},                                   //46
+				    {"data" : "StockLoad","title":"StockLoad"},                                       //47
+     
+			],        	                
+            columnDefs :  [	
 			    { targets: [ 1 ],
 		          orderData: [ 1, 2,24 ]  
-		        },   	
-				{ targets : [ 4,20 , 21,28 ,37 ],                        
-				  	  className : 'dt-custom-td80',    	     
+		        },   	    
+				{ targets : [ 4,20 , 21,28 ,39 ],                        
+				  	  className : 'dt-custom-td80',    	        
 				  	  type: 'date-euro'  
 					} ,                              
-				{ targets : [ 11,12,13,14,22,24,29 ,32 ,41],                        
+				{ targets : [ 11,12,13,14,22,24,29 ,33 ],                        
 				  	  className : 'dt-custom-td100',    
 				  	  type: 'string'     
 				} ,   
@@ -339,28 +349,32 @@ userId = JSON.parse('${UserID}');   ;
 				{ targets : [ 31 ],                      
 			  	  className : 'CFMPlanDateParent dt-custom-td80',       
 			  	  type: 'date-euro'  
-				} ,   
-				{ targets : [ 36 ],                      
+				} ,  
+				{ targets : [ 32 ],                       
+				  	  className : 'SendCFMCusDateParent dt-custom-td80',       
+				  	  type: 'date-euro'  
+					} ,
+				{ targets : [ 38 ],                      
 			  	  className : 'DeliveryDateParent dt-custom-td100',       
 			  	  type: 'date-euro'  
 				} ,   
-				{ targets : [3 ,6,23,33,35],                    
+				{ targets : [3 ,6,23,34,36 ],             	     
 			  	  	className : 'dt-custom-td140',      
 			  	  	type: 'string'   
-					} ,         
-				{ targets : [5 ],                    
+					} ,               
+				{ targets : [5  ],                    
 			  	  	className : 'dt-custom-td160',      
 			  	  	type: 'string'   
 					} ,            
-				{ targets : [ 7  ],                    
+				{ targets : [ 7 ,42 ],                    
 			  	  	className : 'dt-custom-td240',       
 			  	  	type: 'string'   
 				} ,       
-				{ targets : [  34 ],                          
+				{ targets : [  35,37 ],                          
 			  	  	className : 'dt-custom-td300',         
-			  	  	type: 'string'  
+			  	  	type: 'string'     
 					} ,            
-				{ targets : [  38,39,40 ,42,43],                       
+				{ targets : [  40,41,43,44 ,46,47],                       
 			  	  	className : 'dt-custom-td450 p-r-15',      
 			  	  	type: 'string'  
 					} ,   
@@ -459,10 +473,26 @@ userId = JSON.parse('${UserID}');   ;
 // 						else{
 // 							htmlEx = '<input class="form-control CFMPlanDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanDate" type="text"  value = "' + row.CFMPlanDate+ '" autocomplete="off" >';
 // 						} 
-						return  row.CFMPlanDate
-				   	  }    
+						return  row.CFMPlanDate 
+				   	  }         
 					} ,    
-				{ targets : [ 36 ],    
+				{ targets : [ 32 ],      
+				  orderable: false,
+   	  			  render: function (data, type, row) {	
+ 				   		var htmlEx = ''  
+			   			if(row.LotNo == "รอจัด Lot"   || row.LotNo  == "ขาย stock" ||row.LotNo == "รับจ้างถัก"	||row.LotNo == "Lot ขายแล้ว"
+	   					|| row.LotNo == "พ่วงแล้วรอสวม"	|| row.LotNo == "รอสวมเคยมี Lot"){ 
+							htmlEx = row.SendCFMCusDate ; 
+						}
+						else{
+							htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+							+ row.SendCFMCusDate
+							+ '" autocomplete="off" >';
+						} 
+						return  htmlEx
+			   	  }    
+				} ,        
+				{ targets : [ 38 ],    
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
@@ -474,9 +504,67 @@ userId = JSON.parse('${UserID}');   ;
 						htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.DeliveryDate+ '" autocomplete="off" >';
 					}
 					return  htmlEx           
-					}	       
-				},        
-				{ targets : [ 39 ],     
+					}	          
+				},      
+				{ targets : [ 41 ],     
+			   	  render: function (data, type, row) {	 
+				   		var htmlEx = ''      
+			   			if( row.LotNo  == "รอจัด Lot" || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก" ||
+			   					row.LotNo == "Lot ขายแล้ว"	|| row.LotNo  == ""        || row.LotNo == "พ่วงแล้วรอสวม"	|| 
+			   					row.LotNo == "รอสวมเคยมี Lot" ){ 
+			   				htmlEx = row.CauseOfDelay; 
+						}  
+// 			   			else  if( row.TypePrd == "OrderPuang"  ){ 
+// 							htmlEx = row.CauseOfDelay	; 
+// 						}        
+						else if(     
+		   					( row.TypePrd == "Replaced" && row.TypePrdRemark == "MAIN")  ||  
+		   					( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN") || 
+		   						row.TypePrdRemark == "SUB" || 
+		   						row.TypePrdRemark == "" ||
+	   						  	row.TypePrd == "OrderPuang"){ 
+		   					htmlEx = '<input data-search="' + row.CauseOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' + row.CauseOfDelay+ '" autocomplete="off" >'; 
+						}      
+						else{   
+							htmlEx = '<input data-search="' + row.CauseOfDelay
+							+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
+							+ row.CauseOfDelay+ '" autocomplete="off" >'; 
+						}
+// 						htmlEx = '<input class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' + row.CauseOfDelay+ '" autocomplete="off" >'; 
+						return  htmlEx      
+						}         
+				}  ,   
+				{ targets : [ 42 ],       
+			   	  render: function (data, type, row, meta) {	    
+			   		var htmlEx = ''         
+				   		 
+		   			if( row.LotNo  == "รอจัด Lot" || row.LotNo == "ขาย stock" ||row.LotNo == "รับจ้างถัก" ||
+		   					row.LotNo == "Lot ขายแล้ว"	|| row.LotNo  == ""        || row.LotNo == "พ่วงแล้วรอสวม"	|| 
+		   					row.LotNo == "รอสวมเคยมี Lot" ){  
+		   				htmlEx = row.DelayedDepartment; 
+					}
+// 		   			else if( row.TypePrd == "OrderPuang" ){ 
+// 						htmlEx = row.DelayedDepartment; 
+// 					}    
+		   			else if(    
+	   					( row.TypePrd == "Replaced" && row.TypePrdRemark == "MAIN")  || 
+	   					( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN"|| 
+  							row.TypePrdRemark == "SUB" || row.TypePrdRemark == "") ||
+  							row.TypePrd == "OrderPuang"){ 
+						 htmlEx = '<select data-search="' + row.DelayedDepartment+ 
+								 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
+								 getSelectOptions(data) + '</select>';    
+					} 
+		   			                    
+					else{   
+						htmlEx = '<select data-search="' + row.DelayedDepartment+ 
+								 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
+								 getSelectOptions(data) + '</select>';     
+					}  
+			   		return  htmlEx      
+					}       
+				}  ,      
+				{ targets : [ 43 ],     
 				   	  render: function (data, type, row) {	     
 				   		var htmlEx = ''    
 						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.PCRemark+ '" autocomplete="off" >'; 
@@ -484,7 +572,7 @@ userId = JSON.parse('${UserID}');   ;
 						}       
 					}       
 				,         
-				{ targets : [ 40 ],     
+				{ targets : [ 44 ],     
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if( ( row.TypePrd == "Replaced" && row.TypePrdRemark == "MAIN")  || ( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN") ){ 
@@ -503,7 +591,7 @@ userId = JSON.parse('${UserID}');   ;
 			   		return  htmlEx          
 					}       
 				} ,     
-				{ targets : [ 41 ],         
+				{ targets : [ 45 ],         
 			   	  	render: function (data, type, row) {	          
 					var htmlEx = ''           
 					if( ( row.TypePrd == "Switch" && row.TypePrdRemark == "MAIN")  || ( row.TypePrd == "MAIN" && row.TypePrdRemark == "MAIN") ){ 
@@ -521,13 +609,13 @@ userId = JSON.parse('${UserID}');   ;
 					return  htmlEx      
 					}       
 				} ,    
-				{ targets : [ 42 ],     
+				{ targets : [ 46 ],     
 			   	  	render: function (data, type, row) {	     
 					var htmlEx = ''    
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.StockRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
 					}         
-				} ,        { targets : [ 43 ],     
+				} ,        { targets : [ 47 ],     
 			   	  	render: function (data, type, row) {	     
 						var htmlEx = ''    
 						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="30"  name="StockLoadInput" type="text"  value = "' + row.StockLoad+ '" autocomplete="off" >'; 
@@ -607,7 +695,7 @@ userId = JSON.parse('${UserID}');   ;
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
 		}   
 		else if(indexAfterReCol == 4 ||  indexAfterReCol == 28 || indexAfterReCol == 29 || indexAfterReCol == 30 ||
-				indexAfterReCol == 32 || indexAfterReCol == 37 ){
+				indexAfterReCol == 32 || indexAfterReCol == 33 || indexAfterReCol == 39 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  }
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
@@ -707,6 +795,10 @@ userId = JSON.parse('${UserID}');   ;
 	columnsHeader = MainTable.settings().init().columns;  
  	saleNumberList = JSON.parse('${SaleNumberList}');  
  	divisionList = JSON.parse('${DivisionList}');       
+ 	depList = JSON.parse('${DepList}');  
+//  	console.log(depList)  
+	selectOptionDepText = configDepSelectOption(depList) 
+// 	console.log(selectOptionDepText)
  	addSelectOption(saleNumberList) ;   
 	addUserStatusOption(userStatusList );        
 	addCusNameOption(cusNameList );      
@@ -873,8 +965,27 @@ userId = JSON.parse('${UserID}');   ;
 // // 		else if(columnSelect == 16){
 // // 			jsonMoreThanOneToServer(arrayTmp)	  
 // // 		}      
-// 	} ); 
-  
+// 	} );    
+   $("#MainTable").on("change",".CauseOfDelayInput",function(){  
+		  var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();  
+		var rowData = MainTable.row($row).data();  
+		var oldValue = rowData.CauseOfDelay.trim();  
+		var newValue = $(this).val().trim();            
+// 	    rowData.CauseOfDelay = $(this).val();     
+		handlerInputField("CauseOfDelay" ,oldValue,newValue,check1,rowData ,MainTable,idx)
+		//DelayedDep  
+	}) 
+  $("#MainTable").on("change",".DelayedDepInput",function(){  
+		  var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();  
+		var rowData = MainTable.row($row).data();  
+		var oldValue = rowData.DelayedDepartment.trim();  
+		var newValue = $(this).val().trim();            
+// 	    rowData.DelayedDepartment = $(this).val();     
+		handlerInputField("DelayedDep" ,oldValue,newValue,check1,rowData ,MainTable,idx)
+		//DelayedDep  
+	}) 
   $("#MainTable").on("keydown blur",".SwitchRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
 		var idx = MainTable.row($row).index();  
@@ -921,11 +1032,12 @@ userId = JSON.parse('${UserID}');   ;
 			 } 
 		} 
 	});  
-     
+      
   function handlerInputField(fieldName ,oldValue,newValue,checkField,rowData ,MainTable,idx){
 	  let dataArray ;
 	  checkField = 1 ;    
 	  let objTmp = {   
+			ProductionOrder: rowData.ProductionOrder ,   
 		    fieldName:  fieldName,
 			rowData: rowData,          
 			newValue: newValue,       
@@ -1095,6 +1207,126 @@ userId = JSON.parse('${UserID}');   ;
 			 else{ handlerInputField("StockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
 		}  
 	});  
+  $("#MainTable").on("keydown blur",".SendCFMCusDateInput", function (e) { 
+		var $row = $(this).parents("tr");
+		var idx = MainTable.row($row).index();    
+		var rowData = MainTable.row($row).data();	 
+		var oldValue = rowData.SendCFMCusDate;     
+      var newValue = $(this).val();     
+		 if (event.keyCode === 13) {         
+			e.stopImmediatePropagation();
+			e.preventDefault();       
+			check1 = 1 ;    
+			newValue  = checkDateFormatInput( newValue,oldValue)  
+			if(newValue == 'E0'){ 
+	           	rowData.SendCFMCusDate  = oldValue;
+	           	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
+			}
+			else if(newValue == 'E1'){ 
+				swal({
+		   		    title: 'Warning',
+		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
+		   		})
+			}
+			else if(newValue == 'E2'){
+				swal({
+		   		    title: 'Warning',
+		   		    text: 'Date need greater than equal today.',
+		   		    icon: 'warning',
+		   		    timer: 1000,
+		   		    buttons: false,
+		   		})  
+			}       
+			else if(newValue == 'E3'){ }
+			else{
+// 				swal({ 
+// 					  title: "Are you sure to change date?",
+// 					  text: "From : "+oldValue+" to "+newValue+" ",
+// 					  icon: "warning",
+// 					  buttons: true,  
+// 					  dangerMode: true,						   																																								  
+// 					})
+// 					.then((willDelete) => {        
+// 					  if (willDelete) {     
+// 						  rowData.SendCFMCusDate  = newValue;
+// 						  MainTable.row(idx).invalidate() ;  
+// 						  var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
+// 						  var  obj = JSON.parse(json);    
+// 						  var arrayTmp = [];  
+// 						  arrayTmp.push(obj);       
+// // 						  saveInputDateToServer(arrayTmp);
+						  handlerInputField("SendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
+// 					  } else { 
+// 						  rowData.SendCFMCusDate  = oldValue;
+// 						  MainTable.row(idx).invalidate() ; 
+// //						  MainTable.row(idx).invalidate().draw(); 
+// 					  }
+// 				});    
+				
+			}            
+			check1= 0;   
+		}                      
+		else if (event.type === 'blur'  && check1 == 0){    
+			check1= 1; 
+			newValue  = checkDateFormatInput( newValue,oldValue)   
+			 e.stopImmediatePropagation();
+			 e.preventDefault();        
+			if(newValue == 'E0'){ 
+           	rowData.SendCFMCusDate  = oldValue;
+           	MainTable.row(idx).invalidate() ; 
+//    			MainTable.row(idx).invalidate().draw();  
+           }
+           else if(newValue == 'E1'){
+					swal({
+			   		    title: 'Warning',
+			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		})
+				}
+				else if(newValue == 'E2'){
+					swal({
+			   		    title: 'Warning',
+			   		    text: 'Date need greater than equal today.',
+			   		    icon: 'warning',
+			   		    timer: 1000,
+			   		    buttons: false,
+			   		}) 
+				}      
+				else if(newValue == 'E3'){ }
+           else{  
+// 	           	 swal({ 
+// 					  title: "Are you sure to change date?",
+// 					  text: "From : "+oldValue+" to "+newValue,
+// 					  icon: "warning",
+// 					  buttons: true,
+// 					  dangerMode: true,																																														  
+// 					})
+// 					.then((willDelete) => {
+// 					  if (willDelete) {  
+// 						  rowData.SendCFMCusDate  = newValue;   
+// 							MainTable.row(idx).invalidate() ;  
+// 	 				 		var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
+// 	 			 			var  obj = JSON.parse(json);    
+// 	 			 			var arrayTmp = [];  
+// 	 						arrayTmp.push(obj);       
+// // 	 						saveInputDateToServer(arrayTmp);        
+
+						  	handlerInputField("SendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
+// 					  } else {       
+// 						  rowData.SendCFMCusDate  = oldValue; 
+// 						  MainTable.row(idx).invalidate() ;  
+// //						  MainTable.row(idx).invalidate().draw(); 
+// 					  }
+// 				}); 
+			}
+           check1= 0;  
+		} 
+	});  
 	 $("#MainTable").on("keydown blur",".CFMPlanLabDateInput", function (e) { 
 		var $row = $(this).parents("tr");
 		var idx = MainTable.row($row).index();    
@@ -1102,10 +1334,13 @@ userId = JSON.parse('${UserID}');   ;
 		var oldValue = rowData.CFMPlanLabDate;     
         var newValue = $(this).val();     
 		 if (event.keyCode === 13) {         
-			e.stopImmediatePropagation();
+			e.stopImmediatePropagation();   
 			e.preventDefault();       
-			check1 = 1 ;    
+			check1 = 1 ;     
+			console.log(' newValue ', newValue,' oldValue ',oldValue)     
 			newValue  = checkDateFormatInput( newValue,oldValue)  
+			console.log(' newValue ', newValue,' oldValue ',oldValue)   
+			console.log('-----------------------------------' )   
 			if(newValue == 'E0'){ 
              	rowData.CFMPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
@@ -1473,7 +1708,8 @@ userId = JSON.parse('${UserID}');   ;
 	    else {  
 	    	let myArray = $rowC.split(" ");
 	    	let classInput = myArray[1];  
-	    	if(classInput == 'CFMPlanLabDateParent' || classInput == 'CFMPlanDateParent' || classInput == 'DeliveryDateParent'){      
+	    	if(classInput == 'CFMPlanLabDateParent' || classInput == 'CFMPlanDateParent' 
+   			|| classInput == 'DeliveryDateParent'   || classInput == 'SendCFMCusDateParent'){      
 			    var arrTmp = [];   
 				arrTmp.push(row_object);
 				getInputDate(arrTmp,classInput);
@@ -1580,8 +1816,11 @@ function createInputDateJsonData(val,caseSave){
 	var LotNo = val.LotNo; 
 	var Grade = val.Grade; 
 
+	var CauseOfDelay = val.CauseOfDelay; 
+	var DelayedDepartment = val.DelayedDepartment; 
 	var SwitchRemark = val.SwitchRemark; 
 	var StockLoad = val.StockLoad; 
+	var SendCFMCusDate = val.SendCFMCusDate; 
 	var json = '{"ProductionOrder":'+JSON.stringify(ProductionOrder)+ 
 	   ',"CFMPlanLabDate":'+JSON.stringify(CFMPlanLabDate)+  
 	   ',"CFMPlanDate":'+JSON.stringify(CFMPlanDate)+  
@@ -1592,10 +1831,13 @@ function createInputDateJsonData(val,caseSave){
 	   ',"ReplacedRemark": '+JSON.stringify(ReplacedRemark)+    
 	   ',"StockRemark": '+JSON.stringify(StockRemark)+
 	   ',"PCRemark":'+JSON.stringify(PCRemark)+
-	   ',"Grade": '+JSON.stringify(Grade)+
+	   ',"Grade": '+JSON.stringify(Grade)+  
 	   ',"LotNo": '+JSON.stringify(LotNo)+
 	   ',"SwitchRemark": '+JSON.stringify(SwitchRemark)+ 
 	   ',"StockLoad": '+JSON.stringify(StockLoad)+    
+	   ',"DelayedDepartment": '+JSON.stringify(DelayedDepartment)+   
+	   ',"CauseOfDelay": '+JSON.stringify(CauseOfDelay)+    
+	   ',"SendCFMCusDate": '+JSON.stringify(SendCFMCusDate)+    
 	   '} ';         
 // 	   console.log(json)   
 	   return json; 
@@ -1714,7 +1956,7 @@ function exportCSV(data){
  						innerRowData[indexArray] = val;        
  					}                
  					else if (colType == 'num'){          
- 						if(data == 'Price' || data == 'SaleQuantity' || data == 'RemainQuantity' || data == 'RemainAmount' || data == 'OrderAmount'){  
+ 						if(data == 'SaleQuantity' || data == 'RemainQuantity' || data == 'RemainAmount' || data == 'OrderAmount'){  
 							if(caseDupli == 0 || caseDupli == 2){   
 								if(val.trim() == ''){ innerRowData[indexArray] = '';  }
 		 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
@@ -1806,7 +2048,8 @@ function saveColSettingToServer(arrayTmp) {
 		}   	
 	});   
 }  
-function saveInputDateToServer(arrayTmp) {    
+function saveInputDateToServer(arrayTmp) {   
+	console.log(arrayTmp)
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
@@ -1840,7 +2083,7 @@ function saveInputDateToServer(arrayTmp) {
 					 	text: bean.SystemStatus ,
 						icon: "success",
 						button: "confirm",
-   					});  	 
+   					});  	  
 				}
 				else{  
 					swal({   
@@ -1894,8 +2137,7 @@ function getSwitchProdOrderDetailByPrd( dataP) {
 // 	}       
 //			var bean = data[0]; 
 //			 MainTable.row.add(bean).draw(false);       
-	let i = 0;
-// 	console.log(dataP)
+	let i = 0; 
 	for (i = 0  ; i < dataP.length; i++) {      
 		var prodOrder= dataP[i].ProductionOrder; 
 		var saleOrder = dataP[i].SaleOrder; 
@@ -1913,6 +2155,30 @@ function getSwitchProdOrderDetailByPrd( dataP) {
 		MainTable.rows(indexes).remove() ;   
 	}             
  	MainTable.rows.add(dataP).draw(false); // Add new data 
+}        
+
+function setInputDetailToRowByPrd( array, objTmp) { //"DelayedDep"CauseOfDelay) {        
+	let i = 0;  
+	let fieldName = objTmp.fieldName 
+   	var checkEQ = false;    
+	MainTable.rows().every(function(rowIdx, tableLoop, rowLoop, data){
+        var data = this.data();         
+        if (data.ProductionOrder === array[0].ProductionOrder) { 
+        	if(fieldName == 'DelayedDep'){
+        		data.DelayedDepartment = objTmp.newValue;
+        	}    
+        	else if(fieldName == 'CauseOfDelay'){
+        		data.CauseOfDelay = objTmp.newValue;
+        	}  
+        	else if(fieldName == 'SendCFMCusDate'){
+        		data.SendCFMCusDate = objTmp.newValue;
+        	}  
+            checkEQ = true; 
+            this.invalidate();
+        } 
+     })   
+         
+        
 }    
 function saveInputDetailToServer(arrayTmp,objTmp) {    
 	$.ajax({   
@@ -1935,7 +2201,11 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 					if(objTmp.fieldName == 'SwitchRemark' || objTmp.fieldName == 'ReplacedRemark'){ 
 						getSwitchProdOrderDetailByPrd( data) ;
 			   		}
-				}
+					else if(objTmp.fieldName == 'DelayedDep' || objTmp.fieldName == 'CauseOfDelay' ||  
+							objTmp.fieldName == 'SendCFMCusDate'){
+						setInputDetailToRowByPrd( arrayTmp ,objTmp ) ; //"DelayedDep"CauseOfDelay
+					}
+				} 
 				else{       
 					swal({   
 						title: "Warning ",        
@@ -1964,7 +2234,7 @@ function searchByDetailToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "Detail/searchByDetail", 
+		url: "Detail/searchByDetail",  
 		success: function(data) {      
 			MainTable.clear();           
 			MainTable.rows.add(data);     
@@ -1986,14 +2256,18 @@ function checkDateFormatInput( value ,oldvalue) {
     var datearray = value.split("/");
     var dateInput = '';     
     var result = ''     
-    if (value == oldvalue) { result = 'E3';  }
+    datearray[0] = addLeadingZero(datearray[0] ); 
+    datearray[1] = addLeadingZero(datearray[1] );
+    value = datearray[0] +"/"+datearray[1]+"/"+datearray[2] 
+    if (value == oldvalue) { result = 'E3';  }   
     else if (value.trim() == '') { result = '';  }    
     // EX DD/MM/YYYY
  	else if(moment(value , 'DD/MM/YYYY',true).isValid()){   	 
- 		dateInput = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
+ 		dateInput = new Date( datearray[1]  + '/' +  datearray[0] + '/' + datearray[2]) ;  
+ 	    console.log('dateInput ',dateInput)    
  		if (value == oldvalue) { result = 'E0';  } 
  		else if(dateInput < date){ result = 'E2'; }
- 		else{ result = value; }
+ 		else{ result = value; }  
  	} 
  	else{	     
 		var day = parseInt(datearray[0]);   
@@ -2386,8 +2660,10 @@ function getInputDate(arrTmp,colIdx){
 // 	else if(colIdx == 32){
 	else if(colIdx == 'DeliveryDateParent'){
 		path = "Detail/getDeliveryPlanDateDetail"; 
-	} 
-// 	console.log(colIdx,path)
+	}  
+	else if(colIdx == 'SendCFMCusDateParent'){
+		path = "Detail/getSendCFMCusDateDetail"; 
+	}   
 	if(path != ''){ 
 		$.ajax({
 		    type : "POST",
@@ -2578,9 +2854,22 @@ function setSearchDefault(data){
 	$('#multi_userStatus').selectpicker('refresh'); 
 	$('#multi_division').selectpicker('refresh');  
 }
-// function preLoaderHandler (){         
-// 	   preloader.style.display = 'none';  
-// 	}      
+function getSelectOptions(value) {
+    var select = $(selectOptionDepText);
+    if (value) { select.val(value).find(':selected').attr('selected', true); }
+    return select.html()   
+  } 
+function configDepSelectOption(data) {
+//     var select = $("<select><option value='Select'>Select</option><option value='WaitAnswer'>ส่งแล้วรอตอบ</option><option value='OK'>OK</option><option value='NoK'>NoK</option><option value='Cancel'>Cancel</option></select>");
+    let htmlSelectOption = "";
+    htmlSelectOption += "<select>";    
+    htmlSelectOption +=  "<option value='Select' selected>Select</option>";
+    for(let i = 0 ; i < data.length; i++) {        
+    	htmlSelectOption += "<option value='"+data[i].DelayedDepartment+"'>"+(i+1)+":"+data[i].DelayedDepartment+"</option>";
+	} 
+    htmlSelectOption += "</select>"; 
+    return htmlSelectOption;
+  } 
 function getByValue(map, searchValue) {
   for (let [key, value] of map.entries()) {
     if (value === searchValue)
@@ -2593,7 +2882,10 @@ function setValueWithFieldName(fieldName, rowData,value) {
 	  else if(fieldName == 'ReplacedRemark'){rowData.ReplacedRemark = value  ; }
 	  else if(fieldName == 'StockRemark'){rowData.StockRemark = value  ; } 
 	  else if(fieldName == 'StockLoad'){rowData.StockLoad = value  ; } 
-	}
+	  else if(fieldName == 'DelayedDep'){rowData.DelayedDepartment = value  ; } 
+	  else if(fieldName == 'CauseOfDelay'){rowData.CauseOfDelay = value  ; }  
+	  else if(fieldName == 'SendCFMCusDate'){rowData.SendCFMCusDate = value  ; }
+	} 
 function checkIfDigitOnly(_string) {
 	var check = true;   
 	const pattern = /^[0-9]+$/;   
@@ -2632,7 +2924,7 @@ function checkIfDigitOnly(_string) {
 					$('#modalRemarkSW').modal('show');  
 // 					swal({
 // 						title: "Success",    
-// 					 	text: bean.SystemStatus ,
+// 					 	text: bean.SystemStatus ,   
 // 						icon: "info",
 // 						button: "confirm",   
 //    					});  

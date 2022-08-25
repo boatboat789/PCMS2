@@ -98,17 +98,17 @@ public class FtpTaskRunner {
 	   this.importerSendTestQC.loadDataFTP(this.user);
 	   this.importerPacking.loadDataFTP(this.user); 	
 	   this.importerInspect.loadDataFTP(this.user);  
-	   this.importerFinishing.loadDataFTP(this.user);
+	   this.importerFinishing.loadDataFTP(this.user);		
 	   this.importerDyeing.loadDataFTP(this.user);	
 	   this.importerPreset.loadDataFTP(this.user);
 	   this.importerPO.loadDataFTP(this.user);    
 	   this.importerGoodReceive.loadDataFTP(this.user);
 	   this.importerBillBatch.loadDataFTP(this.user);
 	   	
-	   this.importerMainSale.loadDataFTP(this.user);  
+	   this.importerMainSale.loadDataFTP(this.user);   
 	   this.importerMainProdSale.loadDataFTP(this.user);
 	   this.importerMainGrade.loadDataFTP(this.user);
-	   this.importerMainProd.loadDataFTP(this.user);	
+	   this.importerMainProd.loadDataFTP(this.user);	//spd_UpsertToTEMP_ProdWorkDate  //spd_UpsertToTEMP_UserStatusOnWeb
 	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
    } 
 }

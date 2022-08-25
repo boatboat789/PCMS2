@@ -2,6 +2,7 @@ package dao;
 
 import java.util.ArrayList;
 import entities.ColumnHiddenDetail;
+import entities.DelayedDepartmentDetail;
 import entities.InputDateDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
@@ -40,6 +41,10 @@ public interface PCMSDetailDao {
 
 	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList);
 
-	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList); 
+	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList);
+
+	ArrayList<PCMSSecondTableDetail> getDelayedDepartmentList();
+
+	ArrayList<InputDateDetail> getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList); 
 
 }

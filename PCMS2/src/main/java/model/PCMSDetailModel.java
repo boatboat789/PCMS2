@@ -4,9 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServlet;
 
+import com.google.gson.JsonElement;
+
 import dao.PCMSDetailDao;
 import dao.implement.PCMSDetailDaoImpl;
 import entities.ColumnHiddenDetail;
+import entities.DelayedDepartmentDetail;
 import entities.InputDateDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
@@ -140,5 +143,17 @@ public class PCMSDetailModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByRowProd(poList);
 		return list;
+	}
+
+	public ArrayList<PCMSSecondTableDetail> getDelayedDepartmentList() {
+		// TODO Auto-generated method stub
+		ArrayList<PCMSSecondTableDetail> list = this.dao.getDelayedDepartmentList();
+		return list;
+	}
+
+	public ArrayList<InputDateDetail>  getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
+		// TODO Auto-generated method stub
+				ArrayList<InputDateDetail> list = this.dao.getSendCFMCusDateDetail(poList);
+				return list;
 	}
 }

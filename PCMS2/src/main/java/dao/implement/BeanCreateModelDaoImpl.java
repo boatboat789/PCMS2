@@ -1526,6 +1526,35 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("TypePrdRemark") != null) {
 			TypePrdRemark = (String) map.get("TypePrdRemark");
 		}
+		String SendCFMCusDate = ""; 
+		if (map.get("SendCFMCusDate") != null) {
+			java.util.Date timestamp1 = (Date) map.get("SendCFMCusDate");
+			SendCFMCusDate = sdf2.format(timestamp1);
+		}
+		String CauseOfDelay   = "";
+		if (map.get("CauseOfDelay") != null) {
+			CauseOfDelay = (String) map.get("CauseOfDelay");
+		}
+		String DelayedDepartment   = "";
+		if (map.get("DelayedDep") != null) {
+			DelayedDepartment = (String) map.get("DelayedDep");
+		}  
+		String CFMDetailAll   = "";
+		if (map.get("CFMDetailAll") != null) {
+			CFMDetailAll = (String) map.get("CFMDetailAll");
+		}  
+		String CFMNumberAll   = "";
+		if (map.get("CFMNumberAll") != null) {
+			CFMNumberAll = (String) map.get("CFMNumberAll");
+		}  
+		String CFMRemarkAll   = "";
+		if (map.get("CFMRemarkAll") != null) {
+			CFMRemarkAll = (String) map.get("CFMRemarkAll");
+		}  
+		String RollNoRemarkAll   = "";
+		if (map.get("RollNoRemarkAll") != null) {
+			RollNoRemarkAll = (String) map.get("RollNoRemarkAll");
+		}  
 		PCMSSecondTableDetail bean = new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
 				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
@@ -1533,7 +1562,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				TKCFM, CFMPlanDate, CFMSendDate, CFMAnswerDate, 
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
-				PCRemark,SwitchRemark,TypePrd,StockLoad) ;
+				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
+				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll) ;
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);
 		bean.setSaleLineSW(SaleLineSW);

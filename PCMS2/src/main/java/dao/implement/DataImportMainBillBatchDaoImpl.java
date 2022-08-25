@@ -28,7 +28,7 @@ public class DataImportMainBillBatchDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 10;
+      this.maxfield = 12;
    }
 
    public String getMessage() {
@@ -98,7 +98,7 @@ public class DataImportMainBillBatchDaoImpl implements DataImportDao {
 	                  this.message = "Field length is missing" +counter;
 	               }
 	            }  
-//	            System.out.println(datas.isEmpty());
+//	            System.out.println(datas.size());
 	            if (!datas.isEmpty()) {
 	               this.clearData(); 
 //	               System.out.println("clear");
@@ -130,10 +130,12 @@ public class DataImportMainBillBatchDaoImpl implements DataImportDao {
       if (!datas.isEmpty()) {
          try {
         	 String sql = "INSERT INTO [PCMS].[dbo].[SapTempMainBillBatch] "
-             		+ " (F001, F002, F003, F004, F005, F006 , F007 , F008, F009, F010"
+             		+ " (F001, F002, F003, F004, F005, F006 , F007 , F008, F009, F010,"
+             		+ "  F011, F012"
              		+ " ) "
              		+ " VALUES ("
-             		+ "        ?, ?, ?, ?, ?, ? , ?, ?, ?, ?"
+             		+ "        ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, "
+             		+ "        ?, ? "
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);

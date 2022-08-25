@@ -57,6 +57,12 @@ public class PCMSSecondTableDetail {
 	
 	private String DyePlan;
 	private String DyeActual;
+	
+
+	private String SendCFMCusDate;
+	private String CauseOfDelay;
+	private String DelayedDepartment;
+	
 	private String PCRemark;
 	private String SwitchRemark ;
 	private String TypePrd ; 
@@ -67,6 +73,10 @@ public class PCMSSecondTableDetail {
 	private String ProductionOrderSW;
 	private String ProductionOrderRP;
 	private String StockLoad;
+	private String CFMDetailAll;
+	private String CFMNumberAll;
+	private String CFMRemarkAll;
+	private String RollNoRemarkAll;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -78,9 +88,18 @@ public class PCMSSecondTableDetail {
 				String shipDate, String remarkOne, String remarkTwo, String remarkThree,String Remark,String CFMLastest,
 				String ProductionOrder,String Volumn,String ReplacedRemark,String StockRemark,String GRQuantity ,
 				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark,
-				String TypePrd , String StockLoad
+				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
+				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
+				String RollNoRemarkAll
 				) {
 			super();
+			this.RollNoRemarkAll = RollNoRemarkAll;
+			this.CFMDetailAll = CFMDetailAll;
+			this.CFMNumberAll = CFMNumberAll;
+			this.CFMRemarkAll = CFMRemarkAll;
+			this.SendCFMCusDate = SendCFMCusDate;
+			this.CauseOfDelay = CauseOfDelay;
+			this.DelayedDepartment = DelayedDepartment;
 			this.DyePlan = DyePlan;
 			this.DyeActual = DyeActual;
 			this.OrderAmount = OrderAmount;
@@ -136,6 +155,62 @@ public class PCMSSecondTableDetail {
 			this.StockLoad = StockLoad;
 		}
 		
+		public String getRollNoRemarkAll() {
+			return RollNoRemarkAll;
+		}
+
+		public void setRollNoRemarkAll(String rollNoRemarkAll) {
+			RollNoRemarkAll = rollNoRemarkAll;
+		}
+
+		public String getCFMDetailAll() {
+			return CFMDetailAll;
+		}
+
+		public void setCFMDetailAll(String cFMDetailAll) {
+			CFMDetailAll = cFMDetailAll;
+		}
+
+		public String getCFMNumberAll() {
+			return CFMNumberAll;
+		}
+
+		public void setCFMNumberAll(String cFMNumberAll) {
+			CFMNumberAll = cFMNumberAll;
+		}
+
+		public String getCFMRemarkAll() {
+			return CFMRemarkAll;
+		}
+
+		public void setCFMRemarkAll(String cFMRemarkAll) {
+			CFMRemarkAll = cFMRemarkAll;
+		}
+
+		public String getSendCFMCusDate() {
+			return SendCFMCusDate;
+		}
+
+		public void setSendCFMCusDate(String sendCFMCusDate) {
+			SendCFMCusDate = sendCFMCusDate;
+		}
+
+		public String getCauseOfDelay() {
+			return CauseOfDelay;
+		}
+
+		public void setCauseOfDelay(String causeOfDelay) {
+			CauseOfDelay = causeOfDelay;
+		}
+
+		public String getDelayedDepartment() {
+			return DelayedDepartment;
+		}
+
+		public void setDelayedDepartment(String delayedDepartment) {
+			DelayedDepartment = delayedDepartment;
+		}
+
 		public String getStockLoad() {
 			return StockLoad;
 		}
