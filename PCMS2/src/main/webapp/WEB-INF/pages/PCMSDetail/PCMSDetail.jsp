@@ -392,14 +392,14 @@ $(document) .ready( function() {
 					},  
 				{ targets : [ 11 ],            
 			   	  render: function (data, type, row) {	   
-						var htmlEx = '';  
+						var htmlEx = '';   
 			   			if(soLineTmp == '' && soTmp == ''  ){
 			   				soLineTmp = row.SaleLine;     
 				   			soTmp = row.SaleOrder;   
 				   			caseDupli = 0;
 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
 				   		}  
-			   			else if(soLineTmp == row.SaleLine && soTmp   == row.SaleOrder  ){
+			   			else if(soLineTmp == row.SaleLine && soTmp == row.SaleOrder  ){
 			   				caseDupli = 1;
 				   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.RemainQuantity+' </div>'; 
 				   		}   
@@ -414,7 +414,7 @@ $(document) .ready( function() {
 						} ,  
 				{ targets : [ 12 ],        
 			   	  render: function (data, type, row) {	   
-	   					var htmlEx = ''; 
+	   					var htmlEx = '';  
 		   				if(caseDupli == 0  ){ 
 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.RemainAmount+' </div>'; 
 				   		}  
@@ -1113,7 +1113,7 @@ $(document) .ready( function() {
 		var oldValue = rowData.ReplacedRemark;  
         var newValue = $(this).val();      
         var checkDigit = true;
-		 if (event.keyCode === 13) {         	
+		 if (event.keyCode === 13) {         	    
 			 e.stopImmediatePropagation();
 			 e.preventDefault();         
 			 checkReplaced = 1 ;    
@@ -1337,10 +1337,10 @@ $(document) .ready( function() {
 			e.stopImmediatePropagation();   
 			e.preventDefault();       
 			check1 = 1 ;     
-			console.log(' newValue ', newValue,' oldValue ',oldValue)     
+// 			console.log(' newValue ', newValue,' oldValue ',oldValue)     
 			newValue  = checkDateFormatInput( newValue,oldValue)  
-			console.log(' newValue ', newValue,' oldValue ',oldValue)   
-			console.log('-----------------------------------' )   
+// 			console.log(' newValue ', newValue,' oldValue ',oldValue)   
+// 			console.log('-----------------------------------' )   
 			if(newValue == 'E0'){ 
              	rowData.CFMPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
@@ -1705,15 +1705,19 @@ $(document) .ready( function() {
 	    var row_object  = MainTable.row(this).data();             
 	    var $rowC =$(this).attr('class') 
 	    if(MainTable.cell(this).index() === undefined){  }     
-	    else {  
-	    	let myArray = $rowC.split(" ");
-	    	let classInput = myArray[1];  
-	    	if(classInput == 'CFMPlanLabDateParent' || classInput == 'CFMPlanDateParent' 
-   			|| classInput == 'DeliveryDateParent'   || classInput == 'SendCFMCusDateParent'){      
-			    var arrTmp = [];   
-				arrTmp.push(row_object);
-				getInputDate(arrTmp,classInput);
-		    }
+	    else {          
+	    	if($rowC != undefined){ 
+		    	let myArray = $rowC.split(" ");
+		    	if(myArray.length > 0){ 
+			    	let classInput = myArray[1];  
+			    	if(classInput == 'CFMPlanLabDateParent' || classInput == 'CFMPlanDateParent' 
+		   			|| classInput == 'DeliveryDateParent'   || classInput == 'SendCFMCusDateParent'){      
+					    var arrTmp = [];   
+						arrTmp.push(row_object);
+						getInputDate(arrTmp,classInput);
+				    }  
+		    	}
+	    	}
 	    	
 	    }
 	       
@@ -2049,7 +2053,7 @@ function saveColSettingToServer(arrayTmp) {
 	});   
 }  
 function saveInputDateToServer(arrayTmp) {   
-	console.log(arrayTmp)
+// 	console.log(arrayTmp)
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
@@ -2235,7 +2239,9 @@ function searchByDetailToServer(arrayTmp) {
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/searchByDetail",  
-		success: function(data) {      
+		success: function(data) {   
+			console.log(data)
+		
 			MainTable.clear();           
 			MainTable.rows.add(data);     
 			MainTable.columns.adjust().draw();   
@@ -2264,7 +2270,7 @@ function checkDateFormatInput( value ,oldvalue) {
     // EX DD/MM/YYYY
  	else if(moment(value , 'DD/MM/YYYY',true).isValid()){   	 
  		dateInput = new Date( datearray[1]  + '/' +  datearray[0] + '/' + datearray[2]) ;  
- 	    console.log('dateInput ',dateInput)    
+//  	    console.log('dateInput ',dateInput)    
  		if (value == oldvalue) { result = 'E0';  } 
  		else if(dateInput < date){ result = 'E2'; }
  		else{ result = value; }  
@@ -2888,9 +2894,14 @@ function setValueWithFieldName(fieldName, rowData,value) {
 	} 
 function checkIfDigitOnly(_string) {
 	var check = true;   
-	const pattern = /^[0-9]+$/;   
+// 	const pattern = /^[0-9]+$/;     
+// console.log(_string)
+	const pattern = /^[1-9]\d*(\.\d+)?$/;         
+// console.log(pattern.test(_string))  
     if(pattern.test(_string)) {
 //         console.log("String contains only numbers")
+
+    	check = true;    
     }
     else {
 //         console.log("String does not contain only numbers") 

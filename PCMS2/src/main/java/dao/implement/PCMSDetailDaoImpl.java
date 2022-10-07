@@ -934,6 +934,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			"  left join ( SELECT SALELINE,SALEORDER,ProductionOrder,ReplacedRemark \r\n"
 			+ "			   FROM [PCMS].[dbo].[InputReplacedRemark] \r\n"
 			+ "			   WHERE DataStatus = 'O')   AS K on K.ProductionOrder = b.ProductionOrder and K.SaleOrder = a.SaleOrder and K.SaleLine = a.SaleLine \r\n ";
+//	private String leftJoinSL = 
+//			  " left join ( SELECT SALELINE,SALEORDER,ProductionOrder,StockLoad \r\n"
+//			+ "			  FROM [PCMS].[dbo].InputStockLoad \r\n"
+//			+ "			  where Datastatus = 'O')AS SL on SL.ProductionOrder = b.ProductionOrder and SL.SaleOrder = a.SaleOrder and SL.SaleLine = a.SaleLine  \r\n"
+//			+ "\r\n ";
 	private String leftJoinSL = 
 			  " left join ( SELECT SALELINE,SALEORDER,ProductionOrder,StockLoad \r\n"
 			+ "			  FROM [PCMS].[dbo].InputStockLoad \r\n"
@@ -1502,11 +1507,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				      " SELECT DISTINCT \r\n"       
 					+ this.selectMain
 					+ "   ,CASE  \r\n"       
-					+ "     	WHEN ( b.SumVol is not null and ( b.Grade = 'A' or b.Grade is null ) ) THEN b.SumVol \r\n"  
+					+ "     	WHEN ( b.SumVol is not null and ( b.Grade = 'A' or b.Grade is null  or b.Grade  = '') ) THEN b.SumVol \r\n"  
 					+ "			ELSE  NULL\r\n"   
 					+ "			END AS Volumn \r\n"
 					+ "   , CASE  \r\n" 
-					+ "     	WHEN ( b.SumVolFGAmount is not null and ( b.Grade = 'A' or b.Grade is null ) ) THEN b.SumVolFGAmount \r\n"  
+					+ "     	WHEN ( b.SumVolFGAmount is not null and ( b.Grade = 'A' or b.Grade is null  or b.Grade  = '') ) THEN b.SumVolFGAmount \r\n"  
 					+ "			ELSE  NULL\r\n"     
 					+ "			END AS VolumnFGAmount  \r\n"
 					+ "   , 'Main' as TypePrd \r\n"
@@ -1826,7 +1831,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ sqlRP  
 				+ " Order by a.CustomerShortName, a.DueDate,a.[SaleOrder], [SaleLine],b.[ProductionOrder] " 
 				;       
-//	    System.out.println(sql);  
+	 String x =   ""
+			 + this.createTempSumGR
+			 + sqlWaitLot
+			 + " union \r\n"  
+			 + sqlMain   ;  
+	    System.out.println(x);  
 //		System.out.println("Before SQL: "+new Date());
 		List<Map<String, Object>> datas = this.database.queryList(sql);    
 //		System.out.println("AFTER SQL: "+new Date());
@@ -3825,11 +3835,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SELECT DISTINCT \r\n "       
 				+ this.selectMain
 				+ "   ,CASE  \r\n"    
-				+ "     	WHEN ( b.SumVol is not null and ( b.Grade = 'A' or b.Grade is null ) ) THEN b.SumVol \r\n"  
+				+ "     	WHEN ( b.SumVol is not null and ( b.Grade = 'A' or b.Grade is null or b.Grade  = '') ) THEN b.SumVol \r\n"  
 				+ "			ELSE  NULL\r\n"   
 				+ "			END AS Volumn   \r\n"
 				+ "   , CASE  \r\n" 
-				+ "     	WHEN ( b.SumVolFGAmount is not null and ( b.Grade = 'A' or b.Grade is null ) ) THEN b.SumVolFGAmount \r\n"  
+				+ "     	WHEN ( b.SumVolFGAmount is not null and ( b.Grade = 'A' or b.Grade is null or b.Grade  = '' ) ) THEN b.SumVolFGAmount \r\n"  
 				+ "			ELSE  NULL\r\n"     
 				+ "			END AS VolumnFGAmount  \r\n"
 				+ "   , 'Main' as TypePrd \r\n"
