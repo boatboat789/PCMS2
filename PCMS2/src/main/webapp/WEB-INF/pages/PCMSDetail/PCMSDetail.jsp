@@ -125,6 +125,7 @@ var selectOptionDepText ;
 var depList ; 
 var divisionList ; 
 var colList ; 
+var configCusList;
 var soTmp ;   
 var soLineTmp;
 var soTmpExcel ;   
@@ -210,7 +211,17 @@ $(document) .ready( function() {
 // 	showThing();       
 // 	document.getElementById("div_toOtherPath").style.display = "none"; 
 // document.getElementById("btn_lockColumn").style.display = "none";
+// EMERGENCY
 
+	let os = JSON.parse('${OS}');   
+	let result = os.includes("win");	
+	let domain ='';
+	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
+	else{ domain = "https://"+window.location.hostname;  } 
+	configCusList = JSON.parse('${ConfigCusList}'); 
+	if(configCusList.length > 0 ){
+		window.location.replace(domain+"/PCMS2/login");
+	}
 	 
 	userId = JSON.parse('${UserID}');   ;    
 	document.getElementById("btn_prdDetail").style.display = "none";
@@ -219,7 +230,7 @@ $(document) .ready( function() {
 	document.getElementById("btn_inspect").style.display = "none";
 	document.getElementById("btn_sfc").style.display = "none";    
 	$('#input_saleOrderDate').val('');    
-	$('#input_prdOrderDate').val('');   
+	$('#input_prdOrderDate').val('');       
 	$('#input_dueDate').val('');
 	<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>    
 	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -795,7 +806,7 @@ $(document) .ready( function() {
 	columnsHeader = MainTable.settings().init().columns;  
  	saleNumberList = JSON.parse('${SaleNumberList}');  
  	divisionList = JSON.parse('${DivisionList}');       
- 	depList = JSON.parse('${DepList}');  
+ 	depList = JSON.parse('${DepList}');   
 //  	console.log(depList)  
 	selectOptionDepText = configDepSelectOption(depList) 
 // 	console.log(selectOptionDepText)

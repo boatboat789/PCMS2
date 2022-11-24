@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -91,7 +91,9 @@ var colList ;
 var userStatusList ;  	
 var cusNameList ; 
 var divisionList ; 
-var cusShortNameList ;  	
+var configCusList;
+var cusShortNameList ;  
+var isCustomer = 0 ;  	
 var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
@@ -191,10 +193,8 @@ $(document) .ready( function() {
 // 	  });               
 	
 	// ---------------------------------------- set---------------------------------------------
-	let os = JSON.parse('${OS}');  
-// 	console.log(os)
-	let result = os.includes("win");
-	console.log(result)     
+	let os = JSON.parse('${OS}');   
+	let result = os.includes("win"); 
 	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
 	else{ domain = "https://"+window.location.hostname;  } 
 // 	domain = domain+window.location.hostname+:"8080";
@@ -202,17 +202,24 @@ $(document) .ready( function() {
 	urlLBMSObj = domain+"/LBMS/LabHistory"; 
 	urlSFC = domain+"/SFC/"; 
 	urlSFCObj = domain+"/SFC/HistoryWork"; 
-	urlInspect = domain+"/InspectSystem/search/home.html"; 
+	urlInspect = domain+"/InspectSystem/search/home.html"; 	
 	urlInspectObj = domain+"/InspectSystem/search/home.html"; 
 	urlQCMS = domain+"/QCMS/first.html"; 
-	urlQCMSObj = domain+"/QCMS/request/search.html";
-// 	console.log(domain)
+	urlQCMSObj = domain+"/QCMS/request/search.html"; 
 	// ---------------------------------------- set---------------------------------------------
-	userId = JSON.parse('${UserID}');   ;    
+	userId = JSON.parse('${UserID}' );   ;  
+	if('${userObject.isCustomer}'){ 
+		isCustomer = 1
+	}
+	else{
+		isCustomer = 0;     
+	}              
+// 	console.log('${userObject}')                                             
+// 	console.log(JSON.parse('${userObject}' )   )         	    
 	document.getElementById("btn_lockColumn").style.display = "none";
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
-	$('#input_dueDate').val('');
+	$('#input_dueDate').val('');   
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');
  	$('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
@@ -494,8 +501,7 @@ $(document) .ready( function() {
 			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //25
 			    {"data" : "LotShipping",  "title": 'Shipping'}         //26    
 //	 		    {"data" : "ShipDate"}          //23   
-			],       
-//	     col,      	           
+			],       	           
 			columnDefs :  [	       
 				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26],                
 //	 			  	  className : 'data-custom-main',        
@@ -512,168 +518,22 @@ $(document) .ready( function() {
 						let html = '<div  name="n_'+row.ProductionOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.ProductionOrder+'</div>'
 						return  html; 
 				   	  }    
-				},   
-// 				{ targets :  [12],                               
-// 	 				 className : 'dt-custom-td140',      
-// 			  	  	type: 'string'                  
-// 				} ,   
-//	 			{ targets : [ 13],  
-//	 				type: 'date-euro'          
-//	 				} , 
-							 
+				},    
 			 	{ targets : [ 13 ],      
 					  type: 'date-euro' ,    
-// 				   	  render: function (data, type, row) {	     
-// //	 			   		  var html = ''   
-// //	 				   		if(row.DueDate != "") {  
-// //	 			 	    		var datearray = row.DueDate.split("/");
-// //	 				  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;   
-// //	 					  	    if (dueDate < today){     
-// //	 					  	    	 $('td', row).eq(13).addClass('dt-custom-overdue');  
-// //	 								html = ' <div class="dt-custom-overdue">' + row.DueDate+ '</div>' 
-// //	 					        }
-// //	 					  	    else{
-// //	 					  	    	html = ' <div >' + row.DueDate+ '</div>' 
-// //	 					  	    }
-// //	 			  	    	}   
-// //	 				   		else{	
-// //	 				   			html = ' <div >' + row.DueDate+ '</div>' 
-// //	 				   		}     
-// 							return  row.DueDate;
-// 				   	  }    
 					} , 
-// 					{ targets : [ 14 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Prepare;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
-// 	 			  	    	}       
-//  							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 15 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Relax;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 16 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Preset;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 17 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.DyePlan;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 18 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.DyeActual;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 20 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Dryer;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/"); 
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 21 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Finishing;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 22 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.Inspectation;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 23 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.CFMPlanDate;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 24 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.CFMDateActual;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;    
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 25 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.DeliveryDate;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;     
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
-// 					{ targets : [ 26 ],      
-// 						  type: 'String' ,    
-// 	 				   	  render: function (data, type, row) {	 
-// 							let dateDDMM = row.LotShipping;
-// 	 				   		if(dateDDMM != "") {  
-// 	 			 	    		var datearray = dateDDMM.split("/");
-// 	 				  	    	dateDDMM =  String('0' + datearray[0]).slice(-2)   + '/' + String('0' + datearray[1]).slice(-2)   ;   
-// 	 			  	    	}       
-// 							return dateDDMM;
-// 	 				   	  }    
-// 					} , 
+					{ targets : [ 23 ],     
+				   	  render: function (data, type, row) {	 
+					   		var htmlEx = ''      
+				   			if( userId == 'violetta01' ){ 
+				   				htmlEx = row.SendCFMCusDate; 
+							}       
+							else{    
+								htmlEx = row.CFMPlanDate; 
+							}
+					   		return  htmlEx      
+						}         
+					}  ,   
 						
 			], 
 //	 		 order: [[2, 'asc'], [1, 'asc']],  
@@ -1220,7 +1080,39 @@ $(document) .ready( function() {
 	divisionList = JSON.parse('${DivisionList}');       
 	columnsHeader = MainTable.settings().init().columns;  
 	var saleNumberList = JSON.parse('${SaleNumberList}');
-	 
+	configCusList = JSON.parse('${ConfigCusList}'); 
+// 	handlerByConfigCus(configCusList);
+// 	function handlerByConfigCus(list){   
+// 		if (list.length > 0){ 
+// 			isCustomer = 1;    
+// 			let bean = list[0];
+// 			let IsPCMSDetailPage = bean.IsPCMSDetailPage;
+// 			let IsPCMSSumPage = bean.IsPCMSSumPage;
+			
+// 			let IsProdPathBtn = bean.IsProdPathBtn;
+// 			let IsQCMSPathBtn = bean.IsQCMSPathBtn;
+// 			let IsSFCPathBtn = bean.IsSFCPathBtn;
+// 			let IsLBMSPathBtn = bean.IsLBMSPathBtn;
+// 			let IsInspectPathBtn = bean.IsInspectPathBtn; 
+			
+
+// 			let PCMSSummaryPage = document.getElementById("PCMSSummaryPage") ;  
+// 			let PCMSDetailPage = document.getElementById("PCMSDetailPage") ;  
+// 			let btn_prdDetail = document.getElementById("btn_prdDetail") ;   
+// 			let btn_lbms = document.getElementById("btn_lbms")  ;  
+// 			let btn_qcms = document.getElementById("btn_qcms") ;  
+// 			let btn_inspect = document.getElementById("btn_inspect") ;  
+// 			let btn_sfc = document.getElementById("btn_sfc") ;  
+// 			if(!IsPCMSSumPage){ PCMSSummaryPage.remove(); }
+// 			if(!IsPCMSDetailPage){ PCMSDetailPage.remove(); }
+// 			if(!IsProdPathBtn){ btn_prdDetail.remove(); }
+// 			if(!IsLBMSPathBtn){ btn_lbms.remove(); }
+// 			if(!IsQCMSPathBtn){ btn_qcms.remove(); }
+// 			if(!IsSFCPathBtn){ btn_sfc.remove(); }
+// 			if(!IsPCMSDetailPage){ btn_prdDetail.remove(); }
+// 			if(!IsInspectPathBtn){ btn_inspect.remove(); } 
+// 		}
+// 	}
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
   	addDivisionOption(divisionList );      
@@ -1448,13 +1340,23 @@ function exportCSV(data){
     $.each(xlsRows, function(index, value) {    
         var innerRowData = [];         
         caseDupli = checkSaleOrderLine( value);
-        $.each(value, function(data, val) {     
-            if(mapsDataHeader.size != 0){                   
+//       	 console.log(index ,value.SendCFMCusDate) 
+        $.each(value, function(data, val) {          
+      
+          	  if(mapsDataHeader.size != 0){                   
             	 indexArray = mapsDataHeader.get(data); 
-            	 colType = mapsColumnHeader.get(data);   
+            	 colType = mapsColumnHeader.get(data);    
 			  	if(indexArray !== undefined){             
 					if (colType === undefined){  
-						innerRowData[indexArray] = val;      
+
+						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){  
+							val = value.SendCFMCusDate;   
+// 							innerRowData[indexArray] = val;   
+						} 
+						else{   
+// 							innerRowData[indexArray] = val;   
+						}   
+						innerRowData[indexArray] = val;   
 					}
 					else if (colType == 'num'){   
 						if(data == 'SaleQuantity' || data == 'BillQuantity'){  
@@ -1469,11 +1371,21 @@ function exportCSV(data){
 	 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
 						} 
 					}      
-					else if (colType == 'date-euro'){       
-						if(val == ''){ innerRowData[indexArray] = ''   ;   }
- 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
+					else if (colType == 'date-euro'){      
+// 						console.log(userId,data,val,value.SendCFMCusDate)
+						
+// 						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){
+// 							val = value.SendCFMCusDate;    
+// 							if(val == ''){ innerRowData[indexArray] = ''   ;   }
+// 	 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
+// 						}
+// 						else{ 
+							if(val == ''){ innerRowData[indexArray] = ''   ;   }
+	 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
+// 						}
+						
 					}                
-			  	}   
+		  		}   
 			  	else if(data == 'CustomerName'){innerRowData[sizeMap] = val  ;      }
 			  	else if(data == 'CustomerShortName'){innerRowData[sizeMap+1] =val ; } 
             }
@@ -1705,7 +1617,7 @@ function goToLBMS(tblData,pUserId,data){
   	    type : 'GET',   
   	    data : { 
   	    	"comeFrom": data.Encrypted  ,   
-//   	        "comeFrom": "PCMS"
+  	        "isCustomer": isCustomer
 	    	},   
   	    success : function(data) {   
 //   	    	var url = "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory"; 
@@ -1745,6 +1657,7 @@ function goToSFC(tblData,pUserId,data){
 	    type : 'GET',      
 	    data : {     
 			"comeFrom": data.Encrypted  ,   
+  	        "isCustomer": isCustomer
 // 		    "comeFrom":"PCMS"
 	    },               
 	    success : function(data) {     
@@ -1773,7 +1686,8 @@ function goToInspect(tblData,pUserId,data){
 	    type : 'GET',      
 // 	    async : false,
 	    data : {
-	    	"comeFrom": data.Encrypted  ,      	
+	    	"comeFrom": data.Encrypted  ,
+  	        "isCustomer": isCustomer      	
 // 	    	"comeFrom": "PCMS"
 	    },    
 	    success : function(data) { 
@@ -1806,6 +1720,7 @@ function goToQCMS(tblData,pUserId,data){
 //	 	    async : false,
 		    data : {    
 		    	"comeFrom": data.Encrypted  ,   
+	  	        "isCustomer": isCustomer
 // 		    		    	"comeFrom": "PCMS"
 		    },    
 		    success : function(data) { 
@@ -1816,11 +1731,12 @@ function goToQCMS(tblData,pUserId,data){
 		    	      tab.document.getElementById('article').value = article  ;  //'S2A001'
 		    	      tab.document.getElementById('lotNumber').value = lotNo  ;  //'S2A001'
 		    	      tab.document.getElementById('color').value = color  ;  //'S2A001' 
-		    	      setTimeout(function(){     
-  
-			    	      	tab.document.getElementById('btnSearchRequest').click();  
-						},500);         
-	    	    };      
+		    	      if(isCustomer != 1){
+			    	      setTimeout(function(){      
+			    	      	 tab.document.getElementById('btnSearchRequest').click();  
+						 },500);         
+		    	      }
+	    	    };          
 		    }    
 		});      
 //	 	test3T(); 

@@ -6,23 +6,30 @@
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="    padding: 2px 10px;">    
 		<!-- Brand/logo -->  
 		<img src="resources/images/icons/logo.png"
-			style="width: 50px; height: auto;    display: -webkit-box;" />
+			style="width: 50px; height: auto;       : -webkit-box;" />
 		<!-- Links -->  
 		<ul class="navbar-nav">      
-			<li class="nav-item"><a class="nav-link" href="Main">PCMS - Summary</a></li>  
- 			<li class="nav-item"><a class="nav-link" href="Detail">PCMS - Detail</a></li>  
-		</ul>
+			<li class="nav-item">
+				<a id= "PCMSSummaryPage" class="nav-link" href="Main">PCMS - Summary</a>
+			</li> 
+			<c:if test="${userObject.isCustomer  == false }"> 
+ 				<li class="nav-item">
+ 					<a id= "PCMSDetailPage" class="nav-link" href="Detail">PCMS - Detail</a>
+ 				</li>
+         	</c:if>                
+		</ul>               
        <ul class="nav navbar-nav navbar-right ml-auto">
-   			<li class="dropdown text-small nav-profile">
-   				<a class="nav-link dropdown-toggle" href="#"
+   			<li class="dropdown text-small nav-profile"> 
+   				<a class="nav-link dropdown-toggle" href="#"     
 				id="navbarViewPagesDropdownMenuLink" data-toggle="dropdown"
 				data-target="#navbarDropdownLogout" aria-haspopup="true"
 				aria-expanded="false">
 					<span><i  class="fa fa-user" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" 
 					aria-expanded="true"></i>
 					&nbsp;
-					<%= session.getAttribute("user")%>
-<%-- <%= session.getAttribute("userObject")%>.FirstName <%= session.getAttribute("userObject")%>.LastName --%>
+					<%= session.getAttribute("user")%> 
+<%-- <%= session.getAttribute("userObject")%>.FirstName  --%>
+<%-- <%= session.getAttribute("userObject")%>.LastName --%>
 					</span> 
 				</a>
 				<div id="navbarDropdownLogout" class="dropdown-menu" aria-labelledby="navbarDropdownLogout">

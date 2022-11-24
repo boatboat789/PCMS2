@@ -1,5 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>            	               
+<%-- <%@ page language="java" contentType="text/html; charset=UTF-8" --%>
+<%--     pageEncoding="UTF-8"%> --%>
+ <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
+<%@ page isELIgnored="false"%>              	               
 <iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
 <form target="fakeSubmit" method="post" action="Main/fakeSubmit" commandName="PCMSTable"  >    
 	<div id="wrapper-top" class="row" style="  margin: 2px 5px; background-color: azure;     zoom: 85%; " >   
@@ -53,8 +57,7 @@
 						<select id="SL_saleNumber" class="form-control "   >      
 							<option value="" selected>Select</option>   
 						</select>
-					</div> 
-					 
+					</div>  
 				</div>                     
 				<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
 				  	<label class=" label-input  margin-0" for="input_saleOrderDate">SO. Date</label>           
@@ -151,14 +154,7 @@
 	                    Clear Search
 	              		</button>          
 	              	</div>    
-				</div>        
-	<!-- 			<div class="col-4  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >   -->
-	<!--               	<button id="btn_clear" class="btn btn-primary" type="button"  -->
-	<!--               		style=" width: -webkit-fill-available;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;padding: 1% 0;" >    -->
-	<!--                     <i class="fa fa-eraser"></i>  -->
-	<!--                     Clear Fill  -->
-	<!--               		</button>       -->
-	<!-- 			</div>                     -->   
+				</div>         
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
 	              	<button id="btn_download" class="btn btn-primary" type="button" 
 	              		style="padding: 1% 0; width: -webkit-fill-available; " >
@@ -233,21 +229,27 @@
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   
 					<div class="row">       
 						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >     
-			              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
-			                    Production Detail 
-			              	</button>     
+							<c:if test="${userObject.isCustomer  == false }"> 
+				              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
+				                    Production Detail 
+				              	</button>     
+			              	</c:if>   
+							<c:if test="${userObject.isCustomer  == false }"> 
 			              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
 			                   LBMS Detail            
-			              	</button>    
+			              	</button>         
+			              	</c:if>   
 			              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
 			                    QCMS Result
 			              	</button>   
 			              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
-			                    Inspect Result
-			              	</button>      
-			              	<button id="btn_sfc" class="btn btn-primary" type="button"  >
-			                    SFC Detail
-			              	</button>    
+			                    Inspect Result     
+			              	</button>       
+							<c:if test="${userObject.isCustomer  == false }">  
+				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >
+				                    SFC Detail
+				              	</button>          
+			              	</c:if>   
 			              	<button id="btn_lockColumn" class="btn btn-primary" type="button"  >
 			                    Lock Column
 			              	</button>      

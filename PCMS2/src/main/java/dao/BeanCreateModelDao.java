@@ -4,6 +4,7 @@ import java.util.Map;
 
 import entities.CFMDetail;
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.DyeingDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
@@ -77,5 +78,7 @@ public interface BeanCreateModelDao {
 	SwitchProdOrderDetail _genSwitchProdOrderDetail(Map<String, Object> map);
 
 	ReplacedProdOrderDetail _genReplacedProdOrderDetail(Map<String, Object> map);
+
+	ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map);
 
 }

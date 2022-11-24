@@ -2,6 +2,7 @@ package dao;
 
 import java.util.ArrayList;
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
@@ -29,6 +30,11 @@ public interface PCMSMainDao {
 	ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList);
 
 	ArrayList<PCMSSecondTableDetail> getDivisionList();
+ 
+
+	ArrayList<PCMSAllDetail> getCustomerNameList(ArrayList<ConfigCustomerUserDetail> poList);
+
+	ArrayList<PCMSAllDetail> getCustomerShortNameList(ArrayList<ConfigCustomerUserDetail> poList);
  
 
 }

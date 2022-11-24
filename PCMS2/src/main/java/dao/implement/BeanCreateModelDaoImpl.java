@@ -10,6 +10,7 @@ import java.util.Map;
 import dao.BeanCreateModelDao;
 import entities.CFMDetail;
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.DyeingDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
@@ -296,12 +297,18 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("TypePrdRemark") != null) {
 			TypePrdRemark = (String) map.get("TypePrdRemark");
 		}
+		String SendCFMCusDate   = "";
+		if (map.get("SendCFMCusDate") != null) {
+			java.util.Date timestamp1 = (Date) map.get("SendCFMCusDate");
+			String dateStr = sdf2.format(timestamp1);   
+			SendCFMCusDate = createDDMM(dateStr);
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer,
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
-				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark);
+				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate);
 	}
 	public String createDDMM(String dateStr) {
 		String[] x = dateStr.split("/");
@@ -1757,5 +1764,51 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		    ChangeDate = this.sdf3.format(timestamp1);
 		} 
 		return new ReplacedProdOrderDetail(SaleOrder, SaleLine, ProductionOrder, ProductionOrderRP, Volume, ChangeBy, ChangeDate);
+	}
+	@Override
+	public ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map) {
+		int Id = 0;
+		if (map.get("Id") != null) {
+			Id = (int) map.get("Id");  
+		}
+		String UserId = "";
+		if (map.get("UserId") != null) {
+			UserId = (String) map.get("UserId");  
+		}
+		String CustomerNo = "";
+		if (map.get("CustomerNo") != null) {
+			CustomerNo = (String) map.get("CustomerNo");  
+		}
+		Boolean IsPCMSDetailPage = true;
+		if (map.get("IsPCMSDetailPage") != null) {
+			IsPCMSDetailPage = (Boolean) map.get("IsPCMSDetailPage");  
+		}  
+		Boolean IsPCMSSumPage = true;
+		if (map.get("IsPCMSSumPage") != null) {
+			IsPCMSSumPage = (Boolean) map.get("IsPCMSSumPage");  
+		} 
+		Boolean IsProdPathBtn = true;
+		if (map.get("IsProdPathBtn") != null) {
+			IsProdPathBtn = (Boolean) map.get("IsProdPathBtn");  
+		} 
+		Boolean IsLBMSPathBtn = true;
+		if (map.get("IsLBMSPathBtn") != null) {
+			IsLBMSPathBtn = (Boolean) map.get("IsLBMSPathBtn");  
+		} 
+		Boolean IsQCMSPathBtn = true;
+		if (map.get("IsQCMSPathBtn") != null) {
+			IsQCMSPathBtn = (Boolean) map.get("IsQCMSPathBtn");  
+		} 
+		Boolean IsInspectPathBtn = true;
+		if (map.get("IsInspectPathBtn") != null) {
+			IsInspectPathBtn = (Boolean) map.get("IsInspectPathBtn");  
+		} 
+		Boolean IsSFCPathBtn = true;
+		if (map.get("IsSFCPathBtn") != null) {
+			IsSFCPathBtn = (Boolean) map.get("IsSFCPathBtn");  
+		}  
+		return new ConfigCustomerUserDetail(
+				Id, UserId,CustomerNo, IsPCMSDetailPage, IsPCMSSumPage, IsProdPathBtn, IsLBMSPathBtn, IsQCMSPathBtn, 
+				IsInspectPathBtn, IsSFCPathBtn);
 	}
 }

@@ -6,6 +6,7 @@ import dao.BeanCreateModelDao;
 import dao.implement.BeanCreateModelDaoImpl;
 import entities.CFMDetail;
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.DyeingDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
@@ -150,6 +151,11 @@ public class BeanCreateModel {
 
 	public SwitchProdOrderDetail _genSwitchProdOrderDetail(Map<String, Object> map) {
 		SwitchProdOrderDetail bean = this.dao._genSwitchProdOrderDetail(map);
+		return bean;
+	}
+
+	public ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map) {
+		ConfigCustomerUserDetail bean = this.dao._genConfigCustomerUserDetail(map);
 		return bean;
 	}
 }

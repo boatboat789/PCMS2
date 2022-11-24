@@ -31,8 +31,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.EncryptedDetail;
+import entities.PCMSAllDetail;
 import entities.PCMSTableDetail;
+import model.LogInModel;
 import model.PCMSMainModel;
 
 @Controller
@@ -47,22 +50,37 @@ public class PCMSMainController {
 	public ModelAndView test(HttpSession session) {       
 		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
-		PCMSMainModel model = new PCMSMainModel();
+		PCMSMainModel model = new PCMSMainModel(); 
+		LogInModel logInModel = new LogInModel( );	   
 		String user = (String) session.getAttribute("user");
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		 String[] arrayCol = null  ; 
 		 if(list.size() == 0) { arrayCol = null  ;} 
 		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }    
 		String OS = System.getProperty("os.name").toLowerCase();	  
+
+		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
+		ArrayList<PCMSAllDetail> cusNameList = null ;
+		ArrayList<PCMSAllDetail> cusShortNameList = null ;
+//		System.out.println(listConfigCus.size());
+		if(listConfigCus.size() > 0) {
+			cusNameList = model.getCustomerNameList(listConfigCus);
+			cusShortNameList = model.getCustomerShortNameList(listConfigCus);
+		}
+		else { 
+			cusNameList = model.getCustomerNameList();
+			cusShortNameList = model.getCustomerShortNameList();
+		}
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));    
-		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
-		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
+		mv.addObject("CusNameList", g.toJson(cusNameList));
+		mv.addObject("CusShortNameList", g.toJson(cusShortNameList));
 		return mv;
 	}      
 	@RequestMapping(value ="/fakeSubmit",  method = RequestMethod.POST)        

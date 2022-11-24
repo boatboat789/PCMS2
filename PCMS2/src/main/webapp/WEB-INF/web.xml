@@ -49,6 +49,10 @@
 		<servlet-name>PCMS2</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
+		<init-param>
+	        <param-name>throwExceptionIfNoHandlerFound</param-name>
+	        <param-value>true</param-value>
+   	 	</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PCMS2</servlet-name>
@@ -83,9 +87,12 @@
     <filter-mapping>
         <filter-name>FilterLogin</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping> 
+    </filter-mapping>  
      <session-config>
         <session-timeout>300</session-timeout>
     </session-config>  
- 
+<!-- 	 <error-page> -->
+<!-- 	   <exception-type>404</exception-type>  -->
+<!-- 	   <location>/404.jsp</location> -->
+<!-- 	</error-page> -->
 </web-app>

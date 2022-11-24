@@ -38,8 +38,7 @@ public class FilterLogin implements Filter {
 	    	  chain.doFilter(request, response); 
 	      } 
 //	      else if(comeFrom != null  ){
-//	    	  ses = req.getSession();  
-////	    	  System.out.println(comeFrom);
+//	    	  ses = req.getSession();   
 //	    	  if(comeFrom.equals("PCMS")){ 
 //				EmployeeDetail user = new EmployeeDetail( );	
 //				user.setId("PCMSDISPLAY");  

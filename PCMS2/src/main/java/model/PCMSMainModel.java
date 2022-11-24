@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import dao.PCMSMainDao;
 import dao.implement.PCMSMainDaoImpl;
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
@@ -101,5 +102,17 @@ public class PCMSMainModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionList();
 		return list;
+	}
+
+	public ArrayList<PCMSAllDetail> getCustomerNameList(ArrayList<ConfigCustomerUserDetail> poList) {
+		// TODO Auto-generated method stub
+				ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameList(poList );
+				return list;
+	}
+
+	public ArrayList<PCMSAllDetail> getCustomerShortNameList(ArrayList<ConfigCustomerUserDetail> poList) {
+		// TODO Auto-generated method stub
+				ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameList(poList );
+				return list;
 	}
 }

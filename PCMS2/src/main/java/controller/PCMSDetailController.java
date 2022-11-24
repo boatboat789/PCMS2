@@ -18,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 import entities.ColumnHiddenDetail;
+import entities.ConfigCustomerUserDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
+import model.LogInModel;
 import model.PCMSDetailModel;
 
 @Controller
@@ -41,9 +43,15 @@ public class PCMSDetailController {
 			arrayCol = null; 
 		} 
 		else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }  
+
+		String OS = System.getProperty("os.name").toLowerCase();	  
+		LogInModel logInModel = new LogInModel( );	   
+		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user); 
 		mv.setViewName("PCMSDetail/PCMSDetail");  
-		mv.addObject("UserID", g.toJson(user));
+		mv.addObject("UserID", g.toJson(user));  
+		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DepList", g.toJson(model.getDelayedDepartmentList()));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));

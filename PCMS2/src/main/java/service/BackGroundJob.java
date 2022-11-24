@@ -43,7 +43,7 @@ public class BackGroundJob {
 		 
 	}     
 //	@Scheduled(fixedDelay = 10000)     
-//	@Scheduled(cron = "0 0 1 * * *")    
+	@Scheduled(cron = "0 0 1 * * *")    
 	public void sortBackGroundTwo() { 
 		SORModel model = new SORModel();
 		model.upSertSORToPCMS();
