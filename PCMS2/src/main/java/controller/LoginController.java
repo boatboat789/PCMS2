@@ -95,6 +95,24 @@ public class LoginController {
 		if(session.getAttribute("user") != null) {  
 			alertmsgText = "";
 			alerttypText ="";
+			UserDetail userTMP = logInModel.getUserDetail(userId);
+			if (userTMP != null) {  
+                 user.setId(userTMP.getId());
+                 user.setFirstName(userTMP.getFirstName().trim());
+                 user.setUserId(userTMP.getUserId(). trim());   
+                 user.setIsSystem(userTMP.getIsSystem());
+                 user.setIsAdmin(userTMP.getIsAdmin());
+                 user.setPermitId(userTMP.getPermitId());
+                 user.setResponsible(userTMP.getResponsible()); 
+                 user.setChangeBy(userTMP.getChangeBy());
+                 user.setChangeDate(userTMP.getChangeDate());
+                 user.setRegistBy(userTMP.getRegistBy());
+                 user.setRegistDate(userTMP.getRegistDate()); 
+                 user.setIsCustomer(userTMP.getIsCustomer()) ;
+                 user.setUserType("USER");
+                 temp.setStatus(true);    
+  				session.setAttribute("userObject",  user    ); 
+			}
 			if( listConfigCus.size() == 0) {
 				if(oriPath.equals("")||oriPath.equals("/login")) { 
 					redirect = "redirect:/Main" ;   
@@ -198,7 +216,7 @@ public class LoginController {
 	                 user.setUserType("USER"); 
 	                 temp.setStatus(true);  
                   	session.setAttribute("user", userId);       
-      				session.setAttribute("userObject", user  );  
+      				session.setAttribute("userObject", user  );   
 //      				session.setAttribute("userObject", g.toJson(user));    
 				}  
 			} 

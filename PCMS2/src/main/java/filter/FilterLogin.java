@@ -25,8 +25,8 @@ public class FilterLogin implements Filter {
 	      String context = req.getContextPath();
 	      String uri = req.getRequestURI().substring(context.length());
 	      String loginURL =  req.getContextPath() +"/login"; 
-	      String loginAuthURL =  req.getContextPath() +"/login/loginAuth";  
-	      boolean loggedIn = ( ses != null && ses.getAttribute("user") != null );
+	      String loginAuthURL =  req.getContextPath() +"/login/loginAuth";       
+	      boolean loggedIn = ( ses != null && ses.getAttribute("user") != null && ses.getAttribute("userObject") != null );
 	      boolean loginRequest = loginURL.equals(req.getRequestURI());  ;
 	      boolean loginAuthRequest = loginAuthURL.equals(req.getRequestURI()); 
 	      boolean isStaticResource = uri.startsWith("/resources/");  

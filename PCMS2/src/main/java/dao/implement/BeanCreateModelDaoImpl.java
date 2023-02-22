@@ -303,12 +303,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			String dateStr = sdf2.format(timestamp1);   
 			SendCFMCusDate = createDDMM(dateStr);
 		}
+		String PurchaseOrder   = "";
+		if (map.get("PurchaseOrder") != null) {
+			PurchaseOrder = (String) map.get("PurchaseOrder");
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer,
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
-				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate);
+				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate,PurchaseOrder);
 	}
 	public String createDDMM(String dateStr) {
 		String[] x = dateStr.split("/");
@@ -1562,6 +1566,11 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("RollNoRemarkAll") != null) {
 			RollNoRemarkAll = (String) map.get("RollNoRemarkAll");
 		}  
+		String CFMDateActual = ""; 
+		if (map.get("CFMDateActual") != null) {
+			java.util.Date timestamp1 = (Date) map.get("CFMDateActual");
+			CFMDateActual = sdf2.format(timestamp1);
+		}
 		PCMSSecondTableDetail bean = new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
 				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
@@ -1570,7 +1579,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
 				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
-				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll) ;
+				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual) ;
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);
 		bean.setSaleLineSW(SaleLineSW);

@@ -223,12 +223,23 @@ $(document) .ready( function() {
 		window.location.replace(domain+"/PCMS2/login");
 	}
 	 
-	userId = JSON.parse('${UserID}');   ;    
-	document.getElementById("btn_prdDetail").style.display = "none";
-	document.getElementById("btn_lbms").style.display = "none";
-	document.getElementById("btn_qcms").style.display = "none";
-	document.getElementById("btn_inspect").style.display = "none";
-	document.getElementById("btn_sfc").style.display = "none";    
+	userId = JSON.parse('${UserID}');   ;     
+// 	console.log(document.getElementById("btn_prdDetail"))   
+	if(document.getElementById("btn_prdDetail") != null){
+		document.getElementById("btn_prdDetail").style.display = "none";        
+	} 
+	if(document.getElementById("btn_lbms") != null){ 
+		document.getElementById("btn_lbms").style.display = "none"; 
+	} 
+	if(document.getElementById("btn_qcms") != null){ 
+		document.getElementById("btn_qcms").style.display = "none";  
+	} 
+	if(document.getElementById("btn_inspect") != null){  
+		document.getElementById("btn_inspect").style.display = "none"; 
+	} 
+	if(document.getElementById("btn_sfc") != null){  
+		document.getElementById("btn_sfc").style.display = "none";    
+	} 
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');       
 	$('#input_dueDate').val('');
@@ -316,7 +327,9 @@ $(document) .ready( function() {
 				    {"data" : "TKCFM","title":"TK CFM"},                       						     //30 
 				    {"data" : "CFMPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //31  
 				    {"data" : "SendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //32 <-------------
-				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //33 
+       
+ 				    {"data" : "CFMDateActual","title":"Actual CFM Date",'type': 'date-euro'},          
+// 				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //33 
 				    {"data" : "UserStatus","title":"User Status"},                                       //34
 					{"data" : "CFMDetailAll","title":"CFM Detail"},                                      //35   
 					{"data" : "CFMNumberAll","title":"CFM Number"},                                      //36
@@ -2251,7 +2264,7 @@ function searchByDetailToServer(arrayTmp) {
 		data: JSON.stringify(arrayTmp),      
 		url: "Detail/searchByDetail",  
 		success: function(data) {   
-			console.log(data)
+// 			console.log(data)
 		
 			MainTable.clear();           
 			MainTable.rows.add(data);     

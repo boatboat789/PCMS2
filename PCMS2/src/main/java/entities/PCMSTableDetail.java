@@ -60,6 +60,7 @@ public class PCMSTableDetail {
 	private String TypePrd;  
 	private String TypePrdRemark ;  
 	private String SendCFMCusDate;
+	private String PurchaseOrder;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -68,8 +69,9 @@ public class PCMSTableDetail {
 			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
-			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate) {
+			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder) {
 		super();
+		this.PurchaseOrder  =PurchaseOrder;
 		this.SendCFMCusDate  =SendCFMCusDate;
 		this.ShipDate = ShipDate;
 		SaleOrder = saleOrder;
@@ -143,6 +145,12 @@ public class PCMSTableDetail {
 		SaleStatus = saleStatus; 
 		this.Division = division;
 	} 
+	public String getPurchaseOrder() {
+		return PurchaseOrder;
+	}
+	public void setPurchaseOrder(String purchaseOrder) {
+		PurchaseOrder = purchaseOrder;
+	}
 	public String getSendCFMCusDate() {
 		return SendCFMCusDate;
 	}

@@ -234,7 +234,7 @@
 				                    Production Detail 
 				              	</button>     
 			              	</c:if>   
-							<c:if test="${userObject.isCustomer  == false }"> 
+							<c:if test="${userObject.isCustomer == false }"> 
 			              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
 			                   LBMS Detail            
 			              	</button>         

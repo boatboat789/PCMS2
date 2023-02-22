@@ -311,7 +311,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	  		    + "   , a.ShipDate  \r\n"
 	  		    + "   , SendCFMCusDate\r\n"
 	  		    + "   , 'WaitLot' as TypePrd \r\n"
-	  		    + "   , 'WaitLot' AS TypePrdRemark    \r\n"; 
+	  		    + "   , 'WaitLot' AS TypePrdRemark    \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n"; 
 	private String selectTwo = 
 //			  "  CASE  \r\n"
 //			+ "		  WHEN b.[ProductionOrder] is not null THEN b.[ProductionOrder]  \r\n"  
@@ -339,7 +340,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "	  ,RemarkTwo,RemarkThree,RemAfterCloseOne,RemAfterCloseTwo\r\n"
 			+ "	  ,RemAfterCloseThree \r\n" 
 			+ "   ,GreigeArticle \r\n " 
-			+ "   ,GreigeDesign \r\n";
+			+ "   ,GreigeDesign \r\n"
+  		    + "   ,a.[PurchaseOrder] \r\n";
  
 	private String selectPO = 
 			  "    [ProductionOrder],[RollNo],[QuantityKG]\r\n"
@@ -1366,6 +1368,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.selectMain 	
 				+ "   , 'Main' as TypePrd \r\n"
 				+ "   , 'Main' AS TypePrdRemark \r\n"   
+	  		    + "   ,a.[PurchaseOrder] \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n "
 				+ this.leftJoinBPartOne
 				+ whereBMainUserStatus
@@ -1402,6 +1405,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.selectOP
 				+ "   ,'OrderPuang' as TypePrd \r\n" 
     			+ "   ,TypePrdRemark \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n"
     			+ " FROM ( SELECT DISTINCT  a.SaleOrder  , a.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
@@ -1461,6 +1465,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.select  
 				+ "   , 'OrderPuang' as TypePrd \r\n"  
     			+ "   , TypePrdRemark \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n"
 				+ " FROM (  SELECT DISTINCT  a.SaleOrder  , a.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
@@ -1508,6 +1513,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.select 
 				+ "   ,'Switch' as TypePrd \r\n"  
     			+ "   ,TypePrdRemark \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n"
     			+ " FROM (  SELECT DISTINCT  a.SaleOrder  , a.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
@@ -1563,6 +1569,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.selectRP 
 				+ "   , 'Replaced' as TypePrd \r\n"
     			+ "   , TypePrdRemark \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n"
 				+ " FROM (  SELECT DISTINCT  b.[SaleOrder]  , b.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
 				+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
@@ -1609,7 +1616,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ sqlRP  
 					+ " Order by a.CustomerShortName, a.DueDate,a.[SaleOrder], [SaleLine],b.[ProductionOrder] ";    
 
-//			 System.out.println(sql);
+//		 System.out.println(sql);
 //			 System.out.println("---------------------------------");
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<PCMSTableDetail>();  

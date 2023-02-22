@@ -31,6 +31,7 @@ public class PCMSSecondTableDetail {
 	private String CFMCusAnsLabDate;
 	private String UserStatus ;
 	private String TKCFM;
+	private String CFMDateActual;
 	private String CFMPlanDate;
 	private String CFMSendDate;
 	private String CFMAnswerDate;
@@ -90,9 +91,10 @@ public class PCMSSecondTableDetail {
 				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark,
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
-				String RollNoRemarkAll
+				String RollNoRemarkAll , String CFMDateActual
 				) {
 			super();
+			this.CFMDateActual= CFMDateActual;
 			this.RollNoRemarkAll = RollNoRemarkAll;
 			this.CFMDetailAll = CFMDetailAll;
 			this.CFMNumberAll = CFMNumberAll;
@@ -155,6 +157,14 @@ public class PCMSSecondTableDetail {
 			this.StockLoad = StockLoad;
 		}
 		
+		public String getCFMDateActual() {
+			return CFMDateActual;
+		}
+
+		public void setCFMDateActual(String cFMDateActual) {
+			CFMDateActual = cFMDateActual;
+		}
+
 		public String getRollNoRemarkAll() {
 			return RollNoRemarkAll;
 		}

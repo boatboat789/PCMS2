@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 
 import entities.ColumnHiddenDetail;
 import entities.ConfigCustomerUserDetail;
+import entities.UserDetail;
 import model.LogInModel;
 import model.PCMSMainModel; 
 @Controller
@@ -48,15 +49,21 @@ public class MainController {
 		LogInModel logInModel = new LogInModel( );	   
 		PCMSMainModel model = new PCMSMainModel();
 		String user = (String) session.getAttribute("user");  
+		UserDetail userObject = (UserDetail) session.getAttribute("userObject");  
 		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		String[] arrayCol = null  ;
 		if(list.size() == 0) { }    
 		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
-		String OS = System.getProperty("os.name").toLowerCase();	   
-		mv.setViewName("PCMSMain/PCMSMain");  
-		mv.addObject("OS", g.toJson(OS));
+		String OS = System.getProperty("os.name").toLowerCase();	 
+		boolean isCustomer = false ;
+		if(userObject != null) {
+			isCustomer = userObject.getIsCustomer();
+		}
+		mv.setViewName("PCMSMain/PCMSMain");   
+		mv.addObject("OS", g.toJson(OS));  
 		mv.addObject("UserID", g.toJson(user));
+		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));

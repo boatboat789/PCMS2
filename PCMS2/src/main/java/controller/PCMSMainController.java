@@ -35,6 +35,7 @@ import entities.ConfigCustomerUserDetail;
 import entities.EncryptedDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSTableDetail;
+import entities.UserDetail;
 import model.LogInModel;
 import model.PCMSMainModel;
 
@@ -53,6 +54,7 @@ public class PCMSMainController {
 		PCMSMainModel model = new PCMSMainModel(); 
 		LogInModel logInModel = new LogInModel( );	   
 		String user = (String) session.getAttribute("user");
+		UserDetail userObject = (UserDetail) session.getAttribute("userObject");  
 		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 		 String[] arrayCol = null  ; 
 		 if(list.size() == 0) { arrayCol = null  ;} 
@@ -70,10 +72,15 @@ public class PCMSMainController {
 		else { 
 			cusNameList = model.getCustomerNameList();
 			cusShortNameList = model.getCustomerShortNameList();
+		} 	 
+		boolean isCustomer = false ;
+		if(userObject != null) {
+			isCustomer = userObject.getIsCustomer();
 		}
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));
+		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));

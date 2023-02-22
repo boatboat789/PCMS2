@@ -48,7 +48,7 @@ public class PCMSDetailController {
 		LogInModel logInModel = new LogInModel( );	   
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user); 
 		mv.setViewName("PCMSDetail/PCMSDetail");  
-		mv.addObject("UserID", g.toJson(user));  
+		mv.addObject("UserID", g.toJson(user));   
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));

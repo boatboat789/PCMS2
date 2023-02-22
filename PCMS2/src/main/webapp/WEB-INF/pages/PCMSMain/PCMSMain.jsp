@@ -24,6 +24,7 @@
 				            <tr>
 				                <th class="row-table" style="vertical-align: middle;">SO No. </th>
 				                <th class="row-table" style="vertical-align: middle;">SO Line</th> 
+				                <th class="row-table" style="vertical-align: middle;">PO</th>
 				                <th class="row-table" style="vertical-align: middle;">Article No</th>
 				                <th class="row-table" style="vertical-align: middle;">Design No </th>
 				                <th class="row-table" style="vertical-align: middle;">ATT<span class="c"style="display: block;"> Color</span> </th>  
@@ -72,7 +73,8 @@
   </style>
 <!-- <script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>    -->
 <script>              	   
-var userId = '' ; 
+var userId = '' ;   
+var isCustomer = false  ;
 <%-- JSON.stringify(<%= session.getAttribute("user")%> ) --%>
 var preloader = document.getElementById('loader');  
 var today = new Date();        //modalForm
@@ -178,6 +180,9 @@ $('#input_dueDate').daterangepicker({
 , function(start, end, label) {   
 });  
 $(document) .ready( function() {  
+
+	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
+	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
 <%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
 // 		var ctx = "${pageContext.request.contextPath}";   
 // 		console.log(ctx2)       ;               
@@ -207,18 +212,19 @@ $(document) .ready( function() {
 	urlQCMS = domain+"/QCMS/first.html"; 
 	urlQCMSObj = domain+"/QCMS/request/search.html"; 
 	// ---------------------------------------- set---------------------------------------------
-	userId = JSON.parse('${UserID}' );   ;  
-	if('${userObject.isCustomer}'){ 
+	userId = JSON.parse('${UserID}' );        
+	isCustomer = JSON.parse('${IsCustomer}' );    
+	if(isCustomer  == true){  
 		isCustomer = 1
-	}
-	else{
-		isCustomer = 0;     
+	}             
+	else{     
+		isCustomer = 0;               
 	}              
+// 	console.log('${userObject.isCustomer}')
+// 	console.log(isCustomer)
 // 	console.log('${userObject}')                                             
 // 	console.log(JSON.parse('${userObject}' )   )         	    
-	document.getElementById("btn_lockColumn").style.display = "none";
-	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
-	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
+	document.getElementById("btn_lockColumn").style.display = "none"; 
 	$('#input_dueDate').val('');   
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');
@@ -470,11 +476,12 @@ $(document) .ready( function() {
 //	             realtime: true       
 //	         },                       
 	 		colReorder: true,  
-			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],             
+			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
 	 	   	columns :    
 	 	   		[      
 			    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
 			    {"data" : "SaleLine",  "title": 'SO Line'}, 
+			    {"data" : "PurchaseOrder",  "title": 'PO'}, 
 			    {"data" : "ArticleFG",  "title": 'Article No'}, 
 			    {"data" : "DesignFG",  "title": 'Design No'}, 
 			    {"data" : "Color",  "title": 'ATT Color'},     
@@ -503,26 +510,26 @@ $(document) .ready( function() {
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
 			columnDefs :  [	       
-				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26],                
+				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26,27],                
 //	 			  	  className : 'data-custom-main',        
 //	 		  	 	  type: 'string'      
 					} ,            
-				{ targets :  [26],                   
+				{ targets :  [27],                   
 				  	  className : 'p-r-15',                  
 					} ,   
-				{ targets :  [6,7,10],                         
+				{ targets :  [7,8,11],                         
 			  	  type : 'num',                 
 				} ,   
-				{ targets:[9]  ,       
+				{ targets:[10]  ,       
 					render: function (data, type, row) {	   
 						let html = '<div  name="n_'+row.ProductionOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.ProductionOrder+'</div>'
 						return  html; 
 				   	  }    
 				},    
-			 	{ targets : [ 13 ],      
+			 	{ targets : [ 14 ],      
 					  type: 'date-euro' ,    
 					} , 
-					{ targets : [ 23 ],     
+					{ targets : [ 24 ],     
 				   	  render: function (data, type, row) {	 
 					   		var htmlEx = ''      
 				   			if( userId == 'violetta01' ){ 
