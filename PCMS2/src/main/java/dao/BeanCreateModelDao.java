@@ -24,6 +24,7 @@ import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
 import entities.SwitchProdOrderDetail;
+import entities.TempUserStatusAutoDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 
@@ -80,5 +81,7 @@ public interface BeanCreateModelDao {
 	ReplacedProdOrderDetail _genReplacedProdOrderDetail(Map<String, Object> map);
 
 	ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map);
+
+	TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map);
 
 }

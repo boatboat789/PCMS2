@@ -91,7 +91,7 @@ public class LoginController {
 //		System.out.println(listConfigCus.size());    
 		ConfigCustomerUserDetail bean = null;
 //		System.out.println(bean.getIsPCMSSumPage());
-//		System.out.println(bean.getIsPCMSDetailPage());
+//		System.out.println(session.getAttribute("user"));    
 		if(session.getAttribute("user") != null) {  
 			alertmsgText = "";
 			alerttypText ="";
@@ -191,35 +191,33 @@ public class LoginController {
 	                 user.setRegistDate(userTMP.getRegistDate()); 
 	                 user.setIsCustomer(userTMP.getIsCustomer()) ;
 	                 user.setUserType("USER");
-	                 temp.setStatus(true); 
-
+	                 temp.setStatus(true);  
                   	session.setAttribute("user", userId);      
-      				session.setAttribute("userObject",  user    ); 
-//      				session.setAttribute("userObject", g.toJson(user));   
+      				session.setAttribute("userObject",  user    );   
 				}  
             } 
-			else {
-				UserDetail userTMP = logInModel.getUserDetail(userId);
-				if (userTMP != null) {  
-	                 user.setId(userTMP.getId());
-//	                 user.setFirstName(userTMP.getFirstName().trim());
-	                 user.setUserId(userTMP.getUserId(). trim());   
-	                 user.setIsSystem(userTMP.getIsSystem());
-	                 user.setIsAdmin(userTMP.getIsAdmin());
-	                 user.setPermitId(userTMP.getPermitId());
-	                 user.setResponsible(userTMP.getResponsible()); 
-	                 user.setChangeBy(userTMP.getChangeBy());   
-	                 user.setChangeDate(userTMP.getChangeDate());
-	                 user.setRegistBy(userTMP.getRegistBy());
-	                 user.setRegistDate(userTMP.getRegistDate()); 
-	                 user.setIsCustomer(userTMP.getIsCustomer()) ;
-	                 user.setUserType("USER"); 
-	                 temp.setStatus(true);  
-                  	session.setAttribute("user", userId);       
-      				session.setAttribute("userObject", user  );   
-//      				session.setAttribute("userObject", g.toJson(user));    
-				}  
-			} 
+//			else {
+//				UserDetail userTMP = logInModel.getUserDetail(userId);
+//				if (userTMP != null) {  
+//	                 user.setId(userTMP.getId());
+////	                 user.setFirstName(userTMP.getFirstName().trim());
+//	                 user.setUserId(userTMP.getUserId(). trim());   
+//	                 user.setIsSystem(userTMP.getIsSystem());
+//	                 user.setIsAdmin(userTMP.getIsAdmin());
+//	                 user.setPermitId(userTMP.getPermitId());
+//	                 user.setResponsible(userTMP.getResponsible()); 
+//	                 user.setChangeBy(userTMP.getChangeBy());   
+//	                 user.setChangeDate(userTMP.getChangeDate());
+//	                 user.setRegistBy(userTMP.getRegistBy());
+//	                 user.setRegistDate(userTMP.getRegistDate()); 
+//	                 user.setIsCustomer(userTMP.getIsCustomer()) ;
+//	                 user.setUserType("USER"); 
+//	                 temp.setStatus(true);  
+//                  	session.setAttribute("user", userId);       
+//      				session.setAttribute("userObject", user  );   
+////      				session.setAttribute("userObject", g.toJson(user));    
+//				}  
+//			} 
 		}          
    
 //		System.out.println("/login/loginAuth : "+request.getHeader("referer"));

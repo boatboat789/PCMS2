@@ -147,6 +147,7 @@ $(document).on('keypress', 'input,select', function(e) {
 		if (e.target.id == 'input_designNo') { searchByDetail();    }  
 		if (e.target.id == 'input_material') { searchByDetail();    }  
 		if (e.target.id == 'input_labNo') { searchByDetail();    }  
+		if (e.target.id == 'input_PO') { searchByDetail();    }  
 // 		if (e.target.id == 'input_userStatus') { searchByDetail();    }     
 	}  
 });     
@@ -1757,6 +1758,7 @@ function clearInput(){
 // 	document.getElementById("input_prdOrderDate").value  = '';  
 	document.getElementById("input_material").value  = '';         
 	document.getElementById("input_labNo").value     = '';  
+	document.getElementById("input_PO").value     = '';  
 	document.getElementById('SL_saleNumber').value= '';
 	document.getElementById('SL_delivStatus').value='';
 	$('#input_saleOrderDate').val('');      
@@ -1783,6 +1785,7 @@ function searchByDetail(){
 	var designNo = document.getElementById("input_designNo").value .trim(); 
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
+	var po = document.getElementById("input_PO").value .trim(); 
 	var labNo = document.getElementById("input_labNo").value .trim(); 
 // 	var userStatus = document.getElementById("SL_userStatus").value .trim(); 
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
@@ -1849,7 +1852,9 @@ function createInputDateJsonData(val,caseSave){
 	var SwitchRemark = val.SwitchRemark; 
 	var StockLoad = val.StockLoad; 
 	var SendCFMCusDate = val.SendCFMCusDate; 
+	var UserStatus = val.UserStatus; 
 	var json = '{"ProductionOrder":'+JSON.stringify(ProductionOrder)+ 
+	   ',"UserStatus":'+JSON.stringify(UserStatus)+  
 	   ',"CFMPlanLabDate":'+JSON.stringify(CFMPlanLabDate)+  
 	   ',"CFMPlanDate":'+JSON.stringify(CFMPlanDate)+  
 	   ',"DeliveryDate":'+JSON.stringify(DeliveryDate)+  
@@ -1878,10 +1883,12 @@ function createJsonData(){
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();    
 	var saleNumber = document.getElementById("SL_saleNumber").value .trim();
 	var saleOrderDate = document.getElementById("input_saleOrderDate").value .trim();
-	var designNo = document.getElementById("input_designNo").value .trim(); 
+	var po = document.getElementById("input_PO").value .trim(); 
+	var designNo = document.getElementById("input_designNo").value .trim();  
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
 	var labNo = document.getElementById("input_labNo").value .trim(); 
+	var po = document.getElementById("input_PO").value .trim(); 
 // 	var userStatus = document.getElementById("SL_userStatus").value .trim();  
 	var deliStatus = document.getElementById("SL_delivStatus").value .trim();  
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
@@ -1897,6 +1904,18 @@ function createJsonData(){
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
 	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
+	 var cusDiv = "";
+	 if(configCusList.length > 0 ){ 
+	 	let p_cusDiv = configCusList[0].CustomerDivision	 ;
+	 	if(p_cusDiv!=''){ 
+	 		cusDiv = p_cusDiv;
+	 	}
+// 	 	else{
+// 	 	} 
+	 }
+// 	 else{
+// 		 cusDiv = p_cusDiv; 
+// 	 }
 	var json = '{'+
 // 		'"CustomerName":'+JSON.stringify(customer)+ 
 // 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
@@ -1907,11 +1926,13 @@ function createJsonData(){
 	   ' ,"SaleOrderCreateDate":'+JSON.stringify(saleOrderDate)+
 	   ',"DesignFG":'+JSON.stringify(designNo)+       
 	   ',"ProductionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
-	   ',"MaterialNo":'+JSON.stringify(material)+
-	   ',"LabNo":'+JSON.stringify(labNo)+ 
+	   ',"MaterialNo":'+JSON.stringify(material)+          
+	   ',"LabNo":'+JSON.stringify(labNo)+   
 // 	   ',"UserStatus":'+JSON.stringify(userStatus)+      
 		',"UserStatusList":'+JSON.stringify(userStatus)+       
 	   ',"CustomerNameList":'+JSON.stringify(customer)+   
+	   ',"CustomerDivision":'+JSON.stringify(cusDiv)+      
+	   ',"PurchaseOrder":'+JSON.stringify(po)+   
 	   ',"CustomerShortNameList":'+JSON.stringify(customerShort)+   
 	   ',"DivisionList":'+JSON.stringify(division)+   
 	   ',"DeliveryStatus":'+JSON.stringify(deliStatus)+         
@@ -2173,10 +2194,12 @@ function getSwitchProdOrderDetailByPrd( dataP) {
 		var typePrd= dataP[i].TypePrd;  
 		let indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
 			if( MainTable.row(value).data().ProductionOrder == 'รอจัด Lot'){
-				return ( saleOrder === MainTable.row(value).data().SaleOrder && saleLine === MainTable.row(value).data().SaleLine );
+				return ( saleOrder === MainTable.row(value).data().SaleOrder && 
+						 saleLine === MainTable.row(value).data().SaleLine );
 			}
 			else {
-				return ( prodOrder === MainTable.row(value).data().ProductionOrder && MainTable.row(value).data().TypePrd !== "OrderPuang" );// return 'P2D031' === MainTable.row(value).data()[1];
+				return ( prodOrder === MainTable.row(value).data().ProductionOrder && 
+						 MainTable.row(value).data().TypePrd !== "OrderPuang" );// return 'P2D031' === MainTable.row(value).data()[1];
 			}
 			 // 			return prodOrder === MainTable.row(value).data().ProductionOrder; 
       	} );                   
@@ -2204,9 +2227,36 @@ function setInputDetailToRowByPrd( array, objTmp) { //"DelayedDep"CauseOfDelay) 
             checkEQ = true; 
             this.invalidate();
         } 
-     })   
-         
-        
+     })        
+}    
+function setUserStatusByStockLoad( array, objTmp,data) { //"DelayedDep"CauseOfDelay) {        
+	let i = 0;  
+	let fieldName = objTmp.fieldName 
+	let idx = objTmp.idx 
+	let newVal = objTmp.newValue 
+	let oldVal = objTmp.oldValue 
+   	var checkEQ = false;    
+	let userStatus = array[0].UserStatus; 
+	let customerType = array[0].CustomerType;  
+	rowData =  MainTable.row(idx).data(); 
+	// FIX EMERGENCY CASE WAIT TO CALL FROM DB 
+// 	if(userStatus == 'รอเปิดบิล' && newVal == ''){
+// 		if(userStatus=='Anita'){
+// 			rowData.UserStatus = 'รอแจ้งส่ง';
+// 		}   
+// 		else{ 
+// 			rowData.UserStatus = 'รอขาย';
+// 		}
+// 	}
+// 	else if( (userStatus == 'รอขาย' || userStatus == 'รอแจ้งส่ง' )){     
+// 		rowData.UserStatus = 'รอเปิดบิล';
+// 	}         
+	console.log(data[0])
+	if(data[0].UserStatus != ''){ 
+		rowData.UserStatus = data[0].UserStatus;
+	}
+// 	rowData.UserStatus = 'รอเปิดบิล';
+	MainTable.row(idx).invalidate() ;         
 }    
 function saveInputDetailToServer(arrayTmp,objTmp) {    
 	$.ajax({   
@@ -2233,6 +2283,9 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 							objTmp.fieldName == 'SendCFMCusDate'){
 						setInputDetailToRowByPrd( arrayTmp ,objTmp ) ; //"DelayedDep"CauseOfDelay
 					}
+					else if(objTmp.fieldName == 'StockLoad' ){
+						setUserStatusByStockLoad( arrayTmp ,objTmp,data ) ; //"DelayedDep"CauseOfDelay
+					} 
 				} 
 				else{       
 					swal({   
@@ -2827,8 +2880,8 @@ function setSearchDefault(data){
 	document.getElementById("input_prdOrder").value  = innnerText.ProductionOrder;   
 	document.getElementById("input_designNo").value  = innnerText.DesignFG;   
 	document.getElementById("input_material").value  = innnerText.MaterialNo;  
-	document.getElementById("input_labNo").value     = innnerText.LabNo;
-	
+	document.getElementById("input_labNo").value     = innnerText.LabNo; 
+	document.getElementById("input_PO").value     = innnerText.PurchaseOrder;
 	var saleCreateArray = innnerText.SaleOrderCreateDate.split(' - ') ;
 	if(saleCreateArray.length == 1){ $('#input_saleOrderDate').val('');     }
 	else{

@@ -8,11 +8,11 @@
 		<img src="resources/images/icons/logo.png"
 			style="width: 50px; height: auto;       : -webkit-box;" />
 		<!-- Links -->  
-		<ul class="navbar-nav">      
-			<li class="nav-item">
+		<ul class="navbar-nav">         
+			<li class="nav-item">   
 				<a id= "PCMSSummaryPage" class="nav-link" href="Main">PCMS - Summary</a>
 			</li> 
-			<c:if test="${userObject.isCustomer  == false }"> 
+			<c:if test="${ConfigCusListTest[0].getIsPCMSDetailPage()  == true || ConfigCusListTest.size() == 0}">   
  				<li class="nav-item">
  					<a id= "PCMSDetailPage" class="nav-link" href="Detail">PCMS - Detail</a>
  				</li>

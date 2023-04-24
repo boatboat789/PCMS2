@@ -30,6 +30,7 @@ import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
 import entities.SwitchProdOrderDetail;
+import entities.TempUserStatusAutoDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 
@@ -307,12 +308,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("PurchaseOrder") != null) {
 			PurchaseOrder = (String) map.get("PurchaseOrder");
 		}
+		String CustomerDivision   = "";
+		if (map.get("CustomerDivision") != null) {
+			CustomerDivision = (String) map.get("CustomerDivision");
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer,
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
-				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate,PurchaseOrder);
+				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate,PurchaseOrder, CustomerDivision);
 	}
 	public String createDDMM(String dateStr) {
 		String[] x = dateStr.split("/");
@@ -397,10 +402,14 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Division") != null) {
 			Division = (String) map.get("Division");
 		} 
+		String PurchaseOrder = "";
+		if (map.get("PurchaseOrder") != null) {
+			PurchaseOrder = (String) map.get("PurchaseOrder");
+		}  
 		return new PCMSTableDetail(SaleOrder, DesignFG, ArticleFG, DistChannel , ProductionOrder, 
 				UserStatus , DueDate, LabNo, CustomerShortName, SaleNumber ,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus ,CustomerName
-				,No,UserId,Division);
+				,No,UserId,Division,PurchaseOrder);
 	}
 
 	@Override
@@ -1571,6 +1580,14 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			java.util.Date timestamp1 = (Date) map.get("CFMDateActual");
 			CFMDateActual = sdf2.format(timestamp1);
 		}
+		String CustomerType   = "";
+		if (map.get("CustomerType") != null) {
+			CustomerType = (String) map.get("CustomerType");
+		}  
+		String CustomerDivision   = "";
+		if (map.get("CustomerDivision") != null) {
+			CustomerDivision = (String) map.get("CustomerDivision");
+		} 
 		PCMSSecondTableDetail bean = new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
 				RemainQuantity, RemainAmount, TotalQuantity, Grade, BillSendWeightQuantity, BillSendMRQuantity, BillSendYDQuantity, BillSendQuantity, CustomerDue, 
@@ -1579,7 +1596,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
 				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
-				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual) ;
+				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,CustomerType, CustomerDivision) ;
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);
 		bean.setSaleLineSW(SaleLineSW);
@@ -1784,6 +1801,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("UserId") != null) {
 			UserId = (String) map.get("UserId");  
 		}
+		String CustomerDivision = "";
+		if (map.get("CustomerDivision") != null) {
+			CustomerDivision = (String) map.get("CustomerDivision");  
+		}
 		String CustomerNo = "";
 		if (map.get("CustomerNo") != null) {
 			CustomerNo = (String) map.get("CustomerNo");  
@@ -1818,6 +1839,46 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}  
 		return new ConfigCustomerUserDetail(
 				Id, UserId,CustomerNo, IsPCMSDetailPage, IsPCMSSumPage, IsProdPathBtn, IsLBMSPathBtn, IsQCMSPathBtn, 
-				IsInspectPathBtn, IsSFCPathBtn);
+				IsInspectPathBtn, IsSFCPathBtn,CustomerDivision);
+	}
+	@Override
+	public TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map) {
+		String SaleOrder = "";
+		if (map.get("SaleOrder") != null) {
+			SaleOrder = (String) map.get("SaleOrder");  
+		}
+		String SaleLine = "";
+		if (map.get("SaleLine") != null) {
+			SaleLine = (String) map.get("SaleLine");  
+		}
+		String ProductionOrder = "";
+		if (map.get("ProductionOrder") != null) {
+			ProductionOrder = (String) map.get("ProductionOrder");  
+		} 
+		String ProductionOrderRPM = "";
+		if (map.get("ProductionOrderRPM") != null) {
+			ProductionOrderRPM = (String) map.get("ProductionOrderRPM");  
+		} 
+		String Volume = "";
+		if (map.get("Volume") != null) {
+			BigDecimal value = (BigDecimal) map.get("Volume");
+			Double doubleVal = value.doubleValue();
+			Volume = formatter.format(doubleVal);
+		} 
+		String Grade = "";
+		if (map.get("Grade") != null) {
+			Grade = (String) map.get("Grade");  
+		} 
+		String UserStatusCal = "";
+		if (map.get("UserStatusCal") != null) {
+			UserStatusCal = (String) map.get("UserStatusCal");  
+		} 
+		String UserStatusCalRP = "";
+		if (map.get("UserStatusCalRP") != null) {
+			UserStatusCalRP = (String) map.get("UserStatusCalRP");  
+		} 
+ 		return new TempUserStatusAutoDetail(
+			ProductionOrder, SaleOrder, SaleLine, ProductionOrderRPM, Volume
+			, Grade, UserStatusCal, UserStatusCalRP);
 	}
 }

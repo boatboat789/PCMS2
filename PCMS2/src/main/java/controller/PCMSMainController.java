@@ -40,7 +40,7 @@ import model.LogInModel;
 import model.PCMSMainModel;
 
 @Controller
-@RequestMapping(value = { "/Main" }) 
+@RequestMapping(value = { "/Main", "/" ,"" }) 
 public class PCMSMainController {
 //	private String myPassword = "PCMSDISPLAY";
 	@Autowired 
@@ -49,22 +49,20 @@ public class PCMSMainController {
 	private String FTP_DIRECTORY;  
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView test(HttpSession session) {       
+		ArrayList<PCMSAllDetail> cusNameList = null ;
+		ArrayList<PCMSAllDetail> cusShortNameList = null ;
+		String[] arrayCol = null  ; 
 		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
 		PCMSMainModel model = new PCMSMainModel(); 
 		LogInModel logInModel = new LogInModel( );	   
 		String user = (String) session.getAttribute("user");
 		UserDetail userObject = (UserDetail) session.getAttribute("userObject");  
-		 ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		 String[] arrayCol = null  ; 
-		 if(list.size() == 0) { arrayCol = null  ;} 
-		 else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }    
-		String OS = System.getProperty("os.name").toLowerCase();	  
-
+		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		if(list.size() == 0) { arrayCol = null  ;} 
+		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }    
+		String OS = System.getProperty("os.name").toLowerCase();	   
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
-		ArrayList<PCMSAllDetail> cusNameList = null ;
-		ArrayList<PCMSAllDetail> cusShortNameList = null ;
-//		System.out.println(listConfigCus.size());
 		if(listConfigCus.size() > 0) {
 			cusNameList = model.getCustomerNameList(listConfigCus);
 			cusShortNameList = model.getCustomerShortNameList(listConfigCus);
@@ -79,9 +77,10 @@ public class PCMSMainController {
 		}
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("OS", g.toJson(OS));
-		mv.addObject("UserID", g.toJson(user));
+		mv.addObject("UserID", g.toJson(user));  
 		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("ConfigCusListTest", listConfigCus );
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
@@ -90,6 +89,45 @@ public class PCMSMainController {
 		mv.addObject("CusShortNameList", g.toJson(cusShortNameList));
 		return mv;
 	}      
+	@RequestMapping(  value = "/getCustomerNameList",  method = RequestMethod.POST )
+	public void doGetCustomerNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response  ) throws IOException {  
+		Gson g = new Gson(); 
+
+		PCMSMainModel model = new PCMSMainModel(); 
+		ArrayList<PCMSAllDetail> cusNameList = null ;
+		String user = (String) session.getAttribute("user");
+		LogInModel logInModel = new LogInModel( );	    
+		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
+		if(listConfigCus.size() > 0) {
+			cusNameList = model.getCustomerNameList(listConfigCus);
+		}
+		else { 
+			cusNameList = model.getCustomerNameList();
+		} 	 
+		
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(cusNameList));  
+	}   
+	@RequestMapping(  value = "/getCustomerShortNameList",  method = RequestMethod.POST )
+	public void doGetCustomerShortNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {  
+		Gson g = new Gson();  
+		PCMSMainModel model = new PCMSMainModel(); 
+		ArrayList<PCMSAllDetail> cusShortNameList = null ;
+		String user = (String) session.getAttribute("user");
+		LogInModel logInModel = new LogInModel( );	    
+		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
+		if(listConfigCus.size() > 0) {
+			cusShortNameList = model.getCustomerShortNameList(listConfigCus);
+		}
+		else { 
+			cusShortNameList = model.getCustomerShortNameList();
+		} 	  
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(cusShortNameList));  
+	} 
 	@RequestMapping(value ="/fakeSubmit",  method = RequestMethod.POST)        
     public void submitForm(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
     		@Validated @ModelAttribute("PCMSTable") PCMSTableDetail pd, BindingResult br) throws IOException  
@@ -137,6 +175,8 @@ public class PCMSMainController {
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
+			pd.setCustomerDivision(userArray[i].getCustomerDivision());
+			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
 			poList.add(pd);   
 		} 
 		response.setContentType("application/json");
@@ -169,6 +209,7 @@ public class PCMSMainController {
 			pd.setUserStatus(userArray[i].getUserStatus());
 			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
 			pd.setDistChannel(userArray[i].getDistChannel());
+			pd.setCustomerDivision(userArray[i].getCustomerDivision());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			poList.add(pd);   
 		} 
@@ -236,6 +277,7 @@ public class PCMSMainController {
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
 			pd.setDivisionList(userArray[i].getDivisionList());
+			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  

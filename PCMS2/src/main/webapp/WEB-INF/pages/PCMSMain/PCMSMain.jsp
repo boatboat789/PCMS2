@@ -133,6 +133,7 @@ $(document).on('keypress', 'input,select', function(e) {
 		if (e.target.id == 'input_designNo') { searchByDetail();    }  
 		if (e.target.id == 'input_material') { searchByDetail();    }  
 		if (e.target.id == 'input_labNo') { searchByDetail();    }  
+		if (e.target.id == 'input_PO') { searchByDetail();    }  
 // 		if (e.target.id == 'input_userStatus') { searchByDetail();    }     
 	}
 });     
@@ -219,11 +220,7 @@ $(document) .ready( function() {
 	}             
 	else{     
 		isCustomer = 0;               
-	}              
-// 	console.log('${userObject.isCustomer}')
-// 	console.log(isCustomer)
-// 	console.log('${userObject}')                                             
-// 	console.log(JSON.parse('${userObject}' )   )         	    
+	}                   
 	document.getElementById("btn_lockColumn").style.display = "none"; 
 	$('#input_dueDate').val('');   
 	$('#input_saleOrderDate').val('');    
@@ -285,8 +282,7 @@ $(document) .ready( function() {
 		   		    buttons: false, 
 		   		})
 			}      
-			else {
-				  
+			else { 
 				  var arrayTmp = [];        
 					arrayTmp.push();     
 					$.ajax({
@@ -467,7 +463,7 @@ $(document) .ready( function() {
 		   	orderCellsTop : true,           
 			orderClasses : false,           
 //	 		lengthChange: false,              
-// 			"deferRender": true,              	
+// 			deferRender: true,              	
 //	 		filter:false,       
 			lengthChange : false,     
 			pageLength: 1000,	 
@@ -531,13 +527,11 @@ $(document) .ready( function() {
 					} , 
 					{ targets : [ 24 ],     
 				   	  render: function (data, type, row) {	 
-					   		var htmlEx = ''      
-				   			if( userId == 'violetta01' ){ 
+					   		var htmlEx = row.CFMPlanDate      
+// 				   			if( userId == 'violetta01' ){ 
+							if(isCustomer == true){
 				   				htmlEx = row.SendCFMCusDate; 
-							}       
-							else{    
-								htmlEx = row.CFMPlanDate; 
-							}
+							}   
 					   		return  htmlEx      
 						}         
 					}  ,   
@@ -583,13 +577,14 @@ $(document) .ready( function() {
 	  	    		}       
 					$('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');
 					$('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');
-					$('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure'); 
+					$('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');  
 				} 
-			},
+			},      
 			drawCallback: function( settings ) { 
-//	 			console.log(settings)
+//	 			console.log(settings) 
 			},   
-			initComplete: function () { }      
+			initComplete: function () {   
+			}      
 	 	 });        
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
@@ -1087,9 +1082,9 @@ $(document) .ready( function() {
 	divisionList = JSON.parse('${DivisionList}');       
 	columnsHeader = MainTable.settings().init().columns;  
 	var saleNumberList = JSON.parse('${SaleNumberList}');
-	configCusList = JSON.parse('${ConfigCusList}'); 
+	configCusList = JSON.parse('${ConfigCusList}');                       
 // 	handlerByConfigCus(configCusList);
-// 	function handlerByConfigCus(list){   
+// 	function handlerByConfigCus(list){       
 // 		if (list.length > 0){ 
 // 			isCustomer = 1;    
 // 			let bean = list[0];
@@ -1122,12 +1117,15 @@ $(document) .ready( function() {
 // 	}
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
-  	addDivisionOption(divisionList );      
-	addCusNameOption(cusNameList );      
-	addCusShortNameOption(cusShortNameList );       
+  	addDivisionOption(divisionList );       
 	addColOption(columnsHeader )  
 	settingColumnOption(columnsHeader, colList); 
 	     
+// 	getCustomerNameList();
+// 	getCustomerShortNameList();
+
+	addCusNameOption(cusNameList );      
+	addCusShortNameOption(cusShortNameList );       
 	$('#multi_userStatus option').attr("selected","selected");
 	$('#multi_userStatus').selectpicker('refresh');
 	$('#multi_cusName option').attr("selected","selected");
@@ -1167,7 +1165,45 @@ $(document) .ready( function() {
 	})  
 	preLoaderHandler( preloader)   
 });  
- 
+
+// function getCustomerNameList( ) {    
+// 	$.ajax({   
+// 		type: "POST",  
+// 		contentType: "application/json",  
+// // 		data: JSON.stringify(arrayTmp),      
+// 		url: "Main/getCustomerNameList", 
+// 		success: function(data) {   
+// 			if(data.length > 0){
+
+// 				addCusNameOption(data ); 
+// 			}
+// 		},   
+// 		error: function(e) {
+// 			swal("Fail", "Please contact to IT", "error");
+// 		},
+// 		done: function(e) {       
+// 		}   	
+// 	});   
+// }  
+
+// function getCustomerShortNameList( ) {    
+// 	$.ajax({   
+// 		type: "POST",  
+// 		contentType: "application/json",  
+// // 		data: JSON.stringify(arrayTmp),      
+// 		url: "Main/getCustomerShortNameList", 
+// 		success: function(data) {   
+// 			if(data.length > 0){     
+// 				addCusShortNameOption(data );   
+// 			}
+// 		},   
+// 		error: function(e) {
+// 			swal("Fail", "Please contact to IT", "error");
+// 		},
+// 		done: function(e) {       
+// 		}   	
+// 	});   
+// } 
 function searchByDetail(){ 
 // 	var customer = document.getElementById("input_customer").value .trim();
 // 	var customerShort = document.getElementById("input_customerShortName").value .trim();
@@ -1181,7 +1217,8 @@ function searchByDetail(){
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
-	var labNo = document.getElementById("input_labNo").value .trim();    
+	var labNo = document.getElementById("input_labNo").value .trim();   
+	var PO = document.getElementById("input_PO").value .trim();    
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
 	var customerShort = $('#multi_cusShortName').val();
@@ -1260,6 +1297,7 @@ function createJsonData(){
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
 	var labNo = document.getElementById("input_labNo").value .trim();      
+	var PO = document.getElementById("input_PO").value .trim();      
 // 	var userStatus = document.getElementById("multi_userStatus").value;    
 	var userStatus = $('#multi_userStatus').val();    
 	var customer = $('#multi_cusName').val();
@@ -1274,6 +1312,12 @@ function createJsonData(){
 	var dist = "";    
 	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
+	 
+	 var cusDiv = "";  
+	 if(configCusList.length > 0 ){ 
+	 	let p_cusDiv = configCusList[0].CustomerDivision	 ;
+	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
+	 }     
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
 	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
@@ -1288,7 +1332,9 @@ function createJsonData(){
 	   ',"DesignFG":'+JSON.stringify(designNo)+       
 	   ',"ProductionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
 	   ',"MaterialNo":'+JSON.stringify(material)+
-	   ',"LabNo":'+JSON.stringify(labNo)+          
+	   ',"LabNo":'+JSON.stringify(labNo)+    
+	   ',"CustomerDivision":'+JSON.stringify(cusDiv)+                
+	   ',"PurchaseOrder":'+JSON.stringify(PO)+ 
 // 	   ',"UserStatus":'+JSON.stringify(userStatus)+ 
 	   ',"UserStatusList":'+JSON.stringify(userStatus)+       
 	   ',"CustomerNameList":'+JSON.stringify(customer)+   
@@ -1356,7 +1402,10 @@ function exportCSV(data){
 			  	if(indexArray !== undefined){             
 					if (colType === undefined){  
 
-						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){  
+// 						if(isCustomer == true){
+	
+						if(isCustomer == true && data == 'CFMPlanDate'   ){  
+// 						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){  
 							val = value.SendCFMCusDate;   
 // 							innerRowData[indexArray] = val;   
 						} 
@@ -1457,6 +1506,7 @@ function clearInput(){
 	document.getElementById("input_designNo").value  = '';  
 // 	document.getElementById("input_prdOrderDate").value  = '';  
 	document.getElementById("input_material").value  = '';         
+	document.getElementById("input_PO").value     = '';     
 	document.getElementById("input_labNo").value     = '';  
 	document.getElementById('SL_saleNumber').value= '';
 	document.getElementById('SL_delivStatus').value='';
@@ -1480,12 +1530,12 @@ function searchByDetailToServer(arrayTmp) {
 		data: JSON.stringify(arrayTmp),           
 		url: "Main/searchByDetail", 
 		success: function(data) {  
-// 			getVisibleColumnsTable(); 
-// 			console.log(new Date())  
+// 			getVisibleColumnsTable();              
+// 			console.log('START  :'+'  '+new Date())  
 			MainTable.clear();        
 			MainTable.rows.add(data);           
 			MainTable.draw();     
-// 			console.log(new Date(	))  
+// 			console.log('END    :'+'  '+new Date(	))  
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
@@ -1980,12 +2030,12 @@ function addUserStatusOption(data ){
 	 sel.appendChild(opt);           
 	var size = data.length; 
 	for (var i = 0; i < size; i++) {		   
-		 var resultData = data[i]; 	   
-		 opt = document.createElement('option');
+	     var resultData = data[i]; 	   
+	     opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.UserStatus;
-		 opt.value = resultData.UserStatus;
-		 sel.appendChild(opt);          
+	     opt.text  = resultData.UserStatus;
+	     opt.value = resultData.UserStatus;
+	     sel.appendChild(opt);          
 	}             
 	$("#multi_userStatus").selectpicker("refresh");
 }    
@@ -2139,6 +2189,7 @@ function setSearchDefault(data){
 	document.getElementById("input_designNo").value  = innnerText.DesignFG;   
 	document.getElementById("input_material").value  = innnerText.MaterialNo;  
 	document.getElementById("input_labNo").value     = innnerText.LabNo;
+	document.getElementById("input_PO").value     = innnerText.PurchaseOrder;
 	
 	var saleCreateArray = innnerText.SaleOrderCreateDate.split(' - ') ;
 	if(saleCreateArray.length == 1){ $('#input_saleOrderDate').val('');     }

@@ -214,6 +214,7 @@ public class LogInDaoImpl implements LogInDao {
 				  " SELECT [Id]\r\n"
 				  + "      ,[EmployeeID]\r\n"
 				  + "      ,[CustomerNo]\r\n"
+				  + "      ,[CustomerDivision]\r\n"
 				  + "      ,[IsPCMSDetailPage]\r\n"
 				  + "      ,[IsPCMSSumPage]\r\n"
 				  + "      ,[IsProdPathBtn]\r\n"

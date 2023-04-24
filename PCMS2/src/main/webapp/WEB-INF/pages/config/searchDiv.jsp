@@ -130,7 +130,14 @@
 					 	data-actions-box="true">     
 						</select>
 					</div>      
-				</div>    
+				</div> 
+				
+				<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >              
+				  	<label class=" label-input  margin-0" for="input_PO">PO</label>           
+				  	<div > 
+			    		<input class="form-control "   type="text"  name="PO"  id="input_PO"   maxlength="30" > 
+					</div>     
+				</div>      
 			</div>       
 		</div>               
 		<!--  ROW 2 -->    
@@ -228,24 +235,31 @@
 				</div>     
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   
 					<div class="row">       
-						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >     
-							<c:if test="${userObject.isCustomer  == false }"> 
+						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >  
+							<c:if test="${ConfigCusListTest[0].getIsProdPathBtn()  == true || ConfigCusListTest.size() == 0}">     
+<%-- 							<c:if test="${userObject.isCustomer  == false }">  --%>
 				              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
 				                    Production Detail 
 				              	</button>     
 			              	</c:if>   
-							<c:if test="${userObject.isCustomer == false }"> 
-			              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
-			                   LBMS Detail            
-			              	</button>         
-			              	</c:if>   
-			              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
-			                    QCMS Result
-			              	</button>   
-			              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
-			                    Inspect Result     
-			              	</button>       
-							<c:if test="${userObject.isCustomer  == false }">  
+			              	<c:if test="${ConfigCusListTest[0].getIsLBMSPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+				              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
+				                   LBMS Detail            
+				              	</button>                    
+			              	</c:if>     
+							<c:if test="${ConfigCusListTest[0].getIsQCMSPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+				              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
+				                    QCMS Result                
+<%-- 				                    ${ConfigCusListTest[0].getIsQCMSPathBtn()}    --%>
+				              	</button>         
+			              	</c:if>     
+			              	<c:if test="${ConfigCusListTest[0].getIsInspectPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+				              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
+				                    Inspect Result     
+				              	</button>             
+			              	</c:if>    
+			              	<c:if test="${ConfigCusListTest[0].getIsSFCPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+<%-- 							<c:if test="${userObject.isCustomer  == false }">   --%>
 				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >
 				                    SFC Detail
 				              	</button>          

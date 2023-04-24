@@ -78,6 +78,8 @@ public class PCMSSecondTableDetail {
 	private String CFMNumberAll;
 	private String CFMRemarkAll;
 	private String RollNoRemarkAll;
+	private String CustomerType;
+	private String CustomerDivision;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -91,9 +93,11 @@ public class PCMSSecondTableDetail {
 				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark,
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
-				String RollNoRemarkAll , String CFMDateActual
+				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision
 				) {
 			super();
+			this.CustomerDivision = CustomerDivision;
+			this.CustomerType = CustomerType;
 			this.CFMDateActual= CFMDateActual;
 			this.RollNoRemarkAll = RollNoRemarkAll;
 			this.CFMDetailAll = CFMDetailAll;
@@ -157,6 +161,22 @@ public class PCMSSecondTableDetail {
 			this.StockLoad = StockLoad;
 		}
 		
+		public String getCustomerDivision() {
+			return CustomerDivision;
+		}
+
+		public void setCustomerDivision(String customerDivision) {
+			CustomerDivision = customerDivision;
+		}
+
+		public String getCustomerType() {
+			return CustomerType;
+		}
+
+		public void setCustomerType(String customerType) {
+			CustomerType = customerType;
+		}
+
 		public String getCFMDateActual() {
 			return CFMDateActual;
 		}

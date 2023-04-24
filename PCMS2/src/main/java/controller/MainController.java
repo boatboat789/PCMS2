@@ -23,8 +23,8 @@ import entities.ConfigCustomerUserDetail;
 import entities.UserDetail;
 import model.LogInModel;
 import model.PCMSMainModel; 
-@Controller
-@RequestMapping({ "/" ,""})
+//@Controller
+//@RequestMapping({ "/" ,""})
 public class MainController { 
 	@Autowired
 	public ServletContext context;
@@ -65,6 +65,7 @@ public class MainController {
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("ConfigCusListTest", listConfigCus );
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
 		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));

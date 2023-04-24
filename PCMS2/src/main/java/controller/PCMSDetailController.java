@@ -51,6 +51,7 @@ public class PCMSDetailController {
 		mv.addObject("UserID", g.toJson(user));   
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("ColList", g.toJson(arrayCol));
+		mv.addObject("ConfigCusListTest", listConfigCus );
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DepList", g.toJson(model.getDelayedDepartmentList()));
 		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
@@ -93,6 +94,9 @@ public class PCMSDetailController {
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
+			pd.setDivisionList(userArray[i].getDivisionList());
+			pd.setCustomerDivision(userArray[i].getCustomerDivision());
+			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
 			poList.add(pd);   
 		} 
 		response.setContentType("application/json");
@@ -327,6 +331,7 @@ public class PCMSDetailController {
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
 			pd.setDivisionList(userArray[i].getDivisionList());
+			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  

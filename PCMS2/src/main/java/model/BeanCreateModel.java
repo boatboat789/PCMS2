@@ -26,6 +26,7 @@ import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
 import entities.SwitchProdOrderDetail;
+import entities.TempUserStatusAutoDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 
@@ -156,6 +157,11 @@ public class BeanCreateModel {
 
 	public ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map) {
 		ConfigCustomerUserDetail bean = this.dao._genConfigCustomerUserDetail(map);
+		return bean;
+	}
+
+	public TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map) {
+		TempUserStatusAutoDetail bean = this.dao._genTempUserStatusAutoDetail(map);
 		return bean;
 	}
 }

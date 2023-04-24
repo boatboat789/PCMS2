@@ -61,6 +61,7 @@ public class PCMSTableDetail {
 	private String TypePrdRemark ;  
 	private String SendCFMCusDate;
 	private String PurchaseOrder;
+	private String CustomerDivision;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -69,8 +70,10 @@ public class PCMSTableDetail {
 			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
-			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder) {
+			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder,
+			String CustomerDivision) {
 		super();
+		this.CustomerDivision = CustomerDivision;
 		this.PurchaseOrder  =PurchaseOrder;
 		this.SendCFMCusDate  =SendCFMCusDate;
 		this.ShipDate = ShipDate;
@@ -124,8 +127,9 @@ public class PCMSTableDetail {
 	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel,
 			String productionOrder, String userStatus, String dueDate, String labNo, String customerShortName,
 			String saleNumber, String saleCreateDate, String prdCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus, String customerName,int no,String userId, String division) { 
+			String saleStatus, String customerName,int no,String userId, String division,String PurchaseOrder) { 
 		this.No = no;
+		this.PurchaseOrder  =PurchaseOrder;
 		this.UserId = userId;
 		SaleOrder = saleOrder; 
 		DesignFG = designFG;
@@ -145,6 +149,12 @@ public class PCMSTableDetail {
 		SaleStatus = saleStatus; 
 		this.Division = division;
 	} 
+	public String getCustomerDivision() {
+		return CustomerDivision;
+	}
+	public void setCustomerDivision(String customerDivision) {
+		CustomerDivision = customerDivision;
+	}
 	public String getPurchaseOrder() {
 		return PurchaseOrder;
 	}

@@ -4,6 +4,7 @@ public class ConfigCustomerUserDetail {
 	private int Id;
 	private String UserId;
 	private String CustomerNo;
+	private String CustomerDivision;
 	private Boolean IsPCMSDetailPage;;
 	private Boolean IsPCMSSumPage;
 	private Boolean IsProdPathBtn;
@@ -16,10 +17,11 @@ public class ConfigCustomerUserDetail {
 	}
 	public ConfigCustomerUserDetail(int id, String userId, String CustomerNo,Boolean isPCMSDetailPage, Boolean isPCMSSumPage,
 			Boolean isProdPathBtn, Boolean isLBMSPathBtn, Boolean isQCMSPathBtn, Boolean isInspectPathBtn,
-			Boolean isSFCPathBtn) {
+			Boolean isSFCPathBtn,String CustomerDivision) {
 		super();
 		Id = id;
 		UserId = userId;
+		this.CustomerDivision = CustomerDivision;
 		this.CustomerNo = CustomerNo;
 		IsPCMSDetailPage = isPCMSDetailPage;
 		IsPCMSSumPage = isPCMSSumPage;
@@ -28,6 +30,12 @@ public class ConfigCustomerUserDetail {
 		IsQCMSPathBtn = isQCMSPathBtn;
 		IsInspectPathBtn = isInspectPathBtn;
 		IsSFCPathBtn = isSFCPathBtn;
+	}
+	public String getCustomerDivision() {
+		return CustomerDivision;
+	}
+	public void setCustomerDivision(String customerDivision) {
+		CustomerDivision = customerDivision;
 	}
 	public String getCustomerNo() {
 		return CustomerNo;
