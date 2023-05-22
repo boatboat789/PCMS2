@@ -1499,6 +1499,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine], [ProductionOrder] ";    
  
 //			 System.out.println("---------------------------------");
+//			 System.out.println(sql);
 //		 System.out.println("START : "+new Date());
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 //		 System.out.println("STOP  : "+new Date());

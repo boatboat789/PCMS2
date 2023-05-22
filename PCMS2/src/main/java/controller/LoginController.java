@@ -44,6 +44,11 @@ public class LoginController {
 	@RequestMapping(value = { "/login" }, method = { RequestMethod.GET })
 	public String getLoginModel(Model  model, HttpSession session, HttpServletRequest request, 
 			HttpServletResponse response ) { 
+	     if(session != null) {    
+	         session.removeAttribute("user");  
+		     session.removeAttribute("userName");  
+		     session.removeAttribute("userObject");  
+	     }
 		model.addAttribute("alertmsg", alertmsgText);
 		model.addAttribute("alerttyp", alerttypText);  
 		return "login";
@@ -59,15 +64,7 @@ public class LoginController {
 		     alerttypText = "";
 	     }
 		return "redirect:/login";
-	}
-//	@RequestMapping(value = { "/login" }, method = { RequestMethod.GET })
-//	public ModelAndView getLoginModel(Model  model, HttpSession session, HttpServletRequest request, 
-//			HttpServletResponse response, String errormsg) { 
-//		ModelAndView mv = new ModelAndView();   
-//		mv.setViewName("login");    
-//		return mv;
-//	} 
-//	@GetMapping(value = { "/login/loginAuth" } ) 
+	} 
 	@RequestMapping(value = { "/login/loginAuth" }, method = { RequestMethod.POST }) 
 	public String getLoginAuthen(Model model, final String userId, String userPassword, final HttpSession session,
 			RedirectAttributes redirectAttributes,HttpServletRequest request, 
@@ -86,16 +83,12 @@ public class LoginController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String oriPath = path.substring(request.getContextPath().length());
-//		String userName = ""; 
-//		System.out.println(listConfigCus.size());    
-		ConfigCustomerUserDetail bean = null;
-//		System.out.println(bean.getIsPCMSSumPage());
-//		System.out.println(session.getAttribute("user"));    
+		String oriPath = path.substring(request.getContextPath().length()); 
+		ConfigCustomerUserDetail bean = null;      
 		if(session.getAttribute("user") != null) {  
 			alertmsgText = "";
-			alerttypText ="";
-			UserDetail userTMP = logInModel.getUserDetail(userId);
+			alerttypText =""; 
+			UserDetail userTMP = logInModel.getUserDetail(userId,userPassword);  
 			if (userTMP != null) {  
                  user.setId(userTMP.getId());
                  user.setFirstName(userTMP.getFirstName().trim());
@@ -108,7 +101,7 @@ public class LoginController {
                  user.setChangeDate(userTMP.getChangeDate());
                  user.setRegistBy(userTMP.getRegistBy());
                  user.setRegistDate(userTMP.getRegistDate()); 
-                 user.setIsCustomer(userTMP.getIsCustomer()) ;
+                 user.setIsCustomer(userTMP.getIsCustomer()) ;    
                  user.setUserType("USER");
                  temp.setStatus(true);    
   				session.setAttribute("userObject",  user    ); 
@@ -121,62 +114,52 @@ public class LoginController {
 			}
 			else { 
 				bean = listConfigCus.get(0);
-				if(bean.getIsPCMSSumPage() == true &&  (oriPath.equals("")||oriPath.equals("/login") )     ){
+				if(bean.getIsPCMSSumPage() &&  (oriPath.equals("")||oriPath.equals("/login") )     ){
 					redirect = "redirect:/Main" ;  
 				} 
 				else if(bean.getIsPCMSDetailPage() == true &&  oriPath.equals("/Detail")   ) { 
-					redirect = "redirect:/Detail" ;   
+					redirect = "redirect:/Detail" ;   	
 				}
 				else {  redirect = "redirect:"+oriPath ;    } 
 			}
 			return redirect;   
 		}
-		else {  
-//			if(userId.equals("test")) {
-//				user.setFirstName("Test");
-//				user.setUserId(userId)  ;    
-//				user.setPassword(userPassword);
-//				temp.setStatus(true); 
-//             	session.setAttribute("user", userId);     	   
-////  				session.setAttribute("userOB",   g.toJsonTree(user)    );    
-// 				session.setAttribute("userObject", g.toJson(user));   
-//			}
-//			else { 
-				user.setUserId(userId);
-				user.setPassword(userPassword);
-		        try {  
-	                AdInfo info = AdInfo.getInstance();
-	                ActiveDirectory.getAttributes(
-	                    ActiveDirectory.getContext(
-	                        info,
-	                        user.getUserId(),
-	                        user.getPassword()),
-		                    info.getSearchName(),
-		                    info.getSearchFilter(user.getUserId()),
-		                    new AuthenAttributes() {
-		                        @Override
-		                        public void set(Attributes attribute) {
-		                            try {  
-		                                user.setDepartment( ((attribute.get("department") == null) ? "" : attribute.get("department").get().toString()) );
-		                                user.setFirstName(  ((attribute.get("givenName")  == null) ? "" : attribute.get("givenName").get().toString())  );
-		                                user.setLastName(   ((attribute.get("sn")         == null) ? "" : attribute.get("sn").get().toString())         );
-		                                user.setEmail(      ((attribute.get("mail")       == null) ? "" : attribute.get("mail").get().toString())       );
-		                                temp.setStatus(true); 
-		                             	session.setAttribute("user", userId);      
-		                  				session.setAttribute("userObject",  user  );  
+		else {   
+//			System.out.println("2 ");
+			user.setUserId(userId);
+			user.setPassword(userPassword);
+	        try {  
+                AdInfo info = AdInfo.getInstance();
+                ActiveDirectory.getAttributes(
+                    ActiveDirectory.getContext(
+                        info,
+                        user.getUserId(),
+                        user.getPassword()),
+	                    info.getSearchName(),
+	                    info.getSearchFilter(user.getUserId()),
+	                    new AuthenAttributes() {
+	                        @Override
+	                        public void set(Attributes attribute) {
+	                            try {  
+	                                user.setDepartment( ((attribute.get("department") == null) ? "" : attribute.get("department").get().toString()) );
+	                                user.setFirstName(  ((attribute.get("givenName")  == null) ? "" : attribute.get("givenName").get().toString())  );
+	                                user.setLastName(   ((attribute.get("sn")         == null) ? "" : attribute.get("sn").get().toString())         );
+	                                user.setEmail(      ((attribute.get("mail")       == null) ? "" : attribute.get("mail").get().toString())       );
+	                                temp.setStatus(true); 
+	                             	session.setAttribute("user", userId);      
+	                  				session.setAttribute("userObject",  user  );  
 //		                 				session.setAttribute("userObject", g.toJson(user));   
-		                            } catch(NamingException e) { e.printStackTrace(); }
-		                        }
-		                    }
-		                ); 
-		        } catch(NamingException e) {
-		            System.err.println(this.getClass().getName()+" - "+e.getMessage());
-		            e.printStackTrace();
-		        }   
-//			}
-			// if authen pass
+	                            } catch(NamingException e) { e.printStackTrace(); }
+	                        }
+	                    }
+	                ); 
+	        } catch(NamingException e) {
+	            System.err.println(this.getClass().getName()+" - "+e.getMessage());
+	            e.printStackTrace();
+	        }   
+			// if authen pass  
 			if(temp.getStatus() != true){
-				UserDetail userTMP = logInModel.getUserDetail(userId);
+				UserDetail userTMP = logInModel.getUserDetail(userId,userPassword);
 				if (userTMP != null) {  
 	                 user.setId(userTMP.getId());
 	                 user.setFirstName(userTMP.getFirstName().trim());
@@ -196,28 +179,26 @@ public class LoginController {
       				session.setAttribute("userObject",  user    );   
 				}  
             } 
-//			else {
-//				UserDetail userTMP = logInModel.getUserDetail(userId);
-//				if (userTMP != null) {  
-//	                 user.setId(userTMP.getId());
-////	                 user.setFirstName(userTMP.getFirstName().trim());
-//	                 user.setUserId(userTMP.getUserId(). trim());   
-//	                 user.setIsSystem(userTMP.getIsSystem());
-//	                 user.setIsAdmin(userTMP.getIsAdmin());
-//	                 user.setPermitId(userTMP.getPermitId());
-//	                 user.setResponsible(userTMP.getResponsible()); 
-//	                 user.setChangeBy(userTMP.getChangeBy());   
-//	                 user.setChangeDate(userTMP.getChangeDate());
-//	                 user.setRegistBy(userTMP.getRegistBy());
-//	                 user.setRegistDate(userTMP.getRegistDate()); 
-//	                 user.setIsCustomer(userTMP.getIsCustomer()) ;
-//	                 user.setUserType("USER"); 
-//	                 temp.setStatus(true);  
-//                  	session.setAttribute("user", userId);       
-//      				session.setAttribute("userObject", user  );   
-////      				session.setAttribute("userObject", g.toJson(user));    
-//				}  
-//			} 
+			else {  
+				UserDetail userTMP = logInModel.getUserDetail(userId);
+				if (userTMP != null) {  
+	                 user.setId(userTMP.getId()); 
+	                 user.setUserId(userTMP.getUserId(). trim());   
+	                 user.setIsSystem(userTMP.getIsSystem());
+	                 user.setIsAdmin(userTMP.getIsAdmin());
+	                 user.setPermitId(userTMP.getPermitId());
+	                 user.setResponsible(userTMP.getResponsible()); 
+	                 user.setChangeBy(userTMP.getChangeBy());
+	                 user.setChangeDate(userTMP.getChangeDate());
+	                 user.setRegistBy(userTMP.getRegistBy());
+	                 user.setRegistDate(userTMP.getRegistDate()); 
+	                 user.setIsCustomer(userTMP.getIsCustomer()) ;
+	                 user.setUserType("USER");
+	                 temp.setStatus(true);  
+                 	session.setAttribute("user", userId);      
+     				session.setAttribute("userObject",  user    );   
+				}  
+			} 
 		}          
    
 //		System.out.println("/login/loginAuth : "+request.getHeader("referer"));
@@ -230,6 +211,7 @@ public class LoginController {
 //		System.out.println("/login/loginAuth : "+ request.getRequestURI().substring(request.getContextPath().length())); 
 //		System.out.println("/login/loginAuth : "+ path.substring(request.getContextPath().length())); 
 //		System.out.println(oriPath);     
+//		System.out.println(" 3 : "+user.getUserId()+" "+user.getFirstName()+" "+user.getLastName());
 		if(user.getFirstName() != null || user.getUserType() != null) {  
 			alertmsgText = "";
 			alerttypText ="";

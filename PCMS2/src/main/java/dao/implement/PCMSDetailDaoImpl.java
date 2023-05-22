@@ -5371,7 +5371,10 @@ private String createTempMainPrdFromTempA =
 			    + "       ,[SendCFMCusDate] as [PlanDate]\r\n"
 			    + "       ,[ChangeBy] as [CreateBy]\r\n"
 			    + "       ,[ChangeDate] as [CreateDate]\r\n"
-			    + "	      , '0:PCMS' as InputFrom \r\n"
+			    + "	  	 ,CASE "
+			    + "			WHEN [OperationDyeDate] is not null then '0:PCMS' "
+			    + "			ELSE '1:PPMM' "
+			    + "			end as InputFrom \r\n" 
 			    + "       , LotNo \r\n"
 			    + " FROM [PCMS].[dbo].[PlanSendCFMCusDate] as a\r\n" 
 			  	+ " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' \r\n" 
@@ -5384,7 +5387,7 @@ private String createTempMainPrdFromTempA =
 //					    + "   ,'' AS LotNo \r\n"
 //					  + " FROM [PCMS].[dbo].[TEMP_ProdWorkDate]  as a\r\n" 
 //					  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "'   and CFType is not null  "
-			  	+ " ORDER BY InputFrom ,[ChangeDate] desc ";
+			  	+ " ORDER BY  [ChangeDate] desc ";
 				  
 		 
 		List<Map<String, Object>> datas = this.database.queryList(sql);

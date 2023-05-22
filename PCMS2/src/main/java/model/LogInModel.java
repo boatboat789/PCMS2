@@ -45,7 +45,7 @@ public class LogInModel extends HttpServlet {
       this.database.close();
       super.destroy();
    } 
-   public UserDetail getUserDetail(String userId) {
+   public UserDetail getUserDetail(String userId ) {
 	   UserDetail bean = this.dao.getUserDetail(userId);
 		return bean;
 	}  
@@ -59,5 +59,10 @@ public class LogInModel extends HttpServlet {
 	public ArrayList<ConfigCustomerUserDetail> getConfigCustomerUserDetail(String userId) {
 		ArrayList<ConfigCustomerUserDetail> bean = this.dao.getConfigCustomerUserDetail(userId);
 		return bean ;
+	}
+
+	public UserDetail getUserDetail(String userId, String userPassword) {
+		   UserDetail bean = this.dao.getUserDetail(userId,userPassword);
+			return bean;
 	} 
 }

@@ -62,17 +62,17 @@ public class LogInDaoImpl implements LogInDao {
 	public UserDetail getUserDetail(String userId) {
 		UserDetail user = null;
 		int Id = 0;
-		String Firstname ,UserId ,PermitId ,Responsible ,ChangeBy ,RegistBy ;
+		String Firstname ,UserId ,PermitId ,Responsible ,ChangeBy ,RegistBy,Password ;
 		Date LastSignDate,ChangeDate,RegistDate ;
 		Boolean IsAdminSystem,IsAdminUser; 
          try {
-             String sql = "SELECT * FROM [Users] WHERE UserId = ?";
+             String sql = "SELECT * FROM [Users] WHERE UserId = ?  ";
 
              Database          database   = new Database(SqlInfo.getInstance());
              Connection        connection = database.getConnection();
              PreparedStatement prepared   = connection.prepareStatement(sql); 
              try {
-                 prepared.setString(1, userId);
+                 prepared.setString(1, userId); 
 
                  ResultSet resultset = prepared.executeQuery(); 
                  if(resultset.next()) {
@@ -86,10 +86,15 @@ public class LogInDaoImpl implements LogInDao {
       				 if (resultset.getString("UserId") != null) {
       					UserId = resultset.getString("UserId");
           			 }
+      				Password = "";
+     				 if (resultset.getString("Password") != null) {
+     					Password = resultset.getString("Password");
+         			 }
                 	 user = new UserDetail();
                      user.setId(resultset.getInt("Id")); 
                      user.setFirstName(Firstname);
                      user.setUserId(UserId);   
+//                     user.setUserId(Password);  
                      user.setIsSystem(resultset.getBoolean("IsAdminSystem"));
                      user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
                      user.setPermitId(resultset.getString("PermissionId"));
@@ -119,6 +124,73 @@ public class LogInDaoImpl implements LogInDao {
 		return user;
 	}
 
+
+	@Override
+	public UserDetail getUserDetail(String userId,String passWord) {
+		UserDetail user = null;
+		int Id = 0;
+		String Firstname ,UserId ,PermitId ,Responsible ,ChangeBy ,RegistBy,Password ;
+		Date LastSignDate,ChangeDate,RegistDate ;
+		Boolean IsAdminSystem,IsAdminUser; 
+         try {
+             String sql = "SELECT * FROM [Users] WHERE UserId = ? and Password = ? ";
+
+             Database          database   = new Database(SqlInfo.getInstance());
+             Connection        connection = database.getConnection();
+             PreparedStatement prepared   = connection.prepareStatement(sql); 
+             try {
+                 prepared.setString(1, userId);
+                 prepared.setString(2, passWord);
+
+                 ResultSet resultset = prepared.executeQuery(); 
+                 if(resultset.next()) {
+
+                     Firstname = "";
+      				 if (resultset.getString("Firstname") != null) {
+      					Firstname = resultset.getString("Firstname");
+          			 }
+
+      				UserId = "";
+      				 if (resultset.getString("UserId") != null) {
+      					UserId = resultset.getString("UserId");
+          			 }
+      				Password = "";
+     				 if (resultset.getString("Password") != null) {
+     					Password = resultset.getString("Password");
+         			 }
+                	 user = new UserDetail();
+                     user.setId(resultset.getInt("Id")); 
+                     user.setFirstName(Firstname);
+                     user.setUserId(UserId);   
+//                     user.setUserId(Password);  
+                     user.setIsSystem(resultset.getBoolean("IsAdminSystem"));
+                     user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
+                     user.setPermitId(resultset.getString("PermissionId"));
+                     user.setResponsible(resultset.getString("Responsible"));
+                     user.setLastSignDate(Calendar.getInstance().getTime());
+                     user.setChangeBy(resultset.getString("ChangeBy"));
+                     user.setChangeDate(resultset.getDate("ChangeDate"));
+                     user.setRegistBy(resultset.getString("RegistBy"));
+                     user.setRegistDate(resultset.getDate("RegistDate")); 
+                     user.setIsCustomer(resultset.getBoolean("IsCustomer")); 
+                     user.setUserType("USER");
+                      
+                 }
+             } catch(SQLException e) {
+                 System.err.println(this.getClass().getName()+" - "+e.getMessage());
+                 //e.printStackTrace();
+             } finally {
+                 if(prepared != null)   { prepared.close(); }
+                 if(connection != null) { connection.close(); }
+                 if(database != null)   { database.close(); }
+             }
+         } catch(ClassNotFoundException e) {
+         } catch(SQLException e) {
+             System.err.println(this.getClass().getName()+" - "+e.getMessage());
+             //e.printStackTrace();
+         }
+		return user;
+	}
 	@Override
 	public String descryptedText(String ciphertext) {
 		String decryptedText = "";

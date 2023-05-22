@@ -263,6 +263,16 @@ public class UserDetail {
 	public void setIsCustomer(boolean isCustomer) {
 		this.isCustomer = isCustomer;
 	}
+
+	@Override
+	public String toString() {
+		return "UserDetail [id=" + id + ", userId=" + userId + ", password=" + password + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", role=" + role + ", department=" + department + ", email=" + email
+				+ ", arrangedBy=" + arrangedBy + ", authorizedBy=" + authorizedBy + ", isSystem=" + isSystem
+				+ ", isAdmin=" + isAdmin + ", permitId=" + permitId + ", responsible=" + responsible + ", lastSignDate="
+				+ lastSignDate + ", changeBy=" + changeBy + ", changeDate=" + changeDate + ", registBy=" + registBy
+				+ ", registDate=" + registDate + ", userType=" + userType + ", isCustomer=" + isCustomer + "]";
+	}
  
  
  
