@@ -96,16 +96,10 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 	               } else {
 	                  this.message = "Field length is missing" +counter;
 	               }
-	            }  
-//	            System.out.println(!datas.isEmpty()+" "+"main prd");
+	            }   
 	            if (!datas.isEmpty()) {
-	               this.clearData(); 
-//	               System.out.println("clear");
-	               this.insertData(datas);
-//	               System.out.println("wtf");
-	               this.database.update("EXEC spd_UpsertToMainProd"); 
-	               this.database.update("EXEC spd_UpsertToTEMP_ProdWorkDate");  
-	               this.database.update("EXEC spd_UpsertToTEMP_UserStatusOnWeb"); 
+	               this.clearData();  
+	               this.insertData(datas); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {

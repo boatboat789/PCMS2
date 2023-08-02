@@ -40,6 +40,7 @@ public class PCMSSecondTableDetail {
 	private String CFMRemark;
 	private String DeliveryDate;
 	private String ShipDate;
+	private String LotShipping;
 	private String RemarkOne;
 	private String RemarkTwo;
 	private String RemarkThree; 
@@ -93,9 +94,11 @@ public class PCMSSecondTableDetail {
 				String VolumnFGAmount ,String DyePlan,String DyeActual,String PCRemark,String SwitchRemark,
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
-				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision
+				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision,
+				String LotShipping
 				) {
 			super();
+			this.LotShipping = LotShipping;
 			this.CustomerDivision = CustomerDivision;
 			this.CustomerType = CustomerType;
 			this.CFMDateActual= CFMDateActual;
@@ -682,6 +685,14 @@ public class PCMSSecondTableDetail {
 
 		public void setSwitchRemark(String switchRemark) {
 			SwitchRemark = switchRemark;
+		}
+
+		public String getLotShipping() {
+			return LotShipping;
+		}
+
+		public void setLotShipping(String lotShipping) {
+			LotShipping = lotShipping;
 		}
 		
 }

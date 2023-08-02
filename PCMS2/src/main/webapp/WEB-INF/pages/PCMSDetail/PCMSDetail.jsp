@@ -1,5 +1,5 @@
  
- <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -336,7 +336,8 @@ $(document) .ready( function() {
 					{"data" : "CFMNumberAll","title":"CFM Number"},                                      //36
 					{"data" : "RollNoRemarkAll","title":"CFM Remark"},                                //37<------------- 09/08/2022
 				    {"data" : "DeliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //38
-				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //39 
+// 				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //39 
+				    {"data" : "LotShipping","title":"Bill Date",'type': 'date-euro'},                    //39 Replaced ShipDate
 				    {"data" : "Remark","title":"EFFECT"},                                             //40
 				    {"data" : "CauseOfDelay","title":"Cause of Delay"},                               //41<-------------
 				    {"data" : "DelayedDepartment","title":"Delayed Department"},                      //42<-------------
@@ -643,7 +644,7 @@ $(document) .ready( function() {
 				} ,        { targets : [ 47 ],     
 			   	  	render: function (data, type, row) {	     
 						var htmlEx = ''    
-						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="30"  name="StockLoadInput" type="text"  value = "' + row.StockLoad+ '" autocomplete="off" >'; 
+						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.StockLoad+ '" autocomplete="off" >'; 
 						return  htmlEx      
 						}       
 					} ,          
@@ -1996,10 +1997,9 @@ function exportCSV(data){
         caseDupli = checkSaleOrderLine( value); 
         $.each(value, function(data, val) {     	
 //             innerRowData.push(val);         
-        	 if(mapsDataHeader.size != 0){    
+        	 if(mapsDataHeader.size != 0){        
         		 indexArray = mapsDataHeader.get(data);
-        		 colType = mapsColumnHeader.get(data);      
-//         		 console.log(data,indexArray)
+        		 colType = mapsColumnHeader.get(data);       
         		 if(indexArray !== undefined){               
  					if (colType === undefined){  
  						innerRowData[indexArray] = val;        
@@ -2017,9 +2017,15 @@ function exportCSV(data){
 	 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
 						}  
  					}      
- 					else if (colType == 'date-euro'){          
- 						if(val == ''){ innerRowData[indexArray] = ''   ;   }
- 						else{ innerRowData[indexArray] =stringToDate(val)   ; }   
+ 					else if (colType == 'date-euro'){   
+//  						if(data == "ShipDate" ){
+// //  							LotShipping
+//  						}     
+//  						else{
+	 						if(val == ''){ innerRowData[indexArray] = ''   ;   }
+	 						else{ innerRowData[indexArray] =stringToDate(val)   ; }    
+//  						}    
+ 					    
  					}
  			  		 
  			  	}  

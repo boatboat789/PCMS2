@@ -1,6 +1,4 @@
-	/* .dataTables_scrollBody{ */
-/* 	height: 400px !important; */
-/* }         */
+ 
  table.dataTable, table.dataTable th, table.dataTable td {
        box-sizing: border-box;    
 }
@@ -116,8 +114,7 @@ td.dt-custom-td80 {
 	/*vertical-align: middle !important;*/
 }     
 .dataTables_scrollBody {    
-    overflow-y: overlay !important;        
-/*     overflow-y: initial !important; */
+    overflow-y: overlay !important;         
     overflow-x: auto !important;
 }
 .dt-custom-tdd .datepicker {    
@@ -162,10 +159,7 @@ tr.dtrg-group.dtrg-start td {
 }              
 table.dataTable.compact thead th, table.dataTable.compact thead td{
 	padding: 2px 6px;
-}        
-/* table.dataTable.compact tbody th, table.dataTable.compact tbody td { */
-/*     padding: 4px;     */
-/* }  */
+}         
 .dataTables_scrollBody {
     background-color: whitesmoke;
 }    

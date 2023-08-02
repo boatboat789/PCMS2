@@ -1587,6 +1587,11 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String CustomerDivision   = "";
 		if (map.get("CustomerDivision") != null) {
 			CustomerDivision = (String) map.get("CustomerDivision");
+		}  
+		String LotShipping   = "";
+		if (map.get("LotShipping") != null) { 
+			java.util.Date timestamp1 = (Date) map.get("LotShipping");
+			LotShipping = sdf2.format(timestamp1);
 		} 
 		PCMSSecondTableDetail bean = new PCMSSecondTableDetail(Division, SaleOrder, SaleLine, CustomerShortName, 
 				SaleCreateDate, PurchaseOrder, MaterialNo, CustomerMaterial, Price, SaleUnit, SaleQuantity,OrderAmount, 
@@ -1596,7 +1601,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
 				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
-				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,CustomerType, CustomerDivision) ;
+				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,CustomerType, CustomerDivision, LotShipping) ;
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);
 		bean.setSaleLineSW(SaleLineSW);
