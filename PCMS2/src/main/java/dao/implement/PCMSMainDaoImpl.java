@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -1577,6 +1576,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "   ,[NextLot],[SOChange],[SOChangeQty]\r\n"
 				+ "   ,[SOChangeUnit],[RollNo],[RollNoRemark]\r\n"
 				+ "   ,a.[DataStatus]\r\n"
+				+ "   ,[DE]\r\n"
 				+ " from [PCMS].[dbo].[FromSapCFM] as a \r\n " 
 				+ where
 				+ " Order by [CFMNo]";

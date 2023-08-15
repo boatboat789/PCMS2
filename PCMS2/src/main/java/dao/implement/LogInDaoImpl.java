@@ -1,38 +1,21 @@
 package dao.implement;
 
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import dao.LogInDao;
 import entities.ConfigCustomerUserDetail;
-import entities.InputDateDetail;
-import entities.PCMSSecondTableDetail;
-import entities.PCMSTableDetail;
 //import entities.EmployeeDetail;
 import entities.UserDetail;
 import info.SqlInfo;
@@ -43,8 +26,6 @@ public class LogInDaoImpl implements LogInDao {
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
 	private String message;
-	private String secret = "PCMSDISPLAY";
-	private DecimalFormat df2 = new DecimalFormat("#.##");
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
 	public SimpleDateFormat sdf4 = new SimpleDateFormat("yyyyMMdd");

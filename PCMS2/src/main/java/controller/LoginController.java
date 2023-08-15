@@ -2,14 +2,8 @@ package controller;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.servlet.http.HttpServletRequest;
@@ -24,16 +18,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
-import entities.CFMDetail;
-import entities.ColumnHiddenDetail;
 import entities.ConfigCustomerUserDetail;
 import entities.UserDetail;
 import info.AdInfo;
-import info.SqlInfo;
 import model.LogInModel;
 import th.in.totemplate.core.authen.ActiveDirectory;
 import th.in.totemplate.core.authen.AuthenAttributes;
-import th.in.totemplate.core.sql.Database;
 
 @Controller
 public class LoginController { 

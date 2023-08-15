@@ -854,6 +854,7 @@ $(document) .ready( function() {
 		    {"data" : "Da"},
 		    {"data" : "Db"},
 		    {"data" : "ST"},
+		    {"data" : "DE"},
 		    {"data" : "SaleOrder"},   //9
 		    {"data" : "SaleLine"}, 
 		    {"data" : "CFMAnswerDate"},
@@ -865,7 +866,7 @@ $(document) .ready( function() {
 		    {"data" : "SOChangeUnit"},  //17    
 		],  	          
 		columnDefs :  [	   	   
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 ,18],                
 			  	  className : 'data-custom-padding0505',    
 // 		  	 	  type: 'string'      
 				} ,           
@@ -1053,13 +1054,23 @@ $(document) .ready( function() {
 	$("#sendTestQCTable_filter").hide(); 
 	$("#poTable_filter").hide();	
 	
-	$("#workInLabTable_filter").hide();  $("#waitTestTable_filter").hide();  $("#cfmTable_filter").hide();  
-	$("#saleTable_filter").hide();  $("#saleInputTable_filter").hide();  $("#submitDateTable_filter").hide();  
-	$("#ncTable_filter").hide();  $("#receipeTable_filter").hide();  
+	$("#workInLabTable_filter").hide();  
+	$("#waitTestTable_filter").hide();  
+	$("#cfmTable_filter").hide();  
+	$("#saleTable_filter").hide();  
+	$("#saleInputTable_filter").hide();  
+	$("#submitDateTable_filter").hide();  
+	$("#ncTable_filter").hide();  
+	$("#receipeTable_filter").hide();  
 	
-	$("#workInLabTable_info").hide();$("#waitTestTable_info").hide();$("#cfmTable_info").hide();
-	$("#saleTable_info").hide();$("#saleInputTable_info").hide();$("#submitDateTable_info").hide();
-	$("#ncTable_info").hide();$("#receipeTable_info").hide(); 
+	$("#workInLabTable_info").hide();
+	$("#waitTestTable_info").hide();
+	$("#cfmTable_info").hide();
+	$("#saleTable_info").hide();
+	$("#saleInputTable_info").hide();
+	$("#submitDateTable_info").hide();
+	$("#ncTable_info").hide();
+	$("#receipeTable_info").hide(); 
 	   
 // 	$("#MainTable_info").hide();      
 // 	$("#presetTable_info").hide();   
@@ -1146,9 +1157,14 @@ $(document) .ready( function() {
     	packingTable.columns.adjust(); 
     	sendTestQCTable.columns.adjust(); 
     	
-    	workInLabTable.columns.adjust(); waitTestTable.columns.adjust(); cfmTable.columns.adjust(); 
-    	saleTable.columns.adjust(); saleInputTable.columns.adjust(); submitDateTable.columns.adjust(); 
-    	ncTable.columns.adjust(); receipeTable.columns.adjust(); 
+    	workInLabTable.columns.adjust(); 
+    	waitTestTable.columns.adjust(); 
+    	cfmTable.columns.adjust(); 
+    	saleTable.columns.adjust(); 
+    	saleInputTable.columns.adjust(); 
+    	submitDateTable.columns.adjust(); 
+    	ncTable.columns.adjust(); 
+    	receipeTable.columns.adjust(); 
     });          
 	$('.modal').on('shown.bs.modal', function() {   
 // 		MainTable.columns.adjust(); 
@@ -1159,9 +1175,14 @@ $(document) .ready( function() {
 		inspectTable.columns.adjust(); 
 		packingTable.columns.adjust(); 
 		sendTestQCTable.columns.adjust(); 
-    	workInLabTable.columns.adjust(); waitTestTable.columns.adjust(); cfmTable.columns.adjust(); 
-    	saleTable.columns.adjust(); saleInputTable.columns.adjust(); submitDateTable.columns.adjust(); 
-    	ncTable.columns.adjust(); receipeTable.columns.adjust(); 
+    	workInLabTable.columns.adjust(); 
+    	waitTestTable.columns.adjust(); 
+    	cfmTable.columns.adjust(); 
+    	saleTable.columns.adjust(); 
+    	saleInputTable.columns.adjust(); 
+    	submitDateTable.columns.adjust(); 
+    	ncTable.columns.adjust(); 
+    	receipeTable.columns.adjust(); 
 	})  
 	preLoaderHandler( preloader)   
 });  

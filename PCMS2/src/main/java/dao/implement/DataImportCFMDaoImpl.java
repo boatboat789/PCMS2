@@ -28,7 +28,7 @@ public class DataImportCFMDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 23;
+      this.maxfield = 24;
    }
 
    public String getMessage() {
@@ -130,11 +130,11 @@ public class DataImportCFMDaoImpl implements DataImportDao {
         	 String sql = "INSERT INTO [PCMS].[dbo].[SapTempCFM] "
              		+ " (F001, F002, F003, F004, F005, F006, F007, F008, F009, F010,"
              		+ "	 F011, F012, F013, F014, F015, F016, F017, F018, F019, F020,"
-             		+ "	 F021, F022, F023 ) "
+             		+ "	 F021, F022, F023, F024  ) "
              		+ " VALUES ("
              		+ "        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
              		+ " 	   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-         		    + "        ?, ?, ? "
+         		    + "        ?, ?, ?, ? "
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);

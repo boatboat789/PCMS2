@@ -64,6 +64,7 @@
 				                 	<td style="vertical-align: middle;">Da. </td>  
 				                 	<td style="vertical-align: middle;">Db. </td>  
 				                 	<td style="vertical-align: middle;">ST. </td>   
+				                 	<td style="vertical-align: middle;">DE. </td>   
 				                 	<td style="vertical-align: middle;">SO</td>  
 				                 	<td style="vertical-align: middle;">SO  <span class="c"style="display: block;">Line</span> </td>  
 				                 	<td style="vertical-align: middle;">วันที่ตอบ</td>  

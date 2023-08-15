@@ -1087,11 +1087,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SOChangeUnit = "";
 		if (map.get("SOChangeUnit") != null) {
 			SOChangeUnit = (String) map.get("SOChangeUnit");
-		}  
+		} 
+		String DE = "";
+		if (map.get("DE") != null) {
+			DE = (String) map.get("DE");
+		}
+		  
 		// TODO Auto-generated method stub 
 		return new CFMDetail(CFMNo, CFMNumber, CFMSendDate, RollNo, RollNoRemark,
 				L, Da, Db, ST, SaleOrder, SaleLine, Color, CFMAnswerDate, CFMStatus,
-				CFMRemark, NextLot, SOChange, SOChangeQty, SOChangeUnit);
+				CFMRemark, NextLot, SOChange, SOChangeQty, SOChangeUnit,DE);
 	}
 
 	@Override

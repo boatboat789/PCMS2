@@ -86,31 +86,53 @@ public class FtpTaskRunner {
       this.importerBillBatch = new DataImportMainBillBatchDaoImpl(database, ftp); 
    } 
    public void loadFTP() {
+	   boolean bl_check = false;
+//	   bl_check = true;
 	   System.out.println("PCMS2 :: FTP run at :: " + Calendar.getInstance().getTime().toString());  
 	   this.importerNC.loadDataFTP(this.user);	
+	   if(bl_check == true) { System.out.println("importerNC :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerReceipe.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerReceipe :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerSubmitDate.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerSubmitDate :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerSaleInput.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerSaleInput :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerSale.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerSale :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerCFM.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerCFM :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerWaitTest.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerWaitTest :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerWorkInLab.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerWorkInLab :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerSendTestQC.loadDataFTP(this.user);
-	   this.importerPacking.loadDataFTP(this.user); 	
+	   if(bl_check == true) { System.out.println("importerSendTestQC :: " + Calendar.getInstance().getTime().toString()); } 
+	   this.importerPacking.loadDataFTP(this.user); 
+	   if(bl_check == true) { System.out.println("importerPacking :: " + Calendar.getInstance().getTime().toString()); } 	
 	   this.importerInspect.loadDataFTP(this.user);  
-	   this.importerFinishing.loadDataFTP(this.user);		
+	   if(bl_check == true) { System.out.println("importerInspect :: " + Calendar.getInstance().getTime().toString()); } 
+	   this.importerFinishing.loadDataFTP(this.user);	
+	   if(bl_check == true) { System.out.println("importerFinishing :: " + Calendar.getInstance().getTime().toString()); } 	
 	   this.importerDyeing.loadDataFTP(this.user)	;	
+	   if(bl_check == true) { System.out.println("importerDyeing :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerPreset.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerPreset :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerPO.loadDataFTP(this.user);      
+	   if(bl_check == true) { System.out.println("importerPO :: " + Calendar.getInstance().getTime().toString()); } 
 //---------------------MUST UNDER SAMEGROUP------------------------
-	   this.importerMainSale.loadDataFTP(this.user);   
+	   this.importerMainSale.loadDataFTP(this.user);  
+	   if(bl_check == true) { System.out.println("importerMainSale :: " + Calendar.getInstance().getTime().toString()); }  
 	   this.importerGoodReceive.loadDataFTP(this.user);
-	   this.importerMainGrade.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerGoodReceive :: " + Calendar.getInstance().getTime().toString()); } 
+//	   this.importerMainGrade.loadDataFTP(this.user);
 	   this.importerBillBatch.loadDataFTP(this.user);  
+	   if(bl_check == true) { System.out.println("importerBillBatch :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerMainProdSale.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerMainProd :: " + Calendar.getInstance().getTime().toString()); } 
 //-----------------------------------------------------------------
 //---------------------MUST LAST-----------------------------------
 	   this.importerMainProd.loadDataFTP(this.user);	//spd_UpsertToTEMP_ProdWorkDate  //spd_UpsertToTEMP_UserStatusOnWeb
+	   if(bl_check == true) { System.out.println("importerMainProd :: " + Calendar.getInstance().getTime().toString()); } 
 //-----------------------------------------------------------------
 	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
    } 

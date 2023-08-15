@@ -10,6 +10,7 @@ public class CFMDetail {
 	  private String Da;
 	  private String Db; 
 	  private String ST;
+	  private String DE;
 	  private String SaleOrder;
 	  private String SaleLine;
 	  private String Color;
@@ -23,8 +24,9 @@ public class CFMDetail {
 	public CFMDetail(String cFMNo, String cFMNumber, String cFMSendDate, String rollNo, String rollNoRemark, String l,
 			String da, String db, String sT, String saleOrder, String saleLine, String color, String cFMAnswerDate,
 			String cFMStatus, String cFMRemark, String NextLot, String sOChange, String sOChangeQty,
-			String sOChangeUnit) {
+			String sOChangeUnit,String de) {
 		super();
+		this.DE = de;
 		CFMNo = cFMNo;
 		CFMNumber = cFMNumber;
 		CFMSendDate = cFMSendDate;
@@ -44,6 +46,12 @@ public class CFMDetail {
 		SOChange = sOChange;
 		SOChangeQty = sOChangeQty;
 		SOChangeUnit = sOChangeUnit;
+	}
+	public String getDE() {
+		return DE;
+	}
+	public void setDE(String dE) {
+		DE = dE;
 	}
 	public String getCFMNo() {
 		return CFMNo;

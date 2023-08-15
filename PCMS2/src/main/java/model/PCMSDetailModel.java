@@ -4,12 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServlet;
 
-import com.google.gson.JsonElement;
-
 import dao.PCMSDetailDao;
 import dao.implement.PCMSDetailDaoImpl;
 import entities.ColumnHiddenDetail;
-import entities.DelayedDepartmentDetail;
 import entities.InputDateDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;

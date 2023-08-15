@@ -40,10 +40,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			  + "	begin\r\n"
 			  + "		Drop Table #tempPlandeliveryDate\r\n"
 			  + "	end ; \r\n"
-			  + "SELECT distinct  a.id,a.[ProductionOrder] ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] AS DeliveryDate \r\n"
-			  + "into #tempPlandeliveryDate\r\n"
-			  + "FROM [PCMS].[dbo].[PlanDeliveryDate]  as a\r\n"
-			  + "inner join (select distinct [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ,max(Id) as maxId\r\n"
+			  + " SELECT distinct  a.id,a.[ProductionOrder] ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] AS DeliveryDate \r\n"
+			  + " into #tempPlandeliveryDate\r\n"
+			  + " FROM [PCMS].[dbo].[PlanDeliveryDate]  as a\r\n"
+			  + " inner join (select distinct [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ,max(Id) as maxId\r\n"
 			  + "			FROM [PCMS].[dbo].[PlanDeliveryDate]  \r\n"
 			  + "			group by [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ) as b on a.Id = b.maxId  \r\n"  ;  
 
@@ -67,10 +67,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			 where ( a.POId is not null or a.PlanInsteadId is not null) and a.DataStatus = 'O'\r\n"
 			+ "				  AND ( B.DataStatus = 'O' or B.DataStatus  is null )\r\n"
 			+ "\r\n"
-			+ "IF OBJECT_ID('tempdb..#tempApproved') IS NOT NULL   \r\n"
-			+ "	DROP TABLE #tempApproved\r\n"
-			+ "select a.ProductionOrder,b.SORCFMDate,b.SORDueDate\r\n"
-			+ "into #tempApproved\r\n"
+			+ " IF OBJECT_ID('tempdb..#tempApproved') IS NOT NULL   \r\n"
+			+ "	  DROP TABLE #tempApproved\r\n"
+			+ " select a.ProductionOrder,b.SORCFMDate,b.SORDueDate\r\n"
+			+ " into #tempApproved\r\n"
 			+ "	from #tempPOMainNPOInstead as a  \r\n"
 			+ "	inner join [PPMM].[dbo].[ApprovedPlanDate] as b on a.POId = b.POId \r\n"  ;
 	private String createTempSumBill = 

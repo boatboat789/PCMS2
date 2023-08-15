@@ -35,8 +35,7 @@ public class BackGroundJob {
 		boolean bool = file.mkdir();
 		try {	
 			ftr = new FtpTaskRunner(new Database(SqlInfo.getInstance()), new FtpReceive(FtpSapInfo.getInstance(), FTP_DIRECTORY, LOCAL_DIRECTORY));
-			ftr.loadFTP();  
-			bgjModel.execUpsertToMainProd();
+			ftr.loadFTP();   
 			bgjModel.execUpsertToTEMPProdWorkDate();
 			bgjModel.execUpsertToTEMPUserStatusOnWeb();  
 		} catch (ClassNotFoundException | SQLException e) { 

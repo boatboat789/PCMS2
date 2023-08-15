@@ -100,6 +100,7 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
 	            if (!datas.isEmpty()) {
 	               this.clearData();  
 	               this.insertData(datas); 
+	               this.database.update("EXEC [dbo].[spd_UpsertToMainProd] ");
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
