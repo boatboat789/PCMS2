@@ -30,7 +30,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	// Sale - Lab-New
 	private String C_PRODORDER = "ProductionOrder";
 	private String C_PRODORDERRP = "ProductionOrderRP";
-	private String OPEN_STATUS = "O";
 	private String CLOSE_STATUS = "X";
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
@@ -130,7 +129,7 @@ private String createTempMainPrdFromTempA =
 			  + "				 		,[Batch],[LabNo],[RemarkOne],[RemarkTwo],[RemarkThree],[BCAware]\r\n"
 			  + "				 		,[OrderPuang] ,[RefPrd],b.[GreigeInDate] ,[BCDate],b.[Volumn]\r\n"
 			  + "				 		,[CFdate],[CFType],[Shade] ,g.[LotShipping],[BillSendQuantity] \r\n"
-			  + "				 		,[PrdCreateDate],[GreigeArticle],[GreigeDesign],[GreigeMR],[GreigeKG] \r\n"
+			  + "				 		,[PrdCreateDate],[GreigeArticle],[GreigeDesign],[GreigeMR],[GreigeKG], g.[PlanGreigeDate]  \r\n"
 			  + "               into #tempMainPrdTemp\r\n"
 			  + "				from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
 			  + "				left join [PCMS].[dbo].[FromSapMainProd] as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
@@ -322,15 +321,12 @@ private String createTempMainPrdFromTempA =
   		+ "   e.CFMPlanLabDate,\r\n"
   		+ "   g.CFMActualLabDate,\r\n"
   		+ "   g.CFMCusAnsLabDate,\r\n"
-  		+ "   UCAL.UserStatusCal as UserStatus,\r\n"
-//  		+ "   j.CFMDate as TKCFM,\r\n"  
-
+  		+ "   UCAL.UserStatusCal as UserStatus,\r\n" 
 	  		+ "   CASE\r\n"
 	  		+ "		WHEN TAPP.SORCFMDate IS NOT NULL THEN TAPP.SORCFMDate\r\n"
 	  		+ "		ELSE j.CFMDate \r\n"
 	  		+ "		END as TKCFM,\r\n"  
-  		+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n"
-//  		+ "   g.SendCFMCusDate, \r\n"
+  		+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n" 
   		+ "   CASE \r\n "
   		+ "		WHEN SCC.SendCFMCusDate IS NOT NULL and SCC.SendCFMCusDate <> '' THEN SCC.SendCFMCusDate \r\n"
  		  	+ "     ELSE  g.SendCFMCusDate \r\n"     
@@ -374,7 +370,8 @@ private String createTempMainPrdFromTempA =
 			+ "   q.[SwitchRemark],\r\n"
 			+ "   SL.[StockLoad], \r\n"
 			+ "   b.[PrdCreateDate],\r\n"
-	  		+ "   g.LotShipping\r\n";  
+	  		+ "   g.LotShipping\r\n"
+	  		+ "   , g.PlanGreigeDate ";  
     private String selectMainV2 = 
     		  "   b.SaleOrder, \r\n"
     		+ "   CASE PATINDEX('%[^0 ]%', b.[SaleLine]  + ' ‘') \r\n"
@@ -541,7 +538,8 @@ private String createTempMainPrdFromTempA =
 	  		+ "   q.[SwitchRemark],\r\n"
 	  		+ "   SL.[StockLoad],\r\n"
 	  		+ "   b.[PrdCreateDate],\r\n"
-	  		+ "   g.LotShipping \r\n"; 
+	  		+ "   g.LotShipping \r\n"
+	  		+ "   , g.PlanGreigeDate "; 
     private String selectAll = 
 		  "   a.SaleOrder,\r\n"
 		+ "   a.[SaleLine] ,\r\n"
@@ -662,6 +660,7 @@ private String createTempMainPrdFromTempA =
 	     + "        ,cast(null as varchar) as RollNoRemarkAll\r\n"
 	     + "        ,cast(null as date) as CFMDateActual\r\n" 
 	     + "        , cast(null as date) AS LotShipping \r\n"   
+		 + "		, cast(null as date) as PlanGreigeDate \r\n" 
    		 + "	from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
    		 + "	left join ( SELECT DISTINCT a.SaleOrder , A.SaleLine ,ISNULL(SumVolOP, 0 ) + ISNULL(SumVolRP, 0 ) as SumVolUsed --,ISNULL(SumVolRP, 0 )\r\n"
    		 + "							   ,SumVolOP,SumVolRP\r\n"
@@ -703,12 +702,12 @@ private String createTempMainPrdFromTempA =
    		 + "	where ( c.SumVolMain > 0   ) OR D.SaleOrder IS NOT NULL \r\n"
    		 + " ) AS b ON a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine \r\n" ; 
     private String leftJoinUCAL =  ""
-    		+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCAL on b.ProductionOrder = UCAL.ProductionOrder AND (  m.Grade = UCAL.Grade OR  m.Grade IS NULL )  \r\n"; 
+    		+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCAL on UCAL.[DataStatus] = 'O' and b.ProductionOrder = UCAL.ProductionOrder AND (  m.Grade = UCAL.Grade OR  m.Grade IS NULL )  \r\n"; 
     private String leftJoinUCALRP = "    "
-    		+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on b.ProductionOrder = UCALRP.ProductionOrder AND ( m.Grade = UCALRP.Grade OR m.Grade IS NULL )    \r\n";
+    		+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on UCALRP.[DataStatus] = 'O' and b.ProductionOrder = UCALRP.ProductionOrder AND ( m.Grade = UCALRP.Grade OR m.Grade IS NULL )    \r\n";
     private String leftJoinSCC = ""
     		+ " left join [PCMS].[dbo].[PlanSendCFMCusDate] as SCC on b.ProductionOrder = SCC.ProductionOrder and SCC.DataStatus = 'O'    \r\n";
-	private String leftJoinM =   
+	private String leftJoinM =    
 			" left join #tempSumGR as m on b.ProductionOrder = m.ProductionOrder \r\n"; 
 	   private String leftJoinFSMBBTempSumBill = "" 
 	    		+ " left join #tempSumBill  \r\n"
@@ -767,7 +766,7 @@ private String createTempMainPrdFromTempA =
 	 		  + "					ELSE FSMBB.BillSendMRQuantity\r\n"
 	 		  + "				end AS BillSendQuantity \r\n"
 	 		  + "				, FSMBB.BillSendMRQuantity\r\n"
-	 		  + "				, FSMBB.BillSendYDQuantity \r\n" ;  
+	 		  + "				, FSMBB.BillSendYDQuantity , g.PlanGreigeDate \r\n" ;  
 	private String leftJoinBPartOneT =  ""
 			  + "			left join ( SELECT a.ProductionOrder  , sum(a.Volumn) as SumVolOP\r\n"
 			  + "                       from [PCMS].[dbo].FromSapMainProdSale as a\r\n"
@@ -893,15 +892,12 @@ private String createTempMainPrdFromTempA =
 		String whereBMainUserStatus = " where"; 
 //		String whereCaseA = "";
 		String whereWaitLot = " where ";
-//		String whereTempUCAL = " where ";
-		int check = 0;
-		String customerShortName ="", saleNumber = "" , materialNo = "",saleOrder = "", saleLine = "",
-		saleCreateDate = "",labNo = "" ,articleFG = "",designFG = "",userStatus = "", prdOrder= "",
-		prdCreateDate = "",deliveryStatus = "",saleStatus ="",dist="",customerName = "",dueDate = "",po="",
+String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",labNo = "" ,articleFG = "",designFG = "",prdOrder= "",
+		prdCreateDate = "",deliveryStatus = "",saleStatus ="",dist="",dueDate = "",po="",
 				cusDiv=""; 
 		PCMSTableDetail bean = poList.get(0);
-		customerName = bean.getCustomerName();
-		customerShortName = bean.getCustomerShortName();
+		bean.getCustomerName();
+		bean.getCustomerShortName();
 		saleNumber = bean.getSaleNumber() ; 
 		materialNo = bean.getMaterialNo();
 		saleOrder = bean.getSaleOrder();  
@@ -909,7 +905,7 @@ private String createTempMainPrdFromTempA =
 		labNo = bean.getLabNo();
 		articleFG = bean.getArticleFG();
 		designFG = bean.getDesignFG();
-		userStatus = bean.getUserStatus();
+		bean.getUserStatus();
 		prdOrder = bean.getProductionOrder();
 		prdCreateDate = bean.getProductionOrderCreateDate();
 		dueDate = bean.getDueDate();
@@ -1171,7 +1167,7 @@ private String createTempMainPrdFromTempA =
 	  		    + " INTO #tempWaitLot  \r\n"
 //				+ " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n " 
 				+ " FROM #tempMainSale as a \r\n " 
-				+ this.innerJoinWaitLotB 
+				+ this.innerJoinWaitLotB   
 				+ this.leftJoinJ
 				+ this.leftJoinTAPP
 				+ this.leftJoinK    
@@ -1318,6 +1314,7 @@ private String createTempMainPrdFromTempA =
 				+ "			, FSMBB.BillSendMRQuantity\r\n"
 				+ "			, FSMBB.BillSendYDQuantity \r\n"
 				+ "         , CustomerType\r\n"
+				+ "         , g.PlanGreigeDate \r\n"
 				+ "         into #tempPrdOPA\r\n"  
 				+ "		 	from #tempMainSale as a  \r\n"
 				+ "		 	inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"  
@@ -1400,8 +1397,7 @@ private String createTempMainPrdFromTempA =
 					+ "             	ELSE  0 \r\n"     
 					+ "             	END AS Volumn  \r\n"
 					+ "           ,CustomerType \r\n" 
-					+ "		 	from #tempMainSale as a  \r\n"
-//					+ "		 	from [PCMS].[dbo].[FromSapMainSale] as a  \r\n"
+					+ "		 	from #tempMainSale as a  \r\n" 
 					+ "		 	inner join ( \r\n"
 					+ "            	SELECT \r\n"
 					+ " 				CASE \r\n"
@@ -1439,8 +1435,7 @@ private String createTempMainPrdFromTempA =
 					+ this.leftJoinQ 
 					+ this.leftJoinSL 
 					+ this.leftJoinM   
-					+ this.leftJoinUCAL    
-//				    + this.leftJoinFSMBB
+					+ this.leftJoinUCAL      
 				    + this.leftJoinFSMBBTempSumBill  ;
 	String sqlOPSW = ""
 			+ " select \r\n"
@@ -1478,9 +1473,8 @@ private String createTempMainPrdFromTempA =
 			+ " 		  , CASE \r\n"
 			+ "					when b.ProductionOrder = b.ProductionOrderSW then 'MAIN'\r\n"
 			+ "					ELSE 'SUB' \r\n"
-			+ "					END	TypePrdRemark  ,C.SumVol\r\n "
-			+ "           ,CustomerType\r\n" 
-//			+ "		 	from [PCMS].[dbo].[FromSapMainSale] as a  \r\n"
+			+ "					END	TypePrdRemark  ,C.SumVol \r\n"
+			+ "           ,CustomerType\r\n"  
 			+ "		 	from #tempMainSale as a  \r\n"
 			+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleLine = b.SaleLineSW and a.SaleOrder = b.SaleOrderSW  \r\n \r\n"
 			+ "		 	LEFT JOIN ( \r\n"
@@ -1897,14 +1891,12 @@ private String createTempMainPrdFromTempA =
 
 	private ArrayList<TempUserStatusAutoDetail> getTempUserStatusAutoDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<TempUserStatusAutoDetail> list = null;
-		String where = " where  ";
-//		String prdOrder = "";
+		//		String prdOrder = "";
 		PCMSSecondTableDetail bean = poList.get(0);
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		String saleLine = bean.getSaleLine();
 		saleLine = String.format("%06d", Integer.parseInt(saleLine));  
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = "SELECT distinct  [Id]\r\n"
 				+ "      ,[ProductionOrder]\r\n"
 				+ "      ,[SaleOrder]\r\n"
@@ -1942,7 +1934,7 @@ private String createTempMainPrdFromTempA =
 //		String saleOrder = bean.getSaleOrder();   
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
+		currentTime.getTime();
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
 		try {      
 			String sql =  
@@ -2241,7 +2233,7 @@ private String createTempMainPrdFromTempA =
 					prdOrderRP = subSplit[0].trim();
 					 try {     
 						 volume =  subSplit[1].trim(); 
-						 Double num = Double.parseDouble(volume);
+						 Double.parseDouble(volume);
 			        } catch (NumberFormatException e) { numeric = false; }
 					 if(numeric) { }
 					 else { volume = "0";  } 
@@ -3063,18 +3055,7 @@ private String createTempMainPrdFromTempA =
 		    + " FROM [PCMS].[dbo].[PlanCFMDate] as a\r\n" 
 		    + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and \r\n"
 		    + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-		    + "       a.[SaleLine] = '" + saleLine+ "' \r\n"
-//		  + " union \r\n "
-//		  + " SELECT [ProductionOrder]\r\n"
-//		  + "      ,[SaleOrder]\r\n"
-//		  + "      ,[SaleLine]\r\n"
-//		  + "      ,SubmitDate as [PlanDate]\r\n"  
-//		  + "      ,'' AS [CreateBy]\r\n"
-//		  + "      ,null AS [CreateDate]\r\n"
-//	      + "	    , '0:SAP' as InputFrom \r\n"
-//	      + "   ,'' AS LotNo \r\n"
-//		  + " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n" 
-//		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and SubmitDate is not null "
+		    + "       a.[SaleLine] = '" + saleLine+ "' \r\n" 
 //  		  + "   and [DataStatus] = 'O' "
 		  + " ORDER BY InputFrom ,CreateDate desc ";
 				
@@ -3404,11 +3385,7 @@ private String createTempMainPrdFromTempA =
 	@Override    
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) { 
 		ArrayList<PCMSTableDetail> list = null;
-		String where = " where  ";
-		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
-				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
-				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
-				userId = ""  ,divisionName = "";
+		String customerShortName = "", userStatus = "", customerName="",userId = ""  ,divisionName = "";
 		PCMSTableDetail bean = poList.get(0);     
 		userId = bean.getUserId();
 		List<String> userStatusList = bean.getUserStatusList();
@@ -3444,7 +3421,6 @@ private String createTempMainPrdFromTempA =
 					customerShortName += "|";
 				} ;
 			}
-			where += " ) \r\n";
 		}
 		if (userStatusList.size() > 0) {  
 			String text = "";
@@ -3477,8 +3453,7 @@ private String createTempMainPrdFromTempA =
 		Connection connection;
 		connection = this.database.getConnection();    
 		ArrayList<PCMSTableDetail> list = new ArrayList<PCMSTableDetail>(); 
-		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
-				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
+		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
 				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
 				userId = "" ,division = ""; 
 		PCMSTableDetail bean = poList.get(0); 
@@ -3553,8 +3528,7 @@ private String createTempMainPrdFromTempA =
 		Connection connection;
 		connection = this.database.getConnection();    
 		ArrayList<PCMSTableDetail> list = new ArrayList<PCMSTableDetail>(); 
-		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleLine = "",
-				saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
+		String customerShortName = "", saleNumber = "", materialNo = "", saleOrder = "", saleCreateDate = "", labNo = "", articleFG = "", designFG = "", userStatus = "", prdOrder = "",
 				prdCreateDate = "", deliveryStatus = "", saleStatus = "", dist = "",customerName="",dueDate="",
 				userId = "" ,division = ""; ;
 		PCMSTableDetail bean = poList.get(0); 
@@ -4057,6 +4031,7 @@ private String createTempMainPrdFromTempA =
 					+ "			, FSMBB.BillSendMRQuantity\r\n"
 					+ "			, FSMBB.BillSendYDQuantity \r\n"
 					+ "         , CustomerType\r\n"
+					+ "         , g.PlanGreigeDate "
 					+ "         into #tempPrdOPA\r\n" 
 					+ "		 	from #tempMainSale as a  \r\n"
 					+ "		 	inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"  

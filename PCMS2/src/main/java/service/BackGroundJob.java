@@ -21,7 +21,8 @@ public class BackGroundJob {
 	@Autowired
 	private ServletContext context; 
 	public BackGroundJob() { /* TODO document why this constructor is empty */ } 
-//	@Scheduled(fixedDelay = 10000)         
+//	@Scheduled(fixedDelay = 5000)         
+//	@Scheduled(fixedDelay = 10000)  
 	@Scheduled(cron = "0 4/10 * * * *")      
 	public void sortBackGround1() {	 
 		SORModel model = new SORModel();

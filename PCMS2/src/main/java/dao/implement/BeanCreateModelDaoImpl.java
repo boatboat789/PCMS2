@@ -312,12 +312,19 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("CustomerDivision") != null) {
 			CustomerDivision = (String) map.get("CustomerDivision");
 		}
+		String PlanGreigeDate = "";
+		if (map.get("PlanGreigeDate") != null) {
+			java.util.Date timestamp1 = (Date) map.get("PlanGreigeDate");
+			String dateStr =  sdf2.format(timestamp1);   
+			PlanGreigeDate = createDDMM(dateStr);
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer,
 				SaleQuantity, BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus,
 				LabStatus, DueDate, Prepare, Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate,
 				CFMDateActual, DeliveryDate, LotShipping, LabNo, CustomerShortName, SaleNumber, SaleFullName,
 				SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus, SaleStatus,LotNo,ShipDate,Relax,
-				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate,PurchaseOrder, CustomerDivision);
+				CustomerName,Division,DyeStatus,TypePrd,TypePrdRemark,SendCFMCusDate,PurchaseOrder, CustomerDivision,
+				PlanGreigeDate);
 	}
 	public String createDDMM(String dateStr) {
 		String[] x = dateStr.split("/");

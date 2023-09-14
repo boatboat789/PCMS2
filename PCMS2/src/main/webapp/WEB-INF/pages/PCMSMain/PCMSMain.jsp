@@ -34,6 +34,7 @@
 				                <th class="row-table" style="vertical-align: middle;">Unit </th> 
 				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Plan<span class="c"style="display: block;"> Greige Date</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
@@ -476,56 +477,57 @@ $(document) .ready( function() {
 	 	   	columns :    
 	 	   		[      
 			    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
-			    {"data" : "SaleLine",  "title": 'SO Line'}, 
+			    {"data" : "SaleLine",  "title": 'SO Line'},              //1
 			    {"data" : "PurchaseOrder",  "title": 'PO'}, 
 			    {"data" : "ArticleFG",  "title": 'Article No'}, 
 			    {"data" : "DesignFG",  "title": 'Design No'}, 
-			    {"data" : "Color",  "title": 'ATT Color'},     
-			    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //5
-			    {"data" : "SaleQuantity",  "title": 'Order Qty.','type': 'num'}, 
-			    {"data" : "BillQuantity",  "title": 'Shipped Qty.','type': 'num'}, 
-			    {"data" : "SaleUnit",  "title": 'Unit'}, 
-			    {"data" : "ProductionOrder",  "title": 'Prod.No.'}, 
-			    {"data" : "TotalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //10 
-			    {"data" : "GreigeInDate",  "title": 'Greige In'},    
-			    {"data" : "UserStatus",  "title": 'User Status'},     
-			    {"data" : "DueDate",  "title": 'Due Date','type': 'date-euro'},        
-			    {"data" : "Prepare",  "title": 'Prepare'},   
-			    {"data" : "Relax",  "title": 'Relax'},                 //15
-			    {"data" : "Preset",  "title": 'PS'},                 //16
-			    {"data" : "DyePlan",  "title": 'Dye [Plan]'},            //17
-			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},        //18
-			    {"data" : "DyeStatus",  "title": 'Dye Status'},          //19
-			    {"data" : "Dryer" ,  "title": 'Dryer Date'},     
-			    {"data" : "Finishing",  "title": 'FN'},  
-			    {"data" : "Inspectation",  "title": 'Inspect'},       //22 
-			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},        //23 
-			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},        //24
-			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //25
-			    {"data" : "LotShipping",  "title": 'Shipping'}         //26    
+			    {"data" : "Color",  "title": 'ATT Color'},               //5
+			    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //6
+			    {"data" : "SaleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
+			    {"data" : "BillQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
+			    {"data" : "SaleUnit",  "title": 'Unit'},                              //9
+			    {"data" : "ProductionOrder",  "title": 'Prod.No.'},                   //10
+			    {"data" : "TotalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
+			    {"data" : "PlanGreigeDate",  "title": 'Plan Greige Date' },            //12
+			    {"data" : "GreigeInDate",  "title": 'Greige In' },                     //13
+			    {"data" : "UserStatus",  "title": 'User Status'},                     //14
+			    {"data" : "DueDate",  "title": 'Due Date','type': 'date-euro'},       //15        
+			    {"data" : "Prepare",  "title": 'Prepare'},                            //16
+			    {"data" : "Relax",  "title": 'Relax'},                                //17
+			    {"data" : "Preset",  "title": 'PS'},                                  //18
+			    {"data" : "DyePlan",  "title": 'Dye [Plan]'},                         //19
+			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},                     //20
+			    {"data" : "DyeStatus",  "title": 'Dye Status'},                       //21
+			    {"data" : "Dryer" ,  "title": 'Dryer Date'},                          //22
+			    {"data" : "Finishing",  "title": 'FN'},                               //23
+			    {"data" : "Inspectation",  "title": 'Inspect'},                       //24
+			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},       //25 
+			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},   //26
+			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //27
+			    {"data" : "LotShipping",  "title": 'Shipping'}              //28    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
 			columnDefs :  [	       
-				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26,27],                
-//	 			  	  className : 'data-custom-main',        
-//	 		  	 	  type: 'string'      
-					} ,            
-				{ targets :  [27],                   
-				  	  className : 'p-r-15',                  
-					} ,   
-				{ targets :  [7,8,11],                         
-			  	  type : 'num',                 
-				} ,   
+// 				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26,27],                
+// //	 			  	  className : 'data-custom-main',        
+// //	 		  	 	  type: 'string'      
+// 					} ,            
+// 				{ targets :  [27],                   
+// 				  	  className : 'p-r-15',                  
+// 					} ,   
+// 				{ targets :  [7,8,11],                         
+// 			  	  type : 'num',                 
+// 				} ,   
 				{ targets:[10]  ,       
 					render: function (data, type, row) {	   
 						let html = '<div  name="n_'+row.ProductionOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.ProductionOrder+'</div>'
 						return  html; 
 				   	  }    
 				},    
-			 	{ targets : [ 14 ],      
-					  type: 'date-euro' ,    
-					} , 
-					{ targets : [ 24 ],     
+// 			 	{ targets : [ 14 ],      
+// 					  type: 'date-euro' ,    
+// 					} , 
+					{ targets : [ 25],     
 				   	  render: function (data, type, row) {	 
 					   		var htmlEx = row.CFMPlanDate      
 // 				   			if( userId == 'violetta01' ){ 
@@ -1431,7 +1433,7 @@ function exportCSV(data){
 // 							innerRowData[indexArray] = val;   
 						} 
 						else{   
-// 							innerRowData[indexArray] = val;   
+// 							innerRowData[indexArray] = val;             
 						}   
 						innerRowData[indexArray] = val;   
 					}
@@ -1621,7 +1623,8 @@ function setModalDetail(data){
 	if(innnerText.waitTestDetailList.length == 0){       }     
 	else{ waitTestTable.rows.add(innnerText.waitTestDetailList); }  
 	waitTestTable.draw();  
-	
+
+// 	console.log(innnerText.cfmDetailList)     
 	cfmTable.clear();    	   
 	if(innnerText.cfmDetailList.length == 0){       }     
 	else{ cfmTable.rows.add(innnerText.cfmDetailList); }  

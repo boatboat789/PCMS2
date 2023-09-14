@@ -123,12 +123,11 @@ public class FtpTaskRunner {
 	   this.importerMainSale.loadDataFTP(this.user);  
 	   if(bl_check == true) { System.out.println("importerMainSale :: " + Calendar.getInstance().getTime().toString()); }  
 	   this.importerGoodReceive.loadDataFTP(this.user);
-	   if(bl_check == true) { System.out.println("importerGoodReceive :: " + Calendar.getInstance().getTime().toString()); } 
-//	   this.importerMainGrade.loadDataFTP(this.user);
+	   if(bl_check == true) { System.out.println("importerGoodReceive :: " + Calendar.getInstance().getTime().toString()); }  
 	   this.importerBillBatch.loadDataFTP(this.user);  
 	   if(bl_check == true) { System.out.println("importerBillBatch :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerMainProdSale.loadDataFTP(this.user);
-	   if(bl_check == true) { System.out.println("importerMainProd :: " + Calendar.getInstance().getTime().toString()); } 
+	   if(bl_check == true) { System.out.println("importerMainProdSale :: " + Calendar.getInstance().getTime().toString()); } 
 //-----------------------------------------------------------------
 //---------------------MUST LAST-----------------------------------
 	   this.importerMainProd.loadDataFTP(this.user);	//spd_UpsertToTEMP_ProdWorkDate  //spd_UpsertToTEMP_UserStatusOnWeb

@@ -95,4 +95,7 @@
 <!-- 	   <exception-type>404</exception-type>  -->
 <!-- 	   <location>/404.jsp</location> -->
 <!-- 	</error-page> -->
+ <error-page>    
+  <location>/error</location>
+ </error-page>
 </web-app>

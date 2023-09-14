@@ -91,7 +91,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "  , CASE \r\n"
 			+ "		WHEN SCC.SendCFMCusDate IS NOT NULL and SCC.SendCFMCusDate <> ''  THEN SCC.SendCFMCusDate \r\n"
 			+ "    	ELSE  g.SendCFMCusDate \r\n"
-			+ "   END AS SendCFMCusDate\r\n"  ;  
+			+ "   END AS SendCFMCusDate\r\n"
+			+ "   , g.PlanGreigeDate \r\n";  
 	private String selectOP = 
 			  "     a.SaleOrder \r\n"
 			+ "	  , CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
@@ -242,7 +243,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
   		    + "   , CASE \r\n"
   		    + "		WHEN SCC.SendCFMCusDate IS NOT NULL and SCC.SendCFMCusDate <> ''  THEN SCC.SendCFMCusDate \r\n"
   		    + "    	ELSE  g.SendCFMCusDate \r\n"
-  		    + "    	END AS SendCFMCusDate\r\n" ;    
+  		    + "    	END AS SendCFMCusDate\r\n"
+			+ "   , g.PlanGreigeDate \r\n" ;    
 	private String selectAll = 
 			    "  SaleOrder \r\n"
 			  + ", [SaleLine] \r\n"
@@ -288,7 +290,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			  + ", SendCFMCusDate\r\n"
 			  + ", TypePrd \r\n"
 			  + ", TypePrdRemark \r\n"
-			  + ", [PurchaseOrder]     \r\n"; 
+			  + ", [PurchaseOrder]     \r\n"  
+  		      + " , a.[PlanGreigeDate]\r\n"; 
 	private String selectWaitLot = 
 	  		      "     a.SaleOrder 		\r\n"
 	    		+ "   , CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
@@ -340,7 +343,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	  		    + "   , SendCFMCusDate\r\n"
 	  		    + "   , 'WaitLot' as TypePrd \r\n"
 	  		    + "   , 'WaitLot' AS TypePrdRemark    \r\n"
-	  		    + "   ,a.[PurchaseOrder] \r\n"; 
+	  		    + "   ,a.[PurchaseOrder] \r\n"
+	  		    + "   , a.[PlanGreigeDate]\r\n"; 
 	private String selectTwo =    
 		      "    b.[ProductionOrder]\r\n"
 			+ "   ,ColorCustomer \r\n"
@@ -353,7 +357,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "	  ,PurchaseOrder,b.ArticleFG,b.DesignFG\r\n"
 			+ "	  ,CustomerName,CustomerShortName,Shade,BookNo,Center\r\n"
 			+ "	  ,MaterialNo,Volumn,SaleUnit,Unit as STDUnit\r\n" 
-			+ "	  ,Color,PlanGreigeDate,RefPrd,b.GreigeInDate\r\n"
+			+ "	  ,Color,g.PlanGreigeDate,RefPrd,b.GreigeInDate\r\n"
 			+ "	  ,BCAware,OrderPuang,UserStatus,LabStatus\r\n" 
 			+ "   , b.CFMPlanDate AS CFMPlanDate \r\n" 
 			+ "   ,CASE  \r\n"
@@ -440,6 +444,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			  + "				 		,[OrderPuang] ,[RefPrd],b.[GreigeInDate] ,[BCDate],b.[Volumn]\r\n"
 			  + "				 		,[CFdate],[CFType],[Shade] ,g.[LotShipping],[BillSendQuantity] \r\n"
 			  + "				 		,[PrdCreateDate],[GreigeArticle],[GreigeDesign],[GreigeMR],[GreigeKG] \r\n"
+				+ "                     , g.PlanGreigeDate \r\n"
 			  + "               into #tempMainPrdTemp\r\n"
 			  + "				from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
 			  + "				left join [PCMS].[dbo].[FromSapMainProd] as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
@@ -455,9 +460,10 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			" left join #tempSumGR as m on b.ProductionOrder = m.ProductionOrder \r\n";
 	private String leftJoinUCAL = "    "
 			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] " 
-			+ " as UCAL on b.ProductionOrder = UCAL.ProductionOrder AND ( m.Grade = UCAL.Grade OR m.Grade IS NULL )  \r\n"; 
+			+ " as UCAL on UCAL.[DataStatus] = 'O' AND b.ProductionOrder = UCAL.ProductionOrder AND ( m.Grade = UCAL.Grade OR m.Grade IS NULL )  \r\n"; 
 	private String leftJoinUCALRP = "    "
-			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on b.ProductionOrder = UCALRP.ProductionOrder   AND (  m.Grade = UCALRP.Grade    OR  m.Grade IS NULL )    \r\n"; 
+			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on \r\n" 
+			+ " UCALRP.[DataStatus] = 'O' AND  b.ProductionOrder = UCALRP.ProductionOrder   AND (  m.Grade = UCALRP.Grade    OR  m.Grade IS NULL )    \r\n"; 
 	private String innerJoinWaitLotB =    
    		   " INNER JOIN (\r\n"
    		 + "	SELECT DISTINCT a.saleorder , a.saleline, c.SumVolMain ,b.SumVolUsed\r\n"
@@ -519,6 +525,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		 + "		, cast(null as varchar) as DyeStatus  \r\n"
 		 + "		, cast(null as date) as SendCFMCusDate\r\n"
 	     + "        , cast(null as date) AS LotShipping \r\n"   
+		 + "		, cast(null as date) as PlanGreigeDate \r\n" 
    		 + "	from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
    		 + "	left join ( SELECT DISTINCT A.SaleOrder , A.SaleLine ,ISNULL(SumVolOP, 0 ) + ISNULL(SumVolRP, 0 ) as SumVolUsed --,ISNULL(SumVolRP, 0 )\r\n"
    		 + "				               , SumVolOP , SumVolRP\r\n"
@@ -624,7 +631,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			  + "					WHEN SCC.SendCFMCusDate IS NOT NULL and SCC.SendCFMCusDate <> ''  THEN SCC.SendCFMCusDate \r\n"
 			  + "    			  	ELSE  g.SendCFMCusDate \r\n"     
 			  + "    				END AS SendCFMCusDate\r\n"
-			  + "             , GRSumKG, GRSumYD, GRSumMR \r\n"  ; 
+			  + "             , GRSumKG, GRSumYD, GRSumMR \r\n" 
+				+ "          , g.PlanGreigeDate \r\n" ; 
 	private String leftJoinH = 
 			"           left join #tempPlandeliveryDate as h on h.ProductionOrder = b.ProductionOrder and h.SaleOrder = a.SaleOrder and h.SaleLine = a.SaleLine\r\n"
 		  ;   
@@ -897,7 +905,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					whereCaseTry += " a.LotNo = '" +text + "' "; 
 					listUserStatus.add(" b.LotNo = '" +text + "' "); 
 				} else {  
-					int_emerCheck = 1;
+					int_emerCheck = 1;  
 					tmpWhere += "UCAL.UserStatusCal = '" +text + "' ";
 					tmpWhereNoLotUCAL += "UCAL.UserStatusCal = '" +text + "' ";
 					whereCaseTry += "a.UserStatus = '" +text + "' ";
@@ -956,9 +964,9 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "				      CustomerShortName like '%Wacoal%' )AS c ON A.CustomerNo = c.CustomerNo\r\n"
 				+ " ) as a\r\n"
 				+ whereSale;
-		String sqlWaitLot = 
+		String sqlWaitLot =    
 				  " SELECT DISTINCT  \r\n" 
-				+ this.selectWaitLot 	 
+				+ this.selectWaitLot 	    
 	  		    + " INTO #tempWaitLot  \r\n"
 				+ " FROM #tempMainSale as a \r\n " 
 				+ this.innerJoinWaitLotB 
@@ -970,7 +978,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				  + this.leftJoinBSelect
 				  + "				,Division,CustomerShortName,SaleCreateDate,PurchaseOrder,MaterialNo,CustomerMaterial,Price,SaleUnit\r\n"
 				  + "				,OrderAmount,SaleQuantity,RemainQuantity,RemainAmount,CustomerDue,DueDate,ShipDate,CustomerType\r\n"
-				  + "				,[SaleNumber],[SaleFullName],DistChannel,Color,ColorCustomer,CustomerName,DeliveryStatus,SaleStatus,PlanGreigeDate\r\n"
+				  + "				,[SaleNumber],[SaleFullName],DistChannel,Color,ColorCustomer,CustomerName,DeliveryStatus,SaleStatus \r\n"
 				  + "			from #tempMainSale as a\r\n"  
 				  + "           left join #tempMainPrdTemp as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
 				  + this.leftJoinBPartOneT
@@ -987,7 +995,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.selectMainV2	 
 				+ "   , 'Main' as TypePrd \r\n"
 				+ "   , 'Main' AS TypePrdRemark \r\n"   
-	  		    + "   , 	[PurchaseOrder] \r\n"
+	  		    + "   , [PurchaseOrder] \r\n"
+	  		    + "   , b.PlanGreigeDate\r\n"
 	  		    + " INTO #tempMain  \r\n" 
 				+ fromMainB 
 				+ this.leftJoinCSW  
@@ -1038,6 +1047,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "           , g.CFMCusAnsLabDate \r\n"
 				+ "           , g.GreigeInDate\r\n"
 				+ "           , g.LotShipping \r\n"
+				+ "           , g.PlanGreigeDate \r\n"
 				+ "       into #tempPrdOPA\r\n"  
 				+ "		  from #tempMainSale as a  \r\n"
 				+ "		  inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
@@ -1056,12 +1066,13 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "   ,'OrderPuang' as TypePrd \r\n" 
     			+ "   ,TypePrdRemark \r\n"
 	  		    + "   , [PurchaseOrder] \r\n"
+	  		    + "   , a.PlanGreigeDate\r\n"
 				+ " into #tempPrdOP\r\n"
     			+ " FROM #tempPrdOPA as a  \r\n "  
 				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 				+ this.leftJoinH     ; 
 		String sqlOP = ""
-					+ " select \r\n"
+					+ " select \r\n"     
 					+ this.selectAll 
 		  		    + " INTO #tempOP  \r\n"
 					+ " from #tempPrdOP as a \r\n"  
@@ -1083,7 +1094,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.select  
 					+ "   , 'OrderPuang' as TypePrd \r\n"  
 	    			+ "   , TypePrdRemark \r\n"
-		  		    + "   ,a.[PurchaseOrder] \r\n"
+		  		    + "   ,a.[PurchaseOrder] \r\n" 
 		  		    + " INTO #tempPrdOPSW  \r\n"
 					+ " FROM (  SELECT DISTINCT  a.SaleOrder  , a.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 					+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
@@ -1093,7 +1104,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ "           , a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
 					+ "           , CASE WHEN b.Volumn <> 0 THEN b.Volumn \r\n"
 					+ "                  ELSE  0 \r\n"     
-					+ "                  END AS Volumn \r\n"
+					+ "                  END AS Volumn , a.[PlanGreigeDate] \r\n"
 					+ "		   from #tempMainSale as a  \r\n"
 					+ "		   inner join ( \r\n"
 					+ "             SELECT \r\n"
@@ -1125,7 +1136,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.leftJoinUCAL  
 					+ where     
 					+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"   ;
-		String sqlOPSW = ""
+		String sqlOPSW = "" 
 				+ " select \r\n"
 				+ this.selectAll 
 	  		    + " INTO #tempOPSW  \r\n"
@@ -1143,7 +1154,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.select 
 				+ "   ,'Switch' as TypePrd \r\n"  
     			+ "   ,TypePrdRemark \r\n"
-	  		    + "   ,a.[PurchaseOrder] \r\n"
+	  		    + "   ,a.[PurchaseOrder] \r\n" 
 	  		    + " INTO #tempPrdSW  \r\n"
     			+ " FROM (  SELECT DISTINCT  a.SaleOrder  , a.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 				+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
@@ -1153,7 +1164,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ " 		  , CASE \r\n"
 				+ "					when b.ProductionOrder = b.ProductionOrderSW then 'MAIN'\r\n"
 				+ "					ELSE 'SUB' \r\n"
-				+ "			    	END	TypePrdRemark  ,C.SumVol\r\n" 
+				+ "			    	END	TypePrdRemark  ,C.SumVol, a.[PlanGreigeDate] \r\n" 
 				+ "		 	from #tempMainSale as a  \r\n"
 				+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleLine = b.SaleLineSW and a.SaleOrder = b.SaleOrderSW  \r\n \r\n"
 				+ "		 	LEFT JOIN ( \r\n"
@@ -1192,7 +1203,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.leftJoinUCAL  
 				+ where     
 				+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"  ;
-			String sqlSW =  ""
+			String sqlSW =  "" 
 					  + " select \r\n"
 					  + this.selectAll 
 		  		      + " INTO #tempSW  \r\n"
@@ -1208,7 +1219,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.selectRP 
 					+ "   , 'Replaced' as TypePrd \r\n"
 	    			+ "   , TypePrdRemark \r\n"
-		  		    + "   ,a.[PurchaseOrder] \r\n"
+		  		    + "   ,a.[PurchaseOrder] \r\n" 
 		  		    + " INTO #tempPrdReplaced  \r\n"
 					+ " FROM (  SELECT DISTINCT  b.[SaleOrder]  , b.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
 					+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
@@ -1219,7 +1230,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ "					WHEN b.Volume <> 0 THEN b.Volume\r\n"
 					+ "					ELSE  c.Volumn\r\n"  
 					+ "					END AS Volumn   \r\n"
-					+ " 		 , 'SUB' as TypePrdRemark \r\n" 
+					+ " 		 , 'SUB' as TypePrdRemark , a.[PlanGreigeDate] \r\n" 
 					+ "		 	from #tempMainSale as a  \r\n"
 					+ "		 	inner join [PCMS].[dbo].[ReplacedProdOrder] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder   \r\n"
 					+ "		 	left join  [PCMS].[dbo].[FromSapMainProd] as c on c.ProductionOrder = b.[ProductionOrderRP]\r\n"
@@ -1233,7 +1244,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.leftJoinUCALRP     ;
 
 			String sqlRP = ""
-						+ " select \r\n"
+						+ " select \r\n"  
 						+ this.selectAll 
 			  		    + " INTO #tempRP  \r\n"
 						+ " from #tempPrdReplaced as a \r\n"    
@@ -1295,12 +1306,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ " union \r\n"
 					+ " SELECT * FROM #tempRP\r\n"  
 					+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine], [ProductionOrder] ";    
- 
-//			 System.out.println("---------------------------------");
-//			 System.out.println(sql);
-//		 System.out.println("START : "+new Date());
-		List<Map<String, Object>> datas = this.database.queryList(sql); 
-//		 System.out.println("STOP  : "+new Date());
+//  System.out.println(sql);
+		List<Map<String, Object>> datas = this.database.queryList(sql);  
 		list = new ArrayList<PCMSTableDetail>();  
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSTableDetail(map));
@@ -1337,7 +1344,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				  + this.leftJoinBSelect
 				  + "				,Division,CustomerShortName,SaleCreateDate,PurchaseOrder,MaterialNo,CustomerMaterial,Price,SaleUnit\r\n"
 				  + "				,OrderAmount,SaleQuantity,RemainQuantity,RemainAmount,CustomerDue,DueDate,ShipDate,CustomerType\r\n"
-				  + "				,[SaleNumber],[SaleFullName],DistChannel,Color,ColorCustomer,CustomerName,DeliveryStatus,SaleStatus,PlanGreigeDate\r\n"
+				  + "				,[SaleNumber],[SaleFullName],DistChannel,Color,ColorCustomer,CustomerName,DeliveryStatus,SaleStatus \r\n"
 				  + "			from #tempMainSale as a\r\n"  
 				  + "           inner join (\r\n"
 				  + "					select * \r\n"
@@ -1365,6 +1372,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ fromMainB	 
 				+ this.leftJoinTempG       
 				+ " Order by SaleOrder , 	SaleLine"; 	 
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<PCMSAllDetail>();
 		for (Map<String, Object> map : datas) {

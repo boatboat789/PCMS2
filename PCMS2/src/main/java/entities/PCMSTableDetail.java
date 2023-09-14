@@ -16,6 +16,7 @@ public class PCMSTableDetail {
 	private String SaleUnit;
 	private String ProductionOrder;
 	private String TotalQuantity;  
+	private String PlanGreigeDate;
 	private String GreigeInDate;
 	private String UserStatus;
 	private String LabStatus;
@@ -71,8 +72,9 @@ public class PCMSTableDetail {
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
 			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder,
-			String CustomerDivision) {
+			String CustomerDivision,String PlanGreigeDate) {
 		super();
+		this.PlanGreigeDate = PlanGreigeDate;
 		this.CustomerDivision = CustomerDivision;
 		this.PurchaseOrder  =PurchaseOrder;
 		this.SendCFMCusDate  =SendCFMCusDate;
@@ -149,6 +151,12 @@ public class PCMSTableDetail {
 		SaleStatus = saleStatus; 
 		this.Division = division;
 	} 
+	public String getPlanGreigeDate() {
+		return PlanGreigeDate;
+	}
+	public void setPlanGreigeDate(String planGreigeDate) {
+		PlanGreigeDate = planGreigeDate;
+	}
 	public String getCustomerDivision() {
 		return CustomerDivision;
 	}
