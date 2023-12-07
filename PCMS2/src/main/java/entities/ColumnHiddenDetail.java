@@ -3,57 +3,56 @@ package entities;
 import java.util.List;
 
 public class ColumnHiddenDetail {
-	private String UserId;
-	private String ColVisibleDetail;
-	private String ColVisibleSummary;
-	private List<String> ColList;
-	private String IconStatus;
-	private String SystemStatus;
+	private String userId;
+	private String colVisibleDetail;
+	private String colVisibleSummary;
+	private List<String> colList;
+	private String iconStatus;
+	private String systemStatus;
 
 	public ColumnHiddenDetail(String userId, String ColVisibleDetail,String ColVisibleSummary ) {
 		super();
-		UserId = userId;
-		this.ColVisibleDetail = ColVisibleDetail;
-		this.ColVisibleSummary = ColVisibleSummary; 
+		this.userId = userId;
+		this.colVisibleDetail = ColVisibleDetail;
+		this.colVisibleSummary = ColVisibleSummary; 
 	}
 	public ColumnHiddenDetail() {
 		// TODO Auto-generated constructor stub
 	}
-	public List<String> getColList() {
-		return ColList;
-	}
-	public void setColList(List<String> colList) {
-		ColList = colList;
-	}
-	public String getIconStatus() {
-		return IconStatus;
-	}
-	public void setIconStatus(String iconStatus) {
-		IconStatus = iconStatus;
-	}
-	public String getSystemStatus() {
-		return SystemStatus;
-	}
-	public void setSystemStatus(String systemStatus) {
-		SystemStatus = systemStatus;
-	}
 	public String getUserId() {
-		return UserId;
-	} 
+		return userId;
+	}
 	public void setUserId(String userId) {
-		this.UserId = userId;
+		this.userId = userId;
 	}
 	public String getColVisibleDetail() {
-		return ColVisibleDetail;
+		return colVisibleDetail;
 	}
 	public void setColVisibleDetail(String colVisibleDetail) {
-		ColVisibleDetail = colVisibleDetail;
+		this.colVisibleDetail = colVisibleDetail;
 	}
 	public String getColVisibleSummary() {
-		return ColVisibleSummary;
+		return colVisibleSummary;
 	}
 	public void setColVisibleSummary(String colVisibleSummary) {
-		ColVisibleSummary = colVisibleSummary;
+		this.colVisibleSummary = colVisibleSummary;
 	}
-	 
+	public List<String> getColList() {
+		return colList;
+	}
+	public void setColList(List<String> colList) {
+		this.colList = colList;
+	}
+	public String getIconStatus() {
+		return iconStatus;
+	}
+	public void setIconStatus(String iconStatus) {
+		this.iconStatus = iconStatus;
+	}
+	public String getSystemStatus() {
+		return systemStatus;
+	}
+	public void setSystemStatus(String systemStatus) {
+		this.systemStatus = systemStatus;
+	} 
 }

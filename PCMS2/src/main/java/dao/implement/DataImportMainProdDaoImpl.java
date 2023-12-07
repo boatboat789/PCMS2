@@ -78,8 +78,7 @@ public class DataImportMainProdDaoImpl implements DataImportDao {
       FileInputStream input = null; 
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPMAINPRD.txt")) {  
-//    	  System.out.println(fullname);
+      if (fullname.contains("ZSAPMAINPRD.txt")) {   
 	      if (file.exists()) {
 	         try {  
 	            input = new FileInputStream(file);

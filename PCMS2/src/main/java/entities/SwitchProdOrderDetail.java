@@ -1,104 +1,104 @@
 package entities;
 
 public class SwitchProdOrderDetail { 
-	private String SaleOrder;
-	private String SaleLine;  
-	private String ProductionOrder; 
-	private String SaleOrderSW;
-	private String SaleLineSW;
-	private String ProductionOrderSW;
-	private String ChangeBy;
-	private String ChangeDate;
-	private String TypePrd;
-	private String SwitchRemark;
-	private String IconStatus;
-	private String SystemStatus;
+	private String saleOrder;
+	private String saleLine;  
+	private String productionOrder; 
+	private String saleOrderSW;
+	private String saleLineSW;
+	private String productionOrderSW;
+	private String changeBy;
+	private String changeDate;
+	private String typePrd;
+	private String switchRemark;
+	private String iconStatus;
+	private String systemStatus;
 	public SwitchProdOrderDetail() {
 		super();
 	}
 	public SwitchProdOrderDetail(String saleOrder, String saleLine, String productionOrder, String saleOrderSW,
 			String saleLineSW, String productionOrderSW, String changeBy, String changeDate) {
 		super();
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		ProductionOrder = productionOrder;
-		SaleOrderSW = saleOrderSW;
-		SaleLineSW = saleLineSW;
-		ProductionOrderSW = productionOrderSW;
-		ChangeBy = changeBy;
-		ChangeDate = changeDate;
-	}
-	public String getTypePrd() {
-		return TypePrd;
-	}
-	public void setTypePrd(String typePrd) {
-		TypePrd = typePrd;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.productionOrder = productionOrder;
+		this.saleOrderSW = saleOrderSW;
+		this.saleLineSW = saleLineSW;
+		this.productionOrderSW = productionOrderSW;
+		this.changeBy = changeBy;
+		this.changeDate = changeDate;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
 	public String getProductionOrder() {
-		return ProductionOrder;
+		return productionOrder;
 	}
 	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
+		this.productionOrder = productionOrder;
 	}
 	public String getSaleOrderSW() {
-		return SaleOrderSW;
+		return saleOrderSW;
 	}
 	public void setSaleOrderSW(String saleOrderSW) {
-		SaleOrderSW = saleOrderSW;
+		this.saleOrderSW = saleOrderSW;
 	}
 	public String getSaleLineSW() {
-		return SaleLineSW;
+		return saleLineSW;
 	}
 	public void setSaleLineSW(String saleLineSW) {
-		SaleLineSW = saleLineSW;
+		this.saleLineSW = saleLineSW;
 	}
 	public String getProductionOrderSW() {
-		return ProductionOrderSW;
+		return productionOrderSW;
 	}
 	public void setProductionOrderSW(String productionOrderSW) {
-		ProductionOrderSW = productionOrderSW;
+		this.productionOrderSW = productionOrderSW;
 	}
 	public String getChangeBy() {
-		return ChangeBy;
+		return changeBy;
 	}
 	public void setChangeBy(String changeBy) {
-		ChangeBy = changeBy;
+		this.changeBy = changeBy;
 	}
 	public String getChangeDate() {
-		return ChangeDate;
+		return changeDate;
 	}
 	public void setChangeDate(String changeDate) {
-		ChangeDate = changeDate;
+		this.changeDate = changeDate;
 	}
-	public String getIconStatus() {
-		return IconStatus;
+	public String getTypePrd() {
+		return typePrd;
 	}
-	public void setIconStatus(String iconStatus) {
-		IconStatus = iconStatus;
-	}
-	public String getSystemStatus() {
-		return SystemStatus;
-	}
-	public void setSystemStatus(String systemStatus) {
-		SystemStatus = systemStatus;
+	public void setTypePrd(String typePrd) {
+		this.typePrd = typePrd;
 	}
 	public String getSwitchRemark() {
-		return SwitchRemark;
+		return switchRemark;
 	}
 	public void setSwitchRemark(String switchRemark) {
-		SwitchRemark = switchRemark;
+		this.switchRemark = switchRemark;
 	}
+	public String getIconStatus() {
+		return iconStatus;
+	}
+	public void setIconStatus(String iconStatus) {
+		this.iconStatus = iconStatus;
+	}
+	public String getSystemStatus() {
+		return systemStatus;
+	}
+	public void setSystemStatus(String systemStatus) {
+		this.systemStatus = systemStatus;
+	} 
 	
 }

@@ -1,96 +1,104 @@
 package entities;
 
 public class PODetail {
-	private String ProductionOrder;
-	private String PONo ;
-	private String POLine ;
-	private String CreateDate ;
-	private String RequiredDate ;
-	private String RollNo ;
-	private String QuantityKG ;
-	private String QuantityMR ;
-	private String PODefault ;
-	private String POLineDefault ;
-	private String POPostingDateDefault ;
-	public PODetail(String productionOrder, String pONo, String pOLine, String createDate, String RequiredDate, String rollNo,
-			String quantityKG, String quantityMR, String pODefault, String pOLineDefault, String pOPostingDateDefault) {
+	private String productionOrder;
+	private String poNo ;
+	private String poLine ;
+	private String poCreatedate;
+//	private String createDate ;
+	private String requiredDate ;
+	private String rollNo ;
+	private String quantityKG ;
+	private String quantityMR ;
+	private String poDefault ;
+	private String poLineDefault ;
+	private String poPostingDateDefault ;
+	public PODetail(String productionOrder, String pONo, String pOLine, String poCreatedate, String RequiredDate, String rollNo,
+			String quantityKG, String quantityMR, String pODefault, String pOLineDefault, String pOPostingDateDefault ) {
 		super();
-		ProductionOrder = productionOrder;
-		PONo = pONo;
-		POLine = pOLine;
-		CreateDate = createDate;
-		this.RequiredDate = RequiredDate;
-		RollNo = rollNo;
-		QuantityKG = quantityKG;
-		QuantityMR = quantityMR;
-		PODefault = pODefault;
-		POLineDefault = pOLineDefault;
-		POPostingDateDefault = pOPostingDateDefault;
+		this.poCreatedate = poCreatedate;
+		this.productionOrder = productionOrder;
+		this.poNo = pONo;
+		this.poLine = pOLine;
+//		this.createDate = createDate;
+		this.requiredDate = RequiredDate;
+		this.rollNo = rollNo;
+		this.quantityKG = quantityKG;
+		this.quantityMR = quantityMR;
+		this.poDefault = pODefault;
+		this.poLineDefault = pOLineDefault;
+		this.poPostingDateDefault = pOPostingDateDefault;
+	}
+	public String getPoCreatedate() {
+		return poCreatedate;
+	}
+	public void setPoCreatedate(String poCreatedate) {
+		this.poCreatedate = poCreatedate;
 	}
 	public String getProductionOrder() {
-		return ProductionOrder;
+		return productionOrder;
 	}
 	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
+		this.productionOrder = productionOrder;
 	}
-	public String getPONo() {
-		return PONo;
+	public String getPoNo() {
+		return poNo;
 	}
-	public void setPONo(String pONo) {
-		PONo = pONo;
+	public void setPoNo(String poNo) {
+		this.poNo = poNo;
 	}
-	public String getPOLine() {
-		return POLine;
+	public String getPoLine() {
+		return poLine;
 	}
-	public void setPOLine(String pOLine) {
-		POLine = pOLine;
+	public void setPoLine(String poLine) {
+		this.poLine = poLine;
 	}
-	public String getCreateDate() {
-		return CreateDate;
-	}
-	public void setCreateDate(String createDate) {
-		CreateDate = createDate;
-	}
+//	public String getCreateDate() {
+//		return createDate;
+//	}
+//	public void setCreateDate(String createDate) {
+//		this.createDate = createDate;
+//	}
 	public String getRequiredDate() {
-		return RequiredDate;
+		return requiredDate;
 	}
-	public void setRequiredDate(String RequiredDate) {
-		this.RequiredDate = RequiredDate;
+	public void setRequiredDate(String requiredDate) {
+		this.requiredDate = requiredDate;
 	}
 	public String getRollNo() {
-		return RollNo;
+		return rollNo;
 	}
 	public void setRollNo(String rollNo) {
-		RollNo = rollNo;
+		this.rollNo = rollNo;
 	}
 	public String getQuantityKG() {
-		return QuantityKG;
+		return quantityKG;
 	}
 	public void setQuantityKG(String quantityKG) {
-		QuantityKG = quantityKG;
+		this.quantityKG = quantityKG;
 	}
 	public String getQuantityMR() {
-		return QuantityMR;
+		return quantityMR;
 	}
 	public void setQuantityMR(String quantityMR) {
-		QuantityMR = quantityMR;
+		this.quantityMR = quantityMR;
 	}
-	public String getPODefault() {
-		return PODefault;
+	public String getPoDefault() {
+		return poDefault;
 	}
-	public void setPODefault(String pODefault) {
-		PODefault = pODefault;
+	public void setPoDefault(String poDefault) {
+		this.poDefault = poDefault;
 	}
-	public String getPOLineDefault() {
-		return POLineDefault;
+	public String getPoLineDefault() {
+		return poLineDefault;
 	}
-	public void setPOLineDefault(String pOLineDefault) {
-		POLineDefault = pOLineDefault;
+	public void setPoLineDefault(String poLineDefault) {
+		this.poLineDefault = poLineDefault;
 	}
-	public String getPOPostingDateDefault() {
-		return POPostingDateDefault;
+	public String getPoPostingDateDefault() {
+		return poPostingDateDefault;
 	}
-	public void setPOPostingDateDefault(String pOPostingDateDefault) {
-		POPostingDateDefault = pOPostingDateDefault;
+	public void setPoPostingDateDefault(String poPostingDateDefault) {
+		this.poPostingDateDefault = poPostingDateDefault;
 	} 
 }

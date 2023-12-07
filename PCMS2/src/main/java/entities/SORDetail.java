@@ -1,41 +1,40 @@
 package entities;
 
 public class SORDetail {
-	private String SaleOrder;
-	private String SaleLine;
-	private String CFMDate;
-	private String LastUpdate;
+	private String saleOrder;
+	private String saleLine;
+	private String cfmDate;
+	private String lastUpdate;
 	public SORDetail(String saleOrder, String saleLine, String cFMDate, String lastUpdate) {
 		super();
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		CFMDate = cFMDate;
-		LastUpdate = lastUpdate;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.cfmDate = cFMDate;
+		this.lastUpdate = lastUpdate;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
-	public String getCFMDate() {
-		return CFMDate;
+	public String getCfmDate() {
+		return cfmDate;
 	}
-	public void setCFMDate(String cFMDate) {
-		CFMDate = cFMDate;
+	public void setCfmDate(String cfmDate) {
+		this.cfmDate = cfmDate;
 	}
 	public String getLastUpdate() {
-		return LastUpdate;
+		return lastUpdate;
 	}
 	public void setLastUpdate(String lastUpdate) {
-		LastUpdate = lastUpdate;
-	}
-	
+		this.lastUpdate = lastUpdate;
+	} 
 	
 }

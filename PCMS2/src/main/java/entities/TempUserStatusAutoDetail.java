@@ -1,91 +1,91 @@
 package entities;
 
 public class TempUserStatusAutoDetail { 
-	private String ProductionOrder;  
-	private String SaleOrder;
-	private String SaleLine;  
-	private String ProductionOrderRPM;
-	private String Volume;
-	private String Grade;
-	private String UserStatusCal;
-	private String UserStatusCalRP;
+	private String productionOrder;  
+	private String saleOrder;
+	private String saleLine;  
+	private String productionOrderRPM;
+	private String volume;
+	private String grade;
+	private String userStatusCal;
+	private String userStatusCalRP;
 
-	private String IconStatus;
-	private String SystemStatus;
+	private String iconStatus;
+	private String systemStatus;
 	public TempUserStatusAutoDetail() {
 		super();
 	}
 	public TempUserStatusAutoDetail(String productionOrder, String saleOrder, String saleLine,
 			String productionOrderRPM, String volume, String grade, String userStatusCal, String userStatusCalRP ) {
 		super();
-		ProductionOrder = productionOrder;
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		ProductionOrderRPM = productionOrderRPM;
-		Volume = volume;
-		Grade = grade;
-		UserStatusCal = userStatusCal;
-		UserStatusCalRP = userStatusCalRP; 
+		this.productionOrder = productionOrder;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.productionOrderRPM = productionOrderRPM;
+		this.volume = volume;
+		this.grade = grade;
+		this.userStatusCal = userStatusCal;
+		this.userStatusCalRP = userStatusCalRP; 
 	}
 	public String getProductionOrder() {
-		return ProductionOrder;
+		return productionOrder;
 	}
 	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
+		this.productionOrder = productionOrder;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
 	public String getProductionOrderRPM() {
-		return ProductionOrderRPM;
+		return productionOrderRPM;
 	}
 	public void setProductionOrderRPM(String productionOrderRPM) {
-		ProductionOrderRPM = productionOrderRPM;
+		this.productionOrderRPM = productionOrderRPM;
 	}
 	public String getVolume() {
-		return Volume;
+		return volume;
 	}
 	public void setVolume(String volume) {
-		Volume = volume;
+		this.volume = volume;
 	}
 	public String getGrade() {
-		return Grade;
+		return grade;
 	}
 	public void setGrade(String grade) {
-		Grade = grade;
+		this.grade = grade;
 	}
 	public String getUserStatusCal() {
-		return UserStatusCal;
+		return userStatusCal;
 	}
 	public void setUserStatusCal(String userStatusCal) {
-		UserStatusCal = userStatusCal;
+		this.userStatusCal = userStatusCal;
 	}
 	public String getUserStatusCalRP() {
-		return UserStatusCalRP;
+		return userStatusCalRP;
 	}
 	public void setUserStatusCalRP(String userStatusCalRP) {
-		UserStatusCalRP = userStatusCalRP;
+		this.userStatusCalRP = userStatusCalRP;
 	}
 	public String getIconStatus() {
-		return IconStatus;
+		return iconStatus;
 	}
 	public void setIconStatus(String iconStatus) {
-		IconStatus = iconStatus;
+		this.iconStatus = iconStatus;
 	}
 	public String getSystemStatus() {
-		return SystemStatus;
+		return systemStatus;
 	}
 	public void setSystemStatus(String systemStatus) {
-		SystemStatus = systemStatus;
+		this.systemStatus = systemStatus;
 	} 
 	
 }

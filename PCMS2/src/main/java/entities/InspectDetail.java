@@ -2,48 +2,48 @@ package entities;
  
 
 public class InspectDetail {
-	private String PostingDate = ""; 
-	private String QuantityGreige = ""; 
-	private String Operation = ""; 
-	private String QuantityFG = ""; 
-	private String Remark = "";
+	private String postingDate = ""; 
+	private String quantityGreige = ""; 
+	private String operation = ""; 
+	private String quantityFG = ""; 
+	private String remark = "";
 	public InspectDetail(String postingDate, String quantityGreige, String operation, String quantityFG,
 			String remark) {
 		super();
-		PostingDate = postingDate;
-		QuantityGreige = quantityGreige;
-		Operation = operation;
-		QuantityFG = quantityFG;
-		Remark = remark;
+		this.postingDate = postingDate;
+		this.quantityGreige = quantityGreige;
+		this.operation = operation;
+		this.quantityFG = quantityFG;
+		this.remark = remark;
 	}
 	public String getPostingDate() {
-		return PostingDate;
+		return postingDate;
 	}
 	public void setPostingDate(String postingDate) {
-		PostingDate = postingDate;
+		this.postingDate = postingDate;
 	}
 	public String getQuantityGreige() {
-		return QuantityGreige;
+		return quantityGreige;
 	}
 	public void setQuantityGreige(String quantityGreige) {
-		QuantityGreige = quantityGreige;
+		this.quantityGreige = quantityGreige;
 	}
 	public String getOperation() {
-		return Operation;
+		return operation;
 	}
 	public void setOperation(String operation) {
-		Operation = operation;
+		this.operation = operation;
 	}
 	public String getQuantityFG() {
-		return QuantityFG;
+		return quantityFG;
 	}
 	public void setQuantityFG(String quantityFG) {
-		QuantityFG = quantityFG;
+		this.quantityFG = quantityFG;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
-	}
+		this.remark = remark;
+	} 
 }

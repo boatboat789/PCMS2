@@ -3,46 +3,46 @@ package entities;
 import java.util.ArrayList;
 
 public class PCMSAllDetail {
-	private String ProductionOrder;
-	  private String LotNo;
-	  private String Batch;
-	  private String LabNo;
-	  private String PrdCreateDate;
-	  private String DueDate;
-      private String SaleOrder;
-      private String SaleLine; 
-	  private String PurchaseOrder;
-	  private String ArticleFG;
-	  private String DesignFG;
-	  private String CustomerName;
-	  private String CustomerShortName;
-	  private String Shade;
-	  private String BookNo;
-	  private String Center;
-	  private String MaterialNo;
-	  private String Volumn;
-	  private String SaleUnit;
-	  private String STDUnit;
-	  private String Color;
-	  private String ColorCustomer;
-	  private String PlanGreigeDate;
-	  private String RefPrd;
-	  private String GreigeInDate;
-	  private String BCAware;
-	  private String OrderPuang;
-	  private String UserStatus;
-	  private String LabStatus;
-	  private String CFMDatePlan;
-	  private String DeliveryDate;
-	  private String BCDate;
-	  private String RemarkOne;
-	  private String RemarkTwo;
-	  private String RemarkThree;
-	  private String RemAfterCloseOne;
-	  private String RemAfterCloseTwo;
-	  private String RemAfterCloseThree;
-	  private String GreigeArticle;
-	  private String GreigeDesign;
+	private String productionOrder;
+	  private String lotNo;
+	  private String batch;
+	  private String labNo;
+	  private String productionOrderCreateDate;
+	  private String dueDate;
+      private String saleOrder;
+      private String saleLine; 
+	  private String purchaseOrder;
+	  private String articleFG;
+	  private String designFG;
+	  private String customerName;
+	  private String customerShortName;
+	  private String shade;
+	  private String bookNo;
+	  private String center;
+	  private String materialNo;
+	  private String volumn;
+	  private String saleUnit;
+	  private String stdUnit;
+	  private String color;
+	  private String colorCustomer;
+	  private String planGreigeDate;
+	  private String refPrd;
+	  private String greigeInDate;
+	  private String bcAware;
+	  private String orderPuang;
+	  private String userStatus;
+	  private String labStatus;
+	  private String cfmDatePlan;
+	  private String deliveryDate;
+	  private String bcDate;
+	  private String remarkOne;
+	  private String remarkTwo;
+	  private String remarkThree;
+	  private String remAfterCloseOne;
+	  private String remAfterCloseTwo;
+	  private String remAfterCloseThree;
+	  private String greigeArticle;
+	  private String greigeDesign;
 	  private ArrayList<PODetail> poDetailList;
 	  private ArrayList<PresetDetail> presetDetailList;
 	  private ArrayList<DyeingDetail> dyeingDetailList;
@@ -68,85 +68,331 @@ public class PCMSAllDetail {
 			String remAfterCloseOne, String remAfterCloseTwo, String remAfterCloseThree,
 			String GreigeArticle ,String GreigeDesign,String ColorCustomer) {
 		super();
-		CustomerShortName = customerShortName;
-		ProductionOrder = productionOrder;
-		LotNo = lotNo;
-		Batch = batch;
-		LabNo = labNo;
-		PrdCreateDate = prdCreateDate;
-		DueDate = dueDate;
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		PurchaseOrder = purchaseOrder;
-		ArticleFG = articleFG;
-		DesignFG = designFG;
-		CustomerName = customerName;
-		Shade = shade;
-		BookNo = bookNo;
-		Center = center;
-		MaterialNo = materialNo;
-		Volumn = volumn;
-		SaleUnit = saleUnit;
-		STDUnit = sTDUnit;
-		Color = color;
-		PlanGreigeDate = planGreigeDate;
-		RefPrd = refPrd;
-		GreigeInDate = greigeInDate;
-		BCAware = bCAware;
-		OrderPuang = orderPuang;
-		UserStatus = userStatus;
-		LabStatus = labStatus;
-		CFMDatePlan = cFMDatePlan;
-		this.DeliveryDate = DeliveryDate;
-		BCDate = bCDate;
-		RemarkOne = remarkOne;
-		RemarkTwo = remarkTwo;
-		RemarkThree = remarkThree;
-		RemAfterCloseOne = remAfterCloseOne;
-		RemAfterCloseTwo = remAfterCloseTwo;
-		RemAfterCloseThree = remAfterCloseThree;
-		this.GreigeArticle = GreigeArticle;
-		this.GreigeDesign = GreigeDesign;
-		this.ColorCustomer = ColorCustomer;
+		this.customerShortName = customerShortName;
+		this.productionOrder = productionOrder;
+		this.lotNo = lotNo;
+		this.batch = batch;
+		this.labNo = labNo;
+		this.productionOrderCreateDate = prdCreateDate;
+		this.dueDate = dueDate;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.purchaseOrder = purchaseOrder;
+		this.articleFG = articleFG;
+		this.designFG = designFG;
+		this.customerName = customerName;
+		this.shade = shade;
+		this.bookNo = bookNo;
+		this.center = center;
+		this.materialNo = materialNo;
+		this.volumn = volumn;
+		this.saleUnit = saleUnit;
+		this.stdUnit = sTDUnit;
+		this.color = color;
+		this.planGreigeDate = planGreigeDate;
+		this.refPrd = refPrd;
+		this.greigeInDate = greigeInDate;
+		this.bcAware = bCAware;
+		this.orderPuang = orderPuang;
+		this.userStatus = userStatus;
+		this.labStatus = labStatus;
+		this.cfmDatePlan = cFMDatePlan;
+		this.deliveryDate = DeliveryDate;
+		this.bcDate = bCDate;
+		this.remarkOne = remarkOne;
+		this.remarkTwo = remarkTwo;
+		this.remarkThree = remarkThree;
+		this.remAfterCloseOne = remAfterCloseOne;
+		this.remAfterCloseTwo = remAfterCloseTwo;
+		this.remAfterCloseThree = remAfterCloseThree;
+		this.greigeArticle = GreigeArticle;
+		this.greigeDesign = GreigeDesign;
+		this.colorCustomer = ColorCustomer;
 	}
 	public PCMSAllDetail() {
 		// TODO Auto-generated constructor stub
 	}
-	public String getColorCustomer() {
-		return ColorCustomer;
+	public String getProductionOrder() {
+		return productionOrder;
 	}
-	public void setColorCustomer(String colorCustomer) {
-		ColorCustomer = colorCustomer;
+	public void setProductionOrder(String productionOrder) {
+		this.productionOrder = productionOrder;
 	}
-	public ArrayList<InputDateDetail> getSubmitDateDetailList() {
-		return submitDateDetailList;
+	public String getLotNo() {
+		return lotNo;
 	}
-	public void setSubmitDateDetailList(ArrayList<InputDateDetail> submitDateDetailList) {
-		this.submitDateDetailList = submitDateDetailList;
+	public void setLotNo(String lotNo) {
+		this.lotNo = lotNo;
+	}
+	public String getBatch() {
+		return batch;
+	}
+	public void setBatch(String batch) {
+		this.batch = batch;
+	}
+	public String getLabNo() {
+		return labNo;
+	}
+	public void setLabNo(String labNo) {
+		this.labNo = labNo;
+	} 
+	public String getProductionOrderCreateDate() {
+		return productionOrderCreateDate;
+	}
+	public void setProductionOrderCreateDate(String productionOrderCreateDate) {
+		this.productionOrderCreateDate = productionOrderCreateDate;
+	}
+	public String getDueDate() {
+		return dueDate;
+	}
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+	public String getSaleOrder() {
+		return saleOrder;
+	}
+	public void setSaleOrder(String saleOrder) {
+		this.saleOrder = saleOrder;
+	}
+	public String getSaleLine() {
+		return saleLine;
+	}
+	public void setSaleLine(String saleLine) {
+		this.saleLine = saleLine;
+	}
+	public String getPurchaseOrder() {
+		return purchaseOrder;
+	}
+	public void setPurchaseOrder(String purchaseOrder) {
+		this.purchaseOrder = purchaseOrder;
+	}
+	public String getArticleFG() {
+		return articleFG;
+	}
+	public void setArticleFG(String articleFG) {
+		this.articleFG = articleFG;
+	}
+	public String getDesignFG() {
+		return designFG;
+	}
+	public void setDesignFG(String designFG) {
+		this.designFG = designFG;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 	public String getCustomerShortName() {
-		return CustomerShortName;
+		return customerShortName;
 	}
 	public void setCustomerShortName(String customerShortName) {
-		CustomerShortName = customerShortName;
+		this.customerShortName = customerShortName;
+	}
+	public String getShade() {
+		return shade;
+	}
+	public void setShade(String shade) {
+		this.shade = shade;
+	}
+	public String getBookNo() {
+		return bookNo;
+	}
+	public void setBookNo(String bookNo) {
+		this.bookNo = bookNo;
+	}
+	public String getCenter() {
+		return center;
+	}
+	public void setCenter(String center) {
+		this.center = center;
+	}
+	public String getMaterialNo() {
+		return materialNo;
+	}
+	public void setMaterialNo(String materialNo) {
+		this.materialNo = materialNo;
+	}
+	public String getVolumn() {
+		return volumn;
+	}
+	public void setVolumn(String volumn) {
+		this.volumn = volumn;
+	}
+	public String getSaleUnit() {
+		return saleUnit;
+	}
+	public void setSaleUnit(String saleUnit) {
+		this.saleUnit = saleUnit;
+	}
+	public String getStdUnit() {
+		return stdUnit;
+	}
+	public void setStdUnit(String stdUnit) {
+		this.stdUnit = stdUnit;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	public String getColorCustomer() {
+		return colorCustomer;
+	}
+	public void setColorCustomer(String colorCustomer) {
+		this.colorCustomer = colorCustomer;
+	}
+	public String getPlanGreigeDate() {
+		return planGreigeDate;
+	}
+	public void setPlanGreigeDate(String planGreigeDate) {
+		this.planGreigeDate = planGreigeDate;
+	}
+	public String getRefPrd() {
+		return refPrd;
+	}
+	public void setRefPrd(String refPrd) {
+		this.refPrd = refPrd;
+	}
+	public String getGreigeInDate() {
+		return greigeInDate;
+	}
+	public void setGreigeInDate(String greigeInDate) {
+		this.greigeInDate = greigeInDate;
+	}
+	public String getBcAware() {
+		return bcAware;
+	}
+	public void setBcAware(String bcAware) {
+		this.bcAware = bcAware;
+	}
+	public String getOrderPuang() {
+		return orderPuang;
+	}
+	public void setOrderPuang(String orderPuang) {
+		this.orderPuang = orderPuang;
+	}
+	public String getUserStatus() {
+		return userStatus;
+	}
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+	public String getLabStatus() {
+		return labStatus;
+	}
+	public void setLabStatus(String labStatus) {
+		this.labStatus = labStatus;
+	}
+	public String getCfmDatePlan() {
+		return cfmDatePlan;
+	}
+	public void setCfmDatePlan(String cfmDatePlan) {
+		this.cfmDatePlan = cfmDatePlan;
+	}
+	public String getDeliveryDate() {
+		return deliveryDate;
+	}
+	public void setDeliveryDate(String deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+	public String getBcDate() {
+		return bcDate;
+	}
+	public void setBcDate(String bcDate) {
+		this.bcDate = bcDate;
+	}
+	public String getRemarkOne() {
+		return remarkOne;
+	}
+	public void setRemarkOne(String remarkOne) {
+		this.remarkOne = remarkOne;
+	}
+	public String getRemarkTwo() {
+		return remarkTwo;
+	}
+	public void setRemarkTwo(String remarkTwo) {
+		this.remarkTwo = remarkTwo;
+	}
+	public String getRemarkThree() {
+		return remarkThree;
+	}
+	public void setRemarkThree(String remarkThree) {
+		this.remarkThree = remarkThree;
+	}
+	public String getRemAfterCloseOne() {
+		return remAfterCloseOne;
+	}
+	public void setRemAfterCloseOne(String remAfterCloseOne) {
+		this.remAfterCloseOne = remAfterCloseOne;
+	}
+	public String getRemAfterCloseTwo() {
+		return remAfterCloseTwo;
+	}
+	public void setRemAfterCloseTwo(String remAfterCloseTwo) {
+		this.remAfterCloseTwo = remAfterCloseTwo;
+	}
+	public String getRemAfterCloseThree() {
+		return remAfterCloseThree;
+	}
+	public void setRemAfterCloseThree(String remAfterCloseThree) {
+		this.remAfterCloseThree = remAfterCloseThree;
 	}
 	public String getGreigeArticle() {
-		return GreigeArticle;
+		return greigeArticle;
 	}
 	public void setGreigeArticle(String greigeArticle) {
-		GreigeArticle = greigeArticle;
+		this.greigeArticle = greigeArticle;
 	}
 	public String getGreigeDesign() {
-		return GreigeDesign;
+		return greigeDesign;
 	}
 	public void setGreigeDesign(String greigeDesign) {
-		GreigeDesign = greigeDesign;
+		this.greigeDesign = greigeDesign;
 	}
-	public ArrayList<InputDateDetail> getInputDateDetailList() {
-		return submitDateDetailList;
+	public ArrayList<PODetail> getPoDetailList() {
+		return poDetailList;
 	}
-	public void setInputDateDetailList(ArrayList<InputDateDetail> submitDateDetailList) {
-		this.submitDateDetailList = submitDateDetailList;
+	public void setPoDetailList(ArrayList<PODetail> poDetailList) {
+		this.poDetailList = poDetailList;
+	}
+	public ArrayList<PresetDetail> getPresetDetailList() {
+		return presetDetailList;
+	}
+	public void setPresetDetailList(ArrayList<PresetDetail> presetDetailList) {
+		this.presetDetailList = presetDetailList;
+	}
+	public ArrayList<DyeingDetail> getDyeingDetailList() {
+		return dyeingDetailList;
+	}
+	public void setDyeingDetailList(ArrayList<DyeingDetail> dyeingDetailList) {
+		this.dyeingDetailList = dyeingDetailList;
+	}
+	public ArrayList<SendTestQCDetail> getSendTestQCDetailList() {
+		return sendTestQCDetailList;
+	}
+	public void setSendTestQCDetailList(ArrayList<SendTestQCDetail> sendTestQCDetailList) {
+		this.sendTestQCDetailList = sendTestQCDetailList;
+	}
+	public ArrayList<FinishingDetail> getFinishingDetailList() {
+		return finishingDetailList;
+	}
+	public void setFinishingDetailList(ArrayList<FinishingDetail> finishingDetailList) {
+		this.finishingDetailList = finishingDetailList;
+	}
+	public ArrayList<InspectDetail> getInspectDetailList() {
+		return inspectDetailList;
+	}
+	public void setInspectDetailList(ArrayList<InspectDetail> inspectDetailList) {
+		this.inspectDetailList = inspectDetailList;
+	}
+	public ArrayList<PackingDetail> getPackingDetailList() {
+		return packingDetailList;
+	}
+	public void setPackingDetailList(ArrayList<PackingDetail> packingDetailList) {
+		this.packingDetailList = packingDetailList;
 	}
 	public ArrayList<WorkInLabDetail> getWorkInLabDetailList() {
 		return workInLabDetailList;
@@ -178,10 +424,10 @@ public class PCMSAllDetail {
 	public void setSaleInputDetailList(ArrayList<SaleInputDetail> saleInputDetailList) {
 		this.saleInputDetailList = saleInputDetailList;
 	}
-	public ArrayList<InputDateDetail> getSubmitdatDetailList() {
+	public ArrayList<InputDateDetail> getSubmitDateDetailList() {
 		return submitDateDetailList;
 	}
-	public void setSubmitdatDetailList(ArrayList<InputDateDetail> submitDateDetailList) {
+	public void setSubmitDateDetailList(ArrayList<InputDateDetail> submitDateDetailList) {
 		this.submitDateDetailList = submitDateDetailList;
 	}
 	public ArrayList<NCDetail> getNcDetailList() {
@@ -195,263 +441,5 @@ public class PCMSAllDetail {
 	}
 	public void setReceipeDetailList(ArrayList<ReceipeDetail> receipeDetailList) {
 		this.receipeDetailList = receipeDetailList;
-	}
-	public ArrayList<SendTestQCDetail> getSendTestQCDetailList() {
-		return sendTestQCDetailList;
-	}
-	public void setSendTestQCDetailList(ArrayList<SendTestQCDetail> sendTestQCDetailList) {
-		this.sendTestQCDetailList = sendTestQCDetailList;
-	}
-	public ArrayList<FinishingDetail> getFinishingDetailList() {
-		return finishingDetailList;
-	}
-	public void setFinishingDetailList(ArrayList<FinishingDetail> finishingDetailList) {
-		this.finishingDetailList = finishingDetailList;
-	}
-	public ArrayList<InspectDetail> getInspectDetailList() {
-		return inspectDetailList;
-	}
-	public void setInspectDetailList(ArrayList<InspectDetail> inspectDetailList) {
-		this.inspectDetailList = inspectDetailList;
-	}
-	public ArrayList<PackingDetail> getPackingDetailList() {
-		return packingDetailList;
-	}
-	public void setPackingDetailList(ArrayList<PackingDetail> packingDetailList) {
-		this.packingDetailList = packingDetailList;
-	}
-	public ArrayList<PresetDetail> getPresetDetailList() {
-		return presetDetailList;
-	}
-	public void setPresetDetailList(ArrayList<PresetDetail> presetDetailList) {
-		this.presetDetailList = presetDetailList;
-	}
-	public ArrayList<DyeingDetail> getDyeingDetailList() {
-		return dyeingDetailList;
-	}
-	public void setDyeingDetailList(ArrayList<DyeingDetail> dyeingDetailList) {
-		this.dyeingDetailList = dyeingDetailList;
-	}
-	public ArrayList<PODetail> getPoDetailList() {
-		return poDetailList;
-	}
-	public void setPoDetailList(ArrayList<PODetail> poDetailList) {
-		this.poDetailList = poDetailList;
-	}
-	public String getProductionOrder() {
-		return ProductionOrder;
-	}
-	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
-	}
-	public String getLotNo() {
-		return LotNo;
-	}
-	public void setLotNo(String lotNo) {
-		LotNo = lotNo;
-	}
-	public String getBatch() {
-		return Batch;
-	}
-	public void setBatch(String batch) {
-		Batch = batch;
-	}
-	public String getLabNo() {
-		return LabNo;
-	}
-	public void setLabNo(String labNo) {
-		LabNo = labNo;
-	}
-	public String getPrdCreateDate() {
-		return PrdCreateDate;
-	}
-	public void setPrdCreateDate(String prdCreateDate) {
-		PrdCreateDate = prdCreateDate;
-	}
-	public String getDueDate() {
-		return DueDate;
-	}
-	public void setDueDate(String dueDate) {
-		DueDate = dueDate;
-	}
-	public String getSaleOrder() {
-		return SaleOrder;
-	}
-	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
-	}
-	public String getSaleLine() {
-		return SaleLine;
-	}
-	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
-	}
-	public String getPurchaseOrder() {
-		return PurchaseOrder;
-	}
-	public void setPurchaseOrder(String purchaseOrder) {
-		PurchaseOrder = purchaseOrder;
-	}
-	public String getArticleFG() {
-		return ArticleFG;
-	}
-	public void setArticleFG(String articleFG) {
-		ArticleFG = articleFG;
-	}
-	public String getDesignFG() {
-		return DesignFG;
-	}
-	public void setDesignFG(String designFG) {
-		DesignFG = designFG;
-	}
-	public String getCustomerName() {
-		return CustomerName;
-	}
-	public void setCustomerName(String customerName) {
-		CustomerName = customerName;
-	}
-	public String getShade() {
-		return Shade;
-	}
-	public void setShade(String shade) {
-		Shade = shade;
-	}
-	public String getBookNo() {
-		return BookNo;
-	}
-	public void setBookNo(String bookNo) {
-		BookNo = bookNo;
-	}
-	public String getCenter() {
-		return Center;
-	}
-	public void setCenter(String center) {
-		Center = center;
-	}
-	public String getMaterialNo() {
-		return MaterialNo;
-	}
-	public void setMaterialNo(String materialNo) {
-		MaterialNo = materialNo;
-	}
-	public String getVolumn() {
-		return Volumn;
-	}
-	public void setVolumn(String volumn) {
-		Volumn = volumn;
-	}
-	public String getSaleUnit() {
-		return SaleUnit;
-	}
-	public void setSaleUnit(String saleUnit) {
-		SaleUnit = saleUnit;
-	}
-	public String getSTDUnit() {
-		return STDUnit;
-	}
-	public void setSTDUnit(String sTDUnit) {
-		STDUnit = sTDUnit;
-	}
-	public String getColor() {
-		return Color;
-	}
-	public void setColor(String color) {
-		Color = color;
-	}
-	public String getPlanGreigeDate() {
-		return PlanGreigeDate;
-	}
-	public void setPlanGreigeDate(String planGreigeDate) {
-		PlanGreigeDate = planGreigeDate;
-	}
-	public String getRefPrd() {
-		return RefPrd;
-	}
-	public void setRefPrd(String refPrd) {
-		RefPrd = refPrd;
-	}
-	public String getGreigeInDate() {
-		return GreigeInDate;
-	}
-	public void setGreigeInDate(String greigeInDate) {
-		GreigeInDate = greigeInDate;
-	}
-	public String getBCAware() {
-		return BCAware;
-	}
-	public void setBCAware(String bCAware) {
-		BCAware = bCAware;
-	}
-	public String getOrderPuang() {
-		return OrderPuang;
-	}
-	public void setOrderPuang(String orderPuang) {
-		OrderPuang = orderPuang;
-	}
-	public String getUserStatus() {
-		return UserStatus;
-	}
-	public void setUserStatus(String userStatus) {
-		UserStatus = userStatus;
-	}
-	public String getLabStatus() {
-		return LabStatus;
-	}
-	public void setLabStatus(String labStatus) {
-		LabStatus = labStatus;
-	}
-	public String getCFMDatePlan() {
-		return CFMDatePlan;
-	}
-	public void setCFMDatePlan(String cFMDatePlan) {
-		CFMDatePlan = cFMDatePlan;
-	}
-	public String getDeliveryDate() {
-		return DeliveryDate;
-	}
-	public void setDeliveryDate(String DeliveryDate) {
-		this.DeliveryDate = DeliveryDate;
-	}
-	public String getBCDate() {
-		return BCDate;
-	}
-	public void setBCDate(String bCDate) {
-		BCDate = bCDate;
-	}
-	public String getRemarkOne() {
-		return RemarkOne;
-	}
-	public void setRemarkOne(String remarkOne) {
-		RemarkOne = remarkOne;
-	}
-	public String getRemarkTwo() {
-		return RemarkTwo;
-	}
-	public void setRemarkTwo(String remarkTwo) {
-		RemarkTwo = remarkTwo;
-	}
-	public String getRemarkThree() {
-		return RemarkThree;
-	}
-	public void setRemarkThree(String remarkThree) {
-		RemarkThree = remarkThree;
-	}
-	public String getRemAfterCloseOne() {
-		return RemAfterCloseOne;
-	}
-	public void setRemAfterCloseOne(String remAfterCloseOne) {
-		RemAfterCloseOne = remAfterCloseOne;
-	}
-	public String getRemAfterCloseTwo() {
-		return RemAfterCloseTwo;
-	}
-	public void setRemAfterCloseTwo(String remAfterCloseTwo) {
-		RemAfterCloseTwo = remAfterCloseTwo;
-	}
-	public String getRemAfterCloseThree() {
-		return RemAfterCloseThree;
-	}
-	public void setRemAfterCloseThree(String remAfterCloseThree) {
-		RemAfterCloseThree = remAfterCloseThree;
-	}
+	} 
 }

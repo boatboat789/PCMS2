@@ -1,17 +1,17 @@
 package entities;
 
 public class ConfigCustomerUserDetail {
-	private int Id;
-	private String UserId;
-	private String CustomerNo;
-	private String CustomerDivision;
-	private Boolean IsPCMSDetailPage;;
-	private Boolean IsPCMSSumPage;
-	private Boolean IsProdPathBtn;
-	private Boolean IsLBMSPathBtn;
-	private Boolean IsQCMSPathBtn;
-	private Boolean IsInspectPathBtn;
-	private Boolean IsSFCPathBtn;
+	private int id;
+	private String userId;
+	private String customerNo;
+	private String customerDivision;
+	private Boolean isPCMSDetailPage;;
+	private Boolean isPCMSSumPage;
+	private Boolean isProdPathBtn;
+	private Boolean isLBMSPathBtn;
+	private Boolean isQCMSPathBtn;
+	private Boolean isInspectPathBtn;
+	private Boolean isSFCPathBtn;
 	public ConfigCustomerUserDetail() {
 		super();
 	}
@@ -19,83 +19,83 @@ public class ConfigCustomerUserDetail {
 			Boolean isProdPathBtn, Boolean isLBMSPathBtn, Boolean isQCMSPathBtn, Boolean isInspectPathBtn,
 			Boolean isSFCPathBtn,String CustomerDivision) {
 		super();
-		Id = id;
-		UserId = userId;
-		this.CustomerDivision = CustomerDivision;
-		this.CustomerNo = CustomerNo;
-		IsPCMSDetailPage = isPCMSDetailPage;
-		IsPCMSSumPage = isPCMSSumPage;
-		IsProdPathBtn = isProdPathBtn;
-		IsLBMSPathBtn = isLBMSPathBtn;
-		IsQCMSPathBtn = isQCMSPathBtn;
-		IsInspectPathBtn = isInspectPathBtn;
-		IsSFCPathBtn = isSFCPathBtn;
-	}
-	public String getCustomerDivision() {
-		return CustomerDivision;
-	}
-	public void setCustomerDivision(String customerDivision) {
-		CustomerDivision = customerDivision;
-	}
-	public String getCustomerNo() {
-		return CustomerNo;
-	}
-	public void setCustomerNo(String customerNo) {
-		CustomerNo = customerNo;
+		this.id = id;
+		this.userId = userId;
+		this.customerDivision = CustomerDivision;
+		this.customerNo = CustomerNo;
+		this.isPCMSDetailPage = isPCMSDetailPage;
+		this.isPCMSSumPage = isPCMSSumPage;
+		this.isProdPathBtn = isProdPathBtn;
+		this.isLBMSPathBtn = isLBMSPathBtn;
+		this.isQCMSPathBtn = isQCMSPathBtn;
+		this.isInspectPathBtn = isInspectPathBtn;
+		this.isSFCPathBtn = isSFCPathBtn;
 	}
 	public int getId() {
-		return Id;
+		return id;
 	}
 	public void setId(int id) {
-		Id = id;
+		this.id = id;
 	}
 	public String getUserId() {
-		return UserId;
+		return userId;
 	}
 	public void setUserId(String userId) {
-		UserId = userId;
+		this.userId = userId;
+	}
+	public String getCustomerNo() {
+		return customerNo;
+	}
+	public void setCustomerNo(String customerNo) {
+		this.customerNo = customerNo;
+	}
+	public String getCustomerDivision() {
+		return customerDivision;
+	}
+	public void setCustomerDivision(String customerDivision) {
+		this.customerDivision = customerDivision;
 	}
 	public Boolean getIsPCMSDetailPage() {
-		return IsPCMSDetailPage;
+		return isPCMSDetailPage;
 	}
 	public void setIsPCMSDetailPage(Boolean isPCMSDetailPage) {
-		IsPCMSDetailPage = isPCMSDetailPage;
+		this.isPCMSDetailPage = isPCMSDetailPage;
 	}
 	public Boolean getIsPCMSSumPage() {
-		return IsPCMSSumPage;
+		return isPCMSSumPage;
 	}
 	public void setIsPCMSSumPage(Boolean isPCMSSumPage) {
-		IsPCMSSumPage = isPCMSSumPage;
+		this.isPCMSSumPage = isPCMSSumPage;
 	}
 	public Boolean getIsProdPathBtn() {
-		return IsProdPathBtn;
+		return isProdPathBtn;
 	}
 	public void setIsProdPathBtn(Boolean isProdPathBtn) {
-		IsProdPathBtn = isProdPathBtn;
+		this.isProdPathBtn = isProdPathBtn;
 	}
 	public Boolean getIsLBMSPathBtn() {
-		return IsLBMSPathBtn;
+		return isLBMSPathBtn;
 	}
 	public void setIsLBMSPathBtn(Boolean isLBMSPathBtn) {
-		IsLBMSPathBtn = isLBMSPathBtn;
+		this.isLBMSPathBtn = isLBMSPathBtn;
 	}
 	public Boolean getIsQCMSPathBtn() {
-		return IsQCMSPathBtn;
+		return isQCMSPathBtn;
 	}
 	public void setIsQCMSPathBtn(Boolean isQCMSPathBtn) {
-		IsQCMSPathBtn = isQCMSPathBtn;
+		this.isQCMSPathBtn = isQCMSPathBtn;
 	}
 	public Boolean getIsInspectPathBtn() {
-		return IsInspectPathBtn;
+		return isInspectPathBtn;
 	}
 	public void setIsInspectPathBtn(Boolean isInspectPathBtn) {
-		IsInspectPathBtn = isInspectPathBtn;
+		this.isInspectPathBtn = isInspectPathBtn;
 	}
 	public Boolean getIsSFCPathBtn() {
-		return IsSFCPathBtn;
+		return isSFCPathBtn;
 	}
 	public void setIsSFCPathBtn(Boolean isSFCPathBtn) {
-		IsSFCPathBtn = isSFCPathBtn;
+		this.isSFCPathBtn = isSFCPathBtn;
 	} 
 	
 	

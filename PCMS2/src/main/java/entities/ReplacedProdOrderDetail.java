@@ -2,89 +2,83 @@ package entities;
 
 public class ReplacedProdOrderDetail {
 
-	private String SaleOrder;
-	private String SaleLine;  
-	private String ProductionOrder;  
-	private String ProductionOrderRP;
-	private String Volume;
-	private String ChangeBy;
-	private String ChangeDate;
+	private String saleOrder;
+	private String saleLine;  
+	private String productionOrder;  
+	private String productionOrderRP;
+	private String volume;
+	private String changeBy;
+	private String changeDate;
 
-	private String IconStatus;
-	private String SystemStatus;
+	private String iconStatus;
+	private String systemStatus;
 	public ReplacedProdOrderDetail() {
 		super();
 	}
 	public ReplacedProdOrderDetail(String saleOrder, String saleLine, String productionOrder, String productionOrderRP,
 			String volume, String changeBy, String changeDate) {
 		super();
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		ProductionOrder = productionOrder;
-		ProductionOrderRP = productionOrderRP;
-		Volume = volume;
-		ChangeBy = changeBy;
-		ChangeDate = changeDate;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.productionOrder = productionOrder;
+		this.productionOrderRP = productionOrderRP;
+		this.volume = volume;
+		this.changeBy = changeBy;
+		this.changeDate = changeDate;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
-	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+	public void setSaleOrder(String aleOrder) {
+		this.saleOrder = aleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
 	public String getProductionOrder() {
-		return ProductionOrder;
+		return productionOrder;
 	}
 	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
+		this.productionOrder = productionOrder;
 	}
 	public String getProductionOrderRP() {
-		return ProductionOrderRP;
+		return productionOrderRP;
 	}
 	public void setProductionOrderRP(String productionOrderRP) {
-		ProductionOrderRP = productionOrderRP;
+		this.productionOrderRP = productionOrderRP;
 	}
 	public String getVolume() {
-		return Volume;
+		return volume;
 	}
 	public void setVolume(String volume) {
-		Volume = volume;
+		this.volume = volume;
 	}
 	public String getChangeBy() {
-		return ChangeBy;
+		return changeBy;
 	}
 	public void setChangeBy(String changeBy) {
-		ChangeBy = changeBy;
+		this.changeBy = changeBy;
 	}
 	public String getChangeDate() {
-		return ChangeDate;
+		return changeDate;
 	}
 	public void setChangeDate(String changeDate) {
-		ChangeDate = changeDate;
+		this.changeDate = changeDate;
 	}
 	public String getIconStatus() {
-		return IconStatus;
+		return iconStatus;
 	}
 	public void setIconStatus(String iconStatus) {
-		IconStatus = iconStatus;
+		this.iconStatus = iconStatus;
 	}
 	public String getSystemStatus() {
-		return SystemStatus;
+		return systemStatus;
 	}
 	public void setSystemStatus(String systemStatus) {
-		SystemStatus = systemStatus;
-	}
-	@Override
-	public String toString() {
-		return "ReplacedProdOrderDetail [SaleOrder=" + SaleOrder + ", SaleLine=" + SaleLine + ", ProductionOrder="
-				+ ProductionOrder + ", ProductionOrderRP=" + ProductionOrderRP + ", Volume=" + Volume + ", ChangeBy="
-				+ ChangeBy + ", ChangeDate=" + ChangeDate + "]";
-	}
+		this.systemStatus = systemStatus;
+	} 
 	
 }

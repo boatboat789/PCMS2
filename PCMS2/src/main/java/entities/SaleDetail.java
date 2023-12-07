@@ -1,48 +1,48 @@
 package entities;
 
 public class SaleDetail {    
-	  private String BillDate;
-	  private String BillQtyPerSale;
-	  private String SaleOrder;
-	  private String SaleLine;
-	  private String BillQtyPerStock;
+	  private String billDate;
+	  private String billQtyPerSale;
+	  private String saleOrder;
+	  private String saleLine;
+	  private String billQtyPerStock;
 	public SaleDetail(String billDate, String billQtyPerSale, String saleOrder, String saleLine,
 			String billQtyPerStock) {
 		super();
-		BillDate = billDate;
-		BillQtyPerSale = billQtyPerSale;
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		BillQtyPerStock = billQtyPerStock;
+		this.billDate = billDate;
+		this.billQtyPerSale = billQtyPerSale;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.billQtyPerStock = billQtyPerStock;
 	}
 	public String getBillDate() {
-		return BillDate;
+		return billDate;
 	}
 	public void setBillDate(String billDate) {
-		BillDate = billDate;
+		this.billDate = billDate;
 	}
 	public String getBillQtyPerSale() {
-		return BillQtyPerSale;
+		return billQtyPerSale;
 	}
 	public void setBillQtyPerSale(String billQtyPerSale) {
-		BillQtyPerSale = billQtyPerSale;
+		this.billQtyPerSale = billQtyPerSale;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
 	public String getBillQtyPerStock() {
-		return BillQtyPerStock;
+		return billQtyPerStock;
 	}
 	public void setBillQtyPerStock(String billQtyPerStock) {
-		BillQtyPerStock = billQtyPerStock;
+		this.billQtyPerStock = billQtyPerStock;
 	} 
 }

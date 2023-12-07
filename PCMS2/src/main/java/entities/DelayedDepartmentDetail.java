@@ -1,18 +1,18 @@
 package entities;
 
 public class DelayedDepartmentDetail {
-	public String DelayedDepartment;
+	public String delayedDepartment;
 
 	public DelayedDepartmentDetail(String delayedDepartment) {
 		super();
-		DelayedDepartment = delayedDepartment;
+		this.delayedDepartment = delayedDepartment;
 	}
 
 	public String getDelayedDepartment() {
-		return DelayedDepartment;
+		return delayedDepartment;
 	}
 
 	public void setDelayedDepartment(String delayedDepartment) {
-		DelayedDepartment = delayedDepartment;
+		this.delayedDepartment = delayedDepartment;
 	}
 }

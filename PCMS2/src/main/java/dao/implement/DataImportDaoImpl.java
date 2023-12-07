@@ -100,8 +100,7 @@ public class DataImportDaoImpl implements DataImportDao {
 	            if (!datas.isEmpty()) {
 	               this.clearData(); 
 	               this.insertData(datas);    
-	               this.database.update("EXEC spd_OrderProcessImport");
-//	               System.out.println("EXEC spd_OrderProcessImport"); 
+	               this.database.update("EXEC spd_OrderProcessImport"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {

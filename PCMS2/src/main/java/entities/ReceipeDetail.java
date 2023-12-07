@@ -1,41 +1,41 @@
 package entities;
 
 public class ReceipeDetail {  
-	private String No;
-	private String LotNo;
-	private String PostingDate; 
-	private String Receipe;
+	private String no;
+	private String lotNo;
+	private String postingDate; 
+	private String receipe;
 	public ReceipeDetail(String no, String lotNo, String postingDate, String receipe) {
 		super();
-		No = no;
-		LotNo = lotNo;
-		PostingDate = postingDate;
-		Receipe = receipe;
-	} 
+		this.no = no;
+		this.lotNo = lotNo;
+		this.postingDate = postingDate;
+		this.receipe = receipe;
+	}
 	public String getNo() {
-		return No;
+		return no;
 	}
 	public void setNo(String no) {
-		No = no;
+		this.no = no;
 	}
 	public String getLotNo() {
-		return LotNo;
+		return lotNo;
 	}
 	public void setLotNo(String lotNo) {
-		LotNo = lotNo;
+		this.lotNo = lotNo;
 	}
 	public String getPostingDate() {
-		return PostingDate;
+		return postingDate;
 	}
 	public void setPostingDate(String postingDate) {
-		PostingDate = postingDate;
+		this.postingDate = postingDate;
 	}
 	public String getReceipe() {
-		return Receipe;
+		return receipe;
 	}
 	public void setReceipe(String receipe) {
-		Receipe = receipe;
-	}
+		this.receipe = receipe;
+	}  
  
 	
 }

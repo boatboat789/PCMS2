@@ -1,64 +1,64 @@
 package entities;
 
 public class NCDetail { 
-	private String No;
-	private String NCDate;
-	private String CarNo;
-	private String Quantity;
-	private String Unit;
-	private String NCFrom;
-	private String Remark;
+	private String no;
+	private String ncDate;
+	private String carNo;
+	private String quantity;
+	private String unit;
+	private String ncFrom;
+	private String remark;
 	public NCDetail(String no, String nCDate, String carNo, String quantity, String unit, String nCFrom,
 			String remark) {
 		super();
-		No = no;
-		NCDate = nCDate;
-		CarNo = carNo;
-		Quantity = quantity;
-		Unit = unit;
-		NCFrom = nCFrom;
-		Remark = remark;
+		this.no = no;
+		this.ncDate = nCDate;
+		this.carNo = carNo;
+		this.quantity = quantity;
+		this.unit = unit;
+		this.ncFrom = nCFrom;
+		this.remark = remark;
 	}
 	public String getNo() {
-		return No;
+		return no;
 	}
 	public void setNo(String no) {
-		No = no;
+		this.no = no;
 	}
-	public String getNCDate() {
-		return NCDate;
+	public String getNcDate() {
+		return ncDate;
 	}
-	public void setNCDate(String nCDate) {
-		NCDate = nCDate;
+	public void setNcDate(String ncDate) {
+		this.ncDate = ncDate;
 	}
 	public String getCarNo() {
-		return CarNo;
+		return carNo;
 	}
 	public void setCarNo(String carNo) {
-		CarNo = carNo;
+		this.carNo = carNo;
 	}
 	public String getQuantity() {
-		return Quantity;
+		return quantity;
 	}
 	public void setQuantity(String quantity) {
-		Quantity = quantity;
+		this.quantity = quantity;
 	}
 	public String getUnit() {
-		return Unit;
+		return unit;
 	}
 	public void setUnit(String unit) {
-		Unit = unit;
+		this.unit = unit;
 	}
-	public String getNCFrom() {
-		return NCFrom;
+	public String getNcFrom() {
+		return ncFrom;
 	}
-	public void setNCFrom(String nCFrom) {
-		NCFrom = nCFrom;
+	public void setNcFrom(String ncFrom) {
+		this.ncFrom = ncFrom;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
+		this.remark = remark;
 	} 
 }

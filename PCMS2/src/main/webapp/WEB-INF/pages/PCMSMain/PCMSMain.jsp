@@ -273,7 +273,7 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder
+			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
@@ -310,7 +310,7 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder
+			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
@@ -343,7 +343,7 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder
+			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
@@ -381,7 +381,7 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder
+			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
@@ -420,7 +420,7 @@ $(document) .ready( function() {
 	   		})
 		}         
 		else {
-			var prdOrder = tblData[0].ProductionOrder 
+			var prdOrder = tblData[0].productionOrder 
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
 				swal({
 		   		    title: 'Warning',   
@@ -466,8 +466,10 @@ $(document) .ready( function() {
 //	 		lengthChange: false,              
 // 			deferRender: true,              	
 //	 		filter:false,       
-			lengthChange : false,     
-			pageLength: 1000,	 
+// 			lengthChange : false,     
+// 			pageLength: 1000,	 
+			pageLength:	 250,	 
+		    lengthMenu: [[100, 250, 500, 1000, 2500],[100, 250, 500, 1000, 2500]],
 //	 		lengthMenu: [[1000, -1], [1000, "All"]],
 //	 		colReorder: {      
 //	             realtime: true       
@@ -476,35 +478,35 @@ $(document) .ready( function() {
 			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
 	 	   	columns :    
 	 	   		[      
-			    {"data" : "SaleOrder",  "title": 'SO No.'} ,         //0
-			    {"data" : "SaleLine",  "title": 'SO Line'},              //1
-			    {"data" : "PurchaseOrder",  "title": 'PO'}, 
-			    {"data" : "ArticleFG",  "title": 'Article No'}, 
-			    {"data" : "DesignFG",  "title": 'Design No'}, 
-			    {"data" : "Color",  "title": 'ATT Color'},               //5
-			    {"data" : "ColorCustomer",  "title": 'Cust.Color'},      //6
-			    {"data" : "SaleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
-			    {"data" : "BillQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
-			    {"data" : "SaleUnit",  "title": 'Unit'},                              //9
-			    {"data" : "ProductionOrder",  "title": 'Prod.No.'},                   //10
-			    {"data" : "TotalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
-			    {"data" : "PlanGreigeDate",  "title": 'Plan Greige Date' },            //12
-			    {"data" : "GreigeInDate",  "title": 'Greige In' },                     //13
-			    {"data" : "UserStatus",  "title": 'User Status'},                     //14
-			    {"data" : "DueDate",  "title": 'Due Date','type': 'date-euro'},       //15        
-			    {"data" : "Prepare",  "title": 'Prepare'},                            //16
-			    {"data" : "Relax",  "title": 'Relax'},                                //17
-			    {"data" : "Preset",  "title": 'PS'},                                  //18
-			    {"data" : "DyePlan",  "title": 'Dye [Plan]'},                         //19
-			    {"data" : "DyeActual",  "title": 'Dye [Actual]'},                     //20
-			    {"data" : "DyeStatus",  "title": 'Dye Status'},                       //21
-			    {"data" : "Dryer" ,  "title": 'Dryer Date'},                          //22
-			    {"data" : "Finishing",  "title": 'FN'},                               //23
-			    {"data" : "Inspectation",  "title": 'Inspect'},                       //24
-			    {"data" : "CFMPlanDate",  "title": 'CFM Date[Plan]'},       //25 
-			    {"data" : "CFMDateActual",  "title": 'CFM Date[Actual]'},   //26
-			    {"data" : "DeliveryDate",  "title": 'Delivery Date'},       //27
-			    {"data" : "LotShipping",  "title": 'Shipping'}              //28    
+			    {"data" : "saleOrder",  "title": 'SO No.'} ,         //0
+			    {"data" : "saleLine",  "title": 'SO Line'},              //1
+			    {"data" : "purchaseOrder",  "title": 'PO'}, 
+			    {"data" : "articleFG",  "title": 'Article No'}, 
+			    {"data" : "designFG",  "title": 'Design No'}, 
+			    {"data" : "color",  "title": 'ATT Color'},               //5
+			    {"data" : "colorCustomer",  "title": 'Cust.Color'},      //6
+			    {"data" : "saleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
+			    {"data" : "billQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
+			    {"data" : "saleUnit",  "title": 'Unit'},                              //9
+			    {"data" : "productionOrder",  "title": 'Prod.No.'},                   //10
+			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
+			    {"data" : "planGreigeDate",  "title": 'Plan Greige Date' ,'type': 'date-euro'},            //12
+			    {"data" : "greigeInDate",  "title": 'Greige In' ,'type': 'date-euro'},                     //13
+			    {"data" : "userStatus",  "title": 'User Status'},                     //14
+			    {"data" : "dueDate",  "title": 'Due Date','type': 'date-euro'},       //15        
+			    {"data" : "prepare",  "title": 'Prepare','type': 'date-euro'},                            //16
+			    {"data" : "relax",  "title": 'Relax','type': 'date-euro'},                                //17
+			    {"data" : "preset",  "title": 'PS','type': 'date-euro'},                                  //18
+			    {"data" : "dyePlan",  "title": 'Dye [Plan]','type': 'date-euro'},                         //19
+			    {"data" : "dyeActual",  "title": 'Dye [Actual]','type': 'date-euro'},                     //20
+			    {"data" : "dyeStatus",  "title": 'Dye Status'},                       //21
+			    {"data" : "dryer" ,  "title": 'Dryer Date','type': 'date-euro'},                          //22
+			    {"data" : "finishing",  "title": 'FN','type': 'date-euro'},                               //23
+			    {"data" : "inspectation",  "title": 'Inspect','type': 'date-euro'},                       //24
+			    {"data" : "cfmPlanDate",  "title": 'CFM Date[Plan]','type': 'date-euro'},       //25 
+			    {"data" : "cfmDateActual",  "title": 'CFM Date[Actual]','type': 'date-euro'},   //26
+			    {"data" : "deliveryDate",  "title": 'Delivery Date','type': 'date-euro'},       //27
+			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //28    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
 			columnDefs :  [	       
@@ -520,23 +522,35 @@ $(document) .ready( function() {
 // 				} ,   
 				{ targets:[10]  ,       
 					render: function (data, type, row) {	   
-						let html = '<div  name="n_'+row.ProductionOrder+' data-toggle="tooltip" title="' + row.TypePrd + '"> '+row.ProductionOrder+'</div>'
+						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
 						return  html; 
 				   	  }    
-				},    
-// 			 	{ targets : [ 14 ],      
-// 					  type: 'date-euro' ,    
-// 					} , 
-					{ targets : [ 25],     
-				   	  render: function (data, type, row) {	 
-					   		var htmlEx = row.CFMPlanDate      
-// 				   			if( userId == 'violetta01' ){ 
-							if(isCustomer == true){
-				   				htmlEx = row.SendCFMCusDate; 
-							}   
-					   		return  htmlEx      
-						}         
-					}  ,   
+				},     
+				{ targets : [ 25],     
+			   	  render: function (data, type, row) {	 
+				   		var htmlEx = dateDDMMYYYToDDMM(row.cfmPlanDate);     
+						if(isCustomer == true){
+			   				htmlEx = dateDDMMYYYToDDMM(row.sendCFMCusDate)   ; 
+						}   
+				   		return  htmlEx      
+					}         
+				}  ,             
+			 	{  			    
+// 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
+				  targets : [12,13,16,17,18,19,20,22,23,24,26,27,28],             
+				  render: function (data, type, row) {	 
+				   		var htmlEx = data;                                      
+	   					htmlEx = ''      
+	   					+ '<div data-search="' + data + '" '         
+// 	   					+ ' class="form-control DateInput" '    
+	   					+ ' name="DateInput" type="text" '
+	   					+ ' value = "' + data   + "' "                 
+	   					+ ' autocomplete="off" >'   
+	   					+ dateDDMMYYYToDDMM(data) 
+	   					+ '</div>';       
+				   		return  htmlEx     ;         
+					}                          
+				} ,          
 						
 			], 
 //	 		 order: [[2, 'asc'], [1, 'asc']],  
@@ -561,25 +575,25 @@ $(document) .ready( function() {
 // 	  	    		}        
 // 	  			}   
 	  			if(mapsDataHeader.size != 0){       
-					if (data["TypePrd"] == "OrderPuang" ) { 	         	 
-						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-orderpuang'); 
+					if (data["typePrd"] == "OrderPuang" ) { 	         	 
+						$('td', row).eq(mapsDataHeader.get("productionOrder")).addClass('bg-orderpuang'); 
 					}  
-					else if (data["TypePrd"] == "Switch" ) { 	 
-						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-switch');     
+					else if (data["typePrd"] == "Switch" ) { 	 
+						$('td', row).eq(mapsDataHeader.get("productionOrder")).addClass('bg-switch');     
 					}   	
-					else if (data["TypePrd"] == "Replaced" ) { 	 
-						$('td', row).eq(mapsDataHeader.get("ProductionOrder")).addClass('bg-replaced');
+					else if (data["typePrd"] == "Replaced" ) { 	 
+						$('td', row).eq(mapsDataHeader.get("productionOrder")).addClass('bg-replaced');
 					}
-					if(data["DueDate"] != "") {      
-		 	    		var datearray = data["DueDate"].split("/");
+					if(data["dueDate"] != "") {      
+		 	    		var datearray = data["dueDate"].split("/");
 			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;    
 				  	    if (sevenDayAgo >= dueDate   ){             
-				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
+				  	    	$('td', row).eq(mapsDataHeader.get("dueDate")).addClass('dt-custom-overdue');        
 				        }
 	  	    		}       
-					$('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');
-					$('td', row).eq(mapsDataHeader.get("CFMPlanDate")).addClass('bg-color-azure');
-					$('td', row).eq(mapsDataHeader.get("DeliveryDate")).addClass('bg-color-azure');  
+					$('td', row).eq(mapsDataHeader.get("dyePlan")).addClass('bg-color-azure');
+					$('td', row).eq(mapsDataHeader.get("cfmPlanDate")).addClass('bg-color-azure');
+					$('td', row).eq(mapsDataHeader.get("deliveryDate")).addClass('bg-color-azure');  
 				} 
 			},      
 			drawCallback: function( settings ) { 
@@ -607,13 +621,13 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns : 
  		[      
-		    {"data" : "PONo"} ,         //0
-		    {"data" : "POLine"},  
-		    {"data" : "CreateDate"},  
-		    {"data" : "RequiredDate"},  
-		    {"data" : "RollNo"},  
-		    {"data" : "QuantityKG"},  
-		    {"data" : "QuantityMR"},    //6
+		    {"data" : "poNo"} ,         //0
+		    {"data" : "poLine"},  
+		    {"data" : "poCreatedate"},  
+		    {"data" : "requiredDate"},  
+		    {"data" : "rollNo"},  
+		    {"data" : "quantityKG"},  
+		    {"data" : "quantityMR"},    //6
 		],  	      
 		columnDefs :  [	   	
 // 			{ targets : [ 0,1,2,3,4,5,6  ],                
@@ -622,32 +636,9 @@ $(document) .ready( function() {
 // 				} ,                       
 		],                    
 		 order: [[ 4, "asc" ]],   
-		 createdRow : function(row, data, index) {     
-// 			 $(row).addClass("data-custom-padding0505");
+		 createdRow : function(row, data, index) {      
 		 },   
- 	 });  
-//     $(row).addClass("data-custom-padding0505");
-//     presetTable = $('#presetTable').DataTable({  
-//     	scrollY:       '50px',         
-//     	scrollX: true,    
-//     	paging: false,
-// //  	    select : true,             
-// //  	 	scrollCollapse: true,            
-// //  	   	orderCellsTop : true,
-// // 		orderClasses : false, 
-// 		lengthChange: false,         	  
-//  	   	columns : 
-//  		[      
-// 		    {"data" : "PostingDate"} ,         //0
-// 		    {"data" : "WorkCenter"},  
-// 		],  	       
-// 		columnDefs :  [	   	
-// // 			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ],                
-// // 			  	  className : 'data-custom-padding0505',    
-// // // 		  	 	  type: 'string'      
-// // 				} ,            
-// 		],  
-//  	 });  
+ 	 });   
     dyeingTable = $('#dyeingTable').DataTable({  
     	scrollY: '160px',       
     	scrollX: true,            
@@ -659,20 +650,20 @@ $(document) .ready( function() {
 // 		"autoWidth":false,
  	   	columns : 
  	[      
-		    {"data" : "PostingDate"} ,         //0
-		    {"data" : "Operation"}, 
-		    {"data" : "WorkCenter"}, 
-		    {"data" : "DyeStatus"}, 
-		    {"data" : "DeltaE"}, 
-		    {"data" : "L"},                    //5
-		    {"data" : "Da"}, 
-		    {"data" : "Db"}, 
-		    {"data" : "ST"}, 
-		    {"data" : "Remark"},
-		    {"data" : "Redye"},                //10
-		    {"data" : "Batch"},
-		    {"data" : "ColorStatus"},
-		    {"data" : "ColorRemark"},          //12
+		    {"data" : "postingDate"} ,         //0
+		    {"data" : "operation"}, 
+		    {"data" : "workCenter"}, 
+		    {"data" : "dyeStatus"}, 
+		    {"data" : "deltaE"}, 
+		    {"data" : "l"},                    //5
+		    {"data" : "da"}, 
+		    {"data" : "db"}, 
+		    {"data" : "st"}, 
+		    {"data" : "remark"},
+		    {"data" : "redye"},                //10
+		    {"data" : "batch"},
+		    {"data" : "colorStatus"},
+		    {"data" : "colorRemark"},          //12
 		],  	      
 		columnDefs :  [	   	 
 			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ],                
@@ -691,22 +682,22 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns : 
  		[      
-			 {"data" : "PostingDate"} ,         //0
- 		    {"data" : "WorkCenter"  }, 
- 		    {"data" : "RollNo"}, 
- 		    {"data" : "Status"}, 
- 		    {"data" : "CCOperation"}, 
- 		    {"data" : "CCPostingDate"},         //5
- 		    {"data" : "DeltaE"}, 
- 		    {"data" : "Color"}, 
- 		    {"data" : "L"}, 
-		    {"data" : "Da"}, 
-		    {"data" : "Db"},                   //10
-		    {"data" : "ST"},  
- 		    {"data" : "NCDate"},
- 		    {"data" : "Cause"},
- 		    {"data" : "CarNo"},
- 		    {"data" : "LotNo"},                //15
+			{"data" : "postingDate"} ,         //0
+ 		    {"data" : "workCenter"  }, 
+ 		    {"data" : "rollNo"}, 
+ 		    {"data" : "status"}, 
+ 		    {"data" : "ccOperation"}, 
+ 		    {"data" : "ccPostingDate"},         //5
+ 		    {"data" : "deltaE"}, 
+ 		    {"data" : "color"}, 
+ 		    {"data" : "l"}, 
+		    {"data" : "da"}, 
+		    {"data" : "db"},                   //10
+		    {"data" : "st"},  
+ 		    {"data" : "ncDate"},
+ 		    {"data" : "cause"},
+ 		    {"data" : "carNo"},
+ 		    {"data" : "lotNo"},                //15
 		],  	      
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ],                
@@ -725,11 +716,11 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns : 
  	[      
-		    {"data" : "PostingDate"} ,         //0
-		    {"data" : "Operation"},  
-		    {"data" : "QuantityGreige"},  
-		    {"data" : "QuantityFG"},  
-		    {"data" : "Remark"},   
+		    {"data" : "postingDate"} ,         //0
+		    {"data" : "operation"},  
+		    {"data" : "quantityGreige"},  
+		    {"data" : "quantityFG"},  
+		    {"data" : "remark"},   
 		],  	      
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4 ],                
@@ -748,12 +739,12 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns : 
  		[      
-		    {"data" : "PostingDate"} ,         //0
-		    {"data" : "Quantity"},  
-		    {"data" : "RollNo"},  
-		    {"data" : "Grade"},  
-		    {"data" : "Status"},  
-		    {"data" : "QuantityKG"},           //5
+		    {"data" : "postingDate"} ,         //0
+		    {"data" : "quantity"},  
+		    {"data" : "rollNo"},  
+		    {"data" : "grade"},  
+		    {"data" : "status"},  
+		    {"data" : "quantityKG"},           //5
 		     
 		],  	      
 		columnDefs :  [	   	
@@ -773,13 +764,13 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns : 
  		[           
-		    {"data" : "SendDate"} ,         //0
-		    {"data" : "RollNo"},  
-		    {"data" : "Status"},  
-		    {"data" : "CheckColorDate"},  
-		    {"data" : "DeltaE"},  
-		    {"data" : "Color"},  
-		    {"data" : "Remark"},            //6
+		    {"data" : "sendDate"} ,         //0
+		    {"data" : "rollNo"},  
+		    {"data" : "status"},  
+		    {"data" : "checkColorDate"},  
+		    {"data" : "deltaE"},  
+		    {"data" : "color"},  
+		    {"data" : "remark"},            //6
 		],  	          
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4,5,6 ],                
@@ -798,16 +789,16 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
 	   	columns :  
 		[                   
-		    {"data" : "No"} ,         //0 
-		    {"data" : "NOK"},  
-		    {"data" : "NCDate"},  
-		    {"data" : "LotNo"},   
-		    {"data" : "L"},            //5
-		    {"data" : "Da"},
-		    {"data" : "Db"},
-		    {"data" : "ST"},
-		    {"data" : "ReceiveDate"},  
-		    {"data" : "Remark"},       //  9
+		    {"data" : "no"} ,         //0 
+		    {"data" : "nok"},  
+		    {"data" : "ncDate"},  
+		    {"data" : "lotNo"},   
+		    {"data" : "l"},            //5
+		    {"data" : "da"},
+		    {"data" : "db"},
+		    {"data" : "st"},
+		    {"data" : "receiveDate"},  
+		    {"data" : "remark"},       //  9
 		],  	      
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4,5,6,7,8,9],                
@@ -825,11 +816,11 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns :  
  		[           
-		    {"data" : "No"} ,         //0
-		    {"data" : "DateInTest"},  
-		    {"data" : "DateOutTest"},  
-		    {"data" : "Status"},  
-		    {"data" : "Remark"},  
+		    {"data" : "no"} ,         //0
+		    {"data" : "dateInTest"},  
+		    {"data" : "dateOutTest"},  
+		    {"data" : "status"},  
+		    {"data" : "remark"},  
 		],  	          
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4 ],                
@@ -847,25 +838,25 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns :  
  		[           
-		    {"data" : "CFMNo"} ,         //0
-		    {"data" : "CFMNumber"},  
-		    {"data" : "CFMSendDate"},  
-		    {"data" : "RollNo"},  
-		    {"data" : "RollNoRemark"},    
-		    {"data" : "L"},            //4
-		    {"data" : "Da"},
-		    {"data" : "Db"},
-		    {"data" : "ST"},
-		    {"data" : "DE"},
-		    {"data" : "SaleOrder"},   //9
-		    {"data" : "SaleLine"}, 
-		    {"data" : "CFMAnswerDate"},
-		    {"data" : "CFMStatus"},
-		    {"data" : "CFMRemark"},     //13
-		    {"data" : "NextLot"},
-		    {"data" : "SOChange"},
-		    {"data" : "SOChangeQty"},
-		    {"data" : "SOChangeUnit"},  //17    
+		    {"data" : "cfmNo"} ,         //0
+		    {"data" : "cfmNumber"},  
+		    {"data" : "cfmSendDate"},  
+		    {"data" : "rollNo"},  
+		    {"data" : "rollNoRemark"},    
+		    {"data" : "l"},            //4
+		    {"data" : "da"},
+		    {"data" : "db"},
+		    {"data" : "st"},
+		    {"data" : "de"},
+		    {"data" : "saleOrder"},   //9
+		    {"data" : "saleLine"}, 
+		    {"data" : "cfmAnswerDate"},
+		    {"data" : "cfmStatus"},
+		    {"data" : "cfmRemark"},     //13
+		    {"data" : "nextLot"},
+		    {"data" : "soChange"},
+		    {"data" : "soChangeQty"},
+		    {"data" : "soChangeUnit"},  //17    
 		],  	          
 		columnDefs :  [	   	   
 			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 ,18],                
@@ -884,11 +875,11 @@ $(document) .ready( function() {
 		lengthChange: false,         	  
  	   	columns :  
  		[           
-		    {"data" : "BillDate"} ,         //0
-		    {"data" : "BillQtyPerSale"},  
-		    {"data" : "SaleOrder"},  
-		    {"data" : "SaleLine"},  
-		    {"data" : "BillQtyPerStock"}, 
+		    {"data" : "billDate"} ,         //0
+		    {"data" : "billQtyPerSale"},  
+		    {"data" : "saleOrder"},  
+		    {"data" : "saleLine"},  
+		    {"data" : "billQtyPerStock"}, 
 		],  	          
 		columnDefs :  [	   	
 			{ targets : [ 0,1,2,3,4 ],                
@@ -905,11 +896,11 @@ $(document) .ready( function() {
 			lengthChange: false,         	  
 	 	   	columns :  
 	 		[           
-			    {"data" : "BillDate"} ,         //0
-			    {"data" : "BillQtyPerSale"},  
-			    {"data" : "SaleOrder"},  
-			    {"data" : "SaleLine"},  
-			    {"data" : "BillQtyPerStock"}, 
+			    {"data" : "billDate"} ,         //0
+			    {"data" : "billQtyPerSale"},  
+			    {"data" : "saleOrder"},  
+			    {"data" : "saleLine"},  
+			    {"data" : "billQtyPerStock"}, 
 			],  	          
 			columnDefs :  [	   	
 				{ targets : [ 0,1,2,3,4 ],                
@@ -926,9 +917,9 @@ $(document) .ready( function() {
 			lengthChange: false,         	  
 	 	   	columns :  
 	 		[           
-			    {"data" : "CreateDate"} ,         //0
-			    {"data" : "PlanDate"},  
-			    {"data" : "InputFrom"},   
+			    {"data" : "createDate"} ,         //0
+			    {"data" : "planDate"},  
+			    {"data" : "inputFrom"},   
 			],  	          
 			columnDefs :  [	   	
 				{ targets : [ 0,1,2 ],                
@@ -952,13 +943,13 @@ $(document) .ready( function() {
 			lengthChange: false,         	  
 	 	   	columns :   
 	 		[           
-			    {"data" : "No"} ,         //0
-			    {"data" : "NCDate"},  
-			    {"data" : "CarNo"},  
-			    {"data" : "Quantity"},  
-			    {"data" : "Unit"}, 
-			    {"data" : "NCFrom"}, 
-			    {"data" : "Remark"},      //6
+			    {"data" : "no"} ,         //0
+			    {"data" : "ncDate"},  
+			    {"data" : "carNo"},  
+			    {"data" : "quantity"},  
+			    {"data" : "unit"}, 
+			    {"data" : "ncFrom"}, 
+			    {"data" : "remark"},      //6
 			],  	          
 			columnDefs :  [	   	
 				{ targets : [ 0,1,2,3,4,5,6 ],                
@@ -975,10 +966,10 @@ $(document) .ready( function() {
 			lengthChange: false,         	  
 	 	   	columns :   
 	 		[               
-			    {"data" : "No"} ,         //0
-			    {"data" : "LotNo"},     
-			    {"data" : "PostingDate"},  
-			    {"data" : "Receipe"},   
+			    {"data" : "no"} ,         //0
+			    {"data" : "lotNo"},     
+			    {"data" : "postingDate"},  
+			    {"data" : "receipe"},   
 			],  	          
 			columnDefs :  [	   	
 				{ targets : [ 0,1,2,3 ],                
@@ -986,12 +977,7 @@ $(document) .ready( function() {
 //	 		  	 	  type: 'string'      
 					} ,               
 			],     order: [[ 0, "desc" ]]        
-	 	 });
-	// SEARCH BY FILTER UNDER COLUMN NAME : BOAT 
-// 	$("#MainTable thead").on('keyup', '.monitor_search', function() {
-// 		console.log(this.value)    
-// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
-// 	});           
+	 	 });      
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
 		let searchVal = this.value;      
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
@@ -1087,7 +1073,7 @@ $(document) .ready( function() {
 	$('#multi_colVis').selectpicker();   
 	$('#multi_cusName').selectpicker();     
 	$('#multi_cusShortName').selectpicker(); 
-	$('#multi_division').selectpicker();  
+	$('#multi_division').selectpicker();   
 	colList = JSON.parse('${ColList}'); 
 	cusNameList = JSON.parse('${CusNameList}');   	
 	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
@@ -1255,18 +1241,7 @@ function searchByDetail(){
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = "HW";}     
-// 	if(  customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0){
-// 		swal({
-//    		    title: 'Warning',
-//    		    text: 'Customer CustomerShortName and UserStatus need atleast 1 selected rwo.',
-//    		    icon: 'warning',
-//    		    timer: 1000,
-//    		    buttons: false,
-//    		})
-// 	}
-// 	else if( saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-// 	   designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' )  {     
+	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = "HW";}      
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
 		swal({
@@ -1276,19 +1251,7 @@ function searchByDetail(){
    		    timer: 1000,
    		    buttons: false,
    		})
-	}
-// 	else if( (saleOrder == '' && article == '' && prdOrder == '' && saleNumber == '' && SaleOrderDate == '' && 
-//   			designNo == '' && prdOrderDate == '' && material == '' && labNo == '' && deliStatus == '' && 
-//    			dueDate == ''  )
-//   			)  { 
-// 		swal({
-//    		    title: 'Warning',
-//    		    text: 'Need input some field for search.',
-//    		    icon: 'warning',
-//    		    timer: 1000,
-//    		    buttons: false,
-//    		})
-// 	}
+	} 
 
 	else if (dist == ''){
 		swal({
@@ -1300,7 +1263,8 @@ function searchByDetail(){
    		})
 	}
 	else{
-		var json = createJsonData();      
+		var json = createJsonData();        
+// 		console.log(json)
 	    var  obj = JSON.parse(json);    
 		var arrayTmp = [];   
 		arrayTmp.push(obj);      
@@ -1338,8 +1302,8 @@ function createJsonData(){
 	 
 	 var cusDiv = "";  
 	 if(configCusList.length > 0 ){ 
-	 	let p_cusDiv = configCusList[0].CustomerDivision	 ;
-	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
+// 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
+// 	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
 	 }     
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
@@ -1347,26 +1311,26 @@ function createJsonData(){
 	var json = '{'+   
 // 		"CustomerName":'+JSON.stringify(customer)+ 
 // 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
-	    '"SaleOrder":'+JSON.stringify(saleOrder)+ 
-	   ',"ArticleFG":'+JSON.stringify(article)+  
-	   ',"ProductionOrder":'+JSON.stringify(prdOrder)+  
-	   ',"SaleNumber": '+JSON.stringify(saleNumber)+
-	   ' ,"SaleOrderCreateDate":'+JSON.stringify(saleOrderDate)+
-	   ',"DesignFG":'+JSON.stringify(designNo)+       
-	   ',"ProductionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
-	   ',"MaterialNo":'+JSON.stringify(material)+
-	   ',"LabNo":'+JSON.stringify(labNo)+    
-	   ',"CustomerDivision":'+JSON.stringify(cusDiv)+                
-	   ',"PurchaseOrder":'+JSON.stringify(PO)+ 
+	    '"saleOrder":'+JSON.stringify(saleOrder)+      
+	   ',"articleFG":'+JSON.stringify(article)+  
+	   ',"productionOrder":'+JSON.stringify(prdOrder)+  
+	   ',"saleNumber": '+JSON.stringify(saleNumber)+
+	   ',"saleOrderCreateDate":'+JSON.stringify(saleOrderDate)+
+	   ',"designFG":'+JSON.stringify(designNo)+       
+	   ',"productionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
+	   ',"materialNo":'+JSON.stringify(material)+
+	   ',"labNo":'+JSON.stringify(labNo)+    
+	   ',"customerDivision":'+JSON.stringify(cusDiv)+                
+	   ',"purchaseOrder":'+JSON.stringify(PO)+ 
 // 	   ',"UserStatus":'+JSON.stringify(userStatus)+ 
-	   ',"UserStatusList":'+JSON.stringify(userStatus)+       
-	   ',"CustomerNameList":'+JSON.stringify(customer)+   
-	   ',"CustomerShortNameList":'+JSON.stringify(customerShort)+   
-	   ',"DivisionList":'+JSON.stringify(division)+   
-	   ',"DeliveryStatus":'+JSON.stringify(deliStatus)+            
-	   ',"SaleStatus":'+JSON.stringify(saleStatus)+  
-	   ',"DistChannel":'+JSON.stringify(dist) + 
-	   ',"DueDate":'+JSON.stringify(dueDate) + 
+	   ',"userStatusList":'+JSON.stringify(userStatus)+       
+	   ',"customerNameList":'+JSON.stringify(customer)+   
+	   ',"customerShortNameList":'+JSON.stringify(customerShort)+   
+	   ',"divisionList":'+JSON.stringify(division)+   
+	   ',"deliveryStatus":'+JSON.stringify(deliStatus)+            
+	   ',"saleStatus":'+JSON.stringify(saleStatus)+  
+	   ',"distChannel":'+JSON.stringify(dist) + 
+	   ',"dueDate":'+JSON.stringify(dueDate) + 
 	   '} ';            
 	   return json; 
 }
@@ -1415,21 +1379,19 @@ function exportCSV(data){
     soLineTmpExcel = '' ;soTmpExcel = '';
     $.each(xlsRows, function(index, value) {    
         var innerRowData = [];         
-        caseDupli = checkSaleOrderLine( value);
-//       	 console.log(index ,value.SendCFMCusDate) 
-        $.each(value, function(data, val) {          
-      
+        caseDupli = checkSaleOrderLine( value); 
+        $.each(value, function(data, val) {           
           	  if(mapsDataHeader.size != 0){                   
             	 indexArray = mapsDataHeader.get(data); 
-            	 colType = mapsColumnHeader.get(data);    
+            	 colType = mapsColumnHeader.get(data);     
 			  	if(indexArray !== undefined){             
 					if (colType === undefined){  
 
 // 						if(isCustomer == true){
 	
-						if(isCustomer == true && data == 'CFMPlanDate'   ){  
+						if(isCustomer == true && data == 'cfmPlanDate'   ){  
 // 						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){  
-							val = value.SendCFMCusDate;   
+							val = value.sendCFMCusDate;   
 // 							innerRowData[indexArray] = val;   
 						} 
 						else{   
@@ -1438,7 +1400,7 @@ function exportCSV(data){
 						innerRowData[indexArray] = val;   
 					}
 					else if (colType == 'num'){   
-						if(data == 'SaleQuantity' || data == 'BillQuantity'){  
+						if(data == 'saleQuantity' || data == 'billQuantity'){  
 							if(caseDupli == 0 || caseDupli == 2){   
 								if(val.trim() == ''){ innerRowData[indexArray] = '';  }
 		 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
@@ -1457,16 +1419,17 @@ function exportCSV(data){
 // 							val = value.SendCFMCusDate;    
 // 							if(val == ''){ innerRowData[indexArray] = ''   ;   }
 // 	 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
-// 						}
-// 						else{ 
+// 						}   
+// 						else{         
+// 							console.log(data+" "+val)
 							if(val == ''){ innerRowData[indexArray] = ''   ;   }
-	 						else{ innerRowData[indexArray] =stringToDate(val)   ; } 
+	 						else{ innerRowData[indexArray] =stringToDate(val)   ; }     
 // 						}
 						
 					}                
 		  		}   
-			  	else if(data == 'CustomerName'){innerRowData[sizeMap] = val  ;      }
-			  	else if(data == 'CustomerShortName'){innerRowData[sizeMap+1] =val ; } 
+			  	else if(data == 'customerName'){innerRowData[sizeMap] = val  ;      }
+			  	else if(data == 'customerShortName'){innerRowData[sizeMap+1] =val ; } 
             }
         });  
         createXLSLFormatObj.push(innerRowData);
@@ -1488,16 +1451,16 @@ function exportCSV(data){
 }           
 function checkSaleOrderLine( val){       
 	if(soLineTmpExcel == '' && soTmpExcel == ''  ){     
-		soLineTmpExcel = val.SaleLine;     
-		soTmpExcel = val.SaleOrder;   
+		soLineTmpExcel = val.saleLine;     
+		soTmpExcel = val.saleOrder;   
 		caseDupli = 0; 
 	}  
-	else if(soLineTmpExcel == val.SaleLine && soTmpExcel   == val.SaleOrder  ){
+	else if(soLineTmpExcel == val.saleLine && soTmpExcel   == val.saleOrder  ){
 		caseDupli = 1; 
 	}   
 	else{           
-		soLineTmpExcel = val.SaleLine;     
-		soTmpExcel = val.SaleOrder;   
+		soLineTmpExcel = val.saleLine;     
+		soTmpExcel = val.saleOrder;   
 		caseDupli = 2 
 	}  
 	return caseDupli;
@@ -1571,20 +1534,21 @@ function setModalDetail(data){
     
    	var innnerText = data[0];       
 //    	console.log(innnerText)
-   	poTable.clear();    	     
+   	poTable.clear();    	          
+//    	console.log(innnerText )
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
-		document.getElementById("input_poDefault").value = innnerText.poDetailList[0].PODefault;    
-		document.getElementById("input_poLineDefault").value = innnerText.poDetailList[0].POLineDefault;    
-		document.getElementById("input_poCreateDateDefault").value = innnerText.poDetailList[0].POPostingDateDefault;    
+		document.getElementById("input_poDefault").value = innnerText.poDetailList[0].poDefault;    
+		document.getElementById("input_poLineDefault").value = innnerText.poDetailList[0].poLineDefault;    
+		document.getElementById("input_poCreateDateDefault").value = innnerText.poDetailList[0].poPostingDateDefault;    
 	}  
 	poTable.draw();     
 // 	presetTable.clear();    	   
 	if(innnerText.presetDetailList.length == 0){       }     
 	else{ 
-		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].PostingDate;    
-		document.getElementById("input_presetWorkCenter").value = innnerText.presetDetailList[0].WorkCenter; 
+		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].postingDate;    
+		document.getElementById("input_presetWorkCenter").value = innnerText.presetDetailList[0].workCenter; 
 	}  
 // 	presetTable.draw();            
 	 
@@ -1651,53 +1615,53 @@ function setModalDetail(data){
 	receipeTable.draw();  
 	  	
 	 
-	document.getElementById("input_greigeDesign").value = innnerText.GreigeDesign  ;    
-	document.getElementById("input_greigeArticle").value = innnerText.GreigeArticle;    
-	document.getElementById("input_prdOrderCM").value = innnerText.ProductionOrder;    
-	document.getElementById("input_lotNoCM").value = innnerText.LotNo;    
-	document.getElementById("input_batchCM").value = innnerText.Batch;    
-	document.getElementById("input_labNoCM").value = innnerText.LabNo;    
-	document.getElementById("input_dateCM").value = innnerText.PrdCreateDate;    
-	document.getElementById("input_dueDateCM").value = innnerText.DueDate;    
-	document.getElementById("input_saleCM").value = innnerText.SaleOrder+'/'+innnerText.SaleLine;    
-	document.getElementById("input_poCM").value = innnerText.PurchaseOrder;    
-	document.getElementById("input_articleFGCM").value = innnerText.ArticleFG;    
-	document.getElementById("input_designFGCM").value = innnerText.DesignFG;    
-	document.getElementById("input_customerNameCM").value = innnerText.CustomerName;    
-	document.getElementById("input_customerShortNameCM").value = innnerText.CustomerShortName;      
-	document.getElementById("input_shadeCM").value = innnerText.Shade;    
-	document.getElementById("input_bookNoCM").value = innnerText.BookNo;    
-	document.getElementById("input_centerCM").value = innnerText.Center;    
-	document.getElementById("input_matNoCM").value = innnerText.MaterialNo;    
-	document.getElementById("input_volumnCM").value = innnerText.Volumn+" "+innnerText.SaleUnit;    
-	document.getElementById("input_stdUnitCM").value = innnerText.STDUnit;    
+	document.getElementById("input_greigeDesign").value = innnerText.greigeDesign  ;    
+	document.getElementById("input_greigeArticle").value = innnerText.greigeArticle;    
+	document.getElementById("input_prdOrderCM").value = innnerText.productionOrder;    
+	document.getElementById("input_lotNoCM").value = innnerText.lotNo;    
+	document.getElementById("input_batchCM").value = innnerText.batch;    
+	document.getElementById("input_labNoCM").value = innnerText.labNo;    
+	document.getElementById("input_dateCM").value = innnerText.productionOrderCreateDate;    
+	document.getElementById("input_dueDateCM").value = innnerText.dueDate;    
+	document.getElementById("input_saleCM").value = innnerText.saleOrder+'/'+innnerText.saleLine;    
+	document.getElementById("input_poCM").value = innnerText.purchaseOrder;    
+	document.getElementById("input_articleFGCM").value = innnerText.articleFG;    
+	document.getElementById("input_designFGCM").value = innnerText.designFG;    
+	document.getElementById("input_customerNameCM").value = innnerText.customerName;    
+	document.getElementById("input_customerShortNameCM").value = innnerText.customerShortName;      
+	document.getElementById("input_shadeCM").value = innnerText.shade;    
+	document.getElementById("input_bookNoCM").value = innnerText.bookNo;    
+	document.getElementById("input_centerCM").value = innnerText.center;    
+	document.getElementById("input_matNoCM").value = innnerText.materialNo;    
+	document.getElementById("input_volumnCM").value = innnerText.volumn+" "+innnerText.saleUnit;    
+	document.getElementById("input_stdUnitCM").value = innnerText.stdUnit;    
 	   
 // 	console.log(innnerText)
-	document.getElementById("input_colorCM").value = innnerText.Color + ' ( '+ innnerText.ColorCustomer +' ) ';        
-	document.getElementById("input_planGreigeDateCM").value = innnerText.PlanGreigeDate;   
-	document.getElementById("input_refPrdCM").value = innnerText.RefPrd;   
-	document.getElementById("input_greigeInDateCM").value = innnerText.GreigeInDate;  
-	document.getElementById("input_awarenessBCCM").value = innnerText.BCAware;   
-	document.getElementById("input_orderPuangCM").value = innnerText.OrderPuang;   
-	document.getElementById("input_userStatusCM").value = innnerText.UserStatus;   
-	document.getElementById("input_labStatusCM").value = innnerText.LabStatus;    
-	document.getElementById("input_awarenessBCCM").value = innnerText.BCAware;    
-	document.getElementById("input_sendCFMPlanCM").value = innnerText.CFMDatePlan;   
-	document.getElementById("input_sendShipPlanCM").value = innnerText.DeliveryDate;   
-	document.getElementById("input_BCDateCM").value = innnerText.BCDate;   
-	document.getElementById("input_remarkCM").value = innnerText.RemarkOne+" "+innnerText.RemarkTwo+" "+innnerText.RemarkThree;   
-	document.getElementById("input_remarkAfterCloseCM").value = innnerText.RemAfterCloseOne+" "+innnerText.RemAfterCloseTwo+" "+innnerText.RemAfterCloseThree;    
+	document.getElementById("input_colorCM").value = innnerText.color + ' ( '+ innnerText.colorCustomer +' ) ';        
+	document.getElementById("input_planGreigeDateCM").value = innnerText.planGreigeDate;   
+	document.getElementById("input_refPrdCM").value = innnerText.refPrd;   
+	document.getElementById("input_greigeInDateCM").value = innnerText.greigeInDate;  
+	document.getElementById("input_awarenessBCCM").value = innnerText.bcAware;   
+	document.getElementById("input_orderPuangCM").value = innnerText.orderPuang;   
+	document.getElementById("input_userStatusCM").value = innnerText.userStatus;   
+	document.getElementById("input_labStatusCM").value = innnerText.labStatus;    
+	document.getElementById("input_awarenessBCCM").value = innnerText.bcAware;    
+	document.getElementById("input_sendCFMPlanCM").value = innnerText.cfmDatePlan;   
+	document.getElementById("input_sendShipPlanCM").value = innnerText.deliveryDate;   
+	document.getElementById("input_BCDateCM").value = innnerText.bcDate;   
+	document.getElementById("input_remarkCM").value = innnerText.remarkOne+" "+innnerText.remarkTwo+" "+innnerText.remarkThree;   
+	document.getElementById("input_remarkAfterCloseCM").value = innnerText.remAfterCloseOne+" "+innnerText.remAfterCloseTwo+" "+innnerText.remAfterCloseThree;    
 }    
 function goToLBMS(tblData,pUserId,data){     
 // 	let obj = createEncryptObj(pUserId);      
-	var prdOrder = tblData[0].ProductionOrder
-	var article = tblData[0].ArticleFG 
-	var color = tblData[0].Color 
+	var prdOrder = tblData[0].productionOrder
+	var article = tblData[0].articleFG 
+	var color = tblData[0].color 
 	$.ajax({   
   	    url: urlLBMS,
   	    type : 'GET',   
   	    data : { 
-  	    	"comeFrom": data.Encrypted  ,   
+  	    	"comeFrom": data.encrypted  ,   
   	        "isCustomer": isCustomer
 	    	},   
   	    success : function(data) {   
@@ -1732,12 +1696,12 @@ function goToLBMS(tblData,pUserId,data){
    	}); 
 }    
 function goToSFC(tblData,pUserId,data){          
-	var prdOrder = tblData[0].ProductionOrder  
+	var prdOrder = tblData[0].productionOrder  
 	$.ajax({    
 	    url: urlSFC,
 	    type : 'GET',      
 	    data : {     
-			"comeFrom": data.Encrypted  ,   
+			"comeFrom": data.encrypted  ,   
   	        "isCustomer": isCustomer
 // 		    "comeFrom":"PCMS"
 	    },               
@@ -1759,7 +1723,7 @@ function goToSFC(tblData,pUserId,data){
 } 
 function goToInspect(tblData,pUserId,data){ 
 // 	let obj = createEncryptObj(pUserId);    
-	var prdOrder = tblData[0].ProductionOrder
+	var prdOrder = tblData[0].productionOrder
 // 	console.log(tblData[0].ProductionOrder,data.Encrypted)
 	$.ajax({
 // 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
@@ -1767,7 +1731,7 @@ function goToInspect(tblData,pUserId,data){
 	    type : 'GET',      
 // 	    async : false,
 	    data : {
-	    	"comeFrom": data.Encrypted  ,
+	    	"comeFrom": data.encrypted  ,
   	        "isCustomer": isCustomer      	
 // 	    	"comeFrom": "PCMS"
 	    },    
@@ -1791,16 +1755,16 @@ function goToInspect(tblData,pUserId,data){
 }  
 function goToQCMS(tblData,pUserId,data){ 
 // 	let obj = createEncryptObj(pUserId);    
-		var article = tblData[0].ArticleFG
-		var lotNo = tblData[0].LotNo
-		var color = tblData[0].Color 
+		var article = tblData[0].articleFG
+		var lotNo = tblData[0].lotNo
+		var color = tblData[0].color 
 		$.ajax({
 //	 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
 		    url: urlQCMSObj,
 		    type : 'GET',      
 //	 	    async : false,
 		    data : {    
-		    	"comeFrom": data.Encrypted  ,   
+		    	"comeFrom": data.encrypted  ,   
 	  	        "isCustomer": isCustomer
 // 		    		    	"comeFrom": "PCMS"
 		    },    
@@ -1868,51 +1832,51 @@ function addSelectOption(data){
 // 		 console.log(data[i])
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.SaleFullName;
-		 opt.value = resultData.SaleNumber;   
+		 opt.text  = resultData.saleFullName;
+		 opt.value = resultData.saleNumber;   
 		 sel.appendChild(opt);          
 	}      
 }   
  
-function saveInputDateToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
-	$.ajax({   
-		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),         
-		url: "Main/saveInputDate", 
-		success: function(data) {  
-			if(data.length > 0){
-				var bean = data[0]; 
-				if(bean.IconStatus == 'I'){
-					swal({
-						title: "Success",    
-					 	text: bean.StatusSystem ,
-						icon: "info",
-						button: "confirm",
-   					});  
-				}
-				else{  
-					swal({   
-						title: "Warning ",    
-					 	text: bean.StatusSystem  , 
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}  
-			}
-// 			MainTable.clear();           
-// 			MainTable.rows.add(data);      
-// 			MainTable.columns.adjust().draw();       
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
-	});   
-}    
+// function saveInputDateToServer(arrayTmp) {   
+// // 	console.log(arrayTmp)
+// 	$.ajax({   
+// 		type: "POST",  
+// 		contentType: "application/json",  
+// 		data: JSON.stringify(arrayTmp),         
+// 		url: "Main/saveInputDate", 
+// 		success: function(data) {  
+// 			if(data.length > 0){
+// 				var bean = data[0]; 
+// 				if(bean.iconStatus == 'I'){
+// 					swal({
+// 						title: "Success",    
+// 					 	text: bean.StatusSystem ,
+// 						icon: "info",
+// 						button: "confirm",
+//    					});  
+// 				}
+// 				else{  
+// 					swal({   
+// 						title: "Warning ",    
+// 					 	text: bean.StatusSystem  , 
+// 			   		    icon: 'warning',
+// 			   		    timer: 1000,
+// 			   		    buttons: false,
+// 			   		})
+// 				}  
+// 			}
+// // 			MainTable.clear();           
+// // 			MainTable.rows.add(data);      
+// // 			MainTable.columns.adjust().draw();       
+// 		},   
+// 		error: function(e) {
+// 			swal("Fail", "Please contact to IT", "error");
+// 		},
+// 		done: function(e) {       
+// 		}   	
+// 	});   
+// }    
 function settingColumnOption(columns ,colVisible){  
 	if(colVisible == null){
 		$('#multi_colVis option').attr("selected","selected");
@@ -1989,10 +1953,10 @@ function saveColSettingToServer(arrayTmp) {
 // 			MainTable.columns.adjust().draw();   
 			if(data.length > 0){
 				var bean = data[0];   
-				if(bean.IconStatus == 'I'){
+				if(bean.iconStatus == 'I'){
 					swal({   
 						title: "Success",    
-					 	text: bean.SystemStatus ,
+					 	text: bean.systemStatus ,
 						icon: "info",
 						button: "confirm",
    					});  
@@ -2000,7 +1964,7 @@ function saveColSettingToServer(arrayTmp) {
 				else{  
 					swal({   
 						title: "Warning ",    
-					 	text: bean.SystemStatus  , 
+					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    buttons: false,
@@ -2057,8 +2021,8 @@ function addUserStatusOption(data ){
 	     var resultData = data[i]; 	   
 	     opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-	     opt.text  = resultData.UserStatus;
-	     opt.value = resultData.UserStatus;
+	     opt.text  = resultData.userStatus;
+	     opt.value = resultData.userStatus;
 	     sel.appendChild(opt);          
 	}             
 	$("#multi_userStatus").selectpicker("refresh");
@@ -2074,8 +2038,8 @@ function addDivisionOption(data ){
 		 var resultData = data[i]; 	   
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.Division;
-		 opt.value = resultData.Division;
+		 opt.text  = resultData.division;
+		 opt.value = resultData.division;
 		 sel.appendChild(opt);          
 	}             
 	$("#multi_division").selectpicker("refresh");
@@ -2092,8 +2056,8 @@ function addCusNameOption(data ){
 // 		 console.log(resultData)
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.CustomerName;  
-		 opt.value = resultData.CustomerName;
+		 opt.text  = resultData.customerName;  
+		 opt.value = resultData.customerName;
 		 sel.appendChild(opt);          
 	}             
 	$("#multi_cusName").selectpicker("refresh");
@@ -2109,8 +2073,8 @@ function addCusShortNameOption(data ){
 		 var resultData = data[i]; 	   
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.CustomerShortName;
-		 opt.value = resultData.CustomerShortName;
+		 opt.text  = resultData.customerShortName;
+		 opt.value = resultData.customerShortName;
 		 sel.appendChild(opt);          
 	}             
 	$("#multi_cusShortName").selectpicker("refresh");
@@ -2151,10 +2115,10 @@ function saveDefault( ){
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
-				if(bean.IconStatus == 'I'){
+				if(bean.iconStatus == 'I'){
 					swal({   
 						title: "Success",    
-					 	text: bean.SystemStatus ,
+					 	text: bean.systemStatus ,
 						icon: "info",
 						button: "confirm",
    					});  
@@ -2162,7 +2126,7 @@ function saveDefault( ){
 				else{  
 					swal({   
 						title: "Warning ",    
-					 	text: bean.SystemStatus  , 
+					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    buttons: false,
@@ -2207,33 +2171,33 @@ function loadDefault(){
 } 
 function setSearchDefault(data){ 
 	var innnerText = data[0];      
-	document.getElementById("input_saleOrder").value = innnerText.SaleOrder;  
-	document.getElementById("input_article").value   = innnerText.ArticleFG;  
-	document.getElementById("input_prdOrder").value  = innnerText.ProductionOrder;   
-	document.getElementById("input_designNo").value  = innnerText.DesignFG;   
-	document.getElementById("input_material").value  = innnerText.MaterialNo;  
-	document.getElementById("input_labNo").value     = innnerText.LabNo;
-	document.getElementById("input_PO").value     = innnerText.PurchaseOrder;
+	document.getElementById("input_saleOrder").value = innnerText.saleOrder;  
+	document.getElementById("input_article").value   = innnerText.articleFG;  
+	document.getElementById("input_prdOrder").value  = innnerText.productionOrder;   
+	document.getElementById("input_designNo").value  = innnerText.designFG;   
+	document.getElementById("input_material").value  = innnerText.materialNo;  
+	document.getElementById("input_labNo").value     = innnerText.labNo;
+	document.getElementById("input_PO").value     = innnerText.purchaseOrder;
 	
-	var saleCreateArray = innnerText.SaleOrderCreateDate.split(' - ') ;
+	var saleCreateArray = innnerText.saleOrderCreateDate.split(' - ') ;
 	if(saleCreateArray.length == 1){ $('#input_saleOrderDate').val('');     }
 	else{
 		$("#input_saleOrderDate").data('daterangepicker').setStartDate(saleCreateArray[0] );
 		$("#input_saleOrderDate").data('daterangepicker').setEndDate(saleCreateArray[1]);  
 	} 
-	var prdOrderArray = innnerText.ProductionOrderCreateDate.split(' - ') ;
+	var prdOrderArray = innnerText.productionOrderCreateDate.split(' - ') ;
 	if(prdOrderArray.length == 1){ $('#input_prdOrderDate').val('');     }
 	else{
 		$("#input_prdOrderDate").data('daterangepicker').setStartDate(prdOrderArray[0]);
 		$("#input_prdOrderDate").data('daterangepicker').setEndDate(prdOrderArray[1]); 
 	}     
-	var dueDateArray = innnerText.DueDate.split(' - ') ;   
+	var dueDateArray = innnerText.dueDate.split(' - ') ;   
 	if(dueDateArray.length == 1){ $('#input_dueDate').val('');     }
 	else{   
 		$("#input_dueDate").data('daterangepicker').setStartDate(dueDateArray[0]);
 		$("#input_dueDate").data('daterangepicker').setEndDate(dueDateArray[1]);
 	}       
-	var saleStatus = innnerText.SaleStatus;
+	var saleStatus = innnerText.saleStatus;
 	if(saleStatus == ''){ 
 		document.getElementById("rad_all").checked = true;
 	}
@@ -2245,22 +2209,22 @@ function setSearchDefault(data){
 	}   
 	 
 // 	console.log(innnerText.SaleNumber,innnerText.DeliveryStatus)
-	document.getElementById('SL_saleNumber').value=innnerText.SaleNumber;
-	document.getElementById('SL_delivStatus').value=innnerText.DeliveryStatus;
+	document.getElementById('SL_saleNumber').value=innnerText.saleNumber;
+	document.getElementById('SL_delivStatus').value=innnerText.deliveryStatus;
 	
 	 document.getElementById("check_DM").checked = false;
 	 document.getElementById("check_EX").checked = false;
 	 document.getElementById("check_HW").checked = false;
-	 var distChannel = innnerText.DistChannel.split('|');
+	 var distChannel = innnerText.distChannel.split('|');
 	 for( let i = 0 ;i < distChannel.length ; i++){
 		 if(distChannel[i] == 'DM'){ document.getElementById("check_DM").checked = true; }
 		 else if(distChannel[i] == 'EX'){ document.getElementById("check_EX").checked = true;  }
 		 else if(distChannel[i] == 'HW'){ document.getElementById("check_HW").checked = true;  }
 	 }             
-	 var customer = innnerText.CustomerName.split('|'); 
-	 var customerShort = innnerText.CustomerShortName.split('|'); 
-	 var userStatusList = innnerText.UserStatus.split('|');  
-	 var divisionList = innnerText.Division.split('|'); 
+	 var customer = innnerText.customerName.split('|'); 
+	 var customerShort = innnerText.customerShortName.split('|'); 
+	 var userStatusList = innnerText.userStatus.split('|');  
+	 var divisionList = innnerText.division.split('|'); 
 	 $('#multi_cusName').selectpicker('val', customer);    
 	 $('#multi_cusShortName').selectpicker('val', customerShort);    
 	 $('#multi_userStatus').selectpicker('val', userStatusList);      
@@ -2269,8 +2233,7 @@ function setSearchDefault(data){
 	$('#multi_cusShortName').selectpicker('refresh');     
 	$('#multi_userStatus').selectpicker('refresh');      
 	$('#multi_division').selectpicker('refresh');  
-}      
-
+}       
 // function preLoaderHandler (){         
 // 	   preloader.style.display = 'none';  
 // 	} 

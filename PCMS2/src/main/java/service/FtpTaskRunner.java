@@ -56,7 +56,7 @@ public class FtpTaskRunner {
    private DataImportDao importerMainProdSale;
    private DataImportDao importerMainProd;
    private DataImportDao importerMainSale;
-   private DataImportDao importerMainGrade;
+//   private DataImportDao importerMainGrade;
    private DataImportDao importerGoodReceive;
    
    private DataImportDao importerBillBatch;
@@ -81,7 +81,7 @@ public class FtpTaskRunner {
       this.importerMainProdSale = new DataImportMainProdSaleDaoImpl(database, ftp); 
       this.importerMainProd = new DataImportMainProdDaoImpl(database, ftp); 
       this.importerMainSale = new DataImportMainSaleDaoImpl(database, ftp); 
-      this.importerMainGrade = new DataImportMainGradeDaoImpl(database, ftp); 
+//      this.importerMainGrade = new DataImportMainGradeDaoImpl(database, ftp); 
       this.importerGoodReceive = new DataImportGoodReceiveDaoImpl(database, ftp); 
       this.importerBillBatch = new DataImportMainBillBatchDaoImpl(database, ftp); 
    } 

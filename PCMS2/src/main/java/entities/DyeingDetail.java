@@ -1,121 +1,121 @@
 package entities;
 
 public class DyeingDetail {
-	private String PostingDate;
-	private String Operation;
-	private String WorkCenter;
-	private String DyeStatus;
-	private String DeltaE;
-	private String L;
-	private String Da;
-	private String Db;
-	private String ST	;
-	private String Remark	;
-	private String Redye;
-	private String Batch;
-	private String ColorStatus;
-	private String ColorRemark;
+	private String postingDate;
+	private String operation;
+	private String workCenter;
+	private String dyeStatus;
+	private String deltaE;
+	private String l;
+	private String da;
+	private String db;
+	private String st	;
+	private String remark	;
+	private String redye;
+	private String batch;
+	private String colorStatus;
+	private String colorRemark;
 	public DyeingDetail(String postingDate, String operation, String workCenter, String dyeStatus, String deltaE,
 			String l, String da, String db, String sT, String remark, String redye, String batch, String colorStatus,
 			String colorRemark) {
 		super();
-		PostingDate = postingDate;
-		Operation = operation;
-		WorkCenter = workCenter;
-		DyeStatus = dyeStatus;
-		DeltaE = deltaE;
-		L = l;
-		Da = da;
-		Db = db;
-		ST = sT;
-		Remark = remark;
-		Redye = redye;
-		Batch = batch;
-		ColorStatus = colorStatus;
-		ColorRemark = colorRemark;
+		this.postingDate = postingDate;
+		this.operation = operation;
+		this.workCenter = workCenter;
+		this.dyeStatus = dyeStatus;
+		this.deltaE = deltaE;
+		this.l = l;
+		this.da = da;
+		this.db = db;
+		this.st = sT;
+		this.remark = remark;
+		this.redye = redye;
+		this.batch = batch;
+		this.colorStatus = colorStatus;
+		this.colorRemark = colorRemark;
 	}
 	public String getPostingDate() {
-		return PostingDate;
+		return postingDate;
 	}
 	public void setPostingDate(String postingDate) {
-		PostingDate = postingDate;
+		this.postingDate = postingDate;
 	}
 	public String getOperation() {
-		return Operation;
+		return operation;
 	}
 	public void setOperation(String operation) {
-		Operation = operation;
+		this.operation = operation;
 	}
 	public String getWorkCenter() {
-		return WorkCenter;
+		return workCenter;
 	}
 	public void setWorkCenter(String workCenter) {
-		WorkCenter = workCenter;
+		this.workCenter = workCenter;
 	}
 	public String getDyeStatus() {
-		return DyeStatus;
+		return dyeStatus;
 	}
 	public void setDyeStatus(String dyeStatus) {
-		DyeStatus = dyeStatus;
+		this.dyeStatus = dyeStatus;
 	}
 	public String getDeltaE() {
-		return DeltaE;
+		return deltaE;
 	}
 	public void setDeltaE(String deltaE) {
-		DeltaE = deltaE;
+		this.deltaE = deltaE;
 	}
 	public String getL() {
-		return L;
+		return l;
 	}
 	public void setL(String l) {
-		L = l;
+		this.l = l;
 	}
 	public String getDa() {
-		return Da;
+		return da;
 	}
 	public void setDa(String da) {
-		Da = da;
+		this.da = da;
 	}
 	public String getDb() {
-		return Db;
+		return db;
 	}
 	public void setDb(String db) {
-		Db = db;
+		this.db = db;
 	}
-	public String getST() {
-		return ST;
+	public String getSt() {
+		return st;
 	}
-	public void setST(String sT) {
-		ST = sT;
+	public void setSt(String st) {
+		this.st = st;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
+		this.remark = remark;
 	}
 	public String getRedye() {
-		return Redye;
+		return redye;
 	}
 	public void setRedye(String redye) {
-		Redye = redye;
+		this.redye = redye;
 	}
 	public String getBatch() {
-		return Batch;
+		return batch;
 	}
 	public void setBatch(String batch) {
-		Batch = batch;
+		this.batch = batch;
 	}
 	public String getColorStatus() {
-		return ColorStatus;
+		return colorStatus;
 	}
 	public void setColorStatus(String colorStatus) {
-		ColorStatus = colorStatus;
+		this.colorStatus = colorStatus;
 	}
 	public String getColorRemark() {
-		return ColorRemark;
+		return colorRemark;
 	}
 	public void setColorRemark(String colorRemark) {
-		ColorRemark = colorRemark;
-	}  
+		this.colorRemark = colorRemark;
+	} 
 }

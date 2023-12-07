@@ -6,12 +6,12 @@
 			 style ="width: 99%;  "    >              
 		<div class="modal-content">
 			<div class="modal-header text-center" style="background-color: beige;">
-				<h4 class="modal-title w-100 font-weight-bold">Show / Hide Column</h4>
+				<h4 class="modal-title w-100 font-weight-bold">Lock Column</h4>
 				<button id="modalCloseButton" type="button" class="close"
 					data-dismiss="modal" aria-label="Close">     
 					<span aria-hidden="true">&times;</span>
 				</button>
-			</div>      
+			</div>         
 			<div class="modal-body mx-12" style="display: inline-flex;"> 
 				<label class=" margin-0" for="multi_colVis">Select column :</label>  	
 				<div >     

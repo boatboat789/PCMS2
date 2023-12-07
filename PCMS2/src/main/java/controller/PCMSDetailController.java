@@ -118,8 +118,8 @@ public class PCMSDetailController {
 			pd.setProductionOrder(userArray[i].getProductionOrder());
 			pd.setSaleOrder(userArray[i].getSaleOrder());
 			pd.setSaleLine(userArray[i].getSaleLine());
-			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
-			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setCfmPlanLabDate(userArray[i].getCfmPlanLabDate());
+			pd.setCfmPlanDate(userArray[i].getCfmPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setCaseSave(userArray[i].getCaseSave());   
 			pd.setLotNo(userArray[i].getLotNo());
@@ -150,7 +150,7 @@ public class PCMSDetailController {
 			pd.setGrade(userArray[i].getGrade()) ;
 			pd.setCaseSave(userArray[i].getCaseSave()) ;
 			pd.setLotNo(userArray[i].getLotNo());
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setStockLoad(userArray[i].getStockLoad()); 
 			pd.setDelayedDepartment(userArray[i].getDelayedDepartment());
@@ -177,12 +177,12 @@ public class PCMSDetailController {
 			pd.setProductionOrder(userArray[i].getProductionOrder());
 			pd.setSaleOrder(userArray[i].getSaleOrder());
 			pd.setSaleLine(userArray[i].getSaleLine());
-			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
-			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setCfmPlanLabDate(userArray[i].getCfmPlanLabDate());
+			pd.setCfmPlanDate(userArray[i].getCfmPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());    
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setStockLoad(userArray[i].getStockLoad());
 			pd.setUserId(user);
@@ -206,13 +206,13 @@ public class PCMSDetailController {
 			pd.setProductionOrder(userArray[i].getProductionOrder());
 			pd.setSaleOrder(userArray[i].getSaleOrder());
 			pd.setSaleLine(userArray[i].getSaleLine());
-			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
-			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setCfmPlanLabDate(userArray[i].getCfmPlanLabDate());
+			pd.setCfmPlanDate(userArray[i].getCfmPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());   
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -234,12 +234,12 @@ public class PCMSDetailController {
 			pd.setProductionOrder(userArray[i].getProductionOrder());
 			pd.setSaleOrder(userArray[i].getSaleOrder());
 			pd.setSaleLine(userArray[i].getSaleLine());
-			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
-			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setCfmPlanLabDate(userArray[i].getCfmPlanLabDate());
+			pd.setCfmPlanDate(userArray[i].getCfmPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());   
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -261,12 +261,12 @@ public class PCMSDetailController {
 			pd.setProductionOrder(userArray[i].getProductionOrder());
 			pd.setSaleOrder(userArray[i].getSaleOrder());
 			pd.setSaleLine(userArray[i].getSaleLine());
-			pd.setCFMPlanLabDate(userArray[i].getCFMPlanLabDate());
-			pd.setCFMPlanDate(userArray[i].getCFMPlanDate());  
+			pd.setCfmPlanLabDate(userArray[i].getCfmPlanLabDate());
+			pd.setCfmPlanDate(userArray[i].getCfmPlanDate());  
 			pd.setDeliveryDate(userArray[i].getDeliveryDate());   
 			pd.setSendCFMCusDate(userArray[i].getSendCFMCusDate()) ;
 			pd.setCaseSave(userArray[i].getCaseSave());   
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setUserId(user);
 			poList.add(pd);   
 		}  
@@ -396,7 +396,7 @@ public class PCMSDetailController {
 			pd.setGrade(userArray[i].getGrade()) ;
 			pd.setCaseSave(userArray[i].getCaseSave()) ;
 			pd.setLotNo(userArray[i].getLotNo());
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setUserId(user);
 			poList.add(pd);   
@@ -424,7 +424,7 @@ public class PCMSDetailController {
 			pd.setGrade(userArray[i].getGrade()) ;
 			pd.setCaseSave(userArray[i].getCaseSave()) ;
 			pd.setLotNo(userArray[i].getLotNo());
-			pd.setPCRemark(userArray[i].getPCRemark()) ;
+			pd.setPcRemark(userArray[i].getPcRemark()) ;
 			pd.setSwitchRemark(userArray[i].getSwitchRemark());
 			pd.setUserId(user);
 			poList.add(pd);   

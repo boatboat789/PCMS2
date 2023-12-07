@@ -44,7 +44,7 @@ function checkInt(str) {
 }
 function isBlank(str) {
     return (!str || /^\s*$/.test(str));
-} 
+}   
 function isNumeric(value) {
     return /^\d+$/.test(value);
 }   
@@ -54,3 +54,13 @@ function stringToDate(dateString){
     date = new Date(datearray[1] + '-' + datearray[0] + '-' + datearray[2]) ;   
 	return  date ; 	             
 }    
+
+function dateDDMMYYYToDDMM(dateStr){       
+	var datearray = dateStr.split("/");   
+	if(datearray.length > 1 ){
+		dateStr = datearray[0] + '/'+datearray[1] 
+	}else{
+		dateStr = ''
+	}
+    return dateStr;
+}

@@ -1,170 +1,170 @@
 package entities;
 
 public class CFMDetail {         
-	  private String CFMNo;
-	  private String CFMNumber;
-	  private String CFMSendDate;
-	  private String RollNo;
-	  private String RollNoRemark;
-	  private String L;
-	  private String Da;
-	  private String Db; 
-	  private String ST;
-	  private String DE;
-	  private String SaleOrder;
-	  private String SaleLine;
-	  private String Color;
-	  private String CFMAnswerDate;
-	  private String CFMStatus;
-	  private String CFMRemark; 
-	  private String NextLot;
-	  private String SOChange;
-	  private String SOChangeQty;
-	  private String SOChangeUnit;
+	  private String cfmNo;
+	  private String cfmNumber;
+	  private String cfmSendDate;
+	  private String rollNo;
+	  private String rollNoRemark;
+	  private String l;
+	  private String da;
+	  private String db; 
+	  private String st;
+	  private String de;
+	  private String saleOrder;
+	  private String saleLine;
+	  private String color;
+	  private String cfmAnswerDate;
+	  private String cfmStatus;
+	  private String cfmRemark; 
+	  private String nextLot;
+	  private String soChange;
+	  private String soChangeQty;
+	  private String soChangeUnit;
 	public CFMDetail(String cFMNo, String cFMNumber, String cFMSendDate, String rollNo, String rollNoRemark, String l,
 			String da, String db, String sT, String saleOrder, String saleLine, String color, String cFMAnswerDate,
 			String cFMStatus, String cFMRemark, String NextLot, String sOChange, String sOChangeQty,
 			String sOChangeUnit,String de) {
 		super();
-		this.DE = de;
-		CFMNo = cFMNo;
-		CFMNumber = cFMNumber;
-		CFMSendDate = cFMSendDate;
-		RollNo = rollNo;
-		RollNoRemark = rollNoRemark;
-		L = l;
-		Da = da;
-		Db = db;
-		ST = sT;
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		Color = color;
-		CFMAnswerDate = cFMAnswerDate;
-		CFMStatus = cFMStatus;
-		CFMRemark = cFMRemark;
-		this.NextLot = NextLot;
-		SOChange = sOChange;
-		SOChangeQty = sOChangeQty;
-		SOChangeUnit = sOChangeUnit;
+		this.de = de;
+		this.cfmNo = cFMNo;
+		this.cfmNumber = cFMNumber;
+		this.cfmSendDate = cFMSendDate;
+		this.rollNo = rollNo;
+		this.rollNoRemark = rollNoRemark;
+		this.l = l;
+		this.da = da;
+		this.db = db;
+		this.st = sT;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.color = color;
+		this.cfmAnswerDate = cFMAnswerDate;
+		this.cfmStatus = cFMStatus;
+		this.cfmRemark = cFMRemark;
+		this.nextLot = NextLot;
+		this.soChange = sOChange;
+		this.soChangeQty = sOChangeQty;
+		this.soChangeUnit = sOChangeUnit;
 	}
-	public String getDE() {
-		return DE;
+	public String getCfmNo() {
+		return cfmNo;
 	}
-	public void setDE(String dE) {
-		DE = dE;
+	public void setCfmNo(String cfmNo) {
+		this.cfmNo = cfmNo;
 	}
-	public String getCFMNo() {
-		return CFMNo;
+	public String getCfmNumber() {
+		return cfmNumber;
 	}
-	public void setCFMNo(String cFMNo) {
-		CFMNo = cFMNo;
+	public void setCfmNumber(String cfmNumber) {
+		this.cfmNumber = cfmNumber;
 	}
-	public String getCFMNumber() {
-		return CFMNumber;
+	public String getCfmSendDate() {
+		return cfmSendDate;
 	}
-	public void setCFMNumber(String cFMNumber) {
-		CFMNumber = cFMNumber;
-	}
-	public String getCFMSendDate() {
-		return CFMSendDate;
-	}
-	public void setCFMSendDate(String cFMSendDate) {
-		CFMSendDate = cFMSendDate;
+	public void setCfmSendDate(String cfmSendDate) {
+		this.cfmSendDate = cfmSendDate;
 	}
 	public String getRollNo() {
-		return RollNo;
+		return rollNo;
 	}
 	public void setRollNo(String rollNo) {
-		RollNo = rollNo;
+		this.rollNo = rollNo;
 	}
 	public String getRollNoRemark() {
-		return RollNoRemark;
+		return rollNoRemark;
 	}
 	public void setRollNoRemark(String rollNoRemark) {
-		RollNoRemark = rollNoRemark;
+		this.rollNoRemark = rollNoRemark;
 	}
 	public String getL() {
-		return L;
+		return l;
 	}
 	public void setL(String l) {
-		L = l;
+		this.l = l;
 	}
 	public String getDa() {
-		return Da;
+		return da;
 	}
 	public void setDa(String da) {
-		Da = da;
+		this.da = da;
 	}
 	public String getDb() {
-		return Db;
+		return db;
 	}
 	public void setDb(String db) {
-		Db = db;
+		this.db = db;
 	}
-	public String getST() {
-		return ST;
+	public String getSt() {
+		return st;
 	}
-	public void setST(String sT) {
-		ST = sT;
+	public void setSt(String st) {
+		this.st = st;
+	}
+	public String getDe() {
+		return de;
+	}
+	public void setDe(String de) {
+		this.de = de;
 	}
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
 	public String getColor() {
-		return Color;
+		return color;
 	}
 	public void setColor(String color) {
-		Color = color;
+		this.color = color;
 	}
-	public String getCFMAnswerDate() {
-		return CFMAnswerDate;
+	public String getCfmAnswerDate() {
+		return cfmAnswerDate;
 	}
-	public void setCFMAnswerDate(String cFMAnswerDate) {
-		CFMAnswerDate = cFMAnswerDate;
+	public void setCfmAnswerDate(String cfmAnswerDate) {
+		this.cfmAnswerDate = cfmAnswerDate;
 	}
-	public String getCFMStatus() {
-		return CFMStatus;
+	public String getCfmStatus() {
+		return cfmStatus;
 	}
-	public void setCFMStatus(String cFMStatus) {
-		CFMStatus = cFMStatus;
+	public void setCfmStatus(String cfmStatus) {
+		this.cfmStatus = cfmStatus;
 	}
-	public String getCFMRemark() {
-		return CFMRemark;
+	public String getCfmRemark() {
+		return cfmRemark;
 	}
-	public void setCFMRemark(String cFMRemark) {
-		CFMRemark = cFMRemark;
+	public void setCfmRemark(String cfmRemark) {
+		this.cfmRemark = cfmRemark;
 	}
 	public String getNextLot() {
-		return NextLot;
+		return nextLot;
 	}
-	public void setNextLot(String NextLot) {
-		this.NextLot = NextLot;
+	public void setNextLot(String nextLot) {
+		this.nextLot = nextLot;
 	}
-	public String getSOChange() {
-		return SOChange;
+	public String getSoChange() {
+		return soChange;
 	}
-	public void setSOChange(String sOChange) {
-		SOChange = sOChange;
+	public void setSoChange(String soChange) {
+		this.soChange = soChange;
 	}
-	public String getSOChangeQty() {
-		return SOChangeQty;
+	public String getSoChangeQty() {
+		return soChangeQty;
 	}
-	public void setSOChangeQty(String sOChangeQty) {
-		SOChangeQty = sOChangeQty;
+	public void setSoChangeQty(String soChangeQty) {
+		this.soChangeQty = soChangeQty;
 	}
-	public String getSOChangeUnit() {
-		return SOChangeUnit;
+	public String getSoChangeUnit() {
+		return soChangeUnit;
 	}
-	public void setSOChangeUnit(String sOChangeUnit) {
-		SOChangeUnit = sOChangeUnit;
+	public void setSoChangeUnit(String soChangeUnit) {
+		this.soChangeUnit = soChangeUnit;
 	} 
 }

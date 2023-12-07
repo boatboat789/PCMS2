@@ -1,121 +1,99 @@
 package entities;
 
 public class InputDateDetail {
-	private String ProductionOrder;
-	private String SaleOrder;
-	private String SaleLine;
-	private String PlanDate; 
-	private String CreateBy;
-	private String CreateDate;
-	private String InputFrom;
-	private String LotNo;
-	private String IconStatus;
-	private String SystemStatus;
-	private int CountPlanDate;
+	private String productionOrder;
+	private String saleOrder;
+	private String saleLine;
+	private String planDate; 
+	private String createBy;
+	private String createDate;
+	private String inputFrom;
+	private String lotNo;
+	private String iconStatus;
+	private String systemStatus;
+	private int countPlanDate;
 	public InputDateDetail(String productionOrder, String saleOrder, String saleLine, String planDate 
 			 , String createBy ,String CreateDate,String InputFrom,int CountPlanDate,String LotNo) {
 		super();
-		ProductionOrder = productionOrder;
-		SaleOrder = saleOrder;
-		SaleLine = saleLine;
-		PlanDate = planDate; 
-		CreateBy = createBy; 
-		this.CreateDate = CreateDate;
-		this.InputFrom = InputFrom;
-		this.CountPlanDate = CountPlanDate;
-		this.LotNo = LotNo;
+		this.productionOrder = productionOrder;
+		this.saleOrder = saleOrder;
+		this.saleLine = saleLine;
+		this.planDate = planDate; 
+		this.createBy = createBy; 
+		this.createDate = CreateDate;
+		this.inputFrom = InputFrom;
+		this.countPlanDate = CountPlanDate;
+		this.lotNo = LotNo;
 	}
-
-	public String getLotNo() {
-		return LotNo;
-	}
-
-	public void setLotNo(String lotNo) {
-		LotNo = lotNo;
-	}
-
-	public String getCreateDate() {
-		return CreateDate;
-	}
-
-	public void setCreateDate(String createDate) {
-		CreateDate = createDate;
-	}
-
-	public int getCountPlanDate() {
-		return CountPlanDate;
-	}
-
-	public void setCountPlanDate(int CountPlanDate) {
-		this.CountPlanDate = CountPlanDate;
-	}
-
 	public InputDateDetail() {
 		// TODO Auto-generated constructor stub
 	}
-
-	public String getInputFrom() {
-		return InputFrom;
-	}
-
-	public void setInputFrom(String inputFrom) {
-		InputFrom = inputFrom;
-	}
-
 	public String getProductionOrder() {
-		return ProductionOrder;
+		return productionOrder;
 	}
-
 	public void setProductionOrder(String productionOrder) {
-		ProductionOrder = productionOrder;
+		this.productionOrder = productionOrder;
 	}
-
 	public String getSaleOrder() {
-		return SaleOrder;
+		return saleOrder;
 	}
-
 	public void setSaleOrder(String saleOrder) {
-		SaleOrder = saleOrder;
+		this.saleOrder = saleOrder;
 	}
-
 	public String getSaleLine() {
-		return SaleLine;
+		return saleLine;
 	}
-
 	public void setSaleLine(String saleLine) {
-		SaleLine = saleLine;
+		this.saleLine = saleLine;
 	}
-
 	public String getPlanDate() {
-		return PlanDate;
+		return planDate;
 	}
-
 	public void setPlanDate(String planDate) {
-		PlanDate = planDate;
+		this.planDate = planDate;
 	}
-   
 	public String getCreateBy() {
-		return CreateBy;
+		return createBy;
 	}
-
 	public void setCreateBy(String createBy) {
-		CreateBy = createBy;
+		this.createBy = createBy;
 	}
-
+	public String getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+	public String getInputFrom() {
+		return inputFrom;
+	}
+	public void setInputFrom(String inputFrom) {
+		this.inputFrom = inputFrom;
+	}
+	public String getLotNo() {
+		return lotNo;
+	}
+	public void setLotNo(String lotNo) {
+		this.lotNo = lotNo;
+	}
 	public String getIconStatus() {
-		return IconStatus;
+		return iconStatus;
 	}
-
-	public void setIconStatus(String IconStatus) {
-		this.IconStatus = IconStatus;
+	public void setIconStatus(String iconStatus) {
+		this.iconStatus = iconStatus;
 	}
-
 	public String getSystemStatus() {
-		return SystemStatus;
+		return systemStatus;
 	}
-
-	public void setSystemStatus(String SystemStatus) {
-		this.SystemStatus = SystemStatus;
+	public void setSystemStatus(String systemStatus) {
+		this.systemStatus = systemStatus;
 	}
+	public int getCountPlanDate() {
+		return countPlanDate;
+	}
+	public void setCountPlanDate(int countPlanDate) {
+		this.countPlanDate = countPlanDate;
+	}
+ 
 
 }

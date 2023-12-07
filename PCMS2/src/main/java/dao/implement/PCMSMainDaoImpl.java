@@ -372,7 +372,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
   		    + "   ,b.[PurchaseOrder] \r\n"; 
 	private String selectPO = 
 			  "    [ProductionOrder],[RollNo],[QuantityKG]\r\n"
-			+ "   ,[QuantityMR],[CreateDate] ,[PurchaseOrder]\r\n"
+			+ "   ,[QuantityMR],[POCreatedate] ,[PurchaseOrder]\r\n"
 			+ "   ,CASE PATINDEX('%[^0 ]%', [PurchaseOrderLine]  + ' ‘')\r\n"
 			+ "			WHEN 0 THEN ''  \r\n"    
 			+ "		 	ELSE SUBSTRING( [PurchaseOrderLine] , PATINDEX('%[^0 ]%', [PurchaseOrderLine]  + ' '), LEN( [PurchaseOrderLine] ) )\r\n"
@@ -448,7 +448,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			  + "               into #tempMainPrdTemp\r\n"
 			  + "				from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
 			  + "				left join [PCMS].[dbo].[FromSapMainProd] as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder \r\n"
-			  + "			   	left join ( SELECT distinct [SaleOrder],[SaleLine] ,count([DataStatus]) as [CheckBill] \r\n"
+			  + "			   	left join ( SELECT distinct [SaleOrder],[SaleLine] ,1 as [CheckBill] \r\n"
 			  + "							FROM [PCMS].[dbo].[FromSapMainBillBatch]\r\n"
 			  + "							where DataStatus = 'O'\r\n"
 			  + "						   	group by [SaleOrder],[SaleLine]) as z on A.[SaleOrder] = z.[SaleOrder] AND  A.[SaleLine] = z.[SaleLine]  \r\n"
@@ -463,7 +463,9 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ " as UCAL on UCAL.[DataStatus] = 'O' AND b.ProductionOrder = UCAL.ProductionOrder AND ( m.Grade = UCAL.Grade OR m.Grade IS NULL )  \r\n"; 
 	private String leftJoinUCALRP = "    "
 			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on \r\n" 
-			+ " UCALRP.[DataStatus] = 'O' AND  b.ProductionOrder = UCALRP.ProductionOrder   AND (  m.Grade = UCALRP.Grade    OR  m.Grade IS NULL )    \r\n"; 
+			+ " 						UCALRP.[DataStatus] = 'O' AND  \r\n"
+			+ "							b.ProductionOrder = UCALRP.ProductionOrder AND \r\n" 
+			+ "							(  m.Grade = UCALRP.Grade OR m.Grade IS NULL )    \r\n"; 
 	private String innerJoinWaitLotB =    
    		   " INNER JOIN (\r\n"
    		 + "	SELECT DISTINCT a.saleorder , a.saleline, c.SumVolMain ,b.SumVolUsed\r\n"
@@ -558,7 +560,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
    		 + "				FROM [PCMS].[dbo].[FromSapMainProd] as a\r\n"
    		 + "				WHERE a.DataStatus = 'O'\r\n"
    		 + "				group by  [SaleOrder]  ,[SaleLine] ) AS C ON A.SaleOrder = C.SaleOrder AND A.SaleLine = C.SaleLine \r\n"
-   		 + "	left join ( select DISTINCT SaleOrder ,SaleLine ,COUNT(ProductionOrder) AS CountProdRP\r\n"
+   		 + "	left join ( select DISTINCT SaleOrder ,SaleLine ,1 AS CountProdRP\r\n"
    		 + "				from [PCMS].[dbo].[ReplacedProdOrder] as a\r\n"
    		 + "				where a.DataStatus = 'O' and  ProductionOrder = 'รอจัด Lot' \r\n"
    		 + "				GROUP BY  SaleOrder ,SaleLine \r\n"
@@ -637,21 +639,21 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			"           left join #tempPlandeliveryDate as h on h.ProductionOrder = b.ProductionOrder and h.SaleOrder = a.SaleOrder and h.SaleLine = a.SaleLine\r\n"
 		  ;   
  	private String leftJoinCSW = 
-			    " LEFT JOIN ( SELECT [SaleOrderSW] ,[SaleLineSW] ,count ([ProductionOrderSW]) as countSW \r\n"
+			    " LEFT JOIN ( SELECT [SaleOrderSW] ,[SaleLineSW] ,1 as countSW \r\n"
 			  + "			  FROM [PCMS].[dbo].[SwitchProdOrder] as a\r\n"
 			  + "		      left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
 			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
 			  + "			  GROUP BY  [SaleOrderSW] ,[SaleLineSW]\r\n"
 			  + " ) as CSW on  CSW.[SaleOrderSW] = b.SaleOrder and CSW.[SaleLineSW] = b.SaleLine\r\n" ;
 	private String leftJoinCRP = 
-			   " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine]  ,COUNT ([ProductionOrderRP]) as countnRP  \r\n"
+			   " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine]  ,1 as countnRP  \r\n"
 			 + "			 FROM [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
 			 + "			 left join [PCMS].[dbo].[FromSapMainProd] as b on  a.[ProductionOrderRP] = b.ProductionOrder  \r\n"
 			 + "			 WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
 			 + "			 GROUP BY  a.[SaleOrder] ,a.[SaleLine]\r\n"
 			 + " )  as CRP on  CRP.SaleOrder = b.SaleOrder and CRP.SaleLine = b.SaleLine\r\n" ;
 	private String leftJoinCOP = 
-			    " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine] ,COUNT(a.[ProductionOrder]) as countnOP\r\n"
+			    " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine] ,1 as countnOP\r\n"
 			  + "			  FROM [PCMS].[dbo].[FromSapMainProdSale] as a\r\n"
 			  + "			  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
 			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
@@ -705,7 +707,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	@Override
 	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList) {
 		ArrayList<PCMSTableDetail> list = null;    
-		ArrayList<String> listUserStatus = new ArrayList<String>();        
+		ArrayList<String> listUserStatus = new ArrayList<String>();    
+		ArrayList<String> listString = new ArrayList<String>();         
 		String where = "where";      
 		String whereProd = " ";   
 
@@ -754,23 +757,29 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			where += "and ( SaleCreateDate >= CONVERT(DATE,'" + dateArray[0].trim() + "',103)  and \r\n"
 					+ " SaleCreateDate <= CONVERT(DATE,'" + dateArray[1].trim() + "',103) ) \r\n";
 			whereWaitLot +=  "and ( SaleCreateDate >= CONVERT(DATE,'" + dateArray[0].trim() + "',103)  and \r\n"
-					+ " SaleCreateDate <= CONVERT(DATE,'" + dateArray[1].trim() + "',103) ) \r\n";
+					+ " SaleCreateDate <	= CONVERT(DATE,'" + dateArray[1].trim() + "',103) ) \r\n";
 			whereSale +=  "and ( SaleCreateDate >= CONVERT(DATE,'" + dateArray[0].trim() + "',103)  and \r\n"
 					+ " SaleCreateDate <= CONVERT(DATE,'" + dateArray[1].trim() + "',103) ) \r\n";
 		} 
 		if (!cusDiv.equals("")) { 
-			String[] cusDivList = cusDiv.split(",");
+			String[] array = cusDiv.split(",");
 			String tmpWhere = "";
-			tmpWhere += " and  ( ";
-//			String text = "";
-			for (int i = 0; i < cusDivList.length; i++) {
-//				text = cusDivList[i];
-				tmpWhere += " CustomerDivision = '" +cusDivList[i] + "' ";
-				if (i != cusDivList.length - 1) {
-					tmpWhere += " or ";
-				} ;
-			}
-			tmpWhere += " ) \r\n"; 
+//			tmpWhere += " and  ( "; 
+//			for (int i = 0; i < cusDivList.length; i++) { 
+//				tmpWhere += " a.Division = '" +cusDivList[i] + "' ";
+//				if (i != cusDivList.length - 1) {
+//					tmpWhere += " or ";
+//				} ;
+//			}
+//			tmpWhere += " ) \r\n"; 
+
+			listString.clear();
+			for (int i = 0; i < array.length; i++) {
+				listString.add("'"+array[i].replaceAll("'","''")+"' "); 
+			} 
+			tmpWhere += " and ( a.Division IN ( \r\n" ;  
+			tmpWhere += String.join(",",  listString  );
+			tmpWhere += " ) ) \r\n" ; 
 			whereSale += tmpWhere; 
 		} 
 		if(!po.equals("")) { 
@@ -791,46 +800,70 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		} 
 		if (cusNameList.size() > 0) { 
 			String tmpWhere = "";
-			tmpWhere += " and  ( ";
-			String text = "";
+//			tmpWhere += " and  ( ";
+//			String text = "";
+//			for (int i = 0; i < cusNameList.size(); i++) {
+//				text = cusNameList.get(i);
+//				tmpWhere += " CustomerName = '" +text + "' ";
+//				if (i != cusNameList.size() - 1) {
+//					tmpWhere += " or ";
+//				} ;
+//			}
+//			tmpWhere += " ) \r\n";
+
+			listString.clear();
 			for (int i = 0; i < cusNameList.size(); i++) {
-				text = cusNameList.get(i);
-				tmpWhere += " CustomerName = '" +text + "' ";
-				if (i != cusNameList.size() - 1) {
-					tmpWhere += " or ";
-				} ;
-			}
-			tmpWhere += " ) \r\n";
+				listString.add("'"+cusNameList.get(i).replaceAll("'","''")+"' "); 
+			} 
+			tmpWhere += " and ( CustomerName IN ( \r\n" ;  
+			tmpWhere += String.join(",",  listString  );
+			tmpWhere += " ) ) \r\n" ; 
+			
 			where += tmpWhere; 
 			whereSale += tmpWhere;
 		}
 		if (cusShortNameList.size() > 0) { 
 			String tmpWhere = "";
-			tmpWhere += " and  ( "; 
-			String text = "";
+//			tmpWhere += " and  ( "; 
+//			String text = "";
+//			for (int i = 0; i < cusShortNameList.size(); i++) {
+//				text = cusShortNameList.get(i);
+//				tmpWhere += " CustomerShortName = '" +text + "' ";
+//				if (i != cusShortNameList.size() - 1) {
+//					tmpWhere += " or ";
+//				} ;
+//			}
+//			tmpWhere += " ) \r\n";
 			for (int i = 0; i < cusShortNameList.size(); i++) {
-				text = cusShortNameList.get(i);
-				tmpWhere += " CustomerShortName = '" +text + "' ";
-				if (i != cusShortNameList.size() - 1) {
-					tmpWhere += " or ";
-				} ;
-			}
-			tmpWhere += " ) \r\n";
+				listString.add("'"+cusShortNameList.get(i).replaceAll("'","''")+"' "); 
+			} 
+			tmpWhere += " and ( CustomerShortName IN ( \r\n" ;  
+			tmpWhere += String.join(",",  listString  );
+			tmpWhere += " ) ) \r\n" ;   
+			
 			where += tmpWhere;
 			whereSale += tmpWhere; 
 		}
 		if (divisionList.size() > 0) {  
 			String tmpWhere = "";
-			tmpWhere += " and  ( ";  
-			String text = "";
+//			tmpWhere += " and  ( ";  
+//			String text = "";
+//			for (int i = 0; i < divisionList.size(); i++) {
+//				text = divisionList.get(i);
+//				tmpWhere += " Division = '" +text + "' ";
+//					if (i != divisionList.size() - 1) {
+//						tmpWhere += " or ";
+//					} ;
+//				}
+//			tmpWhere += " ) \r\n";
+			listString.clear();
 			for (int i = 0; i < divisionList.size(); i++) {
-				text = divisionList.get(i);
-				tmpWhere += " Division = '" +text + "' ";
-					if (i != divisionList.size() - 1) {
-						tmpWhere += " or ";
-					} ;
-				}
-			tmpWhere += " ) \r\n";
+				listString.add("'"+divisionList.get(i).replaceAll("'","''")+"' "); 
+			} 
+			tmpWhere += " and ( Division IN ( \r\n" ;  
+			tmpWhere += String.join(",",  listString  );
+			tmpWhere += " ) ) \r\n" ;  
+			
 			where += tmpWhere; 
 			whereSale += tmpWhere;
 			}
@@ -853,15 +886,22 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		} 
 		if (!dist.equals("")) {
 			String tmpWhere = "";
-			tmpWhere += " and  ( ";  
+//			tmpWhere += " and  ( ";  
 			String[] array = dist.split("\\|");      
-			for (int i = 0; i < array.length; i++) { 
-				tmpWhere += " DistChannel = '" + array[i] + "' ";
-				if (i != array.length - 1) {
-					tmpWhere += " or ";
-				} ;
-			}
-			tmpWhere += " ) \r\n"; 
+//			for (int i = 0; i < array.length; i++) { 
+//				tmpWhere += " DistChannel = '" + array[i] + "' ";
+//				if (i != array.length - 1) {
+//					tmpWhere += " or ";
+//				} ;
+//			}
+//			tmpWhere += " ) \r\n"; 
+			listString.clear();
+			for (int i = 0; i < array.length; i++) {
+				listString.add("'"+array[i].replaceAll("'","''")+"' "); 
+			} 
+			tmpWhere += " and ( DistChannel IN ( \r\n" ;  
+			tmpWhere += String.join(",",  listString  );
+			tmpWhere += " ) ) \r\n" ;   
 			where += tmpWhere; 
 			whereSale += tmpWhere;
 		}    
@@ -890,10 +930,14 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		whereWaitLot = where ;
 //		whereBMain = where;
 		whereCaseTry = whereProd;
+
+		String whereCaseTryRP = ""+ whereProd;
+		int sizeWaitForTest = 0;
 		if (userStatusList.size() > 0) { 
 			String tmpWhere = "";
 			tmpWhereNoLotUCAL = " and ( b.ProductionOrder is not null and ( \r\n";  
 			tmpWhere += " and ( b.ProductionOrder is not null and ( \r\n";  
+			whereCaseTryRP  += " and ( b.ProductionOrder is not null and ( \r\n";  
 			whereCaseTry += " and ( a.ProductionOrder is not null and ( \r\n";  
 			String text = "";
 			int int_emerCheck = 0;
@@ -902,10 +946,13 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				if(text.equals("รอจัด Lot") || text.equals("ขาย stock") || text.equals("รับจ้างถัก") || text.equals("Lot ขายแล้ว")
 				|| text.equals("พ่วงแล้วรอสวม")|| text.equals("รอสวมเคยมี Lot") ) { 
 					tmpWhere += " b.LotNo = '" +text + "' "; 
+					whereCaseTryRP += " b.LotNo = '" +text + "' "; 
 					whereCaseTry += " a.LotNo = '" +text + "' "; 
-					listUserStatus.add(" b.LotNo = '" +text + "' "); 
+//					listUserStatus.add(" b.LotNo = '" +text + "' "); 
+					listUserStatus.add("'"+text.replaceAll("'","''")+"' "); 
 				} else {  
 					int_emerCheck = 1;  
+					whereCaseTryRP += "UCALRP.UserStatusCalRP = '" +text + "' ";
 					tmpWhere += "UCAL.UserStatusCal = '" +text + "' ";
 					tmpWhereNoLotUCAL += "UCAL.UserStatusCal = '" +text + "' ";
 					whereCaseTry += "a.UserStatus = '" +text + "' ";
@@ -915,25 +962,35 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				} 
 				if (i != userStatusList.size() - 1) {
 					tmpWhere += " or ";    
+					whereCaseTryRP += " or ";   
 					whereCaseTry += " or ";   
 				} ;
 			}   
 			if(int_emerCheck == 0) {       	
 				tmpWhereNoLotUCAL += "UCAL.UserStatusCal = ''  ";
-			}
-			int sizeUS = listUserStatus.size();
-			if(sizeUS > 0) { 
-				whereWaitLot += " and ( \r\n" ; 
-				for ( int c = 0 ; c < sizeUS;c++) {
-					String str = listUserStatus.get(c);
-					whereWaitLot += str;
-					if (c != listUserStatus.size() - 1) {
-						whereWaitLot += " or ";    
-					} ;
-				}
-				whereWaitLot += " ) \r\n" ;   
+			} 
+			sizeWaitForTest = listUserStatus.size();
+			if(sizeWaitForTest > 0) { 
+//				whereWaitLot += " and ( \r\n" ; 
+//				for ( int c = 0 ; c < sizeWaitForTest;c++) {
+//					String str = listUserStatus.get(c);
+//					whereWaitLot += str;
+//					if (c != listUserStatus.size() - 1) {
+//						whereWaitLot += " or ";    
+//					} ;
+//				}
+//				whereWaitLot += " ) \r\n" ;  
+				whereWaitLot += " and ( b.LotNo IN ( \r\n" ;  
+				whereWaitLot += String.join(",",  listUserStatus  );
+				whereWaitLot += " ) ) \r\n" ;       
 			}   
+			else {
+				whereWaitLot += " and ( b.UserStatus is not null) \r\n" ;   
+			}
+//			System.out.println(sizeWaitForTest);
+//			System.out.println(whereWaitLot);
 			tmpWhere += ") 		) \r\n";  
+			whereCaseTryRP += ") 		) \r\n";   
 			whereCaseTry += ") 		) \r\n";   
 			tmpWhereNoLotUCAL += ") 		) \r\n";   
 			where += tmpWhere;   
@@ -946,23 +1003,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		whereCaseTry = whereCaseTry.replace("UCAL.", "a.");
 		whereCaseTry = whereCaseTry.replace("b.", "a."); 
 		String createTempMainSale = ""
-				+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempMainSale\r\n"
-				+ "	end ; \r\n"
-				+ " SELECT * \r\n"
-				+ " INTO #tempMainSale \r\n"
-				+ "	FROM ( SELECT DISTINCT \r\n"  
-				+ "	    a.*\r\n"
-				+ "	  , b.CustomerType \r\n\r\n"
-				+ "	  , LEFT(RIGHT([PurchaseOrder], 4) ,2) AS CustomerDivision \r\n" 
-				+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
-				+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O'\r\n  "
-				+ " left JOIN ( SELECT *\r\n"
-				+ "				FROM [PCMS].[dbo].[CustomerDetail] \r\n"
-				+ "				WHERE CustomerShortName like '%TW%' or\r\n"
-				+ "				      CustomerShortName like '%Wacoal%' )AS c ON A.CustomerNo = c.CustomerNo\r\n"
-				+ " ) as a\r\n"
+				+ this.createTempMainSale
 				+ whereSale;
 		String sqlWaitLot =    
 				  " SELECT DISTINCT  \r\n" 
@@ -1002,20 +1043,25 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.leftJoinCSW  
 				+ this.leftJoinCRP
 				+ this.leftJoinCOP
-				+ " where ( b.SumVol <> 0\r\n"
-				+ "		or ( (  b.LotNo = 'รอจัด Lot'  or  b.LotNo = 'ขาย stock' or b.LotNo = 'รับจ้างถัก' or b.LotNo = 'Lot ขายแล้ว' \r\n"
-				+ "				or b.LotNo = 'พ่วงแล้วรอสวม' or b.LotNo = 'รอสวมเคยมี Lot'  )  and b.SumVol = 0 \r\n" 
-				+ "		     and ( countnRP is null )  \r\n"
-				+ "        ) \r\n" 
-				+ "     or  RealVolumn = 0 \r\n"
-				+ "     or ( b.UserStatus = 'ยกเลิก' or b.UserStatus = 'ตัดเกรด Z') \r\n"
-				+ "     )\r\n"        
+				+ " where (\r\n"
+				+ "			 b.SumVol >= 0 or\r\n" //20230911 FIX HERE
+//				+ "			 b.SumVol <> 0 or\r\n" //20230911 FIX HERE
+				+ "			 ( \r\n"
+				+ "				(\r\n"
+				+ "					 b.LotNo = 'รอจัด Lot'  or  b.LotNo = 'ขาย stock' or b.LotNo = 'รับจ้างถัก' or b.LotNo = 'Lot ขายแล้ว' \r\n"
+				+ "					or b.LotNo = 'พ่วงแล้วรอสวม' or b.LotNo = 'รอสวมเคยมี Lot'  \r\n"
+				+ "				)  and b.SumVol = 0 \r\n" 
+				+ "		     	and ( countnRP is null )  \r\n"
+				+ "          ) or\r\n" 
+				+ "     	 RealVolumn = 0 or\r\n"
+				+ "     	 ( b.UserStatus = 'ยกเลิก' or b.UserStatus = 'ตัดเกรด Z') \r\n"
+				+ "      )\r\n"        
 				+ " and NOT EXISTS ( select distinct ProductionOrderSW\r\n"
 				+ "				   FROM [PCMS].[dbo].[SwitchProdOrder] AS BAA\r\n"
 				+ "				   WHERE DataStatus = 'O' and BAA.ProductionOrderSW = B.ProductionOrder\r\n"
 				+ "				 )   \r\n" ;
 				// Order Puang
-//				+ " union "
+//				+ " union ALL  "
 		String createTempOPFromA =  "" 
 				+ " If(OBJECT_ID('tempdb..#tempPrdOPA') Is Not Null)\r\n"
 				+ "	begin\r\n"
@@ -1083,7 +1129,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ "				 ) \r\n "
 					+ whereCaseTry ; 
 //				//// Order PuangSwitch
-//				+ " union "
+//				+ " union ALL  "
 
 		String createTempOPSWFromA = ""
 				+ " If(OBJECT_ID('tempdb..#tempPrdOPSW') Is Not Null)\r\n"
@@ -1144,7 +1190,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ " where ( A.UserStatus <> 'ยกเลิก' and A.UserStatus <> 'ตัดเกรด Z') \r\n"  
 				+ whereCaseTry ;  
 //////			// Switch   
-//				+ " union "
+//				+ " union ALL  "
 		String createTempSWFromA = ""
 				+ " If(OBJECT_ID('tempdb..#tempPrdSW') Is Not Null)\r\n"
 				+ "	begin\r\n"
@@ -1209,74 +1255,68 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		  		      + " INTO #tempSW  \r\n"
 					  + " from #tempPrdSW as a \r\n" ;  
 //////			// สวม  
-//				+ " union "
+//				+ " union ALL  "
 			String createTempRP = ""
 					+ " If(OBJECT_ID('tempdb..#tempPrdReplaced') Is Not Null)\r\n"
 					+ "	begin\r\n"
 					+ "		Drop Table #tempPrdReplaced\r\n"
-					+ "	end ; "
+					+ "	end ;\r\n"
 					+" SELECT DISTINCT  \r\n" 
-					+ this.selectRP 
+					+ this.selectRP    
 					+ "   , 'Replaced' as TypePrd \r\n"
-	    			+ "   , TypePrdRemark \r\n"
+	    			+ "   , 'SUB' as TypePrdRemark \r\n"
 		  		    + "   ,a.[PurchaseOrder] \r\n" 
-		  		    + " INTO #tempPrdReplaced  \r\n"
-					+ " FROM (  SELECT DISTINCT  b.[SaleOrder]  , b.[SaleLine]  ,a.DistChannel ,a.Color ,a.ColorCustomer   \r\n"
-					+ "	          , a.SaleQuantity ,a.RemainQuantity  ,a.SaleUnit  ,a.DueDate  ,a.CustomerShortName  \r\n"
-					+ "           , a.[SaleFullName] ,  a.[SaleNumber]  ,a.SaleCreateDate ,a.MaterialNo ,a.DeliveryStatus ,a.SaleStatus  \r\n"
-					+ "	          , b.[ProductionOrderRP] as ProductionOrder,a.CustomerName ,a.DesignFG,a.OrderAmount  \r\n"
-					+ " 	 	  , a.ArticleFG ,a.ShipDate,a.Division,a.PurchaseOrder,a.CustomerMaterial,a.Price,RemainAmount,CustomerDue\r\n"
-					+ "   		  , CASE  \r\n"
-					+ "					WHEN b.Volume <> 0 THEN b.Volume\r\n"
-					+ "					ELSE  c.Volumn\r\n"  
-					+ "					END AS Volumn   \r\n"
-					+ " 		 , 'SUB' as TypePrdRemark , a.[PlanGreigeDate] \r\n" 
-					+ "		 	from #tempMainSale as a  \r\n"
-					+ "		 	inner join [PCMS].[dbo].[ReplacedProdOrder] as b on a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder   \r\n"
-					+ "		 	left join  [PCMS].[dbo].[FromSapMainProd] as c on c.ProductionOrder = b.[ProductionOrderRP]\r\n"
-					+ "      	where b.DataStatus <> 'X') as a  \r\n "  
-					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
-					+ this.leftJoinTempG
+		  		    + " INTO #tempPrdReplaced  \r\n"  
+					+ " from #tempMainSale as a  \r\n"
+		  		    + " inner join ( select SaleOrder , SaleLine, [ProductionOrderRP] AS ProductionOrder,DataStatus from [PCMS].[dbo].[ReplacedProdOrder] )  as rpo on a.SaleLine = rpo.SaleLine and a.SaleOrder = rpo.SaleOrder and  rpo.DataStatus <> 'X'  \r\n"  
+					
+//					+ " inner join [PCMS].[dbo].[ReplacedProdOrder] as rpo on a.SaleLine = rpo.SaleLine and a.SaleOrder = rpo.SaleOrder and  rpo.DataStatus <> 'X'  \r\n"  
+					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n" 
+					+ this.leftJoinTempG 
 					+ this.leftJoinSCC
 					+ this.leftJoinH    
 					+ this.leftJoinR	
 					+ this.leftJoinM	  
-					+ this.leftJoinUCALRP     ;
+					+ this.leftJoinUCALRP 
+					+ " where ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n" 
+					+ whereCaseTryRP    ;   ;
 
-			String sqlRP = ""
+			String sqlRP = ""  
 						+ " select \r\n"  
 						+ this.selectAll 
 			  		    + " INTO #tempRP  \r\n"
 						+ " from #tempPrdReplaced as a \r\n"    
-						+ " where ( a.UserStatus <> 'ยกเลิก' and a.UserStatus <> 'ตัดเกรด Z') \r\n" 
-						+ whereCaseTry    ;
-				;     
+//						+ " where ( a.UserStatus <> 'ยกเลิก' and a.UserStatus <> 'ตัดเกรด Z') \r\n" 
+//						+ whereCaseTry    ;
+				;    
+				
 			 String sql =
-					 ""   
-					+ " If(OBJECT_ID('tempdb..#tempWaitLot') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempWaitLot\r\n"
-					+ "	end ; \r\n" 
-					+ " If(OBJECT_ID('tempdb..#tempMain') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempMain\r\n"
-					+ "	end ; \r\n" 
-					+ " If(OBJECT_ID('tempdb..#tempOP') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempOP\r\n"
-					+ "	end ; \r\n" 
-					+ " If(OBJECT_ID('tempdb..#tempOPSW') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempOPSW\r\n"
-					+ "	end ; \r\n" 
-					+ " If(OBJECT_ID('tempdb..#tempSW') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempSW \r\n"
-					+ "	end ; \r\n" 
-					+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempRP \r\n"
-					+ "	end ; \r\n"  
+					 " " 
+				+ " SET NOCOUNT ON; ;\r\n"   
+				+ " If(OBJECT_ID('tempdb..#tempWaitLot') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempWaitLot\r\n"
+				+ "	end ; \r\n" 
+				+ " If(OBJECT_ID('tempdb..#tempMain') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempMain\r\n"
+				+ "	end ; \r\n" 
+				+ " If(OBJECT_ID('tempdb..#tempOP') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempOP\r\n"
+				+ "	end ; \r\n" 
+				+ " If(OBJECT_ID('tempdb..#tempOPSW') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempOPSW\r\n"
+				+ "	end ; \r\n" 
+				+ " If(OBJECT_ID('tempdb..#tempSW') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempSW \r\n"
+				+ "	end ; \r\n" 
+				+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
+				+ "	begin\r\n"
+				+ "		Drop Table #tempRP \r\n"
+				+ "	end ; \r\n"  
 
 				+ createTempMainSale
 			 	+ this.createTempPlanDeliveryDate
@@ -1295,18 +1335,18 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ sqlSW  
 				+ sqlRP  
 					+ " SELECT * FROM #tempWaitLot\r\n"
-					+ " union \r\n"  
+					+ " union ALL  \r\n"  
 					+ " SELECT * FROM #tempMain\r\n"
-					+ " union \r\n"  
+					+ " union ALL  \r\n"  
 					+ " SELECT * FROM #tempOP\r\n"       
-					+ " union \r\n"		
+					+ " union ALL  \r\n"		
 					+ " SELECT * FROM #tempOPSW\r\n"
-					+ " union \r\n" 
+					+ " union ALL  \r\n" 
 					+ " SELECT * FROM #tempSW\r\n"
-					+ " union \r\n"
+					+ " union ALL  \r\n"
 					+ " SELECT * FROM #tempRP\r\n"  
 					+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine], [ProductionOrder] ";    
-//  System.out.println(sql);
+//		 System.out.println(sql);	
 		List<Map<String, Object>> datas = this.database.queryList(sql);  
 		list = new ArrayList<PCMSTableDetail>();  
 		for (Map<String, Object> map : datas) {
@@ -1322,14 +1362,11 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			+ " SELECT DISTINCT \r\n"
 			+ "	   a.*\r\n"
 			+ "	  ,b.CustomerType \r\n"
-			+ "	  , LEFT(RIGHT([PurchaseOrder], 4) ,2) AS CustomerDivision \r\n"
+			+ "	  ,a.[Division] AS CustomerDivision\r\n" 
 			+ " INTO #tempMainSale \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
-			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O'\r\n"
-			+ " left JOIN ( SELECT *\r\n"
-			+ "				FROM [PCMS].[dbo].[CustomerDetail] \r\n"
-			+ "				WHERE CustomerShortName like '%TW%' or\r\n"
-			+ "				      CustomerShortName like '%Wacoal%' )AS c ON A.CustomerNo = c.CustomerNo" ;
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O'\r\n" 
+;
 
 	@Override
 	public ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList) {
@@ -1408,7 +1445,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			beanTmp.setCfmDetailList(cfmDetailList);
 			beanTmp.setSaleDetailList(saleDetailList);
 			beanTmp.setSaleInputDetailList(saleInputDetailList);
-			beanTmp.setSubmitdatDetailList(submitdatDetailList);
+			beanTmp.setSubmitDateDetailList(submitdatDetailList);
 			beanTmp.setNcDetailList(ncDetailList);
 			beanTmp.setReceipeDetailList(receipeDetailList);
 
@@ -1479,7 +1516,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		  + " where a.[ProductionOrder] = '" + prdOrder + "' and \r\n"
 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
 		  + "       a.[SaleLine] = '" + saleLine+ "' \r\n"
-		  + " union \r\n "
+		  + " union ALL  \r\n "
 		  + " SELECT \r\n"
 		  + "        [ProductionOrder]\r\n"
 		  + "      , [SaleOrder]\r\n"

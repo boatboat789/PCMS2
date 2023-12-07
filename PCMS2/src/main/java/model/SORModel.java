@@ -11,8 +11,7 @@ import th.in.totemplate.core.sql.Database;
 
 public class SORModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
-	   private Database database;
-	   private Database databaseSor;
+	   private Database database; 
 	   private DataImportSORDao dao;
 	   @SuppressWarnings("unused")
 	   private String[] uiColumns;
@@ -20,10 +19,9 @@ public class SORModel extends HttpServlet {
 	   private static final String columns = "";
 
 	   public SORModel() {
-	      try {
-	         this.database = new Database(SqlInfo.getInstance());
-	         this.databaseSor = new Database(SORSqlInfo.getInstance());
-	         this.dao = new DataImportSORDaoImpl(this.database,this.databaseSor);
+	      try { 
+	         this.database = new Database(SORSqlInfo.getInstance());
+	         this.dao = new DataImportSORDaoImpl( this.database);
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {
 	         var2.printStackTrace();

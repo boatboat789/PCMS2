@@ -1,36 +1,43 @@
 package entities;
 
 public class EncryptedDetail {
-private String Text;
-private String Encrypted;
-private String Decrypted;
+	private String text;
+	private String encrypted;
+	private String decrypted;
 
-public EncryptedDetail() {
-	super();
-}
-public EncryptedDetail(String text, String encrypted, String decrypted) {
-	super();
-	Text = text;
-	Encrypted = encrypted;
-	Decrypted = decrypted;
-}
-public String getText() {
-	return Text;
-}
-public void setText(String text) {
-	Text = text;
-}
-public String getEncrypted() {
-	return Encrypted;
-}
-public void setEncrypted(String encrypted) {
-	Encrypted = encrypted;
-}
-public String getDecrypted() {
-	return Decrypted;
-}
-public void setDecrypted(String decrypted) {
-	Decrypted = decrypted;
-}
+	public EncryptedDetail() {
+		super();
+	}
+
+	public EncryptedDetail(String text, String encrypted, String decrypted) {
+		super();
+		this.text = text;
+		this.encrypted = encrypted;
+		this.decrypted = decrypted;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public String getEncrypted() {
+		return encrypted;
+	}
+
+	public void setEncrypted(String encrypted) {
+		this.encrypted = encrypted;
+	}
+
+	public String getDecrypted() {
+		return decrypted;
+	}
+
+	public void setDecrypted(String decrypted) {
+		this.decrypted = decrypted;
+	} 
 
 }

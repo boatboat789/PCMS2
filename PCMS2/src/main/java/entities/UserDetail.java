@@ -9,24 +9,23 @@ public class UserDetail {
 	private String firstName;
 	private String lastName;
 	private String role;
-	private String department; 
-    private String email;
-    private String arrangedBy;
-    private String authorizedBy;
-    private boolean isSystem;
-    private boolean isAdmin;
-    private String permitId;
-    private String responsible;
-    private Date lastSignDate;
-    private String changeBy;
-    private Date changeDate;
-    private String registBy;
-    private Date registDate;  
-    private String userType;
-    private boolean isCustomer; 
-    //ต้องตัวเล็กไม่งั้นเรียก parameter ไม่ได้
+	private String department;
+	private String email;
+	private String arrangedBy;
+	private String authorizedBy;
+	private boolean isSystem;
+	private boolean isAdmin;
+	private String permitId;
+	private String responsible;
+	private Date lastSignDate;
+	private String changeBy;
+	private Date changeDate;
+	private String registBy;
+	private Date registDate;
+	private String userType;
+	private boolean isCustomer;
+	// ต้องตัวเล็กไม่งั้นเรียก parameter ไม่ได้
 //    private boolean isDog = false;  
-          
 
 //	public boolean getIsDog() {
 //		return isDog;
@@ -38,9 +37,9 @@ public class UserDetail {
 
 	public UserDetail(int id, String userId, String password, String firstName, String lastName, String role,
 			String department, String email, String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
-			String permitId,Date lastSignDate, String responsible, String changeBy, Date changeDate, String registBy, Date registDate,
-			String UserType,boolean IsCustomer) {
-		super(); 
+			String permitId, Date lastSignDate, String responsible, String changeBy, Date changeDate, String registBy,
+			Date registDate, String UserType, boolean IsCustomer) {
+		super();
 		this.lastSignDate = lastSignDate;
 		this.userType = UserType;
 		this.id = id;
@@ -61,30 +60,30 @@ public class UserDetail {
 		this.changeDate = changeDate;
 		this.registBy = registBy;
 		this.registDate = registDate;
-		this.isCustomer =IsCustomer;
+		this.isCustomer = IsCustomer;
 	}
 
 	public UserDetail(String UserType, String UserId) {
 		// TODO Auto-generated constructor stub
 		this.userType = UserType;
-		this.userId = UserId;  
-		id = 0; 
-		password = "";
-		firstName = "";
-		lastName = "";
-		role = "";
-		department = "";
-		email = "";
-		arrangedBy = "";
-		authorizedBy = "";
-		isSystem = false;
-		isAdmin = false;
-		permitId = "";
-		responsible = "";
-		changeBy = "";
-		isCustomer = false;
+		this.userId = UserId;
+		this.id = 0;
+		this.password = "";
+		this.firstName = "";
+		this.lastName = "";
+		this.role = "";
+		this.department = "";
+		this.email = "";
+		this.arrangedBy = "";
+		this.authorizedBy = "";
+		this.isSystem = false;
+		this.isAdmin = false;
+		this.permitId = "";
+		this.responsible = "";
+		this.changeBy = "";
+		this.isCustomer = false;
 //		ChangeDate =;
-		registBy = "";
+		this.registBy = "";
 //		RegistDate = registDate;
 	}
 //	@Override
@@ -273,7 +272,5 @@ public class UserDetail {
 				+ lastSignDate + ", changeBy=" + changeBy + ", changeDate=" + changeDate + ", registBy=" + registBy
 				+ ", registDate=" + registDate + ", userType=" + userType + ", isCustomer=" + isCustomer + "]";
 	}
- 
- 
- 
+
 }

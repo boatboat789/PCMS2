@@ -1,31 +1,31 @@
 package entities;
 
 public class SubmitDateDetail {         
-	private String No;
-  	private String SubmitDate;
-  	private String Remark;
+	private String no;
+  	private String submitDate;
+  	private String remark;
 	public SubmitDateDetail(String no, String submitDate, String remark) {
 		super();
-		No = no;
-		SubmitDate = submitDate;
-		Remark = remark;
+		this.no = no;
+		this.submitDate = submitDate;
+		this.remark = remark;
 	}
 	public String getNo() {
-		return No;
+		return no;
 	}
 	public void setNo(String no) {
-		No = no;
+		this.no = no;
 	}
 	public String getSubmitDate() {
-		return SubmitDate;
+		return submitDate;
 	}
 	public void setSubmitDate(String submitDate) {
-		SubmitDate = submitDate;
+		this.submitDate = submitDate;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
+		this.remark = remark;
 	} 
 }

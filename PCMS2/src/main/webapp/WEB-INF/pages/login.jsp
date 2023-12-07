@@ -85,8 +85,8 @@
 		 
           var alert = '${alertmsg}'; 
           var alertType ='${alerttyp}'; 
-          console.log(alert)
-          console.log(alertType)
+//           console.log(alert)
+//           console.log(alertType)
           if(alert) {
               swal({
                   title: 'Warning',

@@ -1,64 +1,64 @@
 package entities;
 
 public class SendTestQCDetail {
-	private String SendDate;
-	private String RollNo;
-	private String Status;
-	private String CheckColorDate;
-	private String DeltaE;
-	private String Color;
-	private String Remark;
+	private String sendDate;
+	private String rollNo;
+	private String status;
+	private String checkColorDate;
+	private String deltaE;
+	private String color;
+	private String remark;
 	public SendTestQCDetail(String sendDate, String rollNo, String status, String checkColorDate, String deltaE,
 			String color, String remark) {
 		super();
-		SendDate = sendDate;
-		RollNo = rollNo;
-		Status = status;
-		CheckColorDate = checkColorDate;
-		DeltaE = deltaE;
-		Color = color;
-		Remark = remark;
+		this.sendDate = sendDate;
+		this.rollNo = rollNo;
+		this.status = status;
+		this.checkColorDate = checkColorDate;
+		this.deltaE = deltaE;
+		this.color = color;
+		this.remark = remark;
 	}
 	public String getSendDate() {
-		return SendDate;
+		return sendDate;
 	}
 	public void setSendDate(String sendDate) {
-		SendDate = sendDate;
+		this.sendDate = sendDate;
 	}
 	public String getRollNo() {
-		return RollNo;
+		return rollNo;
 	}
 	public void setRollNo(String rollNo) {
-		RollNo = rollNo;
+		this.rollNo = rollNo;
 	}
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 	public String getCheckColorDate() {
-		return CheckColorDate;
+		return checkColorDate;
 	}
 	public void setCheckColorDate(String checkColorDate) {
-		CheckColorDate = checkColorDate;
+		this.checkColorDate = checkColorDate;
 	}
 	public String getDeltaE() {
-		return DeltaE;
+		return deltaE;
 	}
 	public void setDeltaE(String deltaE) {
-		DeltaE = deltaE;
+		this.deltaE = deltaE;
 	}
 	public String getColor() {
-		return Color;
+		return color;
 	}
 	public void setColor(String color) {
-		Color = color;
+		this.color = color;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
+		this.remark = remark;
 	} 
 }

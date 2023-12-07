@@ -1,47 +1,47 @@
 package entities;
 
 public class WaitTestDetail { 
-	private String No;
-	private String DateInTest;
-	private String DateOutTest;
-	private String Status;
-	private String Remark;
+	private String no;
+	private String dateInTest;
+	private String dateOutTest;
+	private String status;
+	private String remark;
 	public WaitTestDetail(String no, String dateInTest, String dateOutTest, String status, String remark) {
 		super();
-		No = no;
-		DateInTest = dateInTest;
-		DateOutTest = dateOutTest;
-		Status = status;
-		Remark = remark;
+		this.no = no;
+		this.dateInTest = dateInTest;
+		this.dateOutTest = dateOutTest;
+		this.status = status;
+		this.remark = remark;
 	}
 	public String getNo() {
-		return No;
+		return no;
 	}
 	public void setNo(String no) {
-		No = no;
+		this.no = no;
 	}
 	public String getDateInTest() {
-		return DateInTest;
+		return dateInTest;
 	}
 	public void setDateInTest(String dateInTest) {
-		DateInTest = dateInTest;
+		this.dateInTest = dateInTest;
 	}
 	public String getDateOutTest() {
-		return DateOutTest;
+		return dateOutTest;
 	}
 	public void setDateOutTest(String dateOutTest) {
-		DateOutTest = dateOutTest;
+		this.dateOutTest = dateOutTest;
 	}
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 	public String getRemark() {
-		return Remark;
+		return remark;
 	}
 	public void setRemark(String remark) {
-		Remark = remark;
+		this.remark = remark;
 	} 
 }

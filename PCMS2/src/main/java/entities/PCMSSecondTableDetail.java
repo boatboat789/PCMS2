@@ -1,86 +1,86 @@
 package entities;
 
 public class PCMSSecondTableDetail {
-	private String Division;
-	private String SaleOrder;
-	private String SaleLine;
-	private String CustomerShortName;	
-	private String SaleCreateDate;
-	private String PurchaseOrder;
-	private String MaterialNo;
-	private String CustomerMaterial;
-	private String Price;
-	private String SaleUnit;
-	private String SaleQuantity;
-	private String OrderAmount;
-	private String RemainQuantity;
-	private String RemainAmount;
-	private String TotalQuantity;
-	private String Grade;
-	private String BillSendWeightQuantity;
-	private String BillSendMRQuantity;
-	private String BillSendYDQuantity;
-	private String BillSendQuantity;
-	private String CustomerDue;
-	private String DueDate;
-	private String LotNo;
-	private String LabNo;
-	private String LabStatus;
-	private String CFMPlanLabDate;
-	private String CFMActualLabDate;
-	private String CFMCusAnsLabDate;
-	private String UserStatus ;
-	private String TKCFM;
-	private String CFMDateActual;
-	private String CFMPlanDate;
-	private String CFMSendDate;
-	private String CFMAnswerDate;
-	private String CFMNumber;
-	private String CFMStatus;
-	private String CFMRemark;
-	private String DeliveryDate;
-	private String ShipDate;
-	private String LotShipping;
-	private String RemarkOne;
-	private String RemarkTwo;
-	private String RemarkThree; 
-	private String Remark;
-	private String CFMLastest;
-	private String UserId;
-	private String ProductionOrder;
-	private String CaseSave;
-	private String Volumn;
-	private String ReplacedRemark;
-	private String IconStatus;
-	private String SystemStatus;
-	private String StockRemark;
-	private String GRQuantity;
-	private String VolumnFGAmount;
+	private String division;
+	private String saleOrder;
+	private String saleLine;
+	private String customerShortName;	
+	private String saleCreateDate;
+	private String purchaseOrder;
+	private String materialNo;
+	private String customerMaterial;
+	private String price;
+	private String saleUnit;
+	private String saleQuantity;
+	private String orderAmount;
+	private String remainQuantity;
+	private String remainAmount;
+	private String totalQuantity;
+	private String grade;
+	private String billSendWeightQuantity;
+	private String billSendMRQuantity;
+	private String billSendYDQuantity;
+	private String billSendQuantity;
+	private String customerDue;
+	private String dueDate;
+	private String lotNo;
+	private String labNo;
+	private String labStatus;
+	private String cfmPlanLabDate;
+	private String cfmActualLabDate;
+	private String cfmCusAnsLabDate;
+	private String userStatus ;
+	private String tkCFM;
+	private String cfmDateActual;
+	private String cfmPlanDate;
+	private String cfmSendDate;
+	private String cfmAnswerDate;
+	private String cfmNumber;
+	private String cfmStatus;
+	private String cfmRemark;
+	private String deliveryDate;
+	private String shipDate;
+	private String lotShipping;
+	private String remarkOne;
+	private String remarkTwo;
+	private String remarkThree; 
+	private String remark;
+	private String cfmLastest;
+	private String userId;
+	private String productionOrder;
+	private String caseSave;
+	private String volumn;
+	private String replacedRemark;
+	private String iconStatus;
+	private String systemStatus;
+	private String stockRemark;
+	private String grQuantity;
+	private String volumnFGAmount;
 	
-	private String DyePlan;
-	private String DyeActual;
+	private String dyePlan;
+	private String dyeActual;
 	
 
-	private String SendCFMCusDate;
-	private String CauseOfDelay;
-	private String DelayedDepartment;
+	private String sendCFMCusDate;
+	private String causeOfDelay;
+	private String delayedDepartment;
 	
-	private String PCRemark;
-	private String SwitchRemark ;
-	private String TypePrd ; 
-	private String TypePrdRemark ;  
-	private int CountInSW;
-	private String SaleOrderSW;
-	private String SaleLineSW;
-	private String ProductionOrderSW;
-	private String ProductionOrderRP;
-	private String StockLoad;
-	private String CFMDetailAll;
-	private String CFMNumberAll;
-	private String CFMRemarkAll;
-	private String RollNoRemarkAll;
-	private String CustomerType;
-	private String CustomerDivision;
+	private String pcRemark;
+	private String switchRemark ;
+	private String typePrd ; 
+	private String typePrdRemark ;  
+	private int countInSW;
+	private String saleOrderSW;
+	private String saleLineSW;
+	private String productionOrderSW;
+	private String productionOrderRP;
+	private String stockLoad;
+	private String cfmDetailAll;
+	private String cfmNumberAll;
+	private String cfmRemarkAll;
+	private String rollNoRemarkAll;
+	private String customerType;
+	private String customerDivision;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
@@ -98,601 +98,529 @@ public class PCMSSecondTableDetail {
 				String LotShipping
 				) {
 			super();
-			this.LotShipping = LotShipping;
-			this.CustomerDivision = CustomerDivision;
-			this.CustomerType = CustomerType;
-			this.CFMDateActual= CFMDateActual;
-			this.RollNoRemarkAll = RollNoRemarkAll;
-			this.CFMDetailAll = CFMDetailAll;
-			this.CFMNumberAll = CFMNumberAll;
-			this.CFMRemarkAll = CFMRemarkAll;
-			this.SendCFMCusDate = SendCFMCusDate;
-			this.CauseOfDelay = CauseOfDelay;
-			this.DelayedDepartment = DelayedDepartment;
-			this.DyePlan = DyePlan;
-			this.DyeActual = DyeActual;
-			this.OrderAmount = OrderAmount;
-			this.ProductionOrder = ProductionOrder;
-			this.Remark = Remark;
-			this.CFMLastest = CFMLastest;
-			Division = division;
-			SaleOrder = saleOrder;
-			SaleLine = saleLine;
-			CustomerShortName = customerShortName;
-			SaleCreateDate = saleCreateDate;
-			PurchaseOrder = purchaseOrder;
-			MaterialNo = materialNo;
-			CustomerMaterial = customerMaterial;
-			Price = price;
-			SaleUnit = saleUnit;
-			SaleQuantity = saleQuantity;
-			RemainQuantity = remainQuantity;
-			RemainAmount = remainAmount;
-			TotalQuantity = totalQuantity;
-			Grade = grade;
-			this.BillSendWeightQuantity = BillSendWeightQuantity;
-			BillSendQuantity = billSendQuantity;
-			CustomerDue = customerDue;
-			DueDate = dueDate;
-			LotNo = lotNo;
-			LabNo = labNo;
-			LabStatus = labStatus;
-			CFMPlanLabDate = cFMPlanLabDate;
-			CFMActualLabDate = cFMActualLabDate;
-			CFMCusAnsLabDate = cFMCusAnsLabDate;
-			UserStatus = userStatus;
-			TKCFM = tKCFM;
-			CFMPlanDate = cFMPlanDate;
-			CFMSendDate = cFMSendDate;
-			CFMAnswerDate = cFMAnswerDate;
-			CFMNumber = cFMNumber;
-			CFMStatus = cFMStatus;
-			CFMRemark = cFMRemark;
-			DeliveryDate = deliveryDate;
-			ShipDate = shipDate;
-			RemarkOne = remarkOne;
-			RemarkTwo = remarkTwo;
-			RemarkThree = remarkThree;
-			this.Volumn = Volumn;
-			this.ReplacedRemark = ReplacedRemark;
-			this.StockRemark = StockRemark;
-			this.GRQuantity = GRQuantity;
-			this.VolumnFGAmount = VolumnFGAmount;
-			this.PCRemark = PCRemark;
-			this.SwitchRemark = SwitchRemark;
-			this.TypePrd = TypePrd;
-			this.StockLoad = StockLoad;
+			this.lotShipping = LotShipping;
+			this.customerDivision = CustomerDivision;
+			this.customerType = CustomerType;
+			this.cfmDateActual= CFMDateActual;
+			this.rollNoRemarkAll = RollNoRemarkAll;
+			this.cfmDetailAll = CFMDetailAll;
+			this.cfmNumberAll = CFMNumberAll;
+			this.cfmRemarkAll = CFMRemarkAll;
+			this.sendCFMCusDate = SendCFMCusDate;
+			this.causeOfDelay = CauseOfDelay;
+			this.delayedDepartment = DelayedDepartment;
+			this.dyePlan = DyePlan;
+			this.dyeActual = DyeActual;
+			this.orderAmount = OrderAmount;
+			this.productionOrder = ProductionOrder;
+			this.remark = Remark;
+			this.cfmLastest = CFMLastest;
+			this.division = division;
+			this.saleOrder = saleOrder;
+			this.saleLine = saleLine;
+			this.customerShortName = customerShortName;
+			this.saleCreateDate = saleCreateDate;
+			this.purchaseOrder = purchaseOrder;
+			this.materialNo = materialNo;
+			this.customerMaterial = customerMaterial;
+			this.price = price;
+			this.saleUnit = saleUnit;
+			this.saleQuantity = saleQuantity;
+			this.remainQuantity = remainQuantity;
+			this.remainAmount = remainAmount;
+			this.totalQuantity = totalQuantity;
+			this.grade = grade;
+			this.billSendWeightQuantity = BillSendWeightQuantity;
+			this.billSendQuantity = billSendQuantity;
+			this.customerDue = customerDue;
+			this.dueDate = dueDate;
+			this.lotNo = lotNo;
+			this.labNo = labNo;
+			this.labStatus = labStatus;
+			this.cfmPlanLabDate = cFMPlanLabDate;
+			this.cfmActualLabDate = cFMActualLabDate;
+			this.cfmCusAnsLabDate = cFMCusAnsLabDate;
+			this.userStatus = userStatus;
+			this.tkCFM = tKCFM;
+			this.cfmPlanDate = cFMPlanDate;
+			this.cfmSendDate = cFMSendDate;
+			this.cfmAnswerDate = cFMAnswerDate;
+			this.cfmNumber = cFMNumber;
+			this.cfmStatus = cFMStatus;
+			this.cfmRemark = cFMRemark;
+			this.deliveryDate = deliveryDate;
+			this.shipDate = shipDate;
+			this.remarkOne = remarkOne;
+			this.remarkTwo = remarkTwo;
+			this.remarkThree = remarkThree;
+			this.volumn = Volumn;
+			this.replacedRemark = ReplacedRemark;
+			this.stockRemark = StockRemark;
+			this.grQuantity = GRQuantity;
+			this.volumnFGAmount = VolumnFGAmount;
+			this.pcRemark = PCRemark;
+			this.switchRemark = SwitchRemark;
+			this.typePrd = TypePrd;
+			this.stockLoad = StockLoad;
 		}
-		
-		public String getCustomerDivision() {
-			return CustomerDivision;
-		}
-
-		public void setCustomerDivision(String customerDivision) {
-			CustomerDivision = customerDivision;
-		}
-
-		public String getCustomerType() {
-			return CustomerType;
-		}
-
-		public void setCustomerType(String customerType) {
-			CustomerType = customerType;
-		}
-
-		public String getCFMDateActual() {
-			return CFMDateActual;
-		}
-
-		public void setCFMDateActual(String cFMDateActual) {
-			CFMDateActual = cFMDateActual;
-		}
-
-		public String getRollNoRemarkAll() {
-			return RollNoRemarkAll;
-		}
-
-		public void setRollNoRemarkAll(String rollNoRemarkAll) {
-			RollNoRemarkAll = rollNoRemarkAll;
-		}
-
-		public String getCFMDetailAll() {
-			return CFMDetailAll;
-		}
-
-		public void setCFMDetailAll(String cFMDetailAll) {
-			CFMDetailAll = cFMDetailAll;
-		}
-
-		public String getCFMNumberAll() {
-			return CFMNumberAll;
-		}
-
-		public void setCFMNumberAll(String cFMNumberAll) {
-			CFMNumberAll = cFMNumberAll;
-		}
-
-		public String getCFMRemarkAll() {
-			return CFMRemarkAll;
-		}
-
-		public void setCFMRemarkAll(String cFMRemarkAll) {
-			CFMRemarkAll = cFMRemarkAll;
-		}
-
-		public String getSendCFMCusDate() {
-			return SendCFMCusDate;
-		}
-
-		public void setSendCFMCusDate(String sendCFMCusDate) {
-			SendCFMCusDate = sendCFMCusDate;
-		}
-
-		public String getCauseOfDelay() {
-			return CauseOfDelay;
-		}
-
-		public void setCauseOfDelay(String causeOfDelay) {
-			CauseOfDelay = causeOfDelay;
-		}
-
-		public String getDelayedDepartment() {
-			return DelayedDepartment;
-		}
-
-		public void setDelayedDepartment(String delayedDepartment) {
-			DelayedDepartment = delayedDepartment;
-		}
-
-		public String getStockLoad() {
-			return StockLoad;
-		}
-
-		public void setStockLoad(String stockLoad) {
-			StockLoad = stockLoad;
-		}
-
-		public String getProductionOrderRP() {
-			return ProductionOrderRP;
-		}
-
-		public void setProductionOrderRP(String productionOrderRP) {
-			ProductionOrderRP = productionOrderRP;
-		}
-
-		public String getTypePrdRemark() {
-			return TypePrdRemark;
-		}
-
-		public void setTypePrdRemark(String typePrdRemark) {
-			TypePrdRemark = typePrdRemark;
-		}
-
-		public String getSaleOrderSW() {
-			return SaleOrderSW;
-		}
-
-		public void setSaleOrderSW(String saleOrderSW) {
-			SaleOrderSW = saleOrderSW;
-		}
-
-		public String getSaleLineSW() {
-			return SaleLineSW;
-		}
-
-		public void setSaleLineSW(String saleLineSW) {
-			SaleLineSW = saleLineSW;
-		}
-
-		public String getProductionOrderSW() {
-			return ProductionOrderSW;
-		}
-
-		public void setProductionOrderSW(String productionOrderSW) {
-			ProductionOrderSW = productionOrderSW;
-		}
-
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
 		}
-
-		public int getCountInSW() {
-			return CountInSW;
-		}
-
-		public void setCountInSW(int countInSW) {
-			CountInSW = countInSW;
-		}
-
-		public String getTypePrd() {
-			return TypePrd;
-		}
-
-		public void setTypePrd(String typePrd) {
-			TypePrd = typePrd;
-		}
-
-		public String getDyePlan() {
-			return DyePlan;
-		}
-
-		public void setDyePlan(String dyePlan) {
-			DyePlan = dyePlan;
-		}
-
-		public String getDyeActual() {
-			return DyeActual;
-		}
-
-		public void setDyeActual(String dyeActual) {
-			DyeActual = dyeActual;
-		}
-
-		public String getVolumnFGAmount() {
-			return VolumnFGAmount;
-		}
-
-		public void setVolumnFGAmount(String volumnFGAmount) {
-			VolumnFGAmount = volumnFGAmount;
-		}
-
-		public String getGRQuantity() {
-			return GRQuantity;
-		}
-
-		public void setGRQuantity(String gRQuantity) {
-			GRQuantity = gRQuantity;
-		}
-
-		public String getStockRemark() {
-			return StockRemark;
-		}
-
-		public void setStockRemark(String stockRemark) {
-			StockRemark = stockRemark;
-		}
-
-		public String getBillSendMRQuantity() {
-			return BillSendMRQuantity;
-		}
-
-		public String getReplacedRemark() {
-			return ReplacedRemark;
-		}
-
-		public String getIconStatus() {
-			return IconStatus;
-		}
-
-		public void setIconStatus(String iconStatus) {
-			IconStatus = iconStatus;
-		}
-
-		public String getSystemStatus() {
-			return SystemStatus;
-		}
-
-		public void setSystemStatus(String systemStatus) {
-			SystemStatus = systemStatus;
-		}
-
-		public void setReplacedRemark(String ReplacedRemark) {
-			this.ReplacedRemark = ReplacedRemark;
-		}
-
-		public void setBillSendMRQuantity(String billSendMRQuantity) {
-			BillSendMRQuantity = billSendMRQuantity;
-		}
-
-		public String getBillSendYDQuantity() {
-			return BillSendYDQuantity;
-		}
-
-		public void setBillSendYDQuantity(String billSendYDQuantity) {
-			BillSendYDQuantity = billSendYDQuantity;
-		}
-
-		public String getVolumn() {
-			return Volumn;
-		}
-
-		public void setVolumn(String volumn) {
-			Volumn = volumn;
-		}
-
-		public String getOrderAmount() {
-			return OrderAmount;
-		}
-
-		public void setOrderAmount(String orderAmount) {
-			OrderAmount = orderAmount;
-		}
-
-		public String getCaseSave() {
-			return CaseSave;
-		}
-
-		public void setCaseSave(String caseSave) {
-			CaseSave = caseSave;
-		}
-
-		public String getProductionOrder() {
-			return ProductionOrder;
-		}
-
-		public void setProductionOrder(String productionOrder) {
-			ProductionOrder = productionOrder;
-		}
-
-		public String getUserId() {
-			return UserId;
-		}
-		public void setUserId(String userId) {
-			UserId = userId;
-		}
-		public String getRemark() {
-			return Remark;
-		}
-		public void setRemark(String remark) {
-			Remark = remark;
-		}
-		public String getCFMLastest() {
-			return CFMLastest;
-		}
-		public void setCFMLastest(String cFMLastest) {
-			CFMLastest = cFMLastest;
-		}
 		public String getDivision() {
-			return Division;
+			return division;
 		}
 		public void setDivision(String division) {
-			Division = division;
+			this.division = division;
 		}
 		public String getSaleOrder() {
-			return SaleOrder;
+			return saleOrder;
 		}
 		public void setSaleOrder(String saleOrder) {
-			SaleOrder = saleOrder;
+			this.saleOrder = saleOrder;
 		}
 		public String getSaleLine() {
-			return SaleLine;
+			return saleLine;
 		}
 		public void setSaleLine(String saleLine) {
-			SaleLine = saleLine;
+			this.saleLine = saleLine;
 		}
 		public String getCustomerShortName() {
-			return CustomerShortName;
+			return customerShortName;
 		}
 		public void setCustomerShortName(String customerShortName) {
-			CustomerShortName = customerShortName;
+			this.customerShortName = customerShortName;
 		}
 		public String getSaleCreateDate() {
-			return SaleCreateDate;
+			return saleCreateDate;
 		}
 		public void setSaleCreateDate(String saleCreateDate) {
-			SaleCreateDate = saleCreateDate;
+			this.saleCreateDate = saleCreateDate;
 		}
 		public String getPurchaseOrder() {
-			return PurchaseOrder;
+			return purchaseOrder;
 		}
 		public void setPurchaseOrder(String purchaseOrder) {
-			PurchaseOrder = purchaseOrder;
+			this.purchaseOrder = purchaseOrder;
 		}
 		public String getMaterialNo() {
-			return MaterialNo;
+			return materialNo;
 		}
 		public void setMaterialNo(String materialNo) {
-			MaterialNo = materialNo;
+			this.materialNo = materialNo;
 		}
 		public String getCustomerMaterial() {
-			return CustomerMaterial;
+			return customerMaterial;
 		}
 		public void setCustomerMaterial(String customerMaterial) {
-			CustomerMaterial = customerMaterial;
+			this.customerMaterial = customerMaterial;
 		}
 		public String getPrice() {
-			return Price;
+			return price;
 		}
 		public void setPrice(String price) {
-			Price = price;
+			this.price = price;
 		}
 		public String getSaleUnit() {
-			return SaleUnit;
+			return saleUnit;
 		}
 		public void setSaleUnit(String saleUnit) {
-			SaleUnit = saleUnit;
+			this.saleUnit = saleUnit;
 		}
 		public String getSaleQuantity() {
-			return SaleQuantity;
+			return saleQuantity;
 		}
 		public void setSaleQuantity(String saleQuantity) {
-			SaleQuantity = saleQuantity;
+			this.saleQuantity = saleQuantity;
+		}
+		public String getOrderAmount() {
+			return orderAmount;
+		}
+		public void setOrderAmount(String orderAmount) {
+			this.orderAmount = orderAmount;
 		}
 		public String getRemainQuantity() {
-			return RemainQuantity;
+			return remainQuantity;
 		}
 		public void setRemainQuantity(String remainQuantity) {
-			RemainQuantity = remainQuantity;
+			this.remainQuantity = remainQuantity;
 		}
 		public String getRemainAmount() {
-			return RemainAmount;
+			return remainAmount;
 		}
 		public void setRemainAmount(String remainAmount) {
-			RemainAmount = remainAmount;
+			this.remainAmount = remainAmount;
 		}
 		public String getTotalQuantity() {
-			return TotalQuantity;
+			return totalQuantity;
 		}
 		public void setTotalQuantity(String totalQuantity) {
-			TotalQuantity = totalQuantity;
+			this.totalQuantity = totalQuantity;
 		}
 		public String getGrade() {
-			return Grade;
+			return grade;
 		}
 		public void setGrade(String grade) {
-			Grade = grade;
+			this.grade = grade;
 		}
 		public String getBillSendWeightQuantity() {
-			return BillSendWeightQuantity;
+			return billSendWeightQuantity;
 		}
-		public void setBillSendWeightQuantity(String BillSendWeightQuantity) {
-			this.BillSendWeightQuantity = BillSendWeightQuantity;
+		public void setBillSendWeightQuantity(String billSendWeightQuantity) {
+			this.billSendWeightQuantity = billSendWeightQuantity;
+		}
+		public String getBillSendMRQuantity() {
+			return billSendMRQuantity;
+		}
+		public void setBillSendMRQuantity(String billSendMRQuantity) {
+			this.billSendMRQuantity = billSendMRQuantity;
+		}
+		public String getBillSendYDQuantity() {
+			return billSendYDQuantity;
+		}
+		public void setBillSendYDQuantity(String billSendYDQuantity) {
+			this.billSendYDQuantity = billSendYDQuantity;
 		}
 		public String getBillSendQuantity() {
-			return BillSendQuantity;
+			return billSendQuantity;
 		}
 		public void setBillSendQuantity(String billSendQuantity) {
-			BillSendQuantity = billSendQuantity;
+			this.billSendQuantity = billSendQuantity;
 		}
 		public String getCustomerDue() {
-			return CustomerDue;
+			return customerDue;
 		}
 		public void setCustomerDue(String customerDue) {
-			CustomerDue = customerDue;
+			this.customerDue = customerDue;
 		}
 		public String getDueDate() {
-			return DueDate;
+			return dueDate;
 		}
 		public void setDueDate(String dueDate) {
-			DueDate = dueDate;
+			this.dueDate = dueDate;
 		}
 		public String getLotNo() {
-			return LotNo;
+			return lotNo;
 		}
 		public void setLotNo(String lotNo) {
-			LotNo = lotNo;
+			this.lotNo = lotNo;
 		}
 		public String getLabNo() {
-			return LabNo;
+			return labNo;
 		}
 		public void setLabNo(String labNo) {
-			LabNo = labNo;
+			this.labNo = labNo;
 		}
 		public String getLabStatus() {
-			return LabStatus;
+			return labStatus;
 		}
 		public void setLabStatus(String labStatus) {
-			LabStatus = labStatus;
+			this.labStatus = labStatus;
 		}
-		public String getCFMPlanLabDate() {
-			return CFMPlanLabDate;
+		public String getCfmPlanLabDate() {
+			return cfmPlanLabDate;
 		}
-		public void setCFMPlanLabDate(String cFMPlanLabDate) {
-			CFMPlanLabDate = cFMPlanLabDate;
+		public void setCfmPlanLabDate(String cfmPlanLabDate) {
+			this.cfmPlanLabDate = cfmPlanLabDate;
 		}
-		public String getCFMActualLabDate() {
-			return CFMActualLabDate;
+		public String getCfmActualLabDate() {
+			return cfmActualLabDate;
 		}
-		public void setCFMActualLabDate(String cFMActualLabDate) {
-			CFMActualLabDate = cFMActualLabDate;
+		public void setCfmActualLabDate(String cfmActualLabDate) {
+			this.cfmActualLabDate = cfmActualLabDate;
 		}
-		public String getCFMCusAnsLabDate() {
-			return CFMCusAnsLabDate;
+		public String getCfmCusAnsLabDate() {
+			return cfmCusAnsLabDate;
 		}
-		public void setCFMCusAnsLabDate(String cFMCusAnsLabDate) {
-			CFMCusAnsLabDate = cFMCusAnsLabDate;
+		public void setCfmCusAnsLabDate(String cfmCusAnsLabDate) {
+			this.cfmCusAnsLabDate = cfmCusAnsLabDate;
 		}
 		public String getUserStatus() {
-			return UserStatus;
+			return userStatus;
 		}
 		public void setUserStatus(String userStatus) {
-			UserStatus = userStatus;
+			this.userStatus = userStatus;
 		}
-		public String getTKCFM() {
-			return TKCFM;
+		public String getTkCFM() {
+			return tkCFM;
 		}
-		public void setTKCFM(String tKCFM) {
-			TKCFM = tKCFM;
+		public void setTkCFM(String tkCFM) {
+			this.tkCFM = tkCFM;
 		}
-		public String getCFMPlanDate() {
-			return CFMPlanDate;
+		public String getCfmDateActual() {
+			return cfmDateActual;
 		}
-		public void setCFMPlanDate(String cFMPlanDate) {
-			CFMPlanDate = cFMPlanDate;
+		public void setCfmDateActual(String cfmDateActual) {
+			this.cfmDateActual = cfmDateActual;
 		}
-		public String getCFMSendDate() {
-			return CFMSendDate;
+		public String getCfmPlanDate() {
+			return cfmPlanDate;
 		}
-		public void setCFMSendDate(String cFMSendDate) {
-			CFMSendDate = cFMSendDate;
+		public void setCfmPlanDate(String cfmPlanDate) {
+			this.cfmPlanDate = cfmPlanDate;
 		}
-		public String getCFMAnswerDate() {
-			return CFMAnswerDate;
+		public String getCfmSendDate() {
+			return cfmSendDate;
 		}
-		public void setCFMAnswerDate(String cFMAnswerDate) {
-			CFMAnswerDate = cFMAnswerDate;
+		public void setCfmSendDate(String cfmSendDate) {
+			this.cfmSendDate = cfmSendDate;
 		}
-		public String getCFMNumber() {
-			return CFMNumber;
+		public String getCfmAnswerDate() {
+			return cfmAnswerDate;
 		}
-		public void setCFMNumber(String cFMNumber) {
-			CFMNumber = cFMNumber;
+		public void setCfmAnswerDate(String cfmAnswerDate) {
+			this.cfmAnswerDate = cfmAnswerDate;
 		}
-		public String getCFMStatus() {
-			return CFMStatus;
+		public String getCfmNumber() {
+			return cfmNumber;
 		}
-		public void setCFMStatus(String cFMStatus) {
-			CFMStatus = cFMStatus;
+		public void setCfmNumber(String cfmNumber) {
+			this.cfmNumber = cfmNumber;
 		}
-		public String getCFMRemark() {
-			return CFMRemark;
+		public String getCfmStatus() {
+			return cfmStatus;
 		}
-		public void setCFMRemark(String cFMRemark) {
-			CFMRemark = cFMRemark;
+		public void setCfmStatus(String cfmStatus) {
+			this.cfmStatus = cfmStatus;
+		}
+		public String getCfmRemark() {
+			return cfmRemark;
+		}
+		public void setCfmRemark(String cfmRemark) {
+			this.cfmRemark = cfmRemark;
 		}
 		public String getDeliveryDate() {
-			return DeliveryDate;
+			return deliveryDate;
 		}
 		public void setDeliveryDate(String deliveryDate) {
-			DeliveryDate = deliveryDate;
+			this.deliveryDate = deliveryDate;
 		}
 		public String getShipDate() {
-			return ShipDate;
+			return shipDate;
 		}
 		public void setShipDate(String shipDate) {
-			ShipDate = shipDate;
+			this.shipDate = shipDate;
+		}
+		public String getLotShipping() {
+			return lotShipping;
+		}
+		public void setLotShipping(String lotShipping) {
+			this.lotShipping = lotShipping;
 		}
 		public String getRemarkOne() {
-			return RemarkOne;
+			return remarkOne;
 		}
 		public void setRemarkOne(String remarkOne) {
-			RemarkOne = remarkOne;
+			this.remarkOne = remarkOne;
 		}
 		public String getRemarkTwo() {
-			return RemarkTwo;
+			return remarkTwo;
 		}
 		public void setRemarkTwo(String remarkTwo) {
-			RemarkTwo = remarkTwo;
+			this.remarkTwo = remarkTwo;
 		}
-		public String getRemarkThree() {  
-			return RemarkThree;
+		public String getRemarkThree() {
+			return remarkThree;
 		}
 		public void setRemarkThree(String remarkThree) {
-			RemarkThree = remarkThree;
+			this.remarkThree = remarkThree;
 		}
-
-		public String getPCRemark() {
-			return PCRemark;
+		public String getRemark() {
+			return remark;
 		}
-
-		public void setPCRemark(String pCRemark) {
-			PCRemark = pCRemark;
+		public void setRemark(String remark) {
+			this.remark = remark;
 		}
-
+		public String getCfmLastest() {
+			return cfmLastest;
+		}
+		public void setCfmLastest(String cfmLastest) {
+			this.cfmLastest = cfmLastest;
+		}
+		public String getUserId() {
+			return userId;
+		}
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+		public String getProductionOrder() {
+			return productionOrder;
+		}
+		public void setProductionOrder(String productionOrder) {
+			this.productionOrder = productionOrder;
+		}
+		public String getCaseSave() {
+			return caseSave;
+		}
+		public void setCaseSave(String caseSave) {
+			this.caseSave = caseSave;
+		}
+		public String getVolumn() {
+			return volumn;
+		}
+		public void setVolumn(String volumn) {
+			this.volumn = volumn;
+		}
+		public String getReplacedRemark() {
+			return replacedRemark;
+		}
+		public void setReplacedRemark(String replacedRemark) {
+			this.replacedRemark = replacedRemark;
+		}
+		public String getIconStatus() {
+			return iconStatus;
+		}
+		public void setIconStatus(String iconStatus) {
+			this.iconStatus = iconStatus;
+		}
+		public String getSystemStatus() {
+			return systemStatus;
+		}
+		public void setSystemStatus(String systemStatus) {
+			this.systemStatus = systemStatus;
+		}
+		public String getStockRemark() {
+			return stockRemark;
+		}
+		public void setStockRemark(String stockRemark) {
+			this.stockRemark = stockRemark;
+		}
+		public String getGrQuantity() {
+			return grQuantity;
+		}
+		public void setGrQuantity(String grQuantity) {
+			this.grQuantity = grQuantity;
+		}
+		public String getVolumnFGAmount() {
+			return volumnFGAmount;
+		}
+		public void setVolumnFGAmount(String volumnFGAmount) {
+			this.volumnFGAmount = volumnFGAmount;
+		}
+		public String getDyePlan() {
+			return dyePlan;
+		}
+		public void setDyePlan(String dyePlan) {
+			this.dyePlan = dyePlan;
+		}
+		public String getDyeActual() {
+			return dyeActual;
+		}
+		public void setDyeActual(String dyeActual) {
+			this.dyeActual = dyeActual;
+		}
+		public String getSendCFMCusDate() {
+			return sendCFMCusDate;
+		}
+		public void setSendCFMCusDate(String sendCFMCusDate) {
+			this.sendCFMCusDate = sendCFMCusDate;
+		}
+		public String getCauseOfDelay() {
+			return causeOfDelay;
+		}
+		public void setCauseOfDelay(String causeOfDelay) {
+			this.causeOfDelay = causeOfDelay;
+		}
+		public String getDelayedDepartment() {
+			return delayedDepartment;
+		}
+		public void setDelayedDepartment(String delayedDepartment) {
+			this.delayedDepartment = delayedDepartment;
+		}
+		public String getPcRemark() {
+			return pcRemark;
+		}
+		public void setPcRemark(String pcRemark) {
+			this.pcRemark = pcRemark;
+		}
 		public String getSwitchRemark() {
-			return SwitchRemark;
+			return switchRemark;
 		}
-
 		public void setSwitchRemark(String switchRemark) {
-			SwitchRemark = switchRemark;
+			this.switchRemark = switchRemark;
 		}
-
-		public String getLotShipping() {
-			return LotShipping;
+		public String getTypePrd() {
+			return typePrd;
 		}
-
-		public void setLotShipping(String lotShipping) {
-			LotShipping = lotShipping;
+		public void setTypePrd(String typePrd) {
+			this.typePrd = typePrd;
 		}
+		public String getTypePrdRemark() {
+			return typePrdRemark;
+		}
+		public void setTypePrdRemark(String typePrdRemark) {
+			this.typePrdRemark = typePrdRemark;
+		}
+		public int getCountInSW() {
+			return countInSW;
+		}
+		public void setCountInSW(int countInSW) {
+			this.countInSW = countInSW;
+		}
+		public String getSaleOrderSW() {
+			return saleOrderSW;
+		}
+		public void setSaleOrderSW(String saleOrderSW) {
+			this.saleOrderSW = saleOrderSW;
+		}
+		public String getSaleLineSW() {
+			return saleLineSW;
+		}
+		public void setSaleLineSW(String saleLineSW) {
+			this.saleLineSW = saleLineSW;
+		}
+		public String getProductionOrderSW() {
+			return productionOrderSW;
+		}
+		public void setProductionOrderSW(String productionOrderSW) {
+			this.productionOrderSW = productionOrderSW;
+		}
+		public String getProductionOrderRP() {
+			return productionOrderRP;
+		}
+		public void setProductionOrderRP(String productionOrderRP) {
+			this.productionOrderRP = productionOrderRP;
+		}
+		public String getStockLoad() {
+			return stockLoad;
+		}
+		public void setStockLoad(String stockLoad) {
+			this.stockLoad = stockLoad;
+		}
+		public String getCfmDetailAll() {
+			return cfmDetailAll;
+		}
+		public void setCfmDetailAll(String cfmDetailAll) {
+			this.cfmDetailAll = cfmDetailAll;
+		}
+		public String getCfmNumberAll() {
+			return cfmNumberAll;
+		}
+		public void setCfmNumberAll(String cfmNumberAll) {
+			this.cfmNumberAll = cfmNumberAll;
+		}
+		public String getCfmRemarkAll() {
+			return cfmRemarkAll;
+		}
+		public void setCfmRemarkAll(String cfmRemarkAll) {
+			this.cfmRemarkAll = cfmRemarkAll;
+		}
+		public String getRollNoRemarkAll() {
+			return rollNoRemarkAll;
+		}
+		public void setRollNoRemarkAll(String rollNoRemarkAll) {
+			this.rollNoRemarkAll = rollNoRemarkAll;
+		}
+		public String getCustomerType() {
+			return customerType;
+		}
+		public void setCustomerType(String customerType) {
+			this.customerType = customerType;
+		}
+		public String getCustomerDivision() {
+			return customerDivision;
+		}
+		public void setCustomerDivision(String customerDivision) {
+			this.customerDivision = customerDivision;
+		} 
 		
 }

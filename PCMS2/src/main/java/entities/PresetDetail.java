@@ -1,24 +1,24 @@
 package entities;
 
 public class PresetDetail {
-	private String PostingDate;
-	private String WorkCenter;
+	private String postingDate;
+	private String workCenter;
 	public PresetDetail(String postingDate, String workCenter) {
 		super();
-		PostingDate = postingDate;
-		WorkCenter = workCenter;
+		this.postingDate = postingDate;
+		this.workCenter = workCenter;
 	}
 	public String getPostingDate() {
-		return PostingDate;
+		return postingDate;
 	}
 	public void setPostingDate(String postingDate) {
-		PostingDate = postingDate;
+		this.postingDate = postingDate;
 	}
 	public String getWorkCenter() {
-		return WorkCenter;
+		return workCenter;
 	}
 	public void setWorkCenter(String workCenter) {
-		WorkCenter = workCenter;
+		this.workCenter = workCenter;
 	}
 	
 }
