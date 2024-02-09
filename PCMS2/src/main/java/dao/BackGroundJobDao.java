@@ -6,4 +6,6 @@ public interface BackGroundJobDao {
 	void execUpsertToTEMPProdWorkDate();
 
 	void execUpsertToTEMPUserStatusOnWeb();
+
+	void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder);
 }

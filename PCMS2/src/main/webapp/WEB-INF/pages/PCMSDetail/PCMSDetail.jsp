@@ -50,6 +50,7 @@
 				                <th class="row-table" style="vertical-align: middle;">Lot </th>   
 			                 	<th class="row-table" style="vertical-align: middle;">DyePlan </th> 
 			                 	<th class="row-table" style="vertical-align: middle;">DyeActual </th> 
+			                 	<th class="row-table" style="vertical-align: middle;">Dye<span class="c"style="display: block;">Status</span></th> 
 				                <th class="row-table" style="vertical-align: middle;">วันนัด<span class="c"style="display: block;">CFM LAB</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันส่ง<span class="c"style="display: block;"> CFM LAB</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">วันที่ลูกค้า <span class="c"style="display: block;"> ตอบ LAB</span> 	 </th> 
@@ -68,8 +69,7 @@
 				                <th class="row-table" style="vertical-align: middle;">Cause <span class="c"style="display: block;">of Delay</span>  </th>    
 				                <th class="row-table" style="vertical-align: middle;">Delayed <span class="c"style="display: block;">Department</span>  </th> 
 				                <th class="row-table" style="vertical-align: middle;">PC Remark </th>  
-				                <th class="row-table" style="vertical-align: middle;">Replaced Remark </th>
-				                    
+				                <th class="row-table" style="vertical-align: middle;">Replaced Remark </th> 
 				                <th class="row-table" style="vertical-align: middle;">SwitchRemark </th>          
 				                <th class="row-table" style="vertical-align: middle;">StockRemark </th>  
 				                <th class="row-table" style="vertical-align: middle;">StockLoad </th>  
@@ -311,33 +311,33 @@ $(document) .ready( function() {
 				    {"data" : "dueDate" ,         "title":"Due Date",'type': 'date-euro' },              //21  
 				    {"data" : "labNo",			  "title":"Lab No" },                                    //22
 				    {"data" : "labStatus",		  "title":"Lab Status" },                                //23
-				    {"data" : "lotNo",            "title":"Lot" },                                           //24  
-				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro'},                                             //25 
-				    {"data" : "dyeActual","title":"Dye [Actual]",'type': 'date-euro' },                                      //26 
-				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },             //27
-				    {"data" : "cfmActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //28 
-				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //29
-				    {"data" : "tkCFM","title":"TK CFM"},                       						     //30 
-				    {"data" : "cfmPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //31  
-				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //32 <-------------
-       
- 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},          
-// 				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //33 
-				    {"data" : "userStatus","title":"User Status"},                                       //34
-					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //35   
-					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //36
-					{"data" : "rollNoRemarkAll","title":"CFM Remark"},                                //37<------------- 09/08/2022
-				    {"data" : "deliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //38
-// 				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //39 
-				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                    //39 Replaced ShipDate
-				    {"data" : "remark","title":"EFFECT"},                                             //40
-				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //41<-------------
-				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //42<-------------
-					{"data" : "pcRemark","title":"PCRemark"},                                         //43
-				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //44
-				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //45
-				    {"data" : "stockRemark","title":"StockRemark"},                                   //46
-				    {"data" : "stockLoad","title":"StockLoad"},                                       //47
+				    {"data" : "lotNo",            "title":"Lot" },                                       //24  
+				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro'},                      //25 
+				    {"data" : "dyeActual","title":"Dye [Actual]",'type': 'date-euro' },                  //26 
+				    {"data" : "dyeStatus","title":"Dye Status" },                                        //27  
+				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },             //28
+				    {"data" : "cfmActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //29 
+				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //30
+				    {"data" : "tkCFM","title":"TK CFM"},                       						     //31 
+				    {"data" : "cfmPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //32  
+				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //33 <------------- 
+ 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //34
+// 				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //35
+				    {"data" : "userStatus","title":"User Status"},                                       //36
+					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //37   
+					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //38
+					{"data" : "rollNoRemarkAll","title":"CFM Remark"},                                //38<------------- 09/08/2022
+				    {"data" : "deliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //39
+// 				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
+				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                 //41 Replaced ShipDate
+				    {"data" : "remark","title":"EFFECT"},                                             //42
+				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //43<-------------
+				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //44<-------------
+					{"data" : "pcRemark","title":"PCRemark"},                                         //45
+				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //46
+				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //47
+				    {"data" : "stockRemark","title":"StockRemark"},                                   //48
+				    {"data" : "stockLoad","title":"StockLoad"},                                       //49
      
 			],        	                
             columnDefs :  [	
@@ -347,7 +347,7 @@ $(document) .ready( function() {
 		        
 			 	{  			    
 // 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
-				  targets : [25,26],             
+				  targets : [25,27],             
 				  render: function (data, type, row) {	 
 				   		var htmlEx = data;                                      
 	   					htmlEx = ''      
@@ -361,11 +361,11 @@ $(document) .ready( function() {
 				   		return  htmlEx     ;         
 					}                          
 				} ,     
-				{ targets : [ 4,20 , 21,28 ,39 ],                        
+				{ targets : [ 4,20 , 21,29 ,40 ],                        
 				  	  className : 'dt-custom-td80',    	        
 				  	  type: 'date-euro'  
 					} ,                              
-				{ targets : [ 11,12,13,14,22,24,29 ,33 ],                        
+				{ targets : [ 11,12,13,14,22,24,30 ,34 ],                        
 				  	  className : 'dt-custom-td100',    
 				  	  type: 'string'     
 				} ,   
@@ -377,23 +377,23 @@ $(document) .ready( function() {
 // 				  	  className : 'dt-custom-td120',    
 // 				  	  type: 'string'            
 // 				} ,     
-				{ targets : [ 27  ],                      
+				{ targets : [ 28  ],                      
 			  	  className : 'CFMPlanLabDateParent dt-custom-td80',       
 			  	  type: 'date-euro'     
 				} ,   
-				{ targets : [ 31 ],                      
+				{ targets : [ 32 ],                      
 			  	  className : 'CFMPlanDateParent dt-custom-td80',       
 			  	  type: 'date-euro'  
 				} ,  
-				{ targets : [ 32 ],                       
+				{ targets : [ 33 ],                       
 				  	  className : 'SendCFMCusDateParent dt-custom-td80',       
 				  	  type: 'date-euro'  
 					} ,
-				{ targets : [ 38 ],                      
+				{ targets : [ 39 ],                      
 			  	  className : 'DeliveryDateParent dt-custom-td100',       
 			  	  type: 'date-euro'  
 				} ,   
-				{ targets : [3 ,6,23,34,36 ],             	     
+				{ targets : [3 ,6,23,35,37 ],             	     
 			  	  	className : 'dt-custom-td140',      
 			  	  	type: 'string'   
 					} ,               
@@ -401,15 +401,15 @@ $(document) .ready( function() {
 			  	  	className : 'dt-custom-td160',      
 			  	  	type: 'string'   
 					} ,            
-				{ targets : [ 7 ,42 ],                    
+				{ targets : [ 7 ,43 ],                    
 			  	  	className : 'dt-custom-td240',       
 			  	  	type: 'string'   
 				} ,       
-				{ targets : [  35,37 ],                          
+				{ targets : [  36,38 ],                          
 			  	  	className : 'dt-custom-td300',         
 			  	  	type: 'string'     
 					} ,            
-				{ targets : [  40,41,43,44 ,46,47],                       
+				{ targets : [  41,42,44,45 ,47,48],                       
 			  	  	className : 'dt-custom-td450 p-r-15',      
 			  	  	type: 'string'  
 					} ,   
@@ -488,7 +488,7 @@ $(document) .ready( function() {
 							return  html; 
 					   	  }    
 					},  
-				{ targets : [ 27 ],    
+				{ targets : [ 28 ],    
 					  orderable: false,    
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
@@ -502,7 +502,7 @@ $(document) .ready( function() {
 							return  htmlEx;
 					   	  }            
 						} ,
-				{ targets : [ 31 ],    
+				{ targets : [ 32 ],    
 				  orderable: false,
 				   	  render: function (data, type, row) {	
 // 				   		var htmlEx = '' 
@@ -515,7 +515,7 @@ $(document) .ready( function() {
 						return  row.cfmPlanDate 
 				   	  }         
 					} ,    
-				{ targets : [ 32 ],             
+				{ targets : [ 33 ],             
 				  orderable: false,
    	  			  render: function (data, type, row) {	
  				   		var htmlEx = ''  
@@ -531,7 +531,7 @@ $(document) .ready( function() {
 						return  htmlEx
 			   	  }    
 				} ,        
-				{ targets : [ 38 ],    
+				{ targets : [ 39 ],    
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
@@ -545,7 +545,7 @@ $(document) .ready( function() {
 					return  htmlEx           
 					}	          
 				},      
-				{ targets : [ 41 ],     
+				{ targets : [ 42 ],     
 			   	  render: function (data, type, row) {	 
 				   		var htmlEx = ''      
 			   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
@@ -571,7 +571,7 @@ $(document) .ready( function() {
 						return  htmlEx      
 						}         
 				}  ,   
-				{ targets : [ 42 ],       
+				{ targets : [ 43 ],       
 			   	  render: function (data, type, row, meta) {	    
 			   		var htmlEx = ''         
 				   		 
@@ -598,7 +598,7 @@ $(document) .ready( function() {
 			   		return  htmlEx      
 					}       
 				}  ,      
-				{ targets : [ 43 ],     
+				{ targets : [ 44 ],     
 				   	  render: function (data, type, row) {	     
 				   		var htmlEx = ''    
 						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
@@ -606,7 +606,7 @@ $(document) .ready( function() {
 						}       
 					}       
 				,         
-				{ targets : [ 44 ],     
+				{ targets : [ 45 ],     
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){ 
@@ -625,7 +625,7 @@ $(document) .ready( function() {
 			   		return  htmlEx          
 					}       
 				} ,     
-				{ targets : [ 45 ],         
+				{ targets : [ 46 ],         
 			   	  	render: function (data, type, row) {	          
 					var htmlEx = ''           
 					if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){ 
@@ -643,7 +643,7 @@ $(document) .ready( function() {
 					return  htmlEx      
 					}       
 				} ,    
-				{ targets : [ 46 ],     
+				{ targets : [ 47 ],     
 			   	  	render: function (data, type, row) {	     
 					var htmlEx = ''    
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
@@ -727,8 +727,8 @@ $(document) .ready( function() {
 			else{regrex = ''+searchVal+''; }
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
 		}   
-		else if(indexAfterReCol == 4 ||  indexAfterReCol == 28 || indexAfterReCol == 29 || indexAfterReCol == 30 ||
-				indexAfterReCol == 32 || indexAfterReCol == 33 || indexAfterReCol == 39 ){
+		else if(indexAfterReCol == 4 ||  indexAfterReCol == 29 || indexAfterReCol == 30 || indexAfterReCol == 31 ||
+				indexAfterReCol == 33 || indexAfterReCol == 34 || indexAfterReCol == 40 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  }
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }

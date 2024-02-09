@@ -23,6 +23,12 @@ import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import model.LogInModel;
 import model.PCMSDetailModel;
+import model.master.ColumnSettingModel;
+import model.master.ConfigDepartmentModel;
+import model.master.FromSapMainSaleModel;
+import model.master.PlanCFMDateModel;
+import model.master.PlanCFMLabDateModel;
+import model.master.PlanSendCFMCusDateModel;
 
 @Controller
 @RequestMapping(value = { "/Detail" }) 
@@ -33,11 +39,14 @@ public class PCMSDetailController {
 	private String FTP_DIRECTORY; 
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView test(HttpSession session) {
-		ModelAndView mv = new ModelAndView();
-		Gson g = new Gson();
-		String user = (String) session.getAttribute("user");
+		ModelAndView mv = new ModelAndView(); 
 		PCMSDetailModel model = new PCMSDetailModel(); 
-		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
+		ColumnSettingModel csModel = new ColumnSettingModel(); 
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel(); 
+		Gson g = new Gson();
+		String user = (String) session.getAttribute("user"); 
+		ConfigDepartmentModel cdmModel = new ConfigDepartmentModel(); 
+		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
 		String[] arrayCol = null  ;    
 		if(list.size() == 0) {      
 			arrayCol = null; 
@@ -53,12 +62,12 @@ public class PCMSDetailController {
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
-		mv.addObject("DepList", g.toJson(model.getDelayedDepartmentList()));
-		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
-		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
+		mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
+		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
+		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
-		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
-		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
+		mv.addObject("CusNameList", g.toJson(fsmsModel.getCustomerNameDetail()));
+		mv.addObject("CusShortNameList", g.toJson(fsmsModel.getCustomerShortNameDetail()));
 		return mv;
 	}    
 	
@@ -166,7 +175,7 @@ public class PCMSDetailController {
 	@RequestMapping(  value = "/getCFMPlanDateDetail",  method = RequestMethod.POST )
 	public void doGetCFMPlanDate(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		PCMSDetailModel model = new PCMSDetailModel();
+		PlanCFMDateModel model = new PlanCFMDateModel();
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson(); 
 		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -195,7 +204,8 @@ public class PCMSDetailController {
 	@RequestMapping(  value = "/getCFMPlanLabDateDetail",  method = RequestMethod.POST )
 	public void doGetCFMPlanLabDate(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		PCMSDetailModel model = new PCMSDetailModel();
+
+		PlanCFMLabDateModel pcfmldModel = new PlanCFMLabDateModel( );
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson(); 
 		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -218,7 +228,7 @@ public class PCMSDetailController {
 		}  
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
-		out.println(g.toJson(model.getCFMPlanLabDateDetail( poList)));  
+		out.println(g.toJson(pcfmldModel.getCFMPlanLabDateDetail( poList)));  
 	}
 	@RequestMapping(  value = "/getDeliveryPlanDateDetail",  method = RequestMethod.POST )
 	public void doGetDeliveryDate(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
@@ -250,7 +260,7 @@ public class PCMSDetailController {
 	@RequestMapping(  value = "/getSendCFMCusDateDetail",  method = RequestMethod.POST )
 	public void doGetSendCFMCusDateDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		PCMSDetailModel model = new PCMSDetailModel();
+		PlanSendCFMCusDateModel model = new PlanSendCFMCusDateModel();
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson(); 
 		PCMSSecondTableDetail[] userArray = (PCMSSecondTableDetail[]) g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -277,7 +287,7 @@ public class PCMSDetailController {
 	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
 	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		PCMSDetailModel model = new PCMSDetailModel();
+		ColumnSettingModel model = new ColumnSettingModel();
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson(); 
 		String [] userArray = (String[]) g.fromJson(data, String[].class);
@@ -296,7 +306,7 @@ public class PCMSDetailController {
 		poList.add(pd);   
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
-		out.println(g.toJson(model.saveColSettingToServer( pd)));   
+		out.println(g.toJson(model.upsertColumnSettingDetail( pd)));   
 	}
  
 	@RequestMapping(  value = "/saveDefault",  method = RequestMethod.POST )

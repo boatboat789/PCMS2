@@ -31,7 +31,19 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
-
+	@Override
+	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder) {
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [spd_UpsertToTEMP_UserStatusOnWebWithProdOrder] ? ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.setString(1, prodOrder);
+			prepared.execute();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
 	@Override
 	public void execUpsertToTEMPProdWorkDate() {
 		// TODO Auto-generated method stub

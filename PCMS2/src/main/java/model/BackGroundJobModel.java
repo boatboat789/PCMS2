@@ -47,6 +47,11 @@ public class BackGroundJobModel extends HttpServlet {
 	public void execUpsertToTEMPUserStatusOnWeb( ) {
 		// TODO Auto-generated method stub	
 		 this.dao.execUpsertToTEMPUserStatusOnWeb( ); 
+	}
+	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String productionOrder) {
+		// TODO Auto-generated method stub
+		 this.dao.execUpsertToTEMPUserStatusOnWebWithProdOrder( productionOrder);
+		
 	}  
 	 
 } 

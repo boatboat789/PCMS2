@@ -25,6 +25,7 @@ import dao.implement.DataImportSubmitDateDaoImpl;
 import dao.implement.DataImportWaitTestDaoImpl;
 import dao.implement.DataImportWorkInLabDaoImpl;
 import entities.UserDetail;
+import model.BackGroundJobModel;
 //
 //import dao.DataImportTwoDao;
 //import dao.implement.DataImportTwoDaoImpl;
@@ -86,6 +87,8 @@ public class FtpTaskRunner {
       this.importerBillBatch = new DataImportMainBillBatchDaoImpl(database, ftp); 
    } 
    public void loadFTP() {
+		BackGroundJobModel bgjModel = new BackGroundJobModel();
+		
 	   boolean bl_check = false;
 //	   bl_check = true;
 	   System.out.println("PCMS2 :: FTP run at :: " + Calendar.getInstance().getTime().toString());  
@@ -133,6 +136,8 @@ public class FtpTaskRunner {
 	   this.importerMainProd.loadDataFTP(this.user);	//spd_UpsertToTEMP_ProdWorkDate  //spd_UpsertToTEMP_UserStatusOnWeb
 	   if(bl_check == true) { System.out.println("importerMainProd :: " + Calendar.getInstance().getTime().toString()); } 
 //-----------------------------------------------------------------
+	   bgjModel.execUpsertToTEMPProdWorkDate();
+	   bgjModel.execUpsertToTEMPUserStatusOnWeb();  
 	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString()); 
    } 
 }

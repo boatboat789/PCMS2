@@ -19,8 +19,7 @@ import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
 public class DataImportSORDaoImpl implements DataImportSORDao {
-	private Database database;
-	private Database databaseSor;
+	private Database database; 
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String message;
 	private BeanCreateModel bcModel = new BeanCreateModel();
@@ -43,17 +42,7 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
    } 
    private ArrayList<SORDetail> getSORdetail() {
       ArrayList<SORDetail> list = null;
-      String sql = ""
-//      		+  "SELECT DISTINCT  [SO_NO]\r\n"
-//      		+ "      ,[SO_Line] \r\n"    
-//      		+ "	  ,	CONVERT(date, [CFM])    AS [CFM]\r\n"
-//      		+ "	  ,max(a.[LastUpdateCFM]) as [LastUpdateCFM]  \r\n"
-//      		+ "  FROM [SOR_PRODUCTION].[dbo].[V_PCMS2]  as z   \r\n"
-//      		+ "  inner join [SOR_PRODUCTION].[dbo].[PurchaseOrders] as b on b.[No] = z.PO_NO\r\n"
-//      		+ "  inner join [SOR_PRODUCTION].[dbo].[POLineItems] as a on b.Id = a.[POId] and z.MaterialCode = a.MaterialCode\r\n"
-//      		+ "  where SaleOrderId is not null and a.IsActive = 1 and \r\n" 
-//      		+ "  	   (CONVERT(date, a.[LastUpdateCFM]) > CONVERT(date, GETDATE()-10)  )\r\n"
-//      		+ "  group by  [SO_NO] ,[SO_Line]  ,[CFM]\r\n "
+      String sql = "" 
     		  + " SELECT DISTINCT  viewPCMS2.[SO_NO]\r\n"
     		  + "      		      ,viewPCMS2.[SO_Line]  \r\n"
     		  + "				  ,viewPCMS2.CFM_DATE\r\n"
@@ -62,11 +51,11 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
     		  + "      		  FROM [SOR_PRODUCTION].[dbo].[V_PCMS2]  as viewPCMS2   \r\n"
     		  + "      		  inner join [SOR_PRODUCTION].[dbo].[PurchaseOrders] as PO on PO.[No] = viewPCMS2.PO_NO\r\n"
     		  + "      		  inner join [SOR_PRODUCTION].[dbo].[POLineItems] as POLI on PO.Id = POLI.[POId] and viewPCMS2.MaterialCode = POLI.MaterialCode\r\n"
-    		  + "      		  where SaleOrderId is not null and POLI.IsActive = 1 and  \r\n"
-    		  + "      		  	   (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n"
+    		  + "      		  where SaleOrderId is not null and POLI.IsActive = 1   \r\n"
+    		  + "      		  	   and (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n"
     		  + " "
       		+ "  "; 
-      List<Map<String, Object>> datas = this.databaseSor.queryList(sql);
+      List<Map<String, Object>> datas = this.database.queryList(sql);
       list = new ArrayList<SORDetail>();
       for (Map<String, Object> map : datas) {
     	  list.add(this.bcModel._genSORDetail(map));

@@ -52,62 +52,25 @@ public class PCMSDetailModel extends HttpServlet {
 		ArrayList<PCMSSecondTableDetail> list = this.dao.searchByDetail(poList);
 		return list;
 	}
-
-	public ArrayList<PCMSTableDetail> getSaleNumberList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.getSaleNumberList();
-		return list;
-	}
-
+ 
 	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList);
 		return list;
 	}
-
-	public ArrayList<InputDateDetail> getCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
-		// TODO Auto-generated method stub
-		ArrayList<InputDateDetail> list = this.dao.getCFMPlanDateDetail(poList);
-		return list;
-	}
-
-	public ArrayList<InputDateDetail> getCFMPlanLabDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
-		// TODO Auto-generated method stub
-		ArrayList<InputDateDetail> list = this.dao.getCFMPlanLabDateDetail(poList);
-		return list;
-	}
-
+  
 	public ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.getDeliveryPlanDateDetail(poList);
 		return list;
 	}
-
-	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
-		ArrayList<ColumnHiddenDetail> list = this.dao.getColVisibleDetail(user);
-		return list;
-	}
-
-	public ArrayList<ColumnHiddenDetail> saveColSettingToServer(ColumnHiddenDetail pd) {
-		ArrayList<ColumnHiddenDetail> list = this.dao.saveColSettingToServer(pd);
-		return list;
-	}
+ 
 
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
 	} 
-	public ArrayList<PCMSAllDetail> getCustomerNameList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameList();
-		return list;
-	}
-	public ArrayList<PCMSAllDetail> getCustomerShortNameList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameList();
-		return list;
-	}
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
@@ -123,13 +86,7 @@ public class PCMSDetailModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.saveInputDetail(poList);
 		return list;
-	}
-	public  ArrayList<PCMSSecondTableDetail> getDivisionList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionList();
-		return list;
-	}
-
+	} 
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByPrd(poList);
@@ -141,16 +98,5 @@ public class PCMSDetailModel extends HttpServlet {
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByRowProd(poList);
 		return list;
 	}
-
-	public ArrayList<PCMSSecondTableDetail> getDelayedDepartmentList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSSecondTableDetail> list = this.dao.getDelayedDepartmentList();
-		return list;
-	}
-
-	public ArrayList<InputDateDetail>  getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
-		// TODO Auto-generated method stub
-				ArrayList<InputDateDetail> list = this.dao.getSendCFMCusDateDetail(poList);
-				return list;
-	}
+ 
 }

@@ -63,6 +63,7 @@ public class PCMSTableDetail {
 	private String sendCFMCusDate;
 	private String purchaseOrder;
 	private String customerDivision;
+	private String forPage ;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -150,6 +151,12 @@ public class PCMSTableDetail {
 		this.deliveryStatus = deliveryStatus;
 		this.saleStatus = saleStatus; 
 		this.division = division;
+	}
+	public String getForPage() {
+		return forPage;
+	}
+	public void setForPage(String forPage) {
+		this.forPage = forPage;
 	}
 	public String getSaleOrder() {
 		return saleOrder;

@@ -537,56 +537,72 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
    		 + "									   ,sum(A.[Volumn]) as SumVolOP \r\n"
    		 + "						FROM [PCMS].[dbo].[FromSapMainProdSale] AS A \r\n"
    		 + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-   		 + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"
+   		 + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"
    		 + "						GROUP BY A.[ProductionOrder] ) AS D ON D.ProductionOrder = A.ProductionOrder\r\n"
    		 + "				LEFT JOIN (   \r\n"
-   		 + "						  SELECT a.ProductionOrderRP , sum(c.Volume) as SumVolRP  \r\n"
+   		 + "						  SELECT a.ProductionOrderRP , sum(a.Volume) as SumVolRP  \r\n"
    		 + "						  from [PCMS].[dbo].[ReplacedProdOrder] as a\r\n"
-   		 + "						  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
-   		 + "						  left join ( SELECT ProductionOrderRP  \r\n"
-   		 + "											, CASE  \r\n"
-   		 + "												WHEN ( Volume = 0 ) THEN b.Volumn  \r\n"
-   		 + "												ELSE a.Volume\r\n"
-   		 + "												END AS Volume  \r\n"
-   		 + "									  from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-   		 + "									  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
-   		 + "									  WHERE a.[DataStatus] = 'O' ) as c on a.ProductionOrderRP = c.ProductionOrderRP\r\n"
-   		 + "						  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z')  \r\n"
+   		 + "						  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n" 
+   		 + "						  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ')  \r\n"
    		 + "						  group by a.ProductionOrderRP\r\n"
    		 + "						  ) AS E ON A.ProductionOrder = E.ProductionOrderRP	 \r\n"
    		 + "				)  as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder\r\n"
+//   		 + "				LEFT JOIN (   \r\n"
+//   		 + "						  SELECT a.ProductionOrderRP , sum(c.Volume) as SumVolRP  \r\n"
+//   		 + "						  from [PCMS].[dbo].[ReplacedProdOrder] as a\r\n"
+//   		 + "						  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+//   		 + "						  left join ( SELECT ProductionOrderRP  \r\n"
+//   		 + "											, CASE  \r\n"
+//   		 + "												WHEN ( Volume = 0 ) THEN b.Volumn  \r\n"
+//   		 + "												ELSE a.Volume\r\n"
+//   		 + "												END AS Volume  \r\n"
+//   		 + "									  from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
+//   		 + "									  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+//   		 + "									  WHERE a.[DataStatus] = 'O' ) as c on a.ProductionOrderRP = c.ProductionOrderRP\r\n"
+//   		 + "						  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ')  \r\n"
+//   		 + "						  group by a.ProductionOrderRP\r\n"
+//   		 + "						  ) AS E ON A.ProductionOrder = E.ProductionOrderRP	 \r\n"
+//   		 + "				)  as b on  a.SaleLine = b.SaleLine and a.SaleOrder = b.SaleOrder\r\n"
    		 + "	LEFT JOIN ( \r\n"
    		 + "				SELECT [SaleOrder] ,[SaleLine] ,sum( [Volumn] ) as SumVolMain \r\n"
    		 + "				FROM [PCMS].[dbo].[FromSapMainProd] as a\r\n"
    		 + "				WHERE a.DataStatus = 'O'\r\n"
    		 + "				group by  [SaleOrder]  ,[SaleLine] ) AS C ON A.SaleOrder = C.SaleOrder AND A.SaleLine = C.SaleLine \r\n"
-   		 + "	left join ( select DISTINCT SaleOrder ,SaleLine ,1 AS CountProdRP\r\n"
+   		 + "	left join ( select DISTINCT a.SaleOrder ,a.SaleLine ,1 AS CountProdRP\r\n"
    		 + "				from [PCMS].[dbo].[ReplacedProdOrder] as a\r\n"
-   		 + "				where a.DataStatus = 'O' and  ProductionOrder = 'รอจัด Lot' \r\n"
-   		 + "				GROUP BY  SaleOrder ,SaleLine \r\n"
-   		 + "				) AS D ON A.SaleOrder = D.SaleOrder AND A.SaleLine = D.SaleLine  \r\n"
+   		 + "				inner join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrderRP = b.ProductionOrder\r\n"
+   		 + "				where a.DataStatus = 'O' and  a.ProductionOrder = 'รอจัด Lot' \r\n"
+   		 + "				 and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"
+   		 + "				GROUP BY  a.SaleOrder ,a.SaleLine \r\n"
+   		 + "			) AS D ON A.SaleOrder = D.SaleOrder AND A.SaleLine = D.SaleLine  \r\n"
    		 + "	WHERE ( c.SumVolMain > 0 ) OR D.SaleOrder IS NOT NULL\r\n"
    		 + " ) AS B ON A.SaleOrder = B.SaleOrder AND A.SaleLine = B.SaleLine \r\n" ; 
 	 private String leftJoinBPartOneT =  ""
 	  + "			left join ( SELECT a.ProductionOrder  , sum(a.Volumn) as SumVolOP\r\n"
 	  + "                       from [PCMS].[dbo].FromSapMainProdSale as a\r\n"
 	  + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-	  + "			            WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z')\r\n"
+	  + "			            WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ')\r\n"
 	  + "			            group by a.ProductionOrder) as t on b.ProductionOrder = t.ProductionOrder   \r\n";
 	  private String leftJoinBPartOneS =  ""
-	  + "           left join ( SELECT a.ProductionOrderRP , sum(c.Volume) as SumVolRP  \r\n"
+	  + "           left join ( SELECT a.ProductionOrderRP , sum(a.Volume) as SumVolRP  \r\n"
 	  + "    					from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-	  + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
-	  + "						left join ( SELECT ProductionOrderRP  \r\n"
-	  + "										 , CASE  \r\n"
-	  + "										   		WHEN ( Volume = 0 ) THEN b.Volumn  \r\n"
-	  + "										   		ELSE a.Volume\r\n"
-	  + "										   		END AS Volume  \r\n"
-	  + "									from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-	  + "									left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
-	  + "									WHERE a.[DataStatus] = 'O' ) as c on a.ProductionOrderRP = c.ProductionOrderRP\r\n"
-	  + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"
+	  + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n" 
+	  + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"
 	  + "						group by a.ProductionOrderRP) as s on b.ProductionOrder = s.ProductionOrderRP  \r\n" ;
+//	  private String leftJoinBPartOneS =  ""
+//	  + "           left join ( SELECT a.ProductionOrderRP , sum(c.Volume) as SumVolRP  \r\n"
+//	  + "    					from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
+//	  + "						left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+//	  + "						left join ( SELECT ProductionOrderRP  \r\n"
+//	  + "										 , CASE  \r\n"
+//	  + "										   		WHEN ( Volume = 0 ) THEN b.Volumn  \r\n"
+//	  + "										   		ELSE a.Volume\r\n"
+//	  + "										   		END AS Volume  \r\n"
+//	  + "									from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
+//	  + "									left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrderRP = b.ProductionOrder \r\n"
+//	  + "									WHERE a.[DataStatus] = 'O' ) as c on a.ProductionOrderRP = c.ProductionOrderRP\r\n"
+//	  + "						WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"
+//	  + "						group by a.ProductionOrderRP) as s on b.ProductionOrder = s.ProductionOrderRP  \r\n" ;
 	 private String leftJoinBPartOneH =  ""
 	  + "           left join #tempPlandeliveryDate as h on h.ProductionOrder = b.ProductionOrder and h.SaleOrder = a.SaleOrder and h.SaleLine = a.SaleLine\r\n";
 
@@ -642,21 +658,21 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			    " LEFT JOIN ( SELECT [SaleOrderSW] ,[SaleLineSW] ,1 as countSW \r\n"
 			  + "			  FROM [PCMS].[dbo].[SwitchProdOrder] as a\r\n"
 			  + "		      left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
+			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรดZ')\r\n"
 			  + "			  GROUP BY  [SaleOrderSW] ,[SaleLineSW]\r\n"
 			  + " ) as CSW on  CSW.[SaleOrderSW] = b.SaleOrder and CSW.[SaleLineSW] = b.SaleLine\r\n" ;
 	private String leftJoinCRP = 
 			   " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine]  ,1 as countnRP  \r\n"
 			 + "			 FROM [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
 			 + "			 left join [PCMS].[dbo].[FromSapMainProd] as b on  a.[ProductionOrderRP] = b.ProductionOrder  \r\n"
-			 + "			 WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
+			 + "			 WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรดZ')\r\n"
 			 + "			 GROUP BY  a.[SaleOrder] ,a.[SaleLine]\r\n"
 			 + " )  as CRP on  CRP.SaleOrder = b.SaleOrder and CRP.SaleLine = b.SaleLine\r\n" ;
 	private String leftJoinCOP = 
 			    " LEFT JOIN ( SELECT a.[SaleOrder] ,a.[SaleLine] ,1 as countnOP\r\n"
 			  + "			  FROM [PCMS].[dbo].[FromSapMainProdSale] as a\r\n"
 			  + "			  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรด Z')\r\n"
+			  + "			  WHERE a.[DataStatus] = 'O' and ( b.UserStatus <> 'ยกเลิก' or b.UserStatus <> 'ตัดเกรดZ')\r\n"
 			  + "			  GROUP BY  a.[SaleOrder] ,a.[SaleLine]  \r\n"
 			  + " ) as COP on  COP.SaleOrder = b.SaleOrder and COP.SaleLine = b.SaleLine  \r\n";
  	private String leftJoinR = 
@@ -880,8 +896,17 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			whereSale += " and DeliveryStatus like '" + deliveryStatus + "%'  \r\n";
 		}
 		if (!saleStatus.equals("")) {
-			where += " and SaleStatus like '" + saleStatus + "%'  \r\n";
-			whereSale += " and SaleStatus like '" + saleStatus + "%'  \r\n";
+//			where += " and SaleStatus like '" + saleStatus + "%'  \r\n";
+//			whereSale += " and SaleStatus like '" + saleStatus + "%'  \r\n";
+			if(saleStatus.equals("O")) {  
+				where += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] > 0 )  \r\n";
+				whereSale += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] > 0 ) \r\n";
+			}
+			else {
+				where += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] = 0 )  \r\n";
+				whereSale += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] = 0 ) \r\n";
+				
+			}
 //			whereTempUCAL += " and SaleStatus like '" + saleStatus + "%'  \r\n";
 		} 
 		if (!dist.equals("")) {
@@ -1043,10 +1068,11 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.leftJoinCSW  
 				+ this.leftJoinCRP
 				+ this.leftJoinCOP
-				+ " where (\r\n"
-				+ "			 b.SumVol >= 0 or\r\n" //20230911 FIX HERE
+//				+ " where (\r\n"
+				+ " where ( b.SumVol Is not null\r\n" //20230911 FIX HERE
+//				+ "			 b.SumVol >= 0 or\r\n" //20230911 FIX HERE
 //				+ "			 b.SumVol <> 0 or\r\n" //20230911 FIX HERE
-				+ "			 ( \r\n"
+				+ "			or ( \r\n"
 				+ "				(\r\n"
 				+ "					 b.LotNo = 'รอจัด Lot'  or  b.LotNo = 'ขาย stock' or b.LotNo = 'รับจ้างถัก' or b.LotNo = 'Lot ขายแล้ว' \r\n"
 				+ "					or b.LotNo = 'พ่วงแล้วรอสวม' or b.LotNo = 'รอสวมเคยมี Lot'  \r\n"
@@ -1054,7 +1080,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "		     	and ( countnRP is null )  \r\n"
 				+ "          ) or\r\n" 
 				+ "     	 RealVolumn = 0 or\r\n"
-				+ "     	 ( b.UserStatus = 'ยกเลิก' or b.UserStatus = 'ตัดเกรด Z') \r\n"
+				+ "     	 ( b.UserStatus = 'ยกเลิก' or b.UserStatus = 'ตัดเกรดZ') \r\n"
 				+ "      )\r\n"        
 				+ " and NOT EXISTS ( select distinct ProductionOrderSW\r\n"
 				+ "				   FROM [PCMS].[dbo].[SwitchProdOrder] AS BAA\r\n"
@@ -1122,7 +1148,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.selectAll 
 		  		    + " INTO #tempOP  \r\n"
 					+ " from #tempPrdOP as a \r\n"  
-					+ " where ( A.UserStatus <> 'ยกเลิก' and A.UserStatus <> 'ตัดเกรด Z') \r\n"   
+					+ " where ( A.UserStatus <> 'ยกเลิก' and A.UserStatus <> 'ตัดเกรดZ') \r\n"   
 					+ " and NOT EXISTS ( select distinct ProductionOrderSW \r\n"
 					+ "				   FROM [PCMS].[dbo].[SwitchProdOrder] AS BAA \r\n"
 					+ "				   WHERE DataStatus = 'O' and BAA.ProductionOrderSW = A.ProductionOrder\r\n"
@@ -1181,13 +1207,13 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.leftJoinM
 					+ this.leftJoinUCAL  
 					+ where     
-					+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"   ;
+					+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"   ;
 		String sqlOPSW = "" 
 				+ " select \r\n"
 				+ this.selectAll 
 	  		    + " INTO #tempOPSW  \r\n"
 				+ " from #tempPrdOPSW as a \r\n"   
-				+ " where ( A.UserStatus <> 'ยกเลิก' and A.UserStatus <> 'ตัดเกรด Z') \r\n"  
+				+ " where ( A.UserStatus <> 'ยกเลิก' and A.UserStatus <> 'ตัดเกรดZ') \r\n"  
 				+ whereCaseTry ;  
 //////			// Switch   
 //				+ " union ALL  "
@@ -1248,7 +1274,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.leftJoinM
 				+ this.leftJoinUCAL  
 				+ where     
-				+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n"  ;
+				+ " and ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n"  ;
 			String sqlSW =  "" 
 					  + " select \r\n"
 					  + this.selectAll 
@@ -1278,7 +1304,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.leftJoinR	
 					+ this.leftJoinM	  
 					+ this.leftJoinUCALRP 
-					+ " where ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรด Z') \r\n" 
+					+ " where ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n" 
 					+ whereCaseTryRP    ;   ;
 
 			String sqlRP = ""  
@@ -1286,7 +1312,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 						+ this.selectAll 
 			  		    + " INTO #tempRP  \r\n"
 						+ " from #tempPrdReplaced as a \r\n"    
-//						+ " where ( a.UserStatus <> 'ยกเลิก' and a.UserStatus <> 'ตัดเกรด Z') \r\n" 
+//						+ " where ( a.UserStatus <> 'ยกเลิก' and a.UserStatus <> 'ตัดเกรดZ') \r\n" 
 //						+ whereCaseTry    ;
 				;    
 				
@@ -1316,12 +1342,10 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
 				+ "	begin\r\n"
 				+ "		Drop Table #tempRP \r\n"
-				+ "	end ; \r\n"  
-
+				+ "	end ; \r\n"   
 				+ createTempMainSale
 			 	+ this.createTempPlanDeliveryDate
-				+ this.createTempMainPrdFromTempA 
-//			    + this.createTempMainPrdFromTempA
+				+ this.createTempMainPrdFromTempA  
 			 	+ this.createTempSumGR    
 			 	+ this.createTempSumBill 
 			 	+ createTempRP
@@ -1334,18 +1358,20 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ sqlOPSW      
 				+ sqlSW  
 				+ sqlRP  
-					+ " SELECT * FROM #tempWaitLot\r\n"
-					+ " union ALL  \r\n"  
-					+ " SELECT * FROM #tempMain\r\n"
-					+ " union ALL  \r\n"  
-					+ " SELECT * FROM #tempOP\r\n"       
-					+ " union ALL  \r\n"		
-					+ " SELECT * FROM #tempOPSW\r\n"
-					+ " union ALL  \r\n" 
-					+ " SELECT * FROM #tempSW\r\n"
-					+ " union ALL  \r\n"
-					+ " SELECT * FROM #tempRP\r\n"  
-					+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine], [ProductionOrder] ";    
+				+ " SELECT a.* FROM #tempWaitLot as a\r\n"
+				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
+				+ " where b.SaleOrder is null \r\n"
+				+ " union ALL  \r\n"  
+				+ " SELECT * FROM #tempMain\r\n"
+				+ " union ALL  \r\n"  
+				+ " SELECT * FROM #tempOP\r\n"       
+				+ " union ALL  \r\n"		
+				+ " SELECT * FROM #tempOPSW\r\n"
+				+ " union ALL  \r\n" 
+				+ " SELECT * FROM #tempSW\r\n"
+				+ " union ALL  \r\n"
+				+ " SELECT * FROM #tempRP\r\n"  
+				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] ";    
 //		 System.out.println(sql);	
 		List<Map<String, Object>> datas = this.database.queryList(sql);  
 		list = new ArrayList<PCMSTableDetail>();  

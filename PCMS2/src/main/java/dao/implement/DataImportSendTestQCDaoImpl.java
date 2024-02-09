@@ -95,15 +95,11 @@ public class DataImportSendTestQCDaoImpl implements DataImportDao {
 	               } else {
 	                  this.message = "Field length is missing" +counter;
 	               }
-	            }  
-//	            System.out.println(datas.isEmpty());
+	            }   
 	            if (!datas.isEmpty()) {
-	               this.clearData(); 
-//	               System.out.println("clear1111");
-	               this.insertData(datas);
-//	               System.out.println("wtf1111");
-	               this.database.update("EXEC spd_UpsertToSendTestQC");
-//	               System.out.println("EXEC spd_UpsertToSendTestQC"); 
+	               this.clearData();  
+	               this.insertData(datas); 
+	               this.database.update("EXEC spd_UpsertToSendTestQC"); 
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
