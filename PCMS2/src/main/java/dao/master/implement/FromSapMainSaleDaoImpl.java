@@ -90,6 +90,62 @@ public class FromSapMainSaleDaoImpl implements  FromSapMainSaleDao{
 		} 
 		return list;
 	}
+	@Override
+	public ArrayList<PCMSAllDetail> getCustomerNameDetail(ArrayList<ConfigCustomerUserDetail> poList) {
+		ArrayList<PCMSAllDetail> list = null; 
+		ConfigCustomerUserDetail bean = poList.get(0);
+		 String custNo = bean.getCustomerNo();
+		 String where = " where (";
+		 String[] array = custNo.split(",");
+		for (int i = 0; i < array.length; i++) {
+			where += " [CustomerNo] = '"+array[i]+"' " ;
+			if (i != array.length - 1) {
+				where += " or \r\n";
+			} ;
+		}
+		where += " ) \r\n";
+		String sql =      
+				  " SELECT distinct \r\n"
+				+ "		[CustomerName] \r\n"  
+				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n " 
+			    + where
+				+ " order by [CustomerName] \r\n";  
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<PCMSAllDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSAllDetail(map));
+		} 
+		return list;
+	}
+
+	@Override
+	public ArrayList<PCMSAllDetail> getCustomerShortNameDetail(ArrayList<ConfigCustomerUserDetail> poList) {
+		ArrayList<PCMSAllDetail> list = null; 
+		ConfigCustomerUserDetail bean = poList.get(0);
+		 String custNo = bean.getCustomerNo();
+		 String where = " where (";
+		 String[] array = custNo.split(",");
+		for (int i = 0; i < array.length; i++) {
+			where += " [CustomerNo] = '"+array[i]+"' " ;
+			if (i != array.length - 1) {
+				where += " or \r\n";
+			} ;
+		}
+		where += " ) \r\n";
+		String sql =   
+				  " SELECT distinct \r\n"
+			    + "		[CustomerShortName]  \r\n"  
+				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n " 
+			    + where
+				+ " order by  [CustomerShortName] \r\n"; 
+		  
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<PCMSAllDetail>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSAllDetail(map));
+		} 
+		return list;
+	}
 
 	@Override
 	public ArrayList<PCMSAllDetail> getCustomerShortNameDetail() {

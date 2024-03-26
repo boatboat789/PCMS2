@@ -81,7 +81,7 @@ public class SearchSettingDaoImpl implements  SearchSettingDao{
 	} 
 
 	@Override
-	public  ArrayList<PCMSTableDetail> insertSearchSettingDetai(ArrayList<PCMSTableDetail> poList, String forPage) {
+	public  ArrayList<PCMSTableDetail> insertSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage) {
 		// TODO Auto-generated method stub
 		PreparedStatement prepared = null;
 		Connection connection;
@@ -163,7 +163,7 @@ public class SearchSettingDaoImpl implements  SearchSettingDao{
 	}
 
 	@Override
-	public ArrayList<PCMSTableDetail> updateSearchSettingDetai(ArrayList<PCMSTableDetail> poList, String forPage) { 
+	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage) { 
 		// TODO Auto-generated method stub
 		PreparedStatement prepared = null;
 		Connection connection;

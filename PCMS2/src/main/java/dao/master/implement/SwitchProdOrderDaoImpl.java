@@ -4,38 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import dao.PCMSMainDao;
-import dao.master.FromSORCFMDao;
 import dao.master.SwitchProdOrderDao;
-import entities.CFMDetail;
-import entities.ColumnHiddenDetail;
-import entities.ConfigCustomerUserDetail;
-import entities.DyeingDetail;
-import entities.FinishingDetail;
-import entities.InputDateDetail;
-import entities.InspectDetail;
-import entities.NCDetail;
-import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
-import entities.PCMSTableDetail;
-import entities.PODetail;
-import entities.PackingDetail;
-import entities.PresetDetail;
-import entities.ReceipeDetail;
-import entities.SORDetail;
-import entities.SaleDetail;
-import entities.SaleInputDetail;
-import entities.SendTestQCDetail;
 import entities.SwitchProdOrderDetail;
-import entities.WaitTestDetail;
-import entities.WorkInLabDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
@@ -202,5 +179,68 @@ public class SwitchProdOrderDaoImpl implements  SwitchProdOrderDao{
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		}  
 		return bean;
-	}
+	} 
+
+	@Override
+	public   PCMSSecondTableDetail upsertSwitchProdOrder( PCMSSecondTableDetail bean ,String dataStatus) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();    
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+		String prdOrderSW = bean.getProductionOrderSW();   
+		String saleOrderSW = bean.getSaleOrderSW();    
+		String saleLineSW = String.format("%06d", Integer.parseInt(bean.getSaleLineSW()));  
+		String userID = bean.getUserId();
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime(); 
+		try {      
+			String sql =  
+					  " UPDATE [PCMS].[dbo].[SwitchProdOrder]" 
+					+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? AND"
+					+ "       [ProductionOrderSW]  = ? and [SaleOrderSW] = ?  and [SaleLineSW] = ?  "
+					+ " declare  @rc int = @@ROWCOUNT " // 56
+					+ " if @rc <> 0 " 
+					+ " 	print @rc " 
+					+ " else "
+					+ " 	INSERT INTO [PCMS].[dbo].[SwitchProdOrder]" 
+					+ " 	([ProductionOrder]  ,[SaleOrder]   ,[SaleLine],"
+					+ " 	 [ProductionOrderSW],[SaleOrderSW] ,[SaleLineSW],"
+					+ "  	[ChangeBy] ,[ChangeDate] )"//55 
+					+ " 	values(? , ? , ? , ? , ? "
+					+ "    	     , ? , ? , ?  "
+					+ "     )  "
+					+ ";"  ;     	
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, dataStatus);
+				prepared.setString(2, bean.getUserId());
+				prepared.setTimestamp(3, new Timestamp(time));  
+				prepared.setString(4, prdOrder);  
+				prepared.setString(5, saleOrder);  
+				prepared.setString(6, saleLine);  
+				prepared.setString(7, prdOrderSW);  
+				prepared.setString(8, saleOrderSW);  
+				prepared.setString(9, saleLineSW);  
+				
+				prepared.setString(10, prdOrder);  
+				prepared.setString(11, saleOrder);  
+				prepared.setString(12, saleLine);  
+				prepared.setString(13, prdOrderSW);  
+				prepared.setString(14, saleOrderSW);  
+				prepared.setString(15, saleLineSW);   
+				prepared.setString(16, userID);  
+				prepared.setTimestamp(17, new Timestamp(time));   
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+//			System.err.println("upsertSwitchPrd"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean;
+	} 
 }

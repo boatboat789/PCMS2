@@ -13,8 +13,7 @@ import dao.master.implement.FromSORCFMDaoImpl;
 import dao.master.implement.FromSapMainProdDaoImpl;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
-import entities.SORDetail;
-import info.SORSqlInfo;
+import entities.SORDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 

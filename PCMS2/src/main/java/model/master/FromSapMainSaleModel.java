@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 
 import dao.master.FromSapMainSaleDao;
 import dao.master.implement.FromSapMainSaleDaoImpl;
+import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
@@ -66,6 +67,17 @@ public class FromSapMainSaleModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.getSaleNumberDetail();
 		return list;
+	}
+	public ArrayList<PCMSAllDetail> getCustomerNameDetail(ArrayList<ConfigCustomerUserDetail> poList) {
+		// TODO Auto-generated method stub
+				ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameDetail(poList );
+				return list;
+	}
+
+	public ArrayList<PCMSAllDetail> getCustomerShortNameDetail(ArrayList<ConfigCustomerUserDetail> poList) {
+		// TODO Auto-generated method stub
+				ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameDetail(poList );
+				return list;
 	}
 
 }

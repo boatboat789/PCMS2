@@ -14,8 +14,7 @@ import dao.master.implement.SwitchProdOrderDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
 import entities.SORDetail;
-import entities.SwitchProdOrderDetail;
-import info.SORSqlInfo;
+import entities.SwitchProdOrderDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
@@ -85,6 +84,11 @@ public class SwitchProdOrderModel extends HttpServlet {
 	   public ArrayList<SwitchProdOrderDetail> getSWProdOrderDetailByPrd(String prodOrder) {
 			// TODO Auto-generated method stub
 			ArrayList<SwitchProdOrderDetail> list = this.dao.getSWProdOrderDetailByPrd(prodOrder);
+			return list;
+		} 
+	   public PCMSSecondTableDetail upsertSwitchProdOrder(PCMSSecondTableDetail bean, String dataStatus){
+			// TODO Auto-generated method stub
+		   PCMSSecondTableDetail list = this.dao.upsertSwitchProdOrder(bean,dataStatus);
 			return list;
 		} 
 }

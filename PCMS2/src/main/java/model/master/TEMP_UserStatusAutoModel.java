@@ -16,8 +16,7 @@ import dao.master.implement.TEMP_UserStatusAutoDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
 import entities.SORDetail;
-import entities.TempUserStatusAutoDetail;
-import info.SORSqlInfo;
+import entities.TempUserStatusAutoDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 

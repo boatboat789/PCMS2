@@ -28,7 +28,7 @@ public class DataImportMainSaleDaoImpl implements DataImportDao {
       this.database = database;
       this.ftp = ftp;
       this.message = ""; 
-      this.maxfield = 31;
+      this.maxfield = 32;
    }
 
    public String getMessage() {
@@ -78,6 +78,7 @@ public class DataImportMainSaleDaoImpl implements DataImportDao {
       FileInputStream input = null;  
       InputStreamReader reader = null;
       BufferedReader buffer = null;   
+	  System.out.println(fullname);
       if (fullname.contains("ZSAPMAINSALE")) {  
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
@@ -90,7 +91,7 @@ public class DataImportMainSaleDaoImpl implements DataImportDao {
 	            ArrayList<DataImport> datas = new ArrayList<DataImport>();
 	            while((line = buffer.readLine()) != null) {
 	               String[] field = line.split("\\|", -1);  
-//	               System.out.println(field.length+" " +this.maxfield);
+	               System.out.println(field.length+" " +this.maxfield);
 	               if (field.length == this.maxfield) { 
 	                  ++counter; 
 	                  datas.add(new DataImport(field.length, field));
@@ -98,7 +99,7 @@ public class DataImportMainSaleDaoImpl implements DataImportDao {
 	                  this.message = "Field length is missing" +counter;
 	               }
 	            }  
-//	            System.out.println(!datas.isEmpty()+" "+datas.size());
+	            System.out.println(!datas.isEmpty()+" "+datas.size());
 	            if (!datas.isEmpty()) {
 	               this.clearData(); 
 //	               System.out.println("clear");
@@ -133,12 +134,12 @@ public class DataImportMainSaleDaoImpl implements DataImportDao {
              		+ " (F001, F002, F003, F004, F005, F006, F007, F008, F009, F010,"
              		+ "	 F011, F012, F013, F014, F015, F016, F017, F018, F019, F020,"
              		+ "	 F021, F022, F023, F024, F025, F026, F027, F028, F029, F030,"
-             		+ "  F031 ) "
+             		+ "  F031, F032 ) "
              		+ " VALUES ("
              		+ "        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
              		+ " 	   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
          		    + "        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-         		    + "        ? "	
+         		    + "        ?, ? "	
          		    + "        )"; 
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);

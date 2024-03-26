@@ -111,10 +111,6 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 		} catch (SQLException e) {
 			System.err.println("insertLabNoDetail" + e.getMessage());
 			iconStatus = "E";
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			iconStatus = "E";
-			e.printStackTrace();
 		}
 		return iconStatus;
 	}

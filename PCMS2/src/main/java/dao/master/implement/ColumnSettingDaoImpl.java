@@ -96,7 +96,45 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 					+ " 	INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
 					+ " 		([EmployeeID] ,[ColVisibleDetail])"//55 
 					+ " 	values(? , ? )  ;"  ;     	
-				prepared = connection.prepareStatement(sql);    
+				prepared = connection.prepareStatement(sql);     
+				prepared.setString(1, colName);
+				prepared.setString(2, user);
+				prepared.setString(3, user);
+				prepared.setString(4, colName);  
+				prepared.executeUpdate();   
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("saveColSettingToServer"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		list.add(bean);
+		return list;
+	}
+
+	@Override
+	public ArrayList<ColumnHiddenDetail> upsertColumnVisibleSummary(ColumnHiddenDetail pd) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String colName = pd.getColVisibleSummary();
+		String user = pd.getUserId(); 
+		ArrayList<ColumnHiddenDetail> list = new ArrayList<ColumnHiddenDetail>();
+		ColumnHiddenDetail bean = new ColumnHiddenDetail(); 
+		try {      
+			String sql = 
+					  " UPDATE [PCMS].[dbo].[ColumnSetting] "
+					+ " 	SET [ColVisibleSummary] = ?  "
+					+ " 	WHERE [EmployeeID]  = ? "
+					+ " declare  @rc int = @@ROWCOUNT " // 56
+					+ " if @rc <> 0 " 
+					+ " 	print @rc " 
+					+ " else "
+					+ " 	INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
+					+ " 		([EmployeeID] ,[ColVisibleSummary])"//55 
+					+ " 	values(? , ? )  ;"  ;     	
+				prepared = connection.prepareStatement(sql);     
 				prepared.setString(1, colName);
 				prepared.setString(2, user);
 				prepared.setString(3, user);

@@ -32,6 +32,8 @@ public class PCMSTableDetail {
 	private String inspectation;
 	private String cfmPlanDate;    // Input on web
 	private String cfmDateActual;  // 
+	private String cfmDetailAll ;
+	private String rollNoRemarkAll ;
 	private String deliveryDate;   // Input on web 
 	private String lotShipping;  
 	
@@ -63,7 +65,7 @@ public class PCMSTableDetail {
 	private String sendCFMCusDate;
 	private String purchaseOrder;
 	private String customerDivision;
-	private String forPage ;
+	private String forPage ; 
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -73,8 +75,14 @@ public class PCMSTableDetail {
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
 			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder,
-			String CustomerDivision,String PlanGreigeDate) {
+			String CustomerDivision,String PlanGreigeDate,
+
+			String cfmDetailAll,
+			String rollNoRemarkAll  ) {
 		super();
+		
+		this. cfmDetailAll = cfmDetailAll;
+		this. rollNoRemarkAll = rollNoRemarkAll;
 		this.planGreigeDate = PlanGreigeDate;
 		this.customerDivision = CustomerDivision;
 		this.purchaseOrder  =PurchaseOrder;
@@ -151,6 +159,18 @@ public class PCMSTableDetail {
 		this.deliveryStatus = deliveryStatus;
 		this.saleStatus = saleStatus; 
 		this.division = division;
+	}
+	public String getCfmDetailAll() {
+		return cfmDetailAll;
+	}
+	public void setCfmDetailAll(String cfmDetailAll) {
+		this.cfmDetailAll = cfmDetailAll;
+	} 
+	public String getRollNoRemarkAll() {
+		return rollNoRemarkAll;
+	}
+	public void setRollNoRemarkAll(String rollNoRemarkAll) {
+		this.rollNoRemarkAll = rollNoRemarkAll;
 	}
 	public String getForPage() {
 		return forPage;

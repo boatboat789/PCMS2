@@ -43,9 +43,9 @@ public class PCMSDetailController {
 		PCMSDetailModel model = new PCMSDetailModel(); 
 		ColumnSettingModel csModel = new ColumnSettingModel(); 
 		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel(); 
-		Gson g = new Gson();
-		String user = (String) session.getAttribute("user"); 
 		ConfigDepartmentModel cdmModel = new ConfigDepartmentModel(); 
+		Gson g = new Gson();
+		String user = (String) session.getAttribute("user");  
 		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
 		String[] arrayCol = null  ;    
 		if(list.size() == 0) {      

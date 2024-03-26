@@ -17,8 +17,7 @@ import dao.master.implement.PlanDeliveryDateDaoImpl;
 import dao.master.implement.PlanSendCFMCusDateDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
-import entities.SORDetail;
-import info.SORSqlInfo;
+import entities.SORDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 

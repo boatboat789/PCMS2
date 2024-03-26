@@ -18,6 +18,7 @@ public class BackGroundJob {
 	private String LOCAL_DIRECTORY;
 	private String FTP_DIRECTORY;
 	private FtpTaskRunner ftr;
+//	private int i = 0;
 	@Autowired 
 	private ServletContext context; 	 
 	public BackGroundJob() { /* TODO document why this constructor is empty */ }  
@@ -32,25 +33,27 @@ public class BackGroundJob {
 	//        return executor;
 	//    }
 	@Async 
-//	@Scheduled(fixedDelay = 1000000)   
+//	@Scheduled(fixedDelay = 100000)   
 	@Scheduled(cron = "0 4/10 * * * *")        
     public void sortBackGround1() {	   
 //		System.out.println("start");
-		LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
-		FTP_DIRECTORY = context.getInitParameter("FTP_PATH");
-		// Creating a File object
-		File file = new File(LOCAL_DIRECTORY);
-		// Creating the directory 
-		boolean bool = file.mkdir();
-		try {	 
-			ftr = new FtpTaskRunner(new Database(SqlInfo.getInstance()), new FtpReceive(FtpSapInfo.getInstance(), FTP_DIRECTORY, LOCAL_DIRECTORY));
-			ftr.loadFTP();     
-		} catch (Exception e) {  
-			e.printStackTrace();
-		}         
+//		if(i== 0) {
+			LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
+			FTP_DIRECTORY = context.getInitParameter("FTP_PATH");
+			// Creating a File object
+			File file = new File(LOCAL_DIRECTORY);
+			// Creating the directory 
+			boolean bool = file.mkdir();
+			try {	 
+				ftr = new FtpTaskRunner(new Database(SqlInfo.getInstance()), new FtpReceive(FtpSapInfo.getInstance(), FTP_DIRECTORY, LOCAL_DIRECTORY));
+				ftr.loadFTP();     
+			} catch (Exception e) {  
+				e.printStackTrace();
+			}
+//			i+=1;
+//		}
 //		System.out.println("stop");
-	}     
-//	@Scheduled(fixedDelay = 10000)   
+	}      
 	@Async
 	@Scheduled(cron = "0 0 1 * * *")    
 	public void sortBackGroundTwo() { 

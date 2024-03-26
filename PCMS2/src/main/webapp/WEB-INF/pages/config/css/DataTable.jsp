@@ -3,9 +3,12 @@
 <script src="<c:url value="/resources/vendor/bootstrap/js/bootstrap.min.js"/>"></script>    
 <script src="<c:url value="/resources/vendor/bootstrap/js/bootstrap-datepicker.js"/>"></script>  
 <!-- DataTables -->
-<script src="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/js/jquery.dataTables.min.js" />"></script>
-<link  href="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/css/jquery.dataTables.min.css" />" rel="stylesheet" type="text/css">
+<%-- <script src="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/js/jquery.dataTables.min.js" />"></script> --%>
+<%-- <link  href="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/css/jquery.dataTables.min.css" />" rel="stylesheet" type="text/css"> --%>
         
+ <!-- DataTables -->
+<script src="<c:url value="/resources/vendor/DataTables/DataTables-1.13.8/js/jquery.dataTables.min.js" />"></script>
+<link  href="<c:url value="/resources/vendor/DataTables/DataTables-1.13.8/css/jquery.dataTables.min.css" />" rel="stylesheet" type="text/css">
                                                     
 <%-- <script src="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/js/dataTables.bootstrap4.min.js" />"></script> --%>
 <%-- <link  href="<c:url value="/resources/vendor/DataTables/DataTables-1.11.3/css/dataTables.bootstrap4.css" />" rel="stylesheet" type="text/css"> --%>

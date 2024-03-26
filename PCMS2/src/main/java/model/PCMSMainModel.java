@@ -47,17 +47,11 @@ public class PCMSMainModel extends HttpServlet {
 	      super.destroy();
 	   }
 
-	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList) {
+	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList, boolean isCustomer) {
 		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.searchByDetail(poList);
+		ArrayList<PCMSTableDetail> list = this.dao.searchByDetail(poList, isCustomer);
 		return list;
-	} 
-	public ArrayList<PCMSTableDetail> getSaleNumberList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.getSaleNumberList();
-		return list;
-	}
-
+	}  
 	public  ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getPrdDetailByRow(poList);
@@ -68,25 +62,7 @@ public class PCMSMainModel extends HttpServlet {
 		// TODO Auto-generated method stub   
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
-	} 
-	public ArrayList<ColumnHiddenDetail> getColVisibleDetail(String user) {
-		ArrayList<ColumnHiddenDetail> list = this.dao.getColVisibleDetail(user);
-		return list;
-	} 
-	public  ArrayList<ColumnHiddenDetail>  saveColSettingToServer(ColumnHiddenDetail pd) {
-		ArrayList<ColumnHiddenDetail> list = this.dao.saveColSettingToServer(pd);
-		return list;
-	} 
-	public ArrayList<PCMSAllDetail> getCustomerNameList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameList();
-		return list;
-	}
-	public ArrayList<PCMSAllDetail> getCustomerShortNameList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameList();
-		return list;
-	} 
+	}  
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
@@ -97,22 +73,6 @@ public class PCMSMainModel extends HttpServlet {
 		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
 		return list;
 	}
-
-	public  ArrayList<PCMSSecondTableDetail> getDivisionList() {
-		// TODO Auto-generated method stub
-		ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionList();
-		return list;
-	}
-
-	public ArrayList<PCMSAllDetail> getCustomerNameList(ArrayList<ConfigCustomerUserDetail> poList) {
-		// TODO Auto-generated method stub
-				ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameList(poList );
-				return list;
-	}
-
-	public ArrayList<PCMSAllDetail> getCustomerShortNameList(ArrayList<ConfigCustomerUserDetail> poList) {
-		// TODO Auto-generated method stub
-				ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameList(poList );
-				return list;
-	}
+ 
+ 
 }

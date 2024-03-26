@@ -30,6 +30,7 @@ import model.master.PlanDeliveryDateModel;
 import model.master.ReplacedProdOrderModel;
 import model.master.SearchSettingModel;
 import model.master.SwitchProdOrderModel;
+import model.master.TEMP_UserStatusAutoModel;
 import service.BackGroundJob;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
@@ -430,11 +431,11 @@ private String createTempMainPrdFromTempA =
     		+ "		WHEN b.[ProductionOrder] is not null THEN b.DeliveryDate \r\n"
     		+ "		ELSE b.CFTYPE \r\n"
     		+ "		END AS DeliveryDate , \r\n"  
-  	    + "   CFMDateActual,\r\n"  
-   	    + "   b.CFMDetailAll,\r\n"
-  	    + "   b.CFMNumberAll,\r\n"
-  	    + "   b.CFMRemarkAll,\r\n" 
-  	    + "   b.RollNoRemarkAll , \r\n"
+	  	    + "   CFMDateActual,\r\n"  
+	   	    + "   b.CFMDetailAll,\r\n"
+	  	    + "   b.CFMNumberAll,\r\n"
+	  	    + "   b.CFMRemarkAll,\r\n" 
+	  	    + "   b.RollNoRemarkAll , \r\n"
     		+ "   ShipDate,\r\n"
     		+ "   RemarkOne,\r\n"
     		+ "   RemarkTwo,\r\n"
@@ -1242,8 +1243,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		String sqlWaitLot = 
 				  " SELECT DISTINCT  \r\n"       
 				+ this.selectWaitLot  
-				+ " ,null as [DyeStatus]\r\n"
-				+ " , null as [DyeStatus]\r\n"
+				+ " ,CAST(null AS VARCHAR(10) ) as [DyeStatus]\r\n"
+//				+ " , null as [DyeStatus]\r\n"
 	  		    + " INTO #tempWaitLot  \r\n" 
 				+ " FROM #tempMainSale as a \r\n " 
 				+ this.innerJoinWaitLotB   
@@ -1629,8 +1630,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			+ "   ,CustomerType\r\n"
 			+ "   , g.[DyeStatus]\r\n"
 			+ " into #tempPrdReplaced\r\n"
-			+ " from #tempMainSale as a  \r\n"
-//			+ " inner join [PCMS].[dbo].[ReplacedProdOrder] as rpo on a.SaleLine = rpo.SaleLine and a.SaleOrder = rpo.SaleOrder and  rpo.DataStatus <> 'X'  \r\n"  
+			+ " from #tempMainSale as a  \r\n" 
 			+ " inner join ( select SaleOrder , SaleLine,[Volume], [ProductionOrderRP] AS ProductionOrder,DataStatus  from [PCMS].[dbo].[ReplacedProdOrder] )  as rpo on a.SaleLine = rpo.SaleLine and a.SaleOrder = rpo.SaleOrder and  rpo.DataStatus <> 'X'  \r\n"  
 			+ " inner join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n" 
 			+ this.leftJoinE    
@@ -1842,7 +1842,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 	}
 	@Override
 	public ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList) {
-		 
+		TEMP_UserStatusAutoModel tusaModel = new TEMP_UserStatusAutoModel();
 		PCMSSecondTableDetail bean = poList.get(0);  
 //		String prodOrder = bean.getProductionOrder();
 		String caseSave = bean.getCaseSave();
@@ -1871,7 +1871,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			bean = this.updateLogRemarkCaseOne(tableName,bean,this.CLOSE_STATUS);
 			bean = this.upSertRemarkCaseOne(tableName,valueChange,bean);  
 			bgjModel.execUpsertToTEMPUserStatusOnWebWithProdOrder(bean.getProductionOrder());
-            ArrayList<TempUserStatusAutoDetail> list = this.getTempUserStatusAutoDetail(poList); 
+            ArrayList<TempUserStatusAutoDetail> list = tusaModel.getTempUserStatusAutoDetail(poList); 
             if(list.size() > 0) {
             	TempUserStatusAutoDetail beanTmp = list.get(0);
             	if(beanTmp.getProductionOrderRPM().equals("")) { 
@@ -1932,210 +1932,9 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		return poList;   
 	} 
 
+  
  
-
-	private ArrayList<TempUserStatusAutoDetail> getTempUserStatusAutoDetail(ArrayList<PCMSSecondTableDetail> poList) {
-		ArrayList<TempUserStatusAutoDetail> list = null;
-		//		String prdOrder = "";
-		PCMSSecondTableDetail bean = poList.get(0);
-		String prdOrder = bean.getProductionOrder();
-		String saleOrder = bean.getSaleOrder();
-		String saleLine = bean.getSaleLine();
-		saleLine = String.format("%06d", Integer.parseInt(saleLine));  
-		String sql = "SELECT distinct  [Id]\r\n"
-				+ "      ,[ProductionOrder]\r\n"
-				+ "      ,[SaleOrder]\r\n"
-				+ "      ,[SaleLine]\r\n"
-				+ "      ,[ProductionOrderRPM]\r\n"
-				+ "      ,[Volumn]\r\n"
-				+ "      ,[Grade]\r\n"
-				+ "      ,[UserStatusCal]\r\n"
-				+ "      ,[UserStatusCalRP]\r\n"
-				+ "      ,[DataStatus]\r\n"
-				+ "      ,[ChangeDate]\r\n"
-				+ "      ,[CreateDate]\r\n" 
-				+ "  FROM [PCMS].[dbo].[TEMP_UserStatusAuto] \r\n"
-				+ "  WHERE ( GRADE IS NULL OR GRADE = '' ) and\r\n"
-				+ "		ProductionOrder = '"+prdOrder+"' and \r\n"
-				+ "		SaleOrder = '"+saleOrder+"' and\r\n"
-				+ "		SaleLine = '"+saleLine+"' and\r\n"
-				+ "		DataStatus = 'O'";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<TempUserStatusAutoDetail>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genTempUserStatusAutoDetail(map));
-		}
-		return list;
-	} 
-	private PCMSSecondTableDetail updateLogRemarkCaseThree(String tableName, PCMSSecondTableDetail bean,
-			String close_STATUS) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-//		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
-		try {      
-			String sql =  
-					"UPDATE [PCMS].[dbo]."+tableName
-					+ " SET DataStatus = ?  "
-					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; " ; 
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, close_STATUS); 
-				prepared.setString(2, prdOrder);   
-				 prepared.executeUpdate();  
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {  
-			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean;
-	}
-
-	private PCMSSecondTableDetail upSertRemarkCaseThree(String tableName, String planDate,
-			PCMSSecondTableDetail bean) { 
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();     
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime(); 
-		String caseSave = bean.getCaseSave();
-		try {      
-			String sql =   
-					  " INSERT INTO [PCMS].[dbo]."+tableName +" \r\n"
-					+ " ([ProductionOrder] ,"+caseSave+",[ChangeBy] ,[ChangeDate],[LotNo])"//55 
-					+ " values(? , ? , ? , ? , ?   )  "
-					+ ";"  ;     	   
-				int index = 1;
-				prepared = connection.prepareStatement(sql);     
-				prepared.setString(index, prdOrder);index+=1;
-				prepared.setString(index, planDate);index+=1;  
-				prepared = this.sshUtl.setSqlDate(prepared, planDate, index);index+=1; 
-				prepared.setString(index, bean.getUserId());index+=1;  
-				prepared.setTimestamp(index, new Timestamp(time));index+=1;
-				prepared.setString(index, bean.getLotNo());index+=1;  
-				prepared.executeUpdate();  
-				bean.setIconStatus("I"); 
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException | ParseException e) { 
-			System.err.println("upSertRemarkCaseThree"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}   
-		return bean;
-	}
-
-	private PCMSSecondTableDetail updateLogRemarkCaseOne(String tableName, PCMSSecondTableDetail bean,
-			String close_STATUS) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
-		try {      
-			String sql =  
-					  " UPDATE [PCMS].[dbo]."+tableName
-					+ " 	SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O'; " ;
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, close_STATUS);
-				prepared.setString(2, bean.getUserId());
-				prepared.setTimestamp(3, new Timestamp(time));  
-				prepared.setString(4, prdOrder);  
-				prepared.setString(5, saleOrder);  
-				prepared.setString(6, saleLine);   
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean; 
-	}
-	private PCMSSecondTableDetail updateLogRemarkCaseFix(String tableName,String valueChange, PCMSSecondTableDetail bean ) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-		String caseSave = bean.getCaseSave();
-		try {      
-			String sql =  
-					"UPDATE [PCMS].[dbo]."+tableName
-					+ " SET "+caseSave+" = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' " ;
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, valueChange);
-				prepared.setString(2, bean.getUserId());  
-				prepared.setTimestamp(3, new Timestamp(time));  
-				prepared.setString(4, prdOrder);  
-				prepared.setString(5, saleOrder);        
-				prepared.setString(6, saleLine);    
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean; 
-	}
-	private PCMSSecondTableDetail updateLogRemarkWithGrade(String tableName, PCMSSecondTableDetail bean,
-			String Status) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-//		String caseSave = bean.getCaseSave();
-		String grade = bean.getGrade();
-		try {      
-			String sql =  
-					"UPDATE [PCMS].[dbo]."+tableName
-					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' " ;     	
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, Status);
-				prepared.setString(2, bean.getUserId());
-				prepared.setTimestamp(3, new Timestamp(time));  
-				prepared.setString(4, prdOrder);  
-				prepared.setString(5, saleOrder);  
-				prepared.setString(6, saleLine);  
-				prepared.setString(7, grade);  
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-			System.err.println("updateLogRemarkWithGrade"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}
-		return bean;    
-	}
-
+ 
 	private ArrayList<PCMSSecondTableDetail> handlerReplacedProdOrder(PCMSSecondTableDetail bean) {
 		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
 		ReplacedProdOrderModel rpoModel = new ReplacedProdOrderModel();
@@ -2208,7 +2007,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		else if(newRPSplit.length > 0) {    
 //			list.add(bean);         
 			prdOrder = bean.getProductionOrder().trim();  
-			ArrayList<ReplacedProdOrderDetail> listRPOld = this.getReplacedProdOrderDetailByPrdMain(prdOrder);
+			ArrayList<ReplacedProdOrderDetail> listRPOld = rpoModel.getReplacedProdOrderDetailByPrdMain(prdOrder);
 			bean = rpoModel.updateReplacedProdOrder(bean, "X");  
 			ArrayList<PCMSSecondTableDetail> checkList = null; 
 			for(int i = 0 ; i < newRPSplit.length; i++) {
@@ -2239,9 +2038,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 						break;
 					}
 					else {
-						PCMSSecondTableDetail beanCheckRP = checkList.get(0);
-//						String saleOrderRP = beanCheckRP.getSaleOrder().trim() ;
-//						String saleLineRP = beanCheckRP.getSaleLine().trim() ;  
+						PCMSSecondTableDetail beanCheckRP = checkList.get(0); 
 						listRP.add(beanCheckRP);
 						
 						beanRP.setProductionOrder(prdOrder);
@@ -2351,20 +2148,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		ArrayList<PCMSSecondTableDetail> poListOP = new ArrayList<PCMSSecondTableDetail>();
 		ArrayList<PCMSSecondTableDetail> poListOPSW = new ArrayList<PCMSSecondTableDetail>();
 		String prdOrderSW = bean.getSwitchRemark().trim();
-		String prdOrder = bean.getProductionOrder().trim();
-//		String sql = 
-//				  " SELECT \r\n"
-//				+ "			a.[ProductionOrder]\r\n"
-//				+ "      	,[SaleOrder]\r\n"
-//				+ "      	,[SaleLine] \r\n"
-//				+ "	     	,isnull( countInSW ,0) as CountInSW\r\n"
-//				+ "  FROM [PCMS].[dbo].[FromSapMainProd] AS A\r\n"
-//				+ "  LEFT JOIN (SELECT ProductionOrderSW, 1 as countInSW  \r\n"
-//				+ "			  FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
-//				+ "			  where DataStatus = 'O' AND  ProductionOrderSW = '"+prdOrderSW+"' \r\n"
-//				+ "			  group by ProductionOrderSW ) AS B ON A.ProductionOrder = B.ProductionOrderSW\r\n"
-//				+ "  where SaleOrder <> '' AND a.ProductionOrder = '"+prdOrderSW+"' \r\n"
-//				+ " ";  
+		String prdOrder = bean.getProductionOrder().trim(); 
 		if(prdOrderSW.equals("")) {       
 			list.add(bean);   
 			poList = this.getSwitchProdOrderListByPrd(list);      
@@ -2473,7 +2257,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					beanD.setProductionOrderSW(prdOrderSW);               //B
 					beanD.setSaleOrderSW(bean.getSaleOrder());            //1
 					beanD.setSaleLineSW(bean.getSaleLine());              //1  
-					beanD = this.upsertSwitchPrd(beanD, "O");
+					beanD = spoModel.upsertSwitchProdOrder(beanD, "O");
 					//  X2 
 //					beanD.setSaleOrder(bean.getSaleOrder());              //1
 //					beanD.setSaleLine(bean.getSaleLine());                //1
@@ -2481,7 +2265,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					bean.setProductionOrderSW(prdOrder);                  //A 
 					bean.setSaleOrderSW(beanL.getSaleOrder());            //2
 					bean.setSaleLineSW(beanL.getSaleLine());              //1   
-					bean = this.upsertSwitchPrd(bean, "O"); 
+					bean = spoModel.upsertSwitchProdOrder(bean, "O"); 
 //					bean.setIconStatus("I");
 //					bean.setSystemStatus("Update Success.");  
 					poList.add(bean);        
@@ -2517,209 +2301,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		}
 		return poList;
 	}
- 
-	private PCMSSecondTableDetail upsertSwitchPrd( PCMSSecondTableDetail bean ,String dataStatus) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();    
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-		String prdOrderSW = bean.getProductionOrderSW();   
-		String saleOrderSW = bean.getSaleOrderSW();    
-		String saleLineSW = String.format("%06d", Integer.parseInt(bean.getSaleLineSW()));  
-		String userID = bean.getUserId();
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime(); 
-		try {      
-			String sql =  
-					  " UPDATE [PCMS].[dbo].[SwitchProdOrder]" 
-					+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? AND"
-					+ "       [ProductionOrderSW]  = ? and [SaleOrderSW] = ?  and [SaleLineSW] = ?  "
-					+ " declare  @rc int = @@ROWCOUNT " // 56
-					+ " if @rc <> 0 " 
-					+ " 	print @rc " 
-					+ " else "
-					+ " 	INSERT INTO [PCMS].[dbo].[SwitchProdOrder]" 
-					+ " 	([ProductionOrder]  ,[SaleOrder]   ,[SaleLine],"
-					+ " 	 [ProductionOrderSW],[SaleOrderSW] ,[SaleLineSW],"
-					+ "  	[ChangeBy] ,[ChangeDate] )"//55 
-					+ " 	values(? , ? , ? , ? , ? "
-					+ "    	     , ? , ? , ?  "
-					+ "     )  "
-					+ ";"  ;     	
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, dataStatus);
-				prepared.setString(2, bean.getUserId());
-				prepared.setTimestamp(3, new Timestamp(time));  
-				prepared.setString(4, prdOrder);  
-				prepared.setString(5, saleOrder);  
-				prepared.setString(6, saleLine);  
-				prepared.setString(7, prdOrderSW);  
-				prepared.setString(8, saleOrderSW);  
-				prepared.setString(9, saleLineSW);  
-				
-				prepared.setString(10, prdOrder);  
-				prepared.setString(11, saleOrder);  
-				prepared.setString(12, saleLine);  
-				prepared.setString(13, prdOrderSW);  
-				prepared.setString(14, saleOrderSW);  
-				prepared.setString(15, saleLineSW);   
-				prepared.setString(16, userID);  
-				prepared.setTimestamp(17, new Timestamp(time));   
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("upsertSwitchPrd"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean;
-	} 
-	private PCMSSecondTableDetail upSertRemarkCaseOne(String tableName, String valueChange,
-			PCMSSecondTableDetail bean) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-		String caseSave = bean.getCaseSave();
-		try {      
-			String sql =   
-					  " INSERT INTO [PCMS].[dbo]."+tableName
-					+ " ([ProductionOrder],[SaleOrder] ,[SaleLine],"+caseSave+",[ChangeBy] ,[ChangeDate])"//55 
-					+ " values \r\n"
-					+ "	(? , ? , ? , ? , ? "
-					+ ", ? )  "
-					+ ";"  ;     	 
-				prepared = connection.prepareStatement(sql);     
-				prepared.setString(1, prdOrder);  
-				prepared.setString(2, saleOrder);  
-				prepared.setString(3, saleLine);  
-				prepared.setString(4, valueChange);  
-				prepared.setString(5, bean.getUserId());  
-				prepared.setTimestamp(6, new Timestamp(time));
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");  
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-			System.err.println("upSertRemarkCaseOne"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean;
-	}
-	private PCMSSecondTableDetail updateLogRemarkCaseTwo(String tableName, PCMSSecondTableDetail bean,
-			String close_STATUS) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-//		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
-		try {      
-			String sql =  
-					  " UPDATE [PCMS].[dbo]."+tableName
-					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; " ; 
-				prepared = connection.prepareStatement(sql);    
-				prepared.setString(1, close_STATUS);
-				prepared.setString(2, bean.getUserId());
-				prepared.setTimestamp(3, new Timestamp(time));  
-				prepared.setString(4, prdOrder);   
-				 prepared.executeUpdate();  
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {  
-			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean; 
-	}
-	private PCMSSecondTableDetail upSertRemarkCaseTwo(String tableName, String valueChange,
-			PCMSSecondTableDetail bean) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-//		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-		String caseSave = bean.getCaseSave();
-		try {      
-			String sql =   
-					 " INSERT INTO [PCMS].[dbo]."+tableName +" \r\n"
-					+ " ([ProductionOrder] ,"+caseSave+",[ChangeBy] ,[ChangeDate])"//55 
-					+ " values(? , ? , ? , ?   )  "
-					+ ";"  ;     	   
-				prepared = connection.prepareStatement(sql);     
-				prepared.setString(1, prdOrder);   
-				prepared.setString(2, valueChange);  
-				prepared.setString(3, bean.getUserId());  
-				prepared.setTimestamp(4, new Timestamp(time));
-				 prepared.executeUpdate();  
-				bean.setIconStatus("I"); 
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) { 
-			System.err.println("upSertRemarkCaseTwo"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  
-		return bean;
-	}
-	private PCMSSecondTableDetail upSertRemarkCaseWithGrade(String tableName, String valueChange,
-			PCMSSecondTableDetail bean) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();   
-		String prdOrder = bean.getProductionOrder();   
-		String saleOrder = bean.getSaleOrder();   
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
-		String caseSave = bean.getCaseSave();
-		String grade = bean.getGrade();
-		try {      
-			String sql =   
-					  " INSERT INTO [PCMS].[dbo]."+tableName
-					+ " 	([ProductionOrder],[SaleOrder] ,[SaleLine],"+caseSave+",[ChangeBy] "
-					+ " 	,[ChangeDate],[Grade])"//55 
-					+ " values \r\n"
-					+ "		(? , ? , ? , ? , ? "
-					+ "    , ? , ? )  ;"  ;     	
-				prepared = connection.prepareStatement(sql);     
-				prepared.setString(1, prdOrder);  
-				prepared.setString(2, saleOrder);  
-				prepared.setString(3, saleLine);  
-				prepared.setString(4, valueChange);  
-				prepared.setString(5, bean.getUserId());  
-				prepared.setTimestamp(6, new Timestamp(time));  
-				prepared.setString(7, grade);  
-				prepared.executeUpdate();    
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-			System.err.println("upSertRemarkCaseWithGrade"+e.getMessage());
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Something happen.Please contact IT.");
-		}    
-		return bean;
-	}
-
+  
  
 	@Override
 	public ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
@@ -2846,10 +2428,10 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		poList.get(0).setCustomerShortName(customerShortName); 
 		ArrayList<PCMSTableDetail> beanCheck = ssModel.getSearchSettingDetail(userId,this.forPage);
 		if(beanCheck.size() == 0) {
-			list = ssModel.insertSearchSettingDetai(poList,this.forPage);
+			list = ssModel.insertSearchSettingDetail(poList,this.forPage);
 		}
 		else {
-			list = ssModel.updateSearchSettingDetai(poList,this.forPage);
+			list = ssModel.updateSearchSettingDetail(poList,this.forPage);
 		} 
 		return list; 
 	} 
@@ -2984,8 +2566,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ "				   	 WHERE DataStatus = 'O' and BAA.ProductionOrderSW = B.ProductionOrder\r\n"
 				+ "				   )  \r\n "   
 				+ " Order by  CustomerShortName,  DueDate, [SaleOrder], [SaleLine],b.[ProductionOrder]" 
-					;         
-//		System.out.println(sqlMain);
+					;          
 		List<Map<String, Object>> datas = this.database.queryList(sqlMain); 
 		list = new ArrayList<PCMSSecondTableDetail>(); 
 		for (Map<String, Object> map : datas) {  
@@ -3441,4 +3022,314 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		}    
 		return listPST;
 	} 
+	
+	private PCMSSecondTableDetail upSertRemarkCaseThree(String tableName, String planDate,
+			PCMSSecondTableDetail bean) { 
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();     
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime(); 
+		String caseSave = bean.getCaseSave();
+		try {      
+			String sql =   
+					  " INSERT INTO [PCMS].[dbo]."+tableName +" \r\n"
+					+ " ([ProductionOrder] ,"+caseSave+",[ChangeBy] ,[ChangeDate],[LotNo])"//55 
+					+ " values(? , ? , ? , ? , ?   )  "
+					+ ";"  ;     	   
+				int index = 1;
+				prepared = connection.prepareStatement(sql);     
+				prepared.setString(index, prdOrder);index+=1;
+				prepared.setString(index, planDate);index+=1;  
+				prepared = this.sshUtl.setSqlDate(prepared, planDate, index);index+=1; 
+				prepared.setString(index, bean.getUserId());index+=1;  
+				prepared.setTimestamp(index, new Timestamp(time));index+=1;
+				prepared.setString(index, bean.getLotNo());index+=1;  
+				prepared.executeUpdate();  
+				bean.setIconStatus("I"); 
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) { 
+			System.err.println("upSertRemarkCaseThree"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}   
+		return bean;
+	}
+
+	private PCMSSecondTableDetail updateLogRemarkCaseOne(String tableName, PCMSSecondTableDetail bean,
+			String close_STATUS) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
+		try {      
+			String sql =  
+					  " UPDATE [PCMS].[dbo]."+tableName
+					+ " 	SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O'; " ;
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, close_STATUS);
+				prepared.setString(2, bean.getUserId());
+				prepared.setTimestamp(3, new Timestamp(time));  
+				prepared.setString(4, prdOrder);  
+				prepared.setString(5, saleOrder);  
+				prepared.setString(6, saleLine);   
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean; 
+	}
+	private PCMSSecondTableDetail updateLogRemarkCaseFix(String tableName,String valueChange, PCMSSecondTableDetail bean ) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+		String caseSave = bean.getCaseSave();
+		try {      
+			String sql =  
+					"UPDATE [PCMS].[dbo]."+tableName
+					+ " SET "+caseSave+" = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' " ;
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, valueChange);
+				prepared.setString(2, bean.getUserId());  
+				prepared.setTimestamp(3, new Timestamp(time));  
+				prepared.setString(4, prdOrder);  
+				prepared.setString(5, saleOrder);        
+				prepared.setString(6, saleLine);    
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean; 
+	}
+	private PCMSSecondTableDetail updateLogRemarkWithGrade(String tableName, PCMSSecondTableDetail bean,
+			String Status) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+//		String caseSave = bean.getCaseSave();
+		String grade = bean.getGrade();
+		try {      
+			String sql =  
+					"UPDATE [PCMS].[dbo]."+tableName
+					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' " ;     	
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, Status);
+				prepared.setString(2, bean.getUserId());
+				prepared.setTimestamp(3, new Timestamp(time));  
+				prepared.setString(4, prdOrder);  
+				prepared.setString(5, saleOrder);  
+				prepared.setString(6, saleLine);  
+				prepared.setString(7, grade);  
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("updateLogRemarkWithGrade"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}
+		return bean;    
+	}
+
+	private PCMSSecondTableDetail updateLogRemarkCaseThree(String tableName, PCMSSecondTableDetail bean,
+			String close_STATUS) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+//		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		currentTime.getTime();
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
+		try {      
+			String sql =  
+					"UPDATE [PCMS].[dbo]."+tableName
+					+ " SET DataStatus = ?  "
+					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; " ; 
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, close_STATUS); 
+				prepared.setString(2, prdOrder);   
+				 prepared.executeUpdate();  
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {  
+			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean;
+	}
+
+	private PCMSSecondTableDetail upSertRemarkCaseOne(String tableName, String valueChange,
+			PCMSSecondTableDetail bean) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+		String caseSave = bean.getCaseSave();
+		try {      
+			String sql =   
+					  " INSERT INTO [PCMS].[dbo]."+tableName
+					+ " ([ProductionOrder],[SaleOrder] ,[SaleLine],"+caseSave+",[ChangeBy] ,[ChangeDate])"//55 
+					+ " values \r\n"
+					+ "	(? , ? , ? , ? , ? "
+					+ ", ? )  "
+					+ ";"  ;     	 
+				prepared = connection.prepareStatement(sql);     
+				prepared.setString(1, prdOrder);  
+				prepared.setString(2, saleOrder);  
+				prepared.setString(3, saleLine);  
+				prepared.setString(4, valueChange);  
+				prepared.setString(5, bean.getUserId());  
+				prepared.setTimestamp(6, new Timestamp(time));
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");  
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("upSertRemarkCaseOne"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean;
+	}
+	private PCMSSecondTableDetail updateLogRemarkCaseTwo(String tableName, PCMSSecondTableDetail bean,
+			String close_STATUS) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+//		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));   
+		try {      
+			String sql =  
+					  " UPDATE [PCMS].[dbo]."+tableName
+					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; " ; 
+				prepared = connection.prepareStatement(sql);    
+				prepared.setString(1, close_STATUS);
+				prepared.setString(2, bean.getUserId());
+				prepared.setTimestamp(3, new Timestamp(time));  
+				prepared.setString(4, prdOrder);   
+				 prepared.executeUpdate();  
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {  
+			System.err.println("updateLogRemarkCaseOne"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean; 
+	}
+	private PCMSSecondTableDetail upSertRemarkCaseTwo(String tableName, String valueChange,
+			PCMSSecondTableDetail bean) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+//		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+		String caseSave = bean.getCaseSave();
+		try {      
+			String sql =   
+					 " INSERT INTO [PCMS].[dbo]."+tableName +" \r\n"
+					+ " ([ProductionOrder] ,"+caseSave+",[ChangeBy] ,[ChangeDate])"//55 
+					+ " values(? , ? , ? , ?   )  "
+					+ ";"  ;     	   
+				prepared = connection.prepareStatement(sql);     
+				prepared.setString(1, prdOrder);   
+				prepared.setString(2, valueChange);  
+				prepared.setString(3, bean.getUserId());  
+				prepared.setTimestamp(4, new Timestamp(time));
+				 prepared.executeUpdate();  
+				bean.setIconStatus("I"); 
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) { 
+			System.err.println("upSertRemarkCaseTwo"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}  
+		return bean;
+	}
+	private PCMSSecondTableDetail upSertRemarkCaseWithGrade(String tableName, String valueChange,
+			PCMSSecondTableDetail bean) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection();   
+		String prdOrder = bean.getProductionOrder();   
+		String saleOrder = bean.getSaleOrder();   
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));  
+		String caseSave = bean.getCaseSave();
+		String grade = bean.getGrade();
+		try {      
+			String sql =   
+					  " INSERT INTO [PCMS].[dbo]."+tableName
+					+ " 	([ProductionOrder],[SaleOrder] ,[SaleLine],"+caseSave+",[ChangeBy] "
+					+ " 	,[ChangeDate],[Grade])"//55 
+					+ " values \r\n"
+					+ "		(? , ? , ? , ? , ? "
+					+ "    , ? , ? )  ;"  ;     	
+				prepared = connection.prepareStatement(sql);     
+				prepared.setString(1, prdOrder);  
+				prepared.setString(2, saleOrder);  
+				prepared.setString(3, saleLine);  
+				prepared.setString(4, valueChange);  
+				prepared.setString(5, bean.getUserId());  
+				prepared.setTimestamp(6, new Timestamp(time));  
+				prepared.setString(7, grade);  
+				prepared.executeUpdate();    
+				bean.setIconStatus("I");
+				bean.setSystemStatus("Update Success.");
+		} catch (SQLException e) {
+			System.err.println("upSertRemarkCaseWithGrade"+e.getMessage());
+			bean.setIconStatus("E");
+			bean.setSystemStatus("Something happen.Please contact IT.");
+		}    
+		return bean;
+	}
+
 }

@@ -37,7 +37,11 @@ import entities.PCMSAllDetail;
 import entities.PCMSTableDetail;
 import entities.UserDetail;
 import model.LogInModel;
+import model.PCMSDetailModel;
 import model.PCMSMainModel;
+import model.master.ColumnSettingModel;
+import model.master.ConfigDepartmentModel;
+import model.master.FromSapMainSaleModel;
 
 @Controller
 @RequestMapping(value = { "/Main", "/" ,"" }) 
@@ -54,27 +58,33 @@ public class PCMSMainController {
 		String[] arrayCol = null  ; 
 		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
-		PCMSMainModel model = new PCMSMainModel(); 
+		PCMSDetailModel model = new PCMSDetailModel(); 
+		ColumnSettingModel csModel = new ColumnSettingModel(); 
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel(); 
+		ConfigDepartmentModel cdmModel = new ConfigDepartmentModel(); 
 		LogInModel logInModel = new LogInModel( );	   
 		String user = (String) session.getAttribute("user");
-		UserDetail userObject = (UserDetail) session.getAttribute("userObject");  
-		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
-		if(list.size() == 0) { arrayCol = null  ;} 
-		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }    
+		UserDetail userObject = (UserDetail) session.getAttribute("userObject");    
 		String OS = System.getProperty("os.name").toLowerCase();	   
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
 		if(listConfigCus.size() > 0) {
-			cusNameList = model.getCustomerNameList(listConfigCus);
-			cusShortNameList = model.getCustomerShortNameList(listConfigCus);
+			cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
+			cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
 		}
 		else { 
-			cusNameList = model.getCustomerNameList();
-			cusShortNameList = model.getCustomerShortNameList();
+			cusNameList = fsmsModel.getCustomerNameDetail();
+			cusShortNameList = fsmsModel.getCustomerShortNameDetail();
 		} 	 
 		boolean isCustomer = false ;
 		if(userObject != null) {
 			isCustomer = userObject.getIsCustomer();
 		}
+
+		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
+		if(list.size() == 0) { arrayCol = null  ;} 
+		else {  
+			arrayCol = list.get(0).getColVisibleSummary().split(",");  
+		}   
 		mv.setViewName("PCMSMain/PCMSMain");  
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("UserID", g.toJson(user));  
@@ -82,8 +92,8 @@ public class PCMSMainController {
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
 		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
-		mv.addObject("DivisionList", g.toJson(model.getDivisionList()));
-		mv.addObject("SaleNumberList", g.toJson(model.getSaleNumberList()));
+		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
+		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));    
 		mv.addObject("CusNameList", g.toJson(cusNameList));
 		mv.addObject("CusShortNameList", g.toJson(cusShortNameList));
@@ -92,17 +102,16 @@ public class PCMSMainController {
 	@RequestMapping(  value = "/getCustomerNameList",  method = RequestMethod.POST )
 	public void doGetCustomerNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response  ) throws IOException {  
 		Gson g = new Gson(); 
-
-		PCMSMainModel model = new PCMSMainModel(); 
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel(); 
 		ArrayList<PCMSAllDetail> cusNameList = null ;
 		String user = (String) session.getAttribute("user");
 		LogInModel logInModel = new LogInModel( );	    
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
 		if(listConfigCus.size() > 0) {
-			cusNameList = model.getCustomerNameList(listConfigCus);
+			cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
 		}
 		else { 
-			cusNameList = model.getCustomerNameList();
+			cusNameList = fsmsModel.getCustomerNameDetail();
 		} 	 
 		
 		
@@ -113,16 +122,16 @@ public class PCMSMainController {
 	@RequestMapping(  value = "/getCustomerShortNameList",  method = RequestMethod.POST )
 	public void doGetCustomerShortNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {  
 		Gson g = new Gson();  
-		PCMSMainModel model = new PCMSMainModel(); 
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel(); 
 		ArrayList<PCMSAllDetail> cusShortNameList = null ;
 		String user = (String) session.getAttribute("user");
 		LogInModel logInModel = new LogInModel( );	    
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
 		if(listConfigCus.size() > 0) {
-			cusShortNameList = model.getCustomerShortNameList(listConfigCus);
+			cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
 		}
 		else { 
-			cusShortNameList = model.getCustomerShortNameList();
+			cusShortNameList = fsmsModel.getCustomerShortNameDetail();
 		} 	  
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
@@ -179,10 +188,19 @@ public class PCMSMainController {
 			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
 			poList.add(pd);   
 		} 
+		UserDetail userObject = (UserDetail) session.getAttribute("userObject");   
+		boolean isCustomer = false ;
+		if(userObject != null) {
+			isCustomer = userObject.getIsCustomer();
+		}
+//		if(isCustomer) {
+//			ArrayList<PCMSTableDetail> list = model.searchByDetail( poList);
+//			
+//		}
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 //		System.out.println("he");
-		out.println(g.toJson(model.searchByDetail( poList)));  
+		out.println(g.toJson(model.searchByDetail( poList,isCustomer)));  
 	} 
 	@RequestMapping(  value = "/getPrdDetailByRow",  method = RequestMethod.POST )
 	public void doGetPrdDetailByRow(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
@@ -221,29 +239,26 @@ public class PCMSMainController {
 	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
 	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		PCMSMainModel model = new PCMSMainModel();
+		ColumnSettingModel model = new ColumnSettingModel();
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson(); 
 		String [] userArray = (String[]) g.fromJson(data, String[].class);
 		ArrayList<ColumnHiddenDetail> poList = new ArrayList<ColumnHiddenDetail>();
 		int i = 0; 
-		String colVisible = "";
+		String colVisible = ""; 
 		for (i = 0; i < userArray.length; i++) { 
 			colVisible += userArray[i];
 			if(i!= userArray.length - 1) {
 				colVisible +=",";   
 			} 
-		}  
-//		System.out.println(colVisible);
+		}   
 		ColumnHiddenDetail pd = new ColumnHiddenDetail(); 
 		pd.setUserId(user);
 		pd.setColVisibleSummary(colVisible);
 		poList.add(pd);   
 		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-//		System.out.println("he");
-		out.println(g.toJson(model.saveColSettingToServer( pd)));  
-//		out.println();  
+		PrintWriter out = response.getWriter(); 
+		out.println(g.toJson(model.upsertColumnVisibleSummary( pd)));   
 	}
 	@RequestMapping(  value = "/saveDefault",  method = RequestMethod.POST )
 	public void doGetSaveDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response ,

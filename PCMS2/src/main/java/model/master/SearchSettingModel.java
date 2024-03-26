@@ -16,8 +16,7 @@ import dao.master.implement.SwitchProdOrderDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
-import entities.SORDetail;
-import info.SORSqlInfo;
+import entities.SORDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
@@ -60,15 +59,15 @@ public class SearchSettingModel extends HttpServlet {
 			return list;
 		}
 
-	public ArrayList<PCMSTableDetail> insertSearchSettingDetai(ArrayList<PCMSTableDetail> poList, String forPage) {
+	public ArrayList<PCMSTableDetail> insertSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage) {
 		// TODO Auto-generated method stub
-					ArrayList<PCMSTableDetail> list = this.dao.insertSearchSettingDetai(poList,forPage);
+					ArrayList<PCMSTableDetail> list = this.dao.insertSearchSettingDetail(poList,forPage);
 					return list;
 	}
 
-	public ArrayList<PCMSTableDetail> updateSearchSettingDetai(ArrayList<PCMSTableDetail> poList, String forPage) {
+	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage) {
 		// TODO Auto-generated method stub
-					ArrayList<PCMSTableDetail> list = this.dao.updateSearchSettingDetai(poList,forPage);
+					ArrayList<PCMSTableDetail> list = this.dao.updateSearchSettingDetail(poList,forPage);
 					return list;
 	}
  

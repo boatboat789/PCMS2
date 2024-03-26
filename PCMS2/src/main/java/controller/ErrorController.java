@@ -29,7 +29,7 @@ public class ErrorController {
 //		String message = MessageFormat.format("{0} returned for {1} with message {3}", statusCode, requestUri,
 //				exceptionMessage);
 //		System.out.println(statusCode+" "+throwable.toString()+" "+requestUri);
-		System.out.println(statusCode+" " +requestUri);
+//		System.out.println(statusCode+" " +requestUri);
 		ModelAndView mv = new ModelAndView(); 
 		mv.setViewName("error/error"); 
 //		mv.addAttribute("errorMessage", message);

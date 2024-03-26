@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import com.google.gson.JsonElement;
+
 import dao.master.ColumnSettingDao;
 import dao.master.implement.ColumnSettingDaoImpl;
 import entities.ColumnHiddenDetail;
@@ -51,6 +53,12 @@ public class ColumnSettingModel extends HttpServlet {
 		public ArrayList<ColumnHiddenDetail> upsertColumnSettingDetail(ColumnHiddenDetail pd) {
 			// TODO Auto-generated method stub
 			ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnSettingDetail(pd);
+			return list;
+		}
+
+		public ArrayList<ColumnHiddenDetail> upsertColumnVisibleSummary(ColumnHiddenDetail pd) {
+			// TODO Auto-generated method stub
+			ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnVisibleSummary(pd);
 			return list;
 		} 
  

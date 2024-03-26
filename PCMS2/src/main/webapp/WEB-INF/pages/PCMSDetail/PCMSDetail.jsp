@@ -321,23 +321,21 @@ $(document) .ready( function() {
 				    {"data" : "tkCFM","title":"TK CFM"},                       						     //31 
 				    {"data" : "cfmPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //32  
 				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //33 <------------- 
- 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //34
-// 				    {"data" : "CFMSendDate","title":"Actual CFM Date",'type': 'date-euro'},              //35
-				    {"data" : "userStatus","title":"User Status"},                                       //36
-					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //37   
-					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //38
+ 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //34 
+				    {"data" : "userStatus","title":"User Status"},                                       //35
+					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //36   
+					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //37
 					{"data" : "rollNoRemarkAll","title":"CFM Remark"},                                //38<------------- 09/08/2022
 				    {"data" : "deliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //39
-// 				    {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
-				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                 //41 Replaced ShipDate
-				    {"data" : "remark","title":"EFFECT"},                                             //42
-				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //43<-------------
-				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //44<-------------
-					{"data" : "pcRemark","title":"PCRemark"},                                         //45
-				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //46
-				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //47
-				    {"data" : "stockRemark","title":"StockRemark"},                                   //48
-				    {"data" : "stockLoad","title":"StockLoad"},                                       //49
+				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                 //40 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
+				    {"data" : "remark","title":"EFFECT"},                                             //41
+				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //42<-------------
+				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //43<-------------
+					{"data" : "pcRemark","title":"PCRemark"},                                         //44
+				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //45
+				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //46
+				    {"data" : "stockRemark","title":"StockRemark"},                                   //47
+				    {"data" : "stockLoad","title":"StockLoad"},                                       //48
      
 			],        	                
             columnDefs :  [	
@@ -347,7 +345,7 @@ $(document) .ready( function() {
 		        
 			 	{  			    
 // 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
-				  targets : [25,27],             
+				  targets : [25,28],             
 				  render: function (data, type, row) {	 
 				   		var htmlEx = data;                                      
 	   					htmlEx = ''      
@@ -649,7 +647,8 @@ $(document) .ready( function() {
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
 					}         
-				} ,        { targets : [ 47 ],     
+				} ,        
+				{ targets : [ 48 ],     
 			   	  	render: function (data, type, row) {	     
 						var htmlEx = ''    
 // 							console.log(new Date())       

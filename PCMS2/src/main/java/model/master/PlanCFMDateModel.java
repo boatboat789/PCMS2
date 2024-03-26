@@ -5,18 +5,10 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
-import dao.DataImportSORDao;
-import dao.implement.DataImportSORDaoImpl;
-import dao.master.FromSORCFMDao;
 import dao.master.PlanCFMDateDao;
-import dao.master.PlanSendCFMCusDateDao;
-import dao.master.implement.FromSORCFMDaoImpl;
 import dao.master.implement.PlanCFMDateDaoImpl;
-import dao.master.implement.PlanSendCFMCusDateDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
-import entities.SORDetail;
-import info.SORSqlInfo;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 

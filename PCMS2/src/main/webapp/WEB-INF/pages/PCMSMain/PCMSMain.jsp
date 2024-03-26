@@ -49,6 +49,8 @@
 				                <th class="row-table" style="vertical-align: middle;">Inspect </th>  
 				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
+								<th class="row-table" style="vertical-align: middle;">CFM Detail   </th>  
+				                <th class="row-table" style="vertical-align: middle;">CFM Remark </th>  
 				                <th class="row-table" style="vertical-align: middle;">Delivery Date </th> 
 				                <th class="row-table" style="vertical-align: middle;">Shipping </th>   
 				        	</tr>      
@@ -113,6 +115,7 @@ var urlQCMSObj ;
  
 var soTmpExcel ;   
 var soLineTmpExcel;
+var colMap = new Map();
 // console.log(window.location.host)
 // console.log(window.location.hostname)
 // console.log(window.location.origin)   
@@ -199,6 +202,8 @@ $(document) .ready( function() {
 // 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
 // 	  });               
 	
+  	DataTable.render.datetime('DD/MM/YYYY HH:mm:ss', 'DD/MM/YYYY HH:mm:ss', 'en')
+  	DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en')
 	// ---------------------------------------- set---------------------------------------------
 	let os = JSON.parse('${OS}');   
 	let result = os.includes("win"); 
@@ -258,6 +263,7 @@ $(document) .ready( function() {
 	    var selectedItem = $('#multi_colVis').val();    // get selected list  
 		setColVisibleTable(columnsHeader,selectedItem);
 		saveColSettingToServer(selectedItem);     
+		handlerIsCustomer();
 		getVisibleColumnsTable()
  	} ); 
 	//--------------------------------------- SEARCH ----------------------------------------------
@@ -505,21 +511,13 @@ $(document) .ready( function() {
 			    {"data" : "inspectation",  "title": 'Inspect','type': 'date-euro'},                       //24
 			    {"data" : "cfmPlanDate",  "title": 'CFM Date[Plan]','type': 'date-euro'},       //25 
 			    {"data" : "cfmDateActual",  "title": 'CFM Date[Actual]','type': 'date-euro'},   //26
-			    {"data" : "deliveryDate",  "title": 'Delivery Date','type': 'date-euro'},       //27
-			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //28    
+			    {"data" : "cfmDetailAll",  "title": 'CFM Detail' },   //27
+			    {"data" : "rollNoRemarkAll",  "title": 'CFM Remark' },   //28
+			    {"data" : "deliveryDate",  "title": 'Delivery Date','type': 'date-euro'},       //29
+			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //30    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
-			columnDefs :  [	       
-// 				{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 ,17,18,19,20,21,22  ,23 ,24,25,26,27],                
-// //	 			  	  className : 'data-custom-main',        
-// //	 		  	 	  type: 'string'      
-// 					} ,            
-// 				{ targets :  [27],                   
-// 				  	  className : 'p-r-15',                  
-// 					} ,   
-// 				{ targets :  [7,8,11],                         
-// 			  	  type : 'num',                 
-// 				} ,   
+			columnDefs :  [	        
 				{ targets:[10]  ,       
 					render: function (data, type, row) {	   
 						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
@@ -537,19 +535,20 @@ $(document) .ready( function() {
 				}  ,             
 			 	{  			    
 // 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
-				  targets : [12,13,16,17,18,19,20,22,23,24,26,27,28],             
-				  render: function (data, type, row) {	 
-				   		var htmlEx = data;                                      
-	   					htmlEx = ''      
-	   					+ '<div data-search="' + data + '" '         
-// 	   					+ ' class="form-control DateInput" '    
-	   					+ ' name="DateInput" type="text" '
-	   					+ ' value = "' + data   + "' "                 
-	   					+ ' autocomplete="off" >'   
-	   					+ dateDDMMYYYToDDMM(data) 
-	   					+ '</div>';       
-				   		return  htmlEx     ;         
-					}                          
+				  targets : [12,13,16,17,18,19,20,22,23,24,26,29,30],             
+				  render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM', 'en')  
+// 				  render: function (data, type, row) {	 
+// 				   		var htmlEx = data;                                      
+// 	   					htmlEx = ''      
+// 	   					+ '<div data-search="' + data + '" '         
+// // 	   					+ ' class="form-control DateInput" '    
+// 	   					+ ' name="DateInput" type="text" '
+// 	   					+ ' value = "' + data   + "' "                 
+// 	   					+ ' autocomplete="off" >'   
+// 	   					+ dateDDMMYYYToDDMM(data) 
+// 	   					+ '</div>';       
+// 				   		return  htmlEx     ;         
+// 					}                          
 				} ,          
 						
 			], 
@@ -599,7 +598,16 @@ $(document) .ready( function() {
 			drawCallback: function( settings ) { 
 //	 			console.log(settings) 
 			},   
-			initComplete: function () {   
+			initComplete: function () {  
+				if ( isCustomer == 1 ) {      
+			        // Hide Office column
+// 			        api.column(27).visible( false );    
+// 			        api.column(28).visible( false );    
+
+// 			        api.column(mapsDataHeader.get("cfmDetailAll")).visible( false );
+// 			        api.column(mapsDataHeader.get("rollNoRemarkAll")).visible( false );
+			                
+			      }       
 			}      
 	 	 });        
 	var today = new Date();  
@@ -1074,14 +1082,15 @@ $(document) .ready( function() {
 	$('#multi_cusName').selectpicker();     
 	$('#multi_cusShortName').selectpicker(); 
 	$('#multi_division').selectpicker();   
-	colList = JSON.parse('${ColList}'); 
+	colList = JSON.parse('${ColList}');  
+	columnsHeader = MainTable.settings().init().columns;   
 	cusNameList = JSON.parse('${CusNameList}');   	
 	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
 	userStatusList = JSON.parse('${UserStatusList}');       
-	divisionList = JSON.parse('${DivisionList}');       
-	columnsHeader = MainTable.settings().init().columns;  
+	divisionList = JSON.parse('${DivisionList}');        
 	var saleNumberList = JSON.parse('${SaleNumberList}');
-	configCusList = JSON.parse('${ConfigCusList}');                       
+	configCusList = JSON.parse('${ConfigCusList}');      
+	handlerIsCustomer();
 // 	handlerByConfigCus(configCusList);
 // 	function handlerByConfigCus(list){       
 // 		if (list.length > 0){ 
@@ -1113,18 +1122,17 @@ $(document) .ready( function() {
 // 			if(!IsPCMSDetailPage){ btn_prdDetail.remove(); }
 // 			if(!IsInspectPathBtn){ btn_inspect.remove(); } 
 // 		}
-// 	}
+// 	}      
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
   	addDivisionOption(divisionList );       
 	addColOption(columnsHeader )  
+// 	console.log(columnsHeader )
+// 	console.log( colList)
 	settingColumnOption(columnsHeader, colList); 
-	     
-// 	getCustomerNameList();
-// 	getCustomerShortNameList();
-
+	          
 	addCusNameOption(cusNameList );      
-	addCusShortNameOption(cusShortNameList );       
+	addCusShortNameOption(cusShortNameList );        
 	$('#multi_userStatus option').attr("selected","selected");
 	$('#multi_userStatus').selectpicker('refresh');
 	$('#multi_cusName option').attr("selected","selected");
@@ -1135,10 +1143,8 @@ $(document) .ready( function() {
 	$('#multi_division').selectpicker('refresh');
 	
  
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
-//     	MainTable.columns.adjust(); 
-    	poTable.columns.adjust();   
-//     	presetTable.columns.adjust();              
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {  
+    	poTable.columns.adjust();                 
     	dyeingTable.columns.adjust(); 
     	fnTable.columns.adjust(); 
     	inspectTable.columns.adjust(); 
@@ -1154,10 +1160,8 @@ $(document) .ready( function() {
     	ncTable.columns.adjust(); 
     	receipeTable.columns.adjust(); 
     });          
-	$('.modal').on('shown.bs.modal', function() {   
-// 		MainTable.columns.adjust(); 
+	$('.modal').on('shown.bs.modal', function() {    
 		poTable.columns.adjust();         
-// 		presetTable.columns.adjust();   
 		dyeingTable.columns.adjust();   	
 		fnTable.columns.adjust(); 
 		inspectTable.columns.adjust(); 
@@ -1173,46 +1177,7 @@ $(document) .ready( function() {
     	receipeTable.columns.adjust(); 
 	})  
 	preLoaderHandler( preloader)   
-});  
-
-// function getCustomerNameList( ) {    
-// 	$.ajax({   
-// 		type: "POST",  
-// 		contentType: "application/json",  
-// // 		data: JSON.stringify(arrayTmp),      
-// 		url: "Main/getCustomerNameList", 
-// 		success: function(data) {   
-// 			if(data.length > 0){
-
-// 				addCusNameOption(data ); 
-// 			}
-// 		},   
-// 		error: function(e) {
-// 			swal("Fail", "Please contact to IT", "error");
-// 		},
-// 		done: function(e) {       
-// 		}   	
-// 	});   
-// }  
-
-// function getCustomerShortNameList( ) {    
-// 	$.ajax({   
-// 		type: "POST",  
-// 		contentType: "application/json",  
-// // 		data: JSON.stringify(arrayTmp),      
-// 		url: "Main/getCustomerShortNameList", 
-// 		success: function(data) {   
-// 			if(data.length > 0){     
-// 				addCusShortNameOption(data );   
-// 			}
-// 		},   
-// 		error: function(e) {
-// 			swal("Fail", "Please contact to IT", "error");
-// 		},
-// 		done: function(e) {       
-// 		}   	
-// 	});   
-// } 
+});   
 function searchByDetail(){ 
 // 	var customer = document.getElementById("input_customer").value .trim();
 // 	var customerShort = document.getElementById("input_customerShortName").value .trim();
@@ -1284,13 +1249,10 @@ function createJsonData(){
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
 	var labNo = document.getElementById("input_labNo").value .trim();      
-	var PO = document.getElementById("input_PO").value .trim();      
-// 	var userStatus = document.getElementById("multi_userStatus").value;    
+	var PO = document.getElementById("input_PO").value .trim();          
 	var userStatus = $('#multi_userStatus').val();    
 	var customer = $('#multi_cusName').val();
-	var customerShort = $('#multi_cusShortName').val();
-// 	var customer = document.getElementById("multi_cusName").value .trim();
-// 	var customerShort = document.getElementById("multi_cusShortName").value .trim(); 
+	var customerShort = $('#multi_cusShortName').val(); 
 	var deliStatus = document.getElementById("SL_delivStatus").value .trim();  
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var dmCheck = document.getElementById("check_DM").checked;  
@@ -1308,9 +1270,7 @@ function createJsonData(){
 	 if( dmCheck ){ dist = "DM";}
 	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
 	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
-	var json = '{'+   
-// 		"CustomerName":'+JSON.stringify(customer)+ 
-// 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
+	var json = '{'+    
 	    '"saleOrder":'+JSON.stringify(saleOrder)+      
 	   ',"articleFG":'+JSON.stringify(article)+  
 	   ',"productionOrder":'+JSON.stringify(prdOrder)+  
@@ -1321,8 +1281,7 @@ function createJsonData(){
 	   ',"materialNo":'+JSON.stringify(material)+
 	   ',"labNo":'+JSON.stringify(labNo)+    
 	   ',"customerDivision":'+JSON.stringify(cusDiv)+                
-	   ',"purchaseOrder":'+JSON.stringify(PO)+ 
-// 	   ',"UserStatus":'+JSON.stringify(userStatus)+ 
+	   ',"purchaseOrder":'+JSON.stringify(PO)+  
 	   ',"userStatusList":'+JSON.stringify(userStatus)+       
 	   ',"customerNameList":'+JSON.stringify(customer)+   
 	   ',"customerShortNameList":'+JSON.stringify(customerShort)+   
@@ -1385,14 +1344,9 @@ function exportCSV(data){
             	 indexArray = mapsDataHeader.get(data); 
             	 colType = mapsColumnHeader.get(data);     
 			  	if(indexArray !== undefined){             
-					if (colType === undefined){  
-
-// 						if(isCustomer == true){
-	
-						if(isCustomer == true && data == 'cfmPlanDate'   ){  
-// 						if(userId == 'violetta01' && data == 'CFMPlanDate'   ){  
-							val = value.sendCFMCusDate;   
-// 							innerRowData[indexArray] = val;   
+					if (colType === undefined){   
+						if(isCustomer == true && data == 'cfmPlanDate'   ){   
+							val = value.sendCFMCusDate;    
 						} 
 						else{   
 // 							innerRowData[indexArray] = val;             
@@ -1471,10 +1425,7 @@ function getPrdDetailByRow(arrayTmp) {
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: "Main/getPrdDetailByRow", 
-		success: function(data) {      
-// 			MainTable.clear();          
-// 			MainTable.rows.add(data);     
-// 			MainTable.draw();   
+		success: function(data) {       
 			setModalDetail(data);   
 		},   
 		error: function(e) {
@@ -1532,10 +1483,8 @@ function searchByDetailToServer(arrayTmp) {
 }      
 function setModalDetail(data){
     
-   	var innnerText = data[0];       
-//    	console.log(innnerText)
+   	var innnerText = data[0];        
    	poTable.clear();    	          
-//    	console.log(innnerText )
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
@@ -1543,15 +1492,12 @@ function setModalDetail(data){
 		document.getElementById("input_poLineDefault").value = innnerText.poDetailList[0].poLineDefault;    
 		document.getElementById("input_poCreateDateDefault").value = innnerText.poDetailList[0].poPostingDateDefault;    
 	}  
-	poTable.draw();     
-// 	presetTable.clear();    	   
+	poTable.draw();       	   
 	if(innnerText.presetDetailList.length == 0){       }     
 	else{ 
 		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].postingDate;    
 		document.getElementById("input_presetWorkCenter").value = innnerText.presetDetailList[0].workCenter; 
-	}  
-// 	presetTable.draw();            
-	 
+	}   
 	
 	dyeingTable.clear();    	   
 	if(innnerText.dyeingDetailList.length == 0){       }     
@@ -1721,8 +1667,7 @@ function goToSFC(tblData,pUserId,data){
 		}   	
 	});       
 } 
-function goToInspect(tblData,pUserId,data){ 
-// 	let obj = createEncryptObj(pUserId);    
+function goToInspect(tblData,pUserId,data){  
 	var prdOrder = tblData[0].productionOrder
 // 	console.log(tblData[0].ProductionOrder,data.Encrypted)
 	$.ajax({
@@ -1836,66 +1781,20 @@ function addSelectOption(data){
 		 opt.value = resultData.saleNumber;   
 		 sel.appendChild(opt);          
 	}      
-}   
- 
-// function saveInputDateToServer(arrayTmp) {   
-// // 	console.log(arrayTmp)
-// 	$.ajax({   
-// 		type: "POST",  
-// 		contentType: "application/json",  
-// 		data: JSON.stringify(arrayTmp),         
-// 		url: "Main/saveInputDate", 
-// 		success: function(data) {  
-// 			if(data.length > 0){
-// 				var bean = data[0]; 
-// 				if(bean.iconStatus == 'I'){
-// 					swal({
-// 						title: "Success",    
-// 					 	text: bean.StatusSystem ,
-// 						icon: "info",
-// 						button: "confirm",
-//    					});  
-// 				}
-// 				else{  
-// 					swal({   
-// 						title: "Warning ",    
-// 					 	text: bean.StatusSystem  , 
-// 			   		    icon: 'warning',
-// 			   		    timer: 1000,
-// 			   		    buttons: false,
-// 			   		})
-// 				}  
-// 			}
-// // 			MainTable.clear();           
-// // 			MainTable.rows.add(data);      
-// // 			MainTable.columns.adjust().draw();       
-// 		},   
-// 		error: function(e) {
-// 			swal("Fail", "Please contact to IT", "error");
-// 		},
-// 		done: function(e) {       
-// 		}   	
-// 	});   
-// }    
-function settingColumnOption(columns ,colVisible){  
+}    
+function settingColumnOption(columnsHeader ,colVisible){  
 	if(colVisible == null){
 		$('#multi_colVis option').attr("selected","selected");
 		$('#multi_colVis').selectpicker('refresh');
 	}  
-	else{   
-// 		$('#multi_colVis').selectpicker();   
-// 		columns = MainTable.settings().init().columns; 
-// 		console.log(columns)
-// 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
-// 		addColOption(columns ) 
+	else{    
 		setColVisibleTable(columnsHeader,colVisible);    
 		$('#multi_colVis').selectpicker('val', colVisible);     
 	}
 	getVisibleColumnsTable()     
 }
         
-function getVisibleColumnsTable() {   
-// 	columnsHeader = MainTable.settings().init().columns;
+function getVisibleColumnsTable() {    
    	mapsDataHeader.clear();   
    	mapsTitleHeader.clear();
    	mapsColumnHeader.clear();
@@ -1909,6 +1808,8 @@ function getVisibleColumnsTable() {
 // 				&& all_columns[i].data == 'DueDate'
 				)){    
 // 			visible        
+
+
 			mapsColumnHeader.set(columnsHeader[i].data, columnsHeader[i].type); 
 			mapsTitleHeader.set(columnsHeader[i].title, columnsHeader[i].type); 
 			mapsDataHeader.set(columnsHeader[i].data, count);
@@ -1924,9 +1825,9 @@ function getVisibleColumnsTable() {
 function setColVisibleTable(mainCol,colVisible) {     
 	let index ; 
 	let colName = '';  
-   let i = 0;
-//    console.log(mainCol)   
-//    console.log(colVisible)
+   	let i = 0;         
+   
+// 	var columnsHeaderArr = MainTable.settings().init().columns;   
 	for (i =  0; i < mainCol.length ; i++) {           
 		colName = mainCol[i].data;     
 		check = colVisible.includes(colName);  
@@ -1947,10 +1848,7 @@ function saveColSettingToServer(arrayTmp) {
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: "Main/saveColSettingToServer", 
-		success: function(data) {  
-// 			MainTable.clear();           
-// 			MainTable.rows.add(data);      
-// 			MainTable.columns.adjust().draw();   
+		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
@@ -2079,20 +1977,47 @@ function addCusShortNameOption(data ){
 	}             
 	$("#multi_cusShortName").selectpicker("refresh");
 } 
-function addColOption(colName ){  
+function addColOption(colName ){   
+// 	var arrColOption = [];
+// 	for (var i = colName.length - 1; i > -1; i--) { 
+// 		 var resultData = colName[i].data; 	   	
+// 		 if(resultData == 'cfmDetailAll' || resultData == "rollNoRemarkAll" ){ 
+// 			 colName.splice(i, 1);
+// 		 }
+// 	} 
+	
 	var sel = document.getElementById('multi_colVis');
 	for (i = sel.length - 1; i >= 0; i--) {
 		sel.remove(i);
 	}             
+	let counter = 0; 
+	
+
+// 	console.log(columnsHeader)
 	var size = colName.length;
 	for (var i = 0; i < size; i++) {		   
-		 var resultData = colName[i]; 	   
-// 		 console.log(resultData)   
-		 var opt = document.createElement('option');
-	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = (i+1)+" : "+resultData.title;
-		 opt.value = resultData.data;  
-		 sel.appendChild(opt);              
+		 var resultData = colName[i]; 	
+// 			console.log(resultData.data)   
+		 if(resultData.data != 'cfmDetailAll' && resultData.data != "rollNoRemarkAll" ){  
+			counter = counter + 1;
+			 var opt = document.createElement('option');
+		     opt.appendChild(document.createTextNode(i));
+			 opt.text  = (counter+1)+" : "+resultData.title;  
+			 opt.value = resultData.data;  
+			 sel.appendChild(opt);         
+		 }
+		 else if(resultData.data == 'cfmDetailAll' || resultData.data == "rollNoRemarkAll" ){ 
+		 	if(isCustomer == 1 ){   }
+		 	else{   
+// 		 		console.log('hi')
+				counter = counter + 1;
+				var opt = document.createElement('option');
+				opt.appendChild(document.createTextNode(i));
+				opt.text  = (counter+1)+" : "+resultData.title;  
+				opt.value = resultData.data;  
+				sel.appendChild(opt);     
+		 	}
+		 }
 	}         
 // 	$('#multi_colVis option').attr("selected","selected");
 // 	$('#multi_colVis').selectpicker('refresh');
@@ -2177,7 +2102,7 @@ function setSearchDefault(data){
 	document.getElementById("input_designNo").value  = innnerText.designFG;   
 	document.getElementById("input_material").value  = innnerText.materialNo;  
 	document.getElementById("input_labNo").value     = innnerText.labNo;
-	document.getElementById("input_PO").value     = innnerText.purchaseOrder;
+	document.getElementById("input_PO").value     	 = innnerText.purchaseOrder;
 	
 	var saleCreateArray = innnerText.saleOrderCreateDate.split(' - ') ;
 	if(saleCreateArray.length == 1){ $('#input_saleOrderDate').val('');     }
@@ -2220,20 +2145,40 @@ function setSearchDefault(data){
 		 if(distChannel[i] == 'DM'){ document.getElementById("check_DM").checked = true; }
 		 else if(distChannel[i] == 'EX'){ document.getElementById("check_EX").checked = true;  }
 		 else if(distChannel[i] == 'HW'){ document.getElementById("check_HW").checked = true;  }
-	 }             
-	 var customer = innnerText.customerName.split('|'); 
-	 var customerShort = innnerText.customerShortName.split('|'); 
-	 var userStatusList = innnerText.userStatus.split('|');  
-	 var divisionList = innnerText.division.split('|'); 
-	 $('#multi_cusName').selectpicker('val', customer);    
-	 $('#multi_cusShortName').selectpicker('val', customerShort);    
-	 $('#multi_userStatus').selectpicker('val', userStatusList);      
-	 $('#multi_division').selectpicker('val', divisionList);      
+ 	}             
+	var customer = innnerText.customerName.split('|'); 
+	var customerShort = innnerText.customerShortName.split('|'); 
+	var userStatusList = innnerText.userStatus.split('|');  
+	var divisionList = innnerText.division.split('|'); 
+	$('#multi_cusName').selectpicker('val', customer);    
+	$('#multi_cusShortName').selectpicker('val', customerShort);    
+	$('#multi_userStatus').selectpicker('val', userStatusList);      
+	$('#multi_division').selectpicker('val', divisionList);      
 	$('#multi_cusName').selectpicker('refresh');     
 	$('#multi_cusShortName').selectpicker('refresh');     
 	$('#multi_userStatus').selectpicker('refresh');      
 	$('#multi_division').selectpicker('refresh');  
 }       
+function handlerIsCustomer(){
+
+	if(isCustomer == 1 ){ 
+		if(colList == null){ }
+		else{      
+			for (var i = colList.length - 1; i > -1; i--) { 
+				 var resultData = colList[i]; 	   	
+				 if(resultData == 'cfmDetailAll' || resultData == "rollNoRemarkAll" ){ 
+					 colList.splice(i, 1);
+				 }
+			}
+		}    
+// 		for (var i = columnsHeader.length - 1; i > -1; i--) { 
+// 			 var resultData = columnsHeader[i].data; 	   	
+// 			 if(resultData == 'cfmDetailAll' || resultData == "rollNoRemarkAll" ){ 
+// 				 columnsHeader.splice(i, 1);
+// 			 }
+// 		} 
+	}
+}
 // function preLoaderHandler (){         
 // 	   preloader.style.display = 'none';  
 // 	} 

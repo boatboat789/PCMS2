@@ -16,8 +16,7 @@ import dao.master.implement.SwitchProdOrderDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
 import entities.ReplacedProdOrderDetail;
-import entities.SORDetail;
-import info.SORSqlInfo;
+import entities.SORDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 

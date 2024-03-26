@@ -18,6 +18,8 @@ public interface SwitchProdOrderDao {
 	ArrayList<SwitchProdOrderDetail> getSwitchProdOrderDetailByPrd(String prodOrder);
 
 	ArrayList<SwitchProdOrderDetail> getSWProdOrderDetailByPrd(String prodOrder);
+
+	PCMSSecondTableDetail upsertSwitchProdOrder(PCMSSecondTableDetail bean, String dataStatus);
  
  
 

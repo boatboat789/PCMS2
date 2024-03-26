@@ -59,6 +59,7 @@ public class PCMSSecondTableDetail {
 	
 	private String dyePlan;
 	private String dyeActual;
+	private String dyeStatus;
 	
 
 	private String sendCFMCusDate;
@@ -95,9 +96,10 @@ public class PCMSSecondTableDetail {
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
 				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision,
-				String LotShipping
+				String LotShipping,String dyeStatus
 				) {
 			super();
+			this.dyeStatus = dyeStatus;
 			this.lotShipping = LotShipping;
 			this.customerDivision = CustomerDivision;
 			this.customerType = CustomerType;
@@ -165,6 +167,12 @@ public class PCMSSecondTableDetail {
 		}
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
+		}
+		public String getDyeStatus() {
+			return dyeStatus;
+		}
+		public void setDyeStatus(String dyeStatus) {
+			this.dyeStatus = dyeStatus;
 		}
 		public String getDivision() {
 			return division;
