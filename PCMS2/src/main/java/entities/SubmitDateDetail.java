@@ -1,6 +1,6 @@
 package entities;
 
-public class SubmitDateDetail {         
+public class SubmitDateDetail {
 	private String no;
   	private String submitDate;
   	private String remark;
@@ -27,5 +27,5 @@ public class SubmitDateDetail {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	} 
+	}
 }

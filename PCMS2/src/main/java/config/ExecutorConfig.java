@@ -8,8 +8,8 @@
 //
 //@Configuration
 //@ManagedResource
-//public class ExecutorConfig { 
-//	
+//public class ExecutorConfig {
+//
 //    @Bean(name = "pcms2BGJob")
 //    public TaskExecutor ExecutorConfig() {
 //        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -19,5 +19,5 @@
 //        executor.setThreadNamePrefix("pcms2BGJob");
 //        executor.initialize();
 //        return executor;
-//    } 
+//    }
 //}

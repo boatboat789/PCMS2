@@ -84,5 +84,5 @@ public class PackingDetail { // ค่าผิดอยู่ช็คให่
 
 	public void setQuantityYD(String quantityYD) {
 		this.quantityYD = quantityYD;
-	} 
+	}
 }

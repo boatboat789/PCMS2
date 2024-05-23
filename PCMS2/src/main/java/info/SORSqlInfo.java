@@ -10,18 +10,19 @@ import th.in.totemplate.core.sql.DatabaseInfo;
 public class SORSqlInfo implements DatabaseInfo {
 	////////////////////j/////////////////////////////////////////////////////////
 	private static final String _driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	////////////////////////////////////////////////////////////////////////// 
+	//////////////////////////////////////////////////////////////////////////
 	private static final String _url = "jdbc:sqlserver://10.11.44.220;database=SOR_PRODUCTION;useUnicode=true;characterEncoding=UTF-8;";
-	private static final String _username = "sorpcms"; 
-	private static final String _password = "SorToPcms@2";    
+	private static final String _username = "sorpcms";
+	private static final String _password = "SorToPcms@2";
 
-	 
+
 	private static SORSqlInfo _info;
 	private SORSqlInfo() {  }
 
 	public static SORSqlInfo getInstance() {
-		if (SORSqlInfo._info == null)
+		if (SORSqlInfo._info == null) {
 			SORSqlInfo._info = new SORSqlInfo();
+		}
 		return SORSqlInfo._info;
 	}
 
@@ -30,7 +31,7 @@ public class SORSqlInfo implements DatabaseInfo {
 		return SORSqlInfo._driver;
 	}
 
-	@Override 
+	@Override
 	public String getUrl() {
 		return SORSqlInfo._url;
 	}

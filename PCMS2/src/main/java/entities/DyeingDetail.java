@@ -117,5 +117,5 @@ public class DyeingDetail {
 	}
 	public void setColorRemark(String colorRemark) {
 		this.colorRemark = colorRemark;
-	} 
+	}
 }

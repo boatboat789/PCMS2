@@ -25,11 +25,11 @@ public class UserDetail {
 	private String userType;
 	private boolean isCustomer;
 	// ต้องตัวเล็กไม่งั้นเรียก parameter ไม่ได้
-//    private boolean isDog = false;  
+//    private boolean isDog = false;
 
 //	public boolean getIsDog() {
 //		return isDog;
-//	} 
+//	}
 //
 //	public void setIsDog(boolean isDog) {
 //		this.isDog = isDog;

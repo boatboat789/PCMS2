@@ -5,34 +5,25 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
-import dao.DataImportSORDao;
-import dao.implement.DataImportSORDaoImpl;
-import dao.master.FromSORCFMDao;
-import dao.master.PlanCFMDateDao;
 import dao.master.PlanDeliveryDateDao;
-import dao.master.PlanSendCFMCusDateDao;
-import dao.master.implement.FromSORCFMDaoImpl;
-import dao.master.implement.PlanCFMDateDaoImpl;
 import dao.master.implement.PlanDeliveryDateDaoImpl;
-import dao.master.implement.PlanSendCFMCusDateDaoImpl;
 import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
-import entities.SORDetail; 
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
 public class PlanDeliveryDateModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
-	   private Database database; 
+	   private Database database;
 	   private PlanDeliveryDateDao dao;
-	   @SuppressWarnings("unused")	
+	   @SuppressWarnings("unused")
 	   private String[] uiColumns;
 	   @SuppressWarnings("unused")
 	   private static final String columns = "";
 
 	   public PlanDeliveryDateModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance()); 
+	         this.database = new Database(SqlInfo.getInstance());
 	         this.dao = new PlanDeliveryDateDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {
@@ -49,7 +40,8 @@ public class PlanDeliveryDateModel extends HttpServlet {
 	      return "".replaceAll("'", "").split(",");
 	   }
 
-	   public void destroy() {
+	   @Override
+	public void destroy() {
 	      this.database.close();
 	      super.destroy();
 	   }
@@ -63,5 +55,5 @@ public class PlanDeliveryDateModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.getMaxDeliveryPlanDateDetail(poList);
 		return list;
-	}  
+	}
 }

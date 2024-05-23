@@ -6,7 +6,7 @@ import entities.PCMSSecondTableDetail;
 
 public interface ConfigDepartmentDao {
 
-	ArrayList<PCMSSecondTableDetail> getDelayedDepartmentList(); 
- 
+	ArrayList<PCMSSecondTableDetail> getDelayedDepartmentList();
+
 
 }

@@ -1,6 +1,6 @@
 package entities;
 
-public class CFMDetail {         
+public class CFMDetail {
 	  private String cfmNo;
 	  private String cfmNumber;
 	  private String cfmSendDate;
@@ -8,7 +8,7 @@ public class CFMDetail {
 	  private String rollNoRemark;
 	  private String l;
 	  private String da;
-	  private String db; 
+	  private String db;
 	  private String st;
 	  private String de;
 	  private String saleOrder;
@@ -16,7 +16,7 @@ public class CFMDetail {
 	  private String color;
 	  private String cfmAnswerDate;
 	  private String cfmStatus;
-	  private String cfmRemark; 
+	  private String cfmRemark;
 	  private String nextLot;
 	  private String soChange;
 	  private String soChangeQty;
@@ -166,5 +166,5 @@ public class CFMDetail {
 	}
 	public void setSoChangeUnit(String soChangeUnit) {
 		this.soChangeUnit = soChangeUnit;
-	} 
+	}
 }

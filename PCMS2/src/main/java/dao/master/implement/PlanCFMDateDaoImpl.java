@@ -1,41 +1,13 @@
 	package dao.master.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import dao.PCMSMainDao;
-import dao.master.FromSORCFMDao;
 import dao.master.PlanCFMDateDao;
-import dao.master.PlanSendCFMCusDateDao;
-import entities.CFMDetail;
-import entities.ColumnHiddenDetail;
-import entities.ConfigCustomerUserDetail;
-import entities.DyeingDetail;
-import entities.FinishingDetail;
 import entities.InputDateDetail;
-import entities.InspectDetail;
-import entities.NCDetail;
-import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
-import entities.PCMSTableDetail;
-import entities.PODetail;
-import entities.PackingDetail;
-import entities.PresetDetail;
-import entities.ReceipeDetail;
-import entities.SORDetail;
-import entities.SaleDetail;
-import entities.SaleInputDetail;
-import entities.SendTestQCDetail;
-import entities.WaitTestDetail;
-import entities.WorkInLabDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
@@ -44,6 +16,7 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
@@ -58,13 +31,13 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 
 	public String getMessage() {
 		return this.message;
-	} 
+	}
 	@Override
 	public ArrayList<InputDateDetail> getCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
-		String sql =  
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String sql =
 			  " SELECT \r\n"
 			+ "		  [ProductionOrder]\r\n"
 		    + "      ,[SaleOrder]\r\n"
@@ -74,25 +47,25 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		    + "      ,[CreateDate]\r\n"
 		    + "	 	 , '1:PCMS' as InputFrom \r\n"
 		    + "   	 , LotNo \r\n"
-		    + " FROM [PCMS].[dbo].[PlanCFMDate] as a\r\n" 
+		    + " FROM [PCMS].[dbo].[PlanCFMDate] as a\r\n"
 		    + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and \r\n"
 		    + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-		    + "       a.[SaleLine] = '" + saleLine+ "' \r\n" 
+		    + "       a.[SaleLine] = '" + saleLine+ "' \r\n"
 //  		  + "   and [DataStatus] = 'O' "
 		  + " ORDER BY InputFrom ,CreateDate desc ";
-				 
+
 		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<InputDateDetail>();
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
 		}
 		return list;
-	} 
+	}
 	@Override
 	public ArrayList<InputDateDetail> getCountCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
-		PCMSSecondTableDetail bean = poList.get(0); 
-		String sql = 
+		PCMSSecondTableDetail bean = poList.get(0);
+		String sql =
 				    " SELECT distinct count(a.[ProductionOrder]) as countAll  \r\n"
 		 		  + " FROM [PCMS].[dbo].[PlanCFMDate]  as a\r\n"
 		 		  + " inner join (select distinct [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ,max([CreateDate]) as [MaxCreateDate]\r\n"
@@ -102,10 +75,10 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and\r\n"
 		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
 		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanDate()+ "',103) ";
-		 		  ; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);  
-		list = new ArrayList<InputDateDetail>();
-		for (Map<String, Object> map : datas) { 
+
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
 		}
 		return list;
@@ -114,8 +87,8 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 	public ArrayList<InputDateDetail> getMaxCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
-		String sql = 
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String sql =
 				    " SELECT distinct \r\n"
 				  + " 		a.[ProductionOrder]  ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] ,[CreateBy]\r\n"
 	    		  + "      ,[CreateDate] \r\n"
@@ -130,9 +103,9 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
 		 		  + "       a.[SaleLine] = '" + saleLine+ "' and \r\n"
  		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanDate()+ "',103) \r\n";
-		 		  ; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);  
-		list = new ArrayList<InputDateDetail>();
+
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
 		}

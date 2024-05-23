@@ -16,16 +16,16 @@ import th.in.totemplate.core.sql.Database;
 
 public class FromSapMainSaleModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
-	   private Database database; 
+	   private Database database;
 	   private FromSapMainSaleDao dao;
-	   @SuppressWarnings("unused")	
+	   @SuppressWarnings("unused")
 	   private String[] uiColumns;
 	   @SuppressWarnings("unused")
 	   private static final String columns = "";
 
 	   public FromSapMainSaleModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance()); 
+	         this.database = new Database(SqlInfo.getInstance());
 	         this.dao = new FromSapMainSaleDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {
@@ -42,27 +42,28 @@ public class FromSapMainSaleModel extends HttpServlet {
 	      return "".replaceAll("'", "").split(",");
 	   }
 
-	   public void destroy() {
+	   @Override
+	public void destroy() {
 	      this.database.close();
 	      super.destroy();
 	   }
-	   
+
 	public ArrayList<PCMSSecondTableDetail> getDivisionDetail( ) {
 		// TODO Auto-generated method stub
 				ArrayList<PCMSSecondTableDetail> list = this.dao.getDivisionDetail( );
 				return list;
-	} 
+	}
 
 	public ArrayList<PCMSAllDetail> getCustomerNameDetail( ) {
 		// TODO Auto-generated method stub
 				ArrayList<PCMSAllDetail> list = this.dao.getCustomerNameDetail( );
 				return list;
-	} 
+	}
 	public ArrayList<PCMSAllDetail> getCustomerShortNameDetail( ) {
 		// TODO Auto-generated method stub
 				ArrayList<PCMSAllDetail> list = this.dao.getCustomerShortNameDetail( );
 				return list;
-	}  
+	}
 	public ArrayList<PCMSTableDetail> getSaleNumberDetail() {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.getSaleNumberDetail();

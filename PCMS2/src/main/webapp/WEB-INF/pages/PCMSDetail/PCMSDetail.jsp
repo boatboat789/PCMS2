@@ -28,8 +28,9 @@
 				                <th class="row-table" style="vertical-align: middle;">Cust.(Name4)</th> 
 				                <th class="row-table" style="vertical-align: middle;">SO Date </th>   
 				                <th class="row-table" style="vertical-align: middle;">P/O </th>
-				                <th class="row-table" style="vertical-align: middle;">Material </th>	
-				                <th class="row-table" style="vertical-align: middle;">Customer<span class="c"style="display: block;"> Mat.No.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Material </th>	 
+				                <th class="row-table" style="vertical-align: middle;">Cust.(Base)<span class="c"style="display: block;"> Mat.No.</span> </th> 
+				                <th class="row-table" style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Mat.No.</span> </th> 
 				                <th class="row-table" style="vertical-align: middle;">Price <span class="c"style="display: block;">(THB)</span></th>
 				                <th class="row-table" style="vertical-align: middle;">Unit </th>
 				                <th class="row-table" style="vertical-align: middle;">Order<span class="c"style="display: block;">Qty.</span> </th>
@@ -82,10 +83,7 @@
 				    </table>                        
 				</div>                 
 			</div>   	
-		</div>               
-<!-- 		<div id="wrapper-bot" class="row">   -->
-		       
-<!-- 		</div>        -->       
+		</div>                
     <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include>  
 	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/InputDateDetail/modalMain.jsp"></jsp:include>  
@@ -287,65 +285,66 @@ $(document) .ready( function() {
 		    lengthMenu: [[100, 250, 500, 1000, 2500],[100, 250, 500, 1000, 2500]],
 	 	   	columns :                    
 	 	   		[      
-				    {"data" : "division" ,        "title":"DIV"          },             //0
-				    {"data" : "saleOrder" ,       "title":"SO No."           },         //1
-				    {"data" : "saleLine"   ,      "title":"SO Line"          },         //2
-				    {"data" : "customerShortName","title":"Cust.(Name4)"  },            //3
+				    {"data" : "division" ,        "title":"DIV"          },                              //0
+				    {"data" : "saleOrder" ,       "title":"SO No."           },                          //1
+				    {"data" : "saleLine"   ,      "title":"SO Line"          },                          //2
+				    {"data" : "customerShortName","title":"Cust.(Name4)"  },                              //3
 				    {"data" : "saleCreateDate" ,  "title":"SO Date"   ,'type': 'date-euro'   },           //4 
 				    {"data" : "purchaseOrder" ,   "title":"P/O" },     								      //5 
-				    {"data" : "materialNo" ,      "title":"Material" },     
-				    {"data" : "customerMaterial" ,"title":"Customer Mat.No." },                           //7
-				    {"data" : "price" ,           "title":"Price (THB)",'type': 'num' }, 
-				    {"data" : "saleUnit" ,        "title":"Unit" },                                      //9
-				    {"data" : "saleQuantity" ,    "title":"Order Qty.",'type': 'num' },                  //10
-				    {"data" : "remainQuantity" ,  "title":"Remain Qty." ,'type': 'num'},                 //11
-				    {"data" : "remainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num' }, 
-				    {"data" : "volumn" ,          "title":"Volume FG",'type': 'num' },                   //13
-				    {"data" : "volumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //14
-				    {"data" : "grade" ,           "title":"Grade" },                                     //15
-				    {"data" : "grQuantity" ,      "title":"GR Qty<br>KG/MR/YD" } ,                       //16
-				    {"data" : "billSendWeightQuantity" ,"title":"Bill Qty (Class)<br>KG/MR/YD" },        //17
-				    {"data" : "billSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},                    //18
-				    {"data" : "orderAmount" ,     "title":"Amt.(THB)",'type': 'num' },                   //19
-				    {"data" : "customerDue" ,     "title":"Due Cus.",'type': 'date-euro' },              //20
-				    {"data" : "dueDate" ,         "title":"Due Date",'type': 'date-euro' },              //21  
-				    {"data" : "labNo",			  "title":"Lab No" },                                    //22
-				    {"data" : "labStatus",		  "title":"Lab Status" },                                //23
-				    {"data" : "lotNo",            "title":"Lot" },                                       //24  
-				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro'},                      //25 
-				    {"data" : "dyeActual","title":"Dye [Actual]",'type': 'date-euro' },                  //26 
-				    {"data" : "dyeStatus","title":"Dye Status" },                                        //27  
-				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },             //28
-				    {"data" : "cfmActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //29 
-				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //30
-				    {"data" : "tkCFM","title":"TK CFM"},                       						     //31 
-				    {"data" : "cfmPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //32  
-				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //33 <------------- 
- 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //34 
-				    {"data" : "userStatus","title":"User Status"},                                       //35
-					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //36   
-					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //37
-					{"data" : "rollNoRemarkAll","title":"CFM Remark"},                                //38<------------- 09/08/2022
-				    {"data" : "deliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //39
-				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                 //40 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
-				    {"data" : "remark","title":"EFFECT"},                                             //41
-				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //42<-------------
-				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //43<-------------
-					{"data" : "pcRemark","title":"PCRemark"},                                         //44
-				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //45
-				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //46
-				    {"data" : "stockRemark","title":"StockRemark"},                                   //47
-				    {"data" : "stockLoad","title":"StockLoad"},                                       //48
+				    {"data" : "materialNo" ,      "title":"Material" },     	   				          //6
+				    {"data" : "customerMaterialBase" , "title":"Cust.Mat.Base" },                        //7
+				    {"data" : "customerMaterial" ,"title":"Cust.Mat.No." },                              //8
+				    {"data" : "price" ,           "title":"Price (THB)",'type': 'num' },                 //9
+				    {"data" : "saleUnit" ,        "title":"Unit" },                                      //10
+				    {"data" : "saleQuantity" ,    "title":"Order Qty.",'type': 'num' },                  //11
+				    {"data" : "remainQuantity" ,  "title":"Remain Qty." ,'type': 'num'},                 //12
+				    {"data" : "remainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num' },            //13
+				    {"data" : "volumn" ,          "title":"Volume FG",'type': 'num' },                   //14
+				    {"data" : "volumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //15
+				    {"data" : "grade" ,           "title":"Grade" },                                     //16
+				    {"data" : "grQuantity" ,      "title":"GR Qty<br>KG/MR/YD" } ,                       //17
+				    {"data" : "billSendWeightQuantity" ,"title":"Bill Qty (Class)<br>KG/MR/YD" },        //18
+				    {"data" : "billSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},                    //19
+				    {"data" : "orderAmount" ,     "title":"Amt.(THB)",'type': 'num' },                   //20
+				    {"data" : "customerDue" ,     "title":"Due Cus.",'type': 'date-euro' },              //21
+				    {"data" : "dueDate" ,         "title":"Due Date",'type': 'date-euro' },              //22  
+				    {"data" : "labNo",			  "title":"Lab No" },                                    //23
+				    {"data" : "labStatus",		  "title":"Lab Status" },                                //24
+				    {"data" : "lotNo",            "title":"Lot" },                                       //25 
+				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro'},                      //26 
+				    {"data" : "dyeActual","title":"Dye [Actual]",'type': 'date-euro' },                  //27 
+				    {"data" : "dyeStatus","title":"Dye Status" },                                        //28  
+				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",'type': 'date-euro' },             //29
+				    {"data" : "cfmActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //30 
+				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //31
+				    {"data" : "tkCFM","title":"TK CFM"},                       						     //32 
+				    {"data" : "cfmPlanDate","title":"Plan CFM Date",'type': 'date-euro'},                //33  
+				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro'},         //34 <------------- 
+ 				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //35 
+				    {"data" : "userStatus","title":"User Status"},                                       //36
+					{"data" : "cfmDetailAll","title":"CFM Detail"},                                      //37   
+					{"data" : "cfmNumberAll","title":"CFM Number"},                                      //38
+					{"data" : "rollNoRemarkAll","title":"CFM Remark"},                                //39<------------- 09/08/2022
+				    {"data" : "deliveryDate","title":"Plan Delivery Date",'type': 'date-euro'},       //40
+				    {"data" : "lotShipping","title":"Bill Date",'type': 'date-euro'},                 //41 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
+				    {"data" : "remark","title":"EFFECT"},                                             //42
+				    {"data" : "causeOfDelay","title":"Cause of Delay"},                               //43<-------------
+				    {"data" : "delayedDepartment","title":"Delayed Department"},                      //44<-------------
+					{"data" : "pcRemark","title":"PCRemark"},                                         //45
+				    {"data" : "replacedRemark","title":"ReplacedRemark"},                             //46
+				    {"data" : "switchRemark","title":"SwitchRemark"},                                 //47
+				    {"data" : "stockRemark","title":"StockRemark"},                                   //48
+				    {"data" : "stockLoad","title":"StockLoad"},                                       //49
      
 			],        	                
             columnDefs :  [	
 			    { targets: [ 1 ],
-		          orderData: [ 1, 2,24 ]  
+		          orderData: [ 1, 2,25 ]  
 		        },   	    
 		        
 			 	{  			    
 // 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
-				  targets : [25,28],             
+				  targets : [26,29],             
 				  render: function (data, type, row) {	 
 				   		var htmlEx = data;                                      
 	   					htmlEx = ''      
@@ -359,15 +358,14 @@ $(document) .ready( function() {
 				   		return  htmlEx     ;         
 					}                          
 				} ,     
-				{ targets : [ 4,20 , 21,29 ,40 ],                        
+				{ targets : [ 4,21 , 22,30 ,41 ],                        
 				  	  className : 'dt-custom-td80',    	        
 				  	  type: 'date-euro'  
 					} ,                              
-				{ targets : [ 11,12,13,14,22,24,30 ,34 ],                        
-				  	  className : 'dt-custom-td100',    
-				  	  type: 'string'     
+				{ targets : [ 12,13,14,15,23,25,31 ,35 ],                        
+				  	  className : 'dt-custom-td100', type: 'string'     
 				} ,   
-				{ targets : [ 16,17 ],                        
+				{ targets : [ 17,18 ],                        
 				  	  className : 'dt-custom-td160',    
 				  	  type: 'string'     
 				} ,                 
@@ -375,23 +373,23 @@ $(document) .ready( function() {
 // 				  	  className : 'dt-custom-td120',    
 // 				  	  type: 'string'            
 // 				} ,     
-				{ targets : [ 28  ],                      
+				{ targets : [ 29  ],                      
 			  	  className : 'CFMPlanLabDateParent dt-custom-td80',       
 			  	  type: 'date-euro'     
 				} ,   
-				{ targets : [ 32 ],                      
-			  	  className : 'CFMPlanDateParent dt-custom-td80',       
+					{ targets : [ 33 ],                      
+				  	  className : 'CFMPlanDateParent dt-custom-td80',       
 			  	  type: 'date-euro'  
 				} ,  
-				{ targets : [ 33 ],                       
+				{ targets : [ 34 ],                       
 				  	  className : 'SendCFMCusDateParent dt-custom-td80',       
 				  	  type: 'date-euro'  
 					} ,
-				{ targets : [ 39 ],                      
+				{ targets : [ 40 ],                      
 			  	  className : 'DeliveryDateParent dt-custom-td100',       
 			  	  type: 'date-euro'  
 				} ,   
-				{ targets : [3 ,6,23,35,37 ],             	     
+				{ targets : [3 ,6,24,36,38 ],             	     
 			  	  	className : 'dt-custom-td140',      
 			  	  	type: 'string'   
 					} ,               
@@ -399,15 +397,15 @@ $(document) .ready( function() {
 			  	  	className : 'dt-custom-td160',      
 			  	  	type: 'string'   
 					} ,            
-				{ targets : [ 7 ,43 ],                    
+				{ targets : [ 7,8 ,44 ],                    
 			  	  	className : 'dt-custom-td240',       
 			  	  	type: 'string'   
 				} ,       
-				{ targets : [  36,38 ],                          
+				{ targets : [  37,39 ],                          
 			  	  	className : 'dt-custom-td300',         
 			  	  	type: 'string'     
 					} ,            
-				{ targets : [  41,42,44,45 ,47,48],                       
+				{ targets : [  42,43,45,46 ,48,49],                       
 			  	  	className : 'dt-custom-td450 p-r-15',      
 			  	  	type: 'string'  
 					} ,   
@@ -423,7 +421,7 @@ $(document) .ready( function() {
 							return  html; 
 					   	  }    
 					},  
-				{ targets : [ 11 ],                   
+				{ targets : [ 12 ],                   
 			   	  render: function (data, type, row) {	               
 						var htmlEx = '';               
 // 	   					console.log(" omg "+caseDupli+"  "+data+" row.saleLine "+row.lotNo+" "+row.grade+" "+row.saleLine+" "+row.saleOrder+" soLineTmp "+soLineTmp+" soTmp "+soTmp)
@@ -449,7 +447,7 @@ $(document) .ready( function() {
 						return  htmlEx
 				   	  }     
 						} ,       
-				{ targets : [ 12 ],        
+				{ targets : [ 13 ],        
 			   	  render: function (data, type, row) {	   
 	   					var htmlEx = '';   
 		   				if(caseDupli == 0  ){ 
@@ -464,7 +462,7 @@ $(document) .ready( function() {
 						return  htmlEx
 				   	  }    
 					} ,  
-				{ targets : [ 19 ],        
+				{ targets : [ 20 ],        
 				   	  render: function (data, type, row) {	               
 				   		var htmlEx = '';  
 		   				if(caseDupli == 0  ){ 
@@ -480,13 +478,13 @@ $(document) .ready( function() {
 				   	  }    
 					} , 
 					         	
-					{ targets:[24]  ,       
+					{ targets:[25]  ,       
 						render: function (data, type, row) {	     
 							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
 							return  html; 
 					   	  }    
 					},  
-				{ targets : [ 28 ],    
+				{ targets : [ 29 ],    
 					  orderable: false,    
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
@@ -500,7 +498,7 @@ $(document) .ready( function() {
 							return  htmlEx;
 					   	  }            
 						} ,
-				{ targets : [ 32 ],    
+				{ targets : [ 33 ],    
 				  orderable: false,
 				   	  render: function (data, type, row) {	
 // 				   		var htmlEx = '' 
@@ -513,7 +511,7 @@ $(document) .ready( function() {
 						return  row.cfmPlanDate 
 				   	  }         
 					} ,    
-				{ targets : [ 33 ],             
+				{ targets : [ 34 ],             
 				  orderable: false,
    	  			  render: function (data, type, row) {	
  				   		var htmlEx = ''  
@@ -529,7 +527,7 @@ $(document) .ready( function() {
 						return  htmlEx
 			   	  }    
 				} ,        
-				{ targets : [ 39 ],    
+				{ targets : [ 40 ],    
 				  orderable: false,     
 			   	  render: function (data, type, row) {	     
 					var htmlEx = ''   
@@ -543,7 +541,7 @@ $(document) .ready( function() {
 					return  htmlEx           
 					}	          
 				},      
-				{ targets : [ 42 ],     
+				{ targets : [ 43 ],     
 			   	  render: function (data, type, row) {	 
 				   		var htmlEx = ''      
 			   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
@@ -569,7 +567,7 @@ $(document) .ready( function() {
 						return  htmlEx      
 						}         
 				}  ,   
-				{ targets : [ 43 ],       
+				{ targets : [ 44 ],       
 			   	  render: function (data, type, row, meta) {	    
 			   		var htmlEx = ''         
 				   		 
@@ -596,7 +594,7 @@ $(document) .ready( function() {
 			   		return  htmlEx      
 					}       
 				}  ,      
-				{ targets : [ 44 ],     
+				{ targets : [ 45 ],     
 				   	  render: function (data, type, row) {	     
 				   		var htmlEx = ''    
 						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
@@ -604,11 +602,10 @@ $(document) .ready( function() {
 						}       
 					}       
 				,         
-				{ targets : [ 45 ],     
+				{ targets : [ 46 ],     
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
-			   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){ 
-// 						htmlEx = '<button type="button" class="btn btn-warning btn-cancelSW">ยกเลิกโยกขาย</button>'; 
+			   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
 						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 					}         
 			   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
@@ -623,11 +620,10 @@ $(document) .ready( function() {
 			   		return  htmlEx          
 					}       
 				} ,     
-				{ targets : [ 46 ],         
+				{ targets : [ 47 ],         
 			   	  	render: function (data, type, row) {	          
 					var htmlEx = ''           
-					if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){ 
-// 						htmlEx = '<button type="button" class="btn btn-warning btn-cancelSW">ยกเลิกโยกขาย</button>'; 
+					if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
 						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 					}        
 					else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
@@ -641,17 +637,16 @@ $(document) .ready( function() {
 					return  htmlEx      
 					}       
 				} ,    
-				{ targets : [ 47 ],     
+				{ targets : [ 48 ],     
 			   	  	render: function (data, type, row) {	     
 					var htmlEx = ''    
 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
 					return  htmlEx      
 					}         
 				} ,        
-				{ targets : [ 48 ],     
+				{ targets : [ 49 ],     
 			   	  	render: function (data, type, row) {	     
-						var htmlEx = ''    
-// 							console.log(new Date())       
+						var htmlEx = ''       
 						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
 						return  htmlEx      
 						}       
@@ -716,7 +711,7 @@ $(document) .ready( function() {
 // 			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();
 			MainTable.column(indexAfterReCol).search( '^$', true, false ).draw();
 		}     
-		else if(indexAfterReCol == 25 || indexAfterReCol == 26 ){
+		else if(indexAfterReCol == 26 || indexAfterReCol == 27 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  } 
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
@@ -726,8 +721,8 @@ $(document) .ready( function() {
 			else{regrex = ''+searchVal+''; }
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
 		}   
-		else if(indexAfterReCol == 4 ||  indexAfterReCol == 29 || indexAfterReCol == 30 || indexAfterReCol == 31 ||
-				indexAfterReCol == 33 || indexAfterReCol == 34 || indexAfterReCol == 40 ){
+		else if(indexAfterReCol == 4 ||  indexAfterReCol == 30 || indexAfterReCol == 31 || indexAfterReCol == 32 ||
+				indexAfterReCol == 34 || indexAfterReCol == 35 || indexAfterReCol == 41 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  }
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
@@ -737,8 +732,7 @@ $(document) .ready( function() {
 			else{regrex = ''+searchVal+''; }
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
 		}
-		else{    
-// 			MainTable.column($(this).data('index')).search(searchVal).draw();  
+		else{     
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
 	});   
@@ -1642,8 +1636,7 @@ function searchByDetail(){
 	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
 	var material = document.getElementById("input_material").value .trim(); 
 	var po = document.getElementById("input_PO").value .trim(); 
-	var labNo = document.getElementById("input_labNo").value .trim(); 
-// 	var userStatus = document.getElementById("SL_userStatus").value .trim(); 
+	var labNo = document.getElementById("input_labNo").value .trim();  
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var deliStatus = document.getElementById("SL_delivStatus").value .trim(); 
 	var dmCheck = document.getElementById("check_DM").checked;  
@@ -1714,8 +1707,7 @@ function createInputDateJsonData(val,caseSave){
 	   ',"delayedDepartment": '+JSON.stringify(DelayedDepartment)+   
 	   ',"causeOfDelay": '+JSON.stringify(CauseOfDelay)+    
 	   ',"sendCFMCusDate": '+JSON.stringify(SendCFMCusDate)+    
-	   '} ';         
-// 	   console.log(json)   
+	   '} ';          
 	   return json; 
 }
 function createJsonData(){ 

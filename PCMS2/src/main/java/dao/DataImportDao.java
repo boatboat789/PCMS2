@@ -1,5 +1,5 @@
 package dao;
- 
+
 import entities.UserDetail;
 
 public interface DataImportDao {

@@ -1,9 +1,9 @@
 package entities;
 
-public class ReceipeDetail {  
+public class ReceipeDetail {
 	private String no;
 	private String lotNo;
-	private String postingDate; 
+	private String postingDate;
 	private String receipe;
 	public ReceipeDetail(String no, String lotNo, String postingDate, String receipe) {
 		super();
@@ -35,7 +35,7 @@ public class ReceipeDetail {
 	}
 	public void setReceipe(String receipe) {
 		this.receipe = receipe;
-	}  
- 
-	
+	}
+
+
 }

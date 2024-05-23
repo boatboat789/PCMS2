@@ -1,27 +1,29 @@
 	package service;
 
 import java.io.File;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
+
 import info.FtpSapInfo;
 import info.SqlInfo;
-import model.SORModel; 
+import model.SORModel;
 import th.in.totemplate.core.net.FtpReceive;
 import th.in.totemplate.core.sql.Database;
- 
+
 @EnableAsync
-public class BackGroundJob { 
+public class BackGroundJob {
 	private String LOCAL_DIRECTORY;
 	private String FTP_DIRECTORY;
 	private FtpTaskRunner ftr;
 //	private int i = 0;
-	@Autowired 
-	private ServletContext context; 	 
-	public BackGroundJob() { /* TODO document why this constructor is empty */ }  
+	@Autowired
+	private ServletContext context;
+	public BackGroundJob() { /* TODO document why this constructor is empty */ }
 //    @Bean(name = "PCMS2-BGJOB")
 //    public TaskExecutor taskExecutor() {
 //        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -32,32 +34,32 @@ public class BackGroundJob {
 //        executor.initialize();
 	//        return executor;
 	//    }
-	@Async 
-//	@Scheduled(fixedDelay = 100000)   
-	@Scheduled(cron = "0 4/10 * * * *")        
-    public void sortBackGround1() {	   
+	@Async
+//	@Scheduled(fixedDelay = 10000000)
+	@Scheduled(cron = "0 4/10 * * * *")
+    public void sortBackGround1() {
 //		System.out.println("start");
 //		if(i== 0) {
 			LOCAL_DIRECTORY = context.getRealPath("/") + context.getInitParameter("DIR_UPLOAD");
 			FTP_DIRECTORY = context.getInitParameter("FTP_PATH");
 			// Creating a File object
 			File file = new File(LOCAL_DIRECTORY);
-			// Creating the directory 
+			// Creating the directory
+			@SuppressWarnings("unused")
 			boolean bool = file.mkdir();
-			try {	 
+			try {
 				ftr = new FtpTaskRunner(new Database(SqlInfo.getInstance()), new FtpReceive(FtpSapInfo.getInstance(), FTP_DIRECTORY, LOCAL_DIRECTORY));
-				ftr.loadFTP();     
-			} catch (Exception e) {  
+				ftr.loadFTP();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 //			i+=1;
-//		}
-//		System.out.println("stop");
-	}      
+//		} 
+	}
 	@Async
-	@Scheduled(cron = "0 0 1 * * *")    
-	public void sortBackGroundTwo() { 
-		SORModel model = new SORModel(); 
-		model.upSertSORToPCMS(); 
-	}  
+	@Scheduled(cron = "0 0 1 * * *")
+	public void sortBackGroundTwo() {
+		SORModel model = new SORModel();
+		model.upSertSORToPCMS();
+	}
 }

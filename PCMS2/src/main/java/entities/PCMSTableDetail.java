@@ -15,13 +15,13 @@ public class PCMSTableDetail {
 	private String billQuantity;
 	private String saleUnit;
 	private String productionOrder;
-	private String totalQuantity;  
+	private String totalQuantity;
 	private String planGreigeDate;
 	private String greigeInDate;
 	private String userStatus;
 	private String labStatus;
 	private String dueDate;
-	
+
 	private String prepare;
 	private String preset;
 	private String dyePlan;
@@ -31,41 +31,41 @@ public class PCMSTableDetail {
 	private String finishing;
 	private String inspectation;
 	private String cfmPlanDate;    // Input on web
-	private String cfmDateActual;  // 
+	private String cfmDateActual;  //
 	private String cfmDetailAll ;
 	private String rollNoRemarkAll ;
-	private String deliveryDate;   // Input on web 
-	private String lotShipping;  
-	
-	private String labNo; 
-	private String customerName; 
+	private String deliveryDate;   // Input on web
+	private String lotShipping;
+
+	private String labNo;
+	private String customerName;
 	private String customerShortName;
 	private String saleNumber;
 	private String saleFullName;
-	
+
 	private String saleOrderCreateDate;
 	private String productionOrderCreateDate;
 	private String materialNo;
-	private String deliveryStatus; 
+	private String deliveryStatus;
 	private String saleStatus ;
 	private String lotNo;
-	private String shipDate ;  
-	private String userId ;   
-	private List<String> userStatusList; 
-	private List<String> customerNameList; 
-	private List<String> customerShortNameList; 
-	private List<String> divisionList; 
+	private String shipDate ;
+	private String userId ;
+	private List<String> userStatusList;
+	private List<String> customerNameList;
+	private List<String> customerShortNameList;
+	private List<String> divisionList;
 	private String iconStatus;
 	private String systemStatus;
 	private String relax;
 	private int no;
-	private String division; 
-	private String typePrd;  
-	private String typePrdRemark ;  
+	private String division;
+	private String typePrd;
+	private String typePrdRemark ;
 	private String sendCFMCusDate;
 	private String purchaseOrder;
 	private String customerDivision;
-	private String forPage ; 
+	private String forPage ;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
 			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
 			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
@@ -80,7 +80,7 @@ public class PCMSTableDetail {
 			String cfmDetailAll,
 			String rollNoRemarkAll  ) {
 		super();
-		
+
 		this. cfmDetailAll = cfmDetailAll;
 		this. rollNoRemarkAll = rollNoRemarkAll;
 		this.planGreigeDate = PlanGreigeDate;
@@ -110,7 +110,7 @@ public class PCMSTableDetail {
 		this.dyeActual = dyeActual;
 		this.dryer = Dryer;
 		this.finishing = finishing;
-		this.inspectation = inspectation;  
+		this.inspectation = inspectation;
 		this.cfmPlanDate = CFMPlanDate;
 		this.cfmDateActual = cFMDateActual;
 		this.deliveryDate = DeliveryDate;
@@ -134,30 +134,30 @@ public class PCMSTableDetail {
 	}
 	public PCMSTableDetail() {
 		// TODO Auto-generated constructor stub
-	} 
+	}
 	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel,
 			String productionOrder, String userStatus, String dueDate, String labNo, String customerShortName,
 			String saleNumber, String saleCreateDate, String prdCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus, String customerName,int no,String userId, String division,String PurchaseOrder) { 
+			String saleStatus, String customerName,int no,String userId, String division,String PurchaseOrder) {
 		this.no = no;
 		this.purchaseOrder  =PurchaseOrder;
 		this.userId = userId;
-		this.saleOrder = saleOrder; 
+		this.saleOrder = saleOrder;
 		this.designFG = designFG;
 		this.articleFG = articleFG;
-		this.distChannel = distChannel; 
-		this.productionOrder = productionOrder; 
-		this.userStatus = userStatus; 
-		this.dueDate = dueDate;  
+		this.distChannel = distChannel;
+		this.productionOrder = productionOrder;
+		this.userStatus = userStatus;
+		this.dueDate = dueDate;
 		this.labNo = labNo;
 		this.customerName = customerName;
 		this.customerShortName = customerShortName;
-		this.saleNumber = saleNumber; 
+		this.saleNumber = saleNumber;
 		this.saleOrderCreateDate = saleCreateDate;
 		this.productionOrderCreateDate = prdCreateDate;
 		this.materialNo = materialNo;
 		this.deliveryStatus = deliveryStatus;
-		this.saleStatus = saleStatus; 
+		this.saleStatus = saleStatus;
 		this.division = division;
 	}
 	public String getCfmDetailAll() {
@@ -165,7 +165,7 @@ public class PCMSTableDetail {
 	}
 	public void setCfmDetailAll(String cfmDetailAll) {
 		this.cfmDetailAll = cfmDetailAll;
-	} 
+	}
 	public String getRollNoRemarkAll() {
 		return rollNoRemarkAll;
 	}
@@ -513,8 +513,8 @@ public class PCMSTableDetail {
 	}
 	public void setCustomerDivision(String customerDivision) {
 		this.customerDivision = customerDivision;
-	}  
-	
-	
-	
+	}
+
+
+
 }

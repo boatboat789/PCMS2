@@ -27,7 +27,7 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
    public DataImportSaleInputDaoImpl(Database database, FtpReceive ftp) {
       this.database = database;
       this.ftp = ftp;
-      this.message = ""; 
+      this.message = "";
       this.maxfield = 13;
    }
 
@@ -35,7 +35,8 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
       return this.message;
    }
 
-   public int loadDataFile(UserDetail user, String fullname) {
+   @Override
+public int loadDataFile(UserDetail user, String fullname) {
       boolean success = false;
       try {
           if( this.fileReader(fullname) > 0 ) {
@@ -46,12 +47,14 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
       return ( (success) ? 1 : 0 );
    }
 
-   public int loadDataFTP(UserDetail user) {
+   @Override
+public int loadDataFTP(UserDetail user) {
       boolean success = false;
+      @SuppressWarnings("unused")
       int     value   = 0;
-      try { 
+      try {
     	  if( FtpReceive.STATUS.SUCCESS == this.ftp.receive()){
-              for(File file : this.ftp.getFiles()) { 
+              for(File file : this.ftp.getFiles()) {
                   value += this.loadDataFile( new UserDetail("SYSTEM", ""), file.getAbsolutePath()  );
               }
         	 success = true;
@@ -64,45 +67,47 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
       return success ? 1 : 0;
    }
 
-   public int loadDataFTP(UserDetail user, String fullname) {
+   @Override
+public int loadDataFTP(UserDetail user, String fullname) {
       throw new UnsupportedOperationException("Not supported yet.");
    }
 
-   public int loadDataSAP(UserDetail user) {
+   @Override
+public int loadDataSAP(UserDetail user) {
       throw new UnsupportedOperationException("Not supported yet.");
    }
 
    private int fileReader(String fullname) throws SQLException {
       boolean success = false;
       File file = new File(fullname);
-      FileInputStream input = null; 
+      FileInputStream input = null;
       InputStreamReader reader = null;
-      BufferedReader buffer = null;   
-      if (fullname.contains("ZSAPSALEINPUT")) {  
+      BufferedReader buffer = null;
+      if (fullname.contains("ZSAPSALEINPUT")) {
 //    	  System.out.println(fullname);
 	      if (file.exists()) {
-	         try {  
+	         try {
 	            input = new FileInputStream(file);
 	            reader = new InputStreamReader(input, "UTF-8");
 	            buffer = new BufferedReader(reader);
 	            String line = "";
 	            int counter = 0;
-	            ArrayList<DataImport> datas = new ArrayList<DataImport>();
+	            ArrayList<DataImport> datas = new ArrayList<>();
 	            while((line = buffer.readLine()) != null) {
-	               String[] field = line.split("\\|", -1);  
+	               String[] field = line.split("\\|", -1);
 	               if (field.length == this.maxfield) {
 	                  ++counter;
 	                  datas.add(new DataImport(field.length, field));
 	               } else {
 	                  this.message = "Field length is missing" +counter;
 	               }
-	            } 
+	            }
 //	            System.out.println("hi");
 	            if (!datas.isEmpty()) {
-	               this.clearData();  
-	               this.insertData(datas); 
+	               this.clearData();
+	               this.insertData(datas);
 	               this.database.update("EXEC spd_UpsertToSaleInput");
-//	               System.out.println("EXEC spd_UpsertToSaleInput"); 
+//	               System.out.println("EXEC spd_UpsertToSaleInput");
 	               success = true;
 	            }
 	         } catch (FileNotFoundException var31) {
@@ -114,10 +119,10 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
 	         } finally {
 	        	    try { if(buffer != null) { buffer.close(); } } catch(IOException e) { }
 	                try { if(reader != null) { reader.close(); } } catch(IOException e) { }
-	                try { if(input != null)  { input.close(); } }  catch(IOException e) { } 
+	                try { if(input != null)  { input.close(); } }  catch(IOException e) { }
 	         }
 	      }
-      } 
+      }
       return success ? 1 : 0;
    }
 
@@ -129,19 +134,20 @@ public class DataImportSaleInputDaoImpl implements DataImportDao {
             String sql = "INSERT INTO [PCMS].[dbo].[SapTempSaleInput] "
             		+ " (F001, F002, F003, F004, F005, F006, F007, F008, F009, F010, "
             		+ "	 F011, F012, F013 ) "
-            		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " 
+            		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
             		+ "         ?, ?, ?"
-            		+ " )"; 
+            		+ " )";
             Connection connection = this.database.getConnection();
             PreparedStatement prepared = connection.prepareStatement(sql);
-            int i = 0; 
+            int i = 0;
             for(DataImport data : datas) {
-                for(i=0; i<data.getMax(); i++) {                       
+                for(i=0; i<data.getMax(); i++) {
                     prepared.setString(i+1,  data.getField(i).trim());
-                } 
+                }
                 prepared.addBatch();
-            }  
+            }
             prepared.executeBatch();
+			prepared.close();
             value = i;
          } catch (SQLException var9) {
             throw new RuntimeException();

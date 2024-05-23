@@ -100,5 +100,5 @@ public class PODetail {
 	}
 	public void setPoPostingDateDefault(String poPostingDateDefault) {
 		this.poPostingDateDefault = poPostingDateDefault;
-	} 
+	}
 }

@@ -10,7 +10,7 @@ public class PCMSAllDetail {
 	  private String productionOrderCreateDate;
 	  private String dueDate;
       private String saleOrder;
-      private String saleLine; 
+      private String saleLine;
 	  private String purchaseOrder;
 	  private String articleFG;
 	  private String designFG;
@@ -47,18 +47,18 @@ public class PCMSAllDetail {
 	  private ArrayList<PresetDetail> presetDetailList;
 	  private ArrayList<DyeingDetail> dyeingDetailList;
 	  private ArrayList<SendTestQCDetail> sendTestQCDetailList;
-	  private ArrayList<FinishingDetail> finishingDetailList; 
+	  private ArrayList<FinishingDetail> finishingDetailList;
 	  private ArrayList<InspectDetail> inspectDetailList;
 	  private ArrayList<PackingDetail> packingDetailList;
 	  private ArrayList<WorkInLabDetail> workInLabDetailList;
 	  private ArrayList<WaitTestDetail> waitTestDetailList;
 	  private ArrayList<CFMDetail> cfmDetailList;
-	  private ArrayList<SaleDetail> saleDetailList; 
-	  private ArrayList<SaleInputDetail> saleInputDetailList; 
+	  private ArrayList<SaleDetail> saleDetailList;
+	  private ArrayList<SaleInputDetail> saleInputDetailList;
 	  private ArrayList<InputDateDetail> submitDateDetailList ;
 	  private ArrayList<NCDetail> ncDetailList;
 	  private ArrayList<ReceipeDetail> receipeDetailList;
-	  
+
 	public PCMSAllDetail(String productionOrder, String lotNo, String batch, String labNo, String prdCreateDate,
 			String dueDate, String saleOrder, String saleLine, String purchaseOrder, String articleFG, String designFG,
 			String customerName,String customerShortName ,String shade, String bookNo, String center, String materialNo, String volumn,
@@ -135,7 +135,7 @@ public class PCMSAllDetail {
 	}
 	public void setLabNo(String labNo) {
 		this.labNo = labNo;
-	} 
+	}
 	public String getProductionOrderCreateDate() {
 		return productionOrderCreateDate;
 	}
@@ -441,5 +441,5 @@ public class PCMSAllDetail {
 	}
 	public void setReceipeDetailList(ArrayList<ReceipeDetail> receipeDetailList) {
 		this.receipeDetailList = receipeDetailList;
-	} 
+	}
 }

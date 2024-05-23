@@ -2,11 +2,10 @@ package dao.master;
 
 import java.util.ArrayList;
 
-import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
-import entities.SwitchProdOrderDetail; 
+import entities.SwitchProdOrderDetail;
 public interface SwitchProdOrderDao {
-  
+
 	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderDetailByProdOrder(String prodOrder);
 
 	PCMSSecondTableDetail updateSwitchProdOrderDetail(PCMSSecondTableDetail bean, String dataStatus);
@@ -20,7 +19,7 @@ public interface SwitchProdOrderDao {
 	ArrayList<SwitchProdOrderDetail> getSWProdOrderDetailByPrd(String prodOrder);
 
 	PCMSSecondTableDetail upsertSwitchProdOrder(PCMSSecondTableDetail bean, String dataStatus);
- 
- 
+
+
 
 }

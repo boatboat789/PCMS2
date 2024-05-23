@@ -3,13 +3,14 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import dao.BackGroundJobDao;
 import th.in.totemplate.core.sql.Database;
 
-public class BackGroundJobDaoImpl implements BackGroundJobDao { 
+public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	private Database database;
 	private String message;
- 
+
 	public BackGroundJobDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
@@ -17,7 +18,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 	public String getMessage() {
 		return this.message;
-	} 
+	}
 	@Override
 	public void execUpsertToMainProd() {
 		// TODO Auto-generated method stub
@@ -27,9 +28,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
 			prepared.execute();
+			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}
+		} 
 	}
 	@Override
 	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder) {
@@ -40,9 +42,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			PreparedStatement prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prodOrder);
 			prepared.execute();
+			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}
+		} 
 	}
 	@Override
 	public void execUpsertToTEMPProdWorkDate() {
@@ -53,9 +56,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
 			prepared.execute();
+			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}
+		}  
 	}
 
 	@Override
@@ -67,8 +71,9 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
 			prepared.execute();
+			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}
-	} 
+		}  
+	}
 }

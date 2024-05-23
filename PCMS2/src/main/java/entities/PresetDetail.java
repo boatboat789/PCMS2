@@ -20,5 +20,5 @@ public class PresetDetail {
 	public void setWorkCenter(String workCenter) {
 		this.workCenter = workCenter;
 	}
-	
+
 }

@@ -14,7 +14,7 @@ public class ColumnHiddenDetail {
 		super();
 		this.userId = userId;
 		this.colVisibleDetail = ColVisibleDetail;
-		this.colVisibleSummary = ColVisibleSummary; 
+		this.colVisibleSummary = ColVisibleSummary;
 	}
 	public ColumnHiddenDetail() {
 		// TODO Auto-generated constructor stub
@@ -54,5 +54,5 @@ public class ColumnHiddenDetail {
 	}
 	public void setSystemStatus(String systemStatus) {
 		this.systemStatus = systemStatus;
-	} 
+	}
 }

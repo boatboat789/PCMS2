@@ -35,6 +35,6 @@ public class SORDetail {
 	}
 	public void setLastUpdate(String lastUpdate) {
 		this.lastUpdate = lastUpdate;
-	} 
-	
+	}
+
 }

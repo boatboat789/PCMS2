@@ -1,9 +1,9 @@
 package entities;
 
-public class TempUserStatusAutoDetail { 
-	private String productionOrder;  
+public class TempUserStatusAutoDetail {
+	private String productionOrder;
 	private String saleOrder;
-	private String saleLine;  
+	private String saleLine;
 	private String productionOrderRPM;
 	private String volume;
 	private String grade;
@@ -25,7 +25,7 @@ public class TempUserStatusAutoDetail {
 		this.volume = volume;
 		this.grade = grade;
 		this.userStatusCal = userStatusCal;
-		this.userStatusCalRP = userStatusCalRP; 
+		this.userStatusCalRP = userStatusCalRP;
 	}
 	public String getProductionOrder() {
 		return productionOrder;
@@ -86,6 +86,6 @@ public class TempUserStatusAutoDetail {
 	}
 	public void setSystemStatus(String systemStatus) {
 		this.systemStatus = systemStatus;
-	} 
-	
+	}
+
 }

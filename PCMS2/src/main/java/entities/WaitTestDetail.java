@@ -1,6 +1,6 @@
 package entities;
 
-public class WaitTestDetail { 
+public class WaitTestDetail {
 	private String no;
 	private String dateInTest;
 	private String dateOutTest;
@@ -43,5 +43,5 @@ public class WaitTestDetail {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	} 
+	}
 }

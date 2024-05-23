@@ -1,11 +1,11 @@
 package entities;
- 
+
 
 public class InspectDetail {
-	private String postingDate = ""; 
-	private String quantityGreige = ""; 
-	private String operation = ""; 
-	private String quantityFG = ""; 
+	private String postingDate = "";
+	private String quantityGreige = "";
+	private String operation = "";
+	private String quantityFG = "";
 	private String remark = "";
 	public InspectDetail(String postingDate, String quantityGreige, String operation, String quantityFG,
 			String remark) {
@@ -45,5 +45,5 @@ public class InspectDetail {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	} 
+	}
 }

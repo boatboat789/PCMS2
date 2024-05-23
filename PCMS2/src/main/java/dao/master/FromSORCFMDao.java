@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import entities.SORDetail;
 
-public interface FromSORCFMDao { 
+public interface FromSORCFMDao {
 
 	String upSertFromSORCFMDetail(ArrayList<SORDetail> list);
 

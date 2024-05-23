@@ -2,14 +2,12 @@ package model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.servlet.http.HttpServlet;
 
 import dao.PCMSMainDao;
 import dao.implement.PCMSMainDaoImpl;
-import entities.ColumnHiddenDetail;
-import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
-import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
@@ -42,7 +40,8 @@ public class PCMSMainModel extends HttpServlet {
 	      return "".replaceAll("'", "").split(",");
 	   }
 
-	   public void destroy() {
+	   @Override
+	public void destroy() {
 	      this.database.close();
 	      super.destroy();
 	   }
@@ -51,7 +50,7 @@ public class PCMSMainModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.searchByDetail(poList, isCustomer);
 		return list;
-	}  
+	}
 	public  ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getPrdDetailByRow(poList);
@@ -59,10 +58,10 @@ public class PCMSMainModel extends HttpServlet {
 	}
 
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
-		// TODO Auto-generated method stub   
+		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
-	}  
+	}
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
@@ -73,6 +72,6 @@ public class PCMSMainModel extends HttpServlet {
 		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
 		return list;
 	}
- 
- 
+
+
 }

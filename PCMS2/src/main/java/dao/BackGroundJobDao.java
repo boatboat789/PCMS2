@@ -1,6 +1,6 @@
 package dao;
 
-public interface BackGroundJobDao { 
+public interface BackGroundJobDao {
 	void execUpsertToMainProd();
 
 	void execUpsertToTEMPProdWorkDate();

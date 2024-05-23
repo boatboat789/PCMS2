@@ -14,16 +14,16 @@ import th.in.totemplate.core.sql.Database;
 
 public class PlanCFMDateModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
-	   private Database database; 
+	   private Database database;
 	   private PlanCFMDateDao dao;
-	   @SuppressWarnings("unused")	
+	   @SuppressWarnings("unused")
 	   private String[] uiColumns;
 	   @SuppressWarnings("unused")
 	   private static final String columns = "";
 
 	   public PlanCFMDateModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance()); 
+	         this.database = new Database(SqlInfo.getInstance());
 	         this.dao = new PlanCFMDateDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {
@@ -40,7 +40,8 @@ public class PlanCFMDateModel extends HttpServlet {
 	      return "".replaceAll("'", "").split(",");
 	   }
 
-	   public void destroy() {
+	   @Override
+	public void destroy() {
 	      this.database.close();
 	      super.destroy();
 	   }
@@ -60,5 +61,5 @@ public class PlanCFMDateModel extends HttpServlet {
 		ArrayList<InputDateDetail> list = this.dao.getMaxCFMPlanDateDetail(poList);
 		return list;
 	}
- 
+
 }

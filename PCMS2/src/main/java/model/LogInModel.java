@@ -44,16 +44,16 @@ public class LogInModel extends HttpServlet {
    public void destroy() {
       this.database.close();
       super.destroy();
-   } 
+   }
    public UserDetail getUserDetail(String userId ) {
 	   UserDetail bean = this.dao.getUserDetail(userId);
 		return bean;
-	}  
+	}
 	public String descryptedText(String encryptedText) {
 		String userId = this.dao.descryptedText(encryptedText);
 		return userId ;
 		// TODO Auto-generated method stub
-	 
+
 	}
 
 	public ArrayList<ConfigCustomerUserDetail> getConfigCustomerUserDetail(String userId) {
@@ -64,5 +64,5 @@ public class LogInModel extends HttpServlet {
 	public UserDetail getUserDetail(String userId, String userPassword) {
 		   UserDetail bean = this.dao.getUserDetail(userId,userPassword);
 			return bean;
-	} 
+	}
 }

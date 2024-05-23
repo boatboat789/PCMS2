@@ -1,9 +1,9 @@
 package entities;
 
-public class SwitchProdOrderDetail { 
+public class SwitchProdOrderDetail {
 	private String saleOrder;
-	private String saleLine;  
-	private String productionOrder; 
+	private String saleLine;
+	private String productionOrder;
 	private String saleOrderSW;
 	private String saleLineSW;
 	private String productionOrderSW;
@@ -99,6 +99,6 @@ public class SwitchProdOrderDetail {
 	}
 	public void setSystemStatus(String systemStatus) {
 		this.systemStatus = systemStatus;
-	} 
-	
+	}
+
 }

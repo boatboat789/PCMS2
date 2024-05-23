@@ -60,5 +60,5 @@ public class SendTestQCDetail {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	} 
+	}
 }

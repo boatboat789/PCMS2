@@ -16,6 +16,7 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
@@ -30,12 +31,12 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 
 	public String getMessage() {
 		return this.message;
-	} 
+	}
 	@Override
 	public ArrayList<InputDateDetail> getCountDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
-		PCMSSecondTableDetail bean = poList.get(0); 
-		String sql = 
+		PCMSSecondTableDetail bean = poList.get(0);
+		String sql =
 				    " SELECT distinct count(a.[ProductionOrder]) as countAll \r\n"
 		 		  + " FROM [PCMS].[dbo].[PlanDeliveryDate] as a\r\n"
 		 		  + " inner join (select distinct [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,max([CreateDate]) as [MaxCreateDate]\r\n"
@@ -45,9 +46,9 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and\r\n"
 		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
 		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+bean.getDeliveryDate()+ "',103) ";
-		 		  ; 
+
 		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<InputDateDetail>();
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
 		}
@@ -57,8 +58,8 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 	public ArrayList<InputDateDetail> getMaxDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
-		String sql = 
+		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String sql =
 				    " SELECT distinct \r\n"
 				  + "       a.[ProductionOrder]  \r\n"
 				  + "      ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] ,[CreateBy]\r\n"
@@ -74,9 +75,9 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 		 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
 		 		  + "       a.[SaleLine] = '" + saleLine+ "' and \r\n"
 		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+bean.getDeliveryDate()+ "',103) ";
-		 		  ; 
+
 		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<InputDateDetail>();
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
 		}

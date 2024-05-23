@@ -16,46 +16,46 @@
 //import entities.ConfigCustomerUserDetail;
 //import entities.UserDetail;
 //import model.LogInModel;
-//import model.PCMSMainModel; 
+//import model.PCMSMainModel;
 ////@Controller
 ////@RequestMapping({ "/" ,""})
-//public class MainController { 
+//public class MainController {
 //	@Autowired
 //	public ServletContext context;
-//   
-//	public MainController() { 
-//	}   
+//
+//	public MainController() {
+//	}
 ////    @RequestMapping(value="/{url}", method = RequestMethod.GET)
 ////    public String method(@PathVariable("url") String url) {
 ////    	String redirectUrl = url;
 ////    	return "redirect:" + redirectUrl;
-////    }   
+////    }
 ////    @RequestMapping(method = { RequestMethod.GET })
-////	public ModelAndView test(HttpSession session) {
+////	public ModelAndView getModelAndView(HttpSession session) {
 ////		ModelAndView mv = new ModelAndView();
 ////		mv.setViewName("PCMSMain/PCMSMain");
-////		return mv;    
-////	}     
+////		return mv;
+////	}
 //	@RequestMapping(value = { "/" }, method = { RequestMethod.GET })
 //	public ModelAndView home1(HttpSession session, HttpServletResponse response,HttpServletRequest req) {
 //		ModelAndView mv = new ModelAndView();
-//		Gson g = new Gson();    
-//		LogInModel logInModel = new LogInModel( );	   
+//		Gson g = new Gson();
+//		LogInModel logInModel = new LogInModel( );
 //		PCMSMainModel model = new PCMSMainModel();
-//		String user = (String) session.getAttribute("user");  
-//		UserDetail userObject = (UserDetail) session.getAttribute("userObject");  
+//		String user = (String) session.getAttribute("user");
+//		UserDetail userObject = (UserDetail) session.getAttribute("userObject");
 //		ArrayList<ColumnHiddenDetail> list = model.getColVisibleDetail(user);
 //		String[] arrayCol = null  ;
-//		if(list.size() == 0) { }    
-//		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }   
+//		if(list.size() == 0) { }
+//		else {  arrayCol = list.get(0).getColVisibleSummary().split(","); }
 //		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
-//		String OS = System.getProperty("os.name").toLowerCase();	 
+//		String OS = System.getProperty("os.name").toLowerCase();
 //		boolean isCustomer = false ;
 //		if(userObject != null) {
 //			isCustomer = userObject.getIsCustomer();
 //		}
-//		mv.setViewName("PCMSMain/PCMSMain");   
-//		mv.addObject("OS", g.toJson(OS));  
+//		mv.setViewName("PCMSMain/PCMSMain");
+//		mv.addObject("OS", g.toJson(OS));
 //		mv.addObject("UserID", g.toJson(user));
 //		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 //		mv.addObject("ColList", g.toJson(arrayCol));
@@ -66,6 +66,6 @@
 //		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
 //		mv.addObject("CusNameList", g.toJson(model.getCustomerNameList()));
 //		mv.addObject("CusShortNameList", g.toJson(model.getCustomerShortNameList()));
-//		return mv;   
-//	}   
+//		return mv;
+//	}
 //}

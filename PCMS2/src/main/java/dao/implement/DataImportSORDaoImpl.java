@@ -1,13 +1,7 @@
 package dao.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +13,14 @@ import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
 public class DataImportSORDaoImpl implements DataImportSORDao {
-	private Database database; 
+	private Database database;
+	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String message;
 	private BeanCreateModel bcModel = new BeanCreateModel();
 
 	public DataImportSORDaoImpl(Database database) {
-		this.database = database; 
+		this.database = database;
 		this.message = "";
 	}
 
@@ -33,16 +28,17 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 		return this.message;
 	}
 
-   public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");  
+   public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
    @Override
-	public void upSertSORToPCMS() { 
+	public void upSertSORToPCMS() {
 	   FromSORCFMModel fscModel = new FromSORCFMModel();
-		ArrayList<SORDetail> list = this.getSORdetail(); 
+		ArrayList<SORDetail> list = this.getSORdetail();
+	      @SuppressWarnings("unused")
 		String value = fscModel.upSertFromSORCFMDetail(list);
-   } 
+   }
    private ArrayList<SORDetail> getSORdetail() {
       ArrayList<SORDetail> list = null;
-      String sql = "" 
+      String sql = ""
     		  + " SELECT DISTINCT  viewPCMS2.[SO_NO]\r\n"
     		  + "      		      ,viewPCMS2.[SO_Line]  \r\n"
     		  + "				  ,viewPCMS2.CFM_DATE\r\n"
@@ -54,13 +50,13 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
     		  + "      		  where SaleOrderId is not null and POLI.IsActive = 1   \r\n"
     		  + "      		  	   and (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n"
     		  + " "
-      		+ "  "; 
+      		+ "  ";
       List<Map<String, Object>> datas = this.database.queryList(sql);
-      list = new ArrayList<SORDetail>();
+      list = new ArrayList<>();
       for (Map<String, Object> map : datas) {
     	  list.add(this.bcModel._genSORDetail(map));
       }
       return list;
    }
- 
+
 }

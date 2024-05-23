@@ -1,17 +1,17 @@
 package model;
 
 import java.sql.SQLException;
+
 import javax.servlet.http.HttpServlet;
 
 import dao.DataImportSORDao;
 import dao.implement.DataImportSORDaoImpl;
 import info.SORSqlInfo;
-import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
 public class SORModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
-	   private Database database; 
+	   private Database database;
 	   private DataImportSORDao dao;
 	   @SuppressWarnings("unused")
 	   private String[] uiColumns;
@@ -19,7 +19,7 @@ public class SORModel extends HttpServlet {
 	   private static final String columns = "";
 
 	   public SORModel() {
-	      try { 
+	      try {
 	         this.database = new Database(SORSqlInfo.getInstance());
 	         this.dao = new DataImportSORDaoImpl( this.database);
 	         this.uiColumns = arrayColumn();
@@ -37,14 +37,15 @@ public class SORModel extends HttpServlet {
 	      return "".replaceAll("'", "").split(",");
 	   }
 
-	   public void destroy() {
+	   @Override
+	public void destroy() {
 	      this.database.close();
 	      super.destroy();
 	   }
-	  
-	   public void upSertSORToPCMS( ) { 
-		   this.dao.upSertSORToPCMS(); 
-	   } 
 
- 
+	   public void upSertSORToPCMS( ) {
+		   this.dao.upSertSORToPCMS();
+	   }
+
+
 }

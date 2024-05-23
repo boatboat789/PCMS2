@@ -9,7 +9,7 @@
 //	private String firstName;
 //	private String astName;
 //	private String Role;
-//	private String Department; 
+//	private String Department;
 //    private String Email;
 //    private String ArrangedBy;
 //    private String AuthorizedBy;
@@ -21,7 +21,7 @@
 //    private String ChangeBy;
 //    private Date ChangeDate;
 //    private String RegistBy;
-//    private Date RegistDate;  
+//    private Date RegistDate;
 //    private String UserType;
 //    private boolean IsCustomer;
 //    private String aNoNe = "ddddddddddddddddddddddddddd";
@@ -29,7 +29,7 @@
 //			String department, String email, String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
 //			String permitId,Date lastSignDate, String responsible, String changeBy, Date changeDate, String registBy, Date registDate,
 //			String UserType,boolean IsCustomer) {
-//		super(); 
+//		super();
 //		this.LastSignDate = lastSignDate;
 //		this.UserType = UserType;
 //		this.Id = id;
@@ -65,16 +65,16 @@
 //		// TODO Auto-generated constructor stub
 //	}
 //
-////	 public UserDetail(String userId, String password, String machine) { 
-//////		 this(0, userId, password, machine, null, null, null, null, null, false, false, "", "", null, "", null, "", null); 
+////	 public UserDetail(String userId, String password, String machine) {
+//////		 this(0, userId, password, machine, null, null, null, null, null, false, false, "", "", null, "", null, "", null);
 ////	 }
-//	 
+//
 //
 //	public UserDetailOld(String UserType, String UserId) {
 //		// TODO Auto-generated constructor stub
 //		this.UserType = UserType;
-//		this.UserId = UserId;  
-//		Id = 0; 
+//		this.UserId = UserId;
+//		Id = 0;
 //		Password = "";
 //		FirstName = "";
 //		LastName = "";
@@ -266,6 +266,6 @@
 ////	public String toString() {
 ////		return this.UserId ;
 ////	}
-// 
-// 
+//
+//
 //}

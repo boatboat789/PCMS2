@@ -3,7 +3,6 @@ package dao.implement;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,20 +41,22 @@ public class LogInDaoImpl implements LogInDao {
 	@Override
 	public UserDetail getUserDetail(String userId) {
 		UserDetail user = null;
-		int Id = 0;
-		String Firstname ,UserId ,PermitId ,Responsible ,ChangeBy ,RegistBy,Password ;
-		Date LastSignDate,ChangeDate,RegistDate ;
-		Boolean IsAdminSystem,IsAdminUser; 
+//		int Id = 0;
+		String Firstname ,UserId
+//		,PermitId ,Responsible ,ChangeBy ,RegistBy,Password
+		;
+//		Date LastSignDate,ChangeDate,RegistDate ;
+//		Boolean IsAdminSystem,IsAdminUser;
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ?  ";
 
              Database          database   = new Database(SqlInfo.getInstance());
              Connection        connection = database.getConnection();
-             PreparedStatement prepared   = connection.prepareStatement(sql); 
+             PreparedStatement prepared   = connection.prepareStatement(sql);
              try {
-                 prepared.setString(1, userId); 
+                 prepared.setString(1, userId);
 
-                 ResultSet resultset = prepared.executeQuery(); 
+                 ResultSet resultset = prepared.executeQuery();
                  if(resultset.next()) {
 
                      Firstname = "";
@@ -67,15 +68,15 @@ public class LogInDaoImpl implements LogInDao {
       				 if (resultset.getString("UserId") != null) {
       					UserId = resultset.getString("UserId");
           			 }
-      				Password = "";
-     				 if (resultset.getString("Password") != null) {
-     					Password = resultset.getString("Password");
-         			 }
+//      				Password = "";
+//     				 if (resultset.getString("Password") != null) {
+//     					Password = resultset.getString("Password");
+//         			 }
                 	 user = new UserDetail();
-                     user.setId(resultset.getInt("Id")); 
+                     user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);
-                     user.setUserId(UserId);   
-//                     user.setUserId(Password);  
+                     user.setUserId(UserId);
+//                     user.setUserId(Password);
                      user.setIsSystem(resultset.getBoolean("IsAdminSystem"));
                      user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
                      user.setPermitId(resultset.getString("PermissionId"));
@@ -84,10 +85,10 @@ public class LogInDaoImpl implements LogInDao {
                      user.setChangeBy(resultset.getString("ChangeBy"));
                      user.setChangeDate(resultset.getDate("ChangeDate"));
                      user.setRegistBy(resultset.getString("RegistBy"));
-                     user.setRegistDate(resultset.getDate("RegistDate")); 
-                     user.setIsCustomer(resultset.getBoolean("IsCustomer")); 
+                     user.setRegistDate(resultset.getDate("RegistDate"));
+                     user.setIsCustomer(resultset.getBoolean("IsCustomer"));
                      user.setUserType("USER");
-                      
+
                  }
              } catch(SQLException e) {
                  System.err.println(this.getClass().getName()+" - "+e.getMessage());
@@ -109,21 +110,23 @@ public class LogInDaoImpl implements LogInDao {
 	@Override
 	public UserDetail getUserDetail(String userId,String passWord) {
 		UserDetail user = null;
-		int Id = 0;
-		String Firstname ,UserId ,PermitId ,Responsible ,ChangeBy ,RegistBy,Password ;
-		Date LastSignDate,ChangeDate,RegistDate ;
-		Boolean IsAdminSystem,IsAdminUser; 
+//		int Id = 0;
+		String Firstname ,UserId
+//		,PermitId ,Responsible ,ChangeBy ,RegistBy,Password
+		;
+//		Date LastSignDate,ChangeDate,RegistDate ;
+//		Boolean IsAdminSystem,IsAdminUser;
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ? and Password = ? ";
 
              Database          database   = new Database(SqlInfo.getInstance());
              Connection        connection = database.getConnection();
-             PreparedStatement prepared   = connection.prepareStatement(sql); 
+             PreparedStatement prepared   = connection.prepareStatement(sql);
              try {
                  prepared.setString(1, userId);
                  prepared.setString(2, passWord);
 
-                 ResultSet resultset = prepared.executeQuery(); 
+                 ResultSet resultset = prepared.executeQuery();
                  if(resultset.next()) {
 
                      Firstname = "";
@@ -135,15 +138,15 @@ public class LogInDaoImpl implements LogInDao {
       				 if (resultset.getString("UserId") != null) {
       					UserId = resultset.getString("UserId");
           			 }
-      				Password = "";
-     				 if (resultset.getString("Password") != null) {
-     					Password = resultset.getString("Password");
-         			 }
+//      				Password = "";
+//     				 if (resultset.getString("Password") != null) {
+//     					Password = resultset.getString("Password");
+//         			 }
                 	 user = new UserDetail();
-                     user.setId(resultset.getInt("Id")); 
+                     user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);
-                     user.setUserId(UserId);   
-//                     user.setUserId(Password);  
+                     user.setUserId(UserId);
+//                     user.setUserId(Password);
                      user.setIsSystem(resultset.getBoolean("IsAdminSystem"));
                      user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
                      user.setPermitId(resultset.getString("PermissionId"));
@@ -152,10 +155,10 @@ public class LogInDaoImpl implements LogInDao {
                      user.setChangeBy(resultset.getString("ChangeBy"));
                      user.setChangeDate(resultset.getDate("ChangeDate"));
                      user.setRegistBy(resultset.getString("RegistBy"));
-                     user.setRegistDate(resultset.getDate("RegistDate")); 
-                     user.setIsCustomer(resultset.getBoolean("IsCustomer")); 
+                     user.setRegistDate(resultset.getDate("RegistDate"));
+                     user.setIsCustomer(resultset.getBoolean("IsCustomer"));
                      user.setUserType("USER");
-                      
+
                  }
              } catch(SQLException e) {
                  System.err.println(this.getClass().getName()+" - "+e.getMessage());
@@ -227,11 +230,13 @@ public class LogInDaoImpl implements LogInDao {
 			while (generatedLength < keyLength + ivLength) {
 
 				// Digest data (last digest if available, password data, salt if available)
-				if (generatedLength > 0)
+				if (generatedLength > 0) {
 					md.update(generatedData, generatedLength - digestLength, digestLength);
+				}
 				md.update(password);
-				if (salt != null)
+				if (salt != null) {
 					md.update(salt, 0, 8);
+				}
 				md.digest(generatedData, generatedLength, digestLength);
 
 				// additional rounds
@@ -246,8 +251,9 @@ public class LogInDaoImpl implements LogInDao {
 			// Copy key and IV into separate byte arrays
 			byte[][] result = new byte[2][];
 			result[0] = Arrays.copyOfRange(generatedData, 0, keyLength);
-			if (ivLength > 0)
+			if (ivLength > 0) {
 				result[1] = Arrays.copyOfRange(generatedData, keyLength, keyLength + ivLength);
+			}
 
 			return result;
 
@@ -262,8 +268,8 @@ public class LogInDaoImpl implements LogInDao {
 
 	@Override
 	public ArrayList<ConfigCustomerUserDetail> getConfigCustomerUserDetail(String userId) {
-		ArrayList<ConfigCustomerUserDetail> list = null;  
-		String sql = 
+		ArrayList<ConfigCustomerUserDetail> list = null;
+		String sql =
 				  " SELECT [Id]\r\n"
 				  + "      ,[EmployeeID]\r\n"
 				  + "      ,[CustomerNo]\r\n"
@@ -276,15 +282,15 @@ public class LogInDaoImpl implements LogInDao {
 				  + "      ,[IsInspectPathBtn]\r\n"
 				  + "      ,[IsSFCPathBtn]\r\n"
 				  + "      ,[DataStatus]\r\n"
-				  + "  FROM [PCMS].[dbo].[ConfigCustomerUser] as a\r\n" 
-			  	+ " where a.[EmployeeID] = '" + userId+ "' \r\n"  
-			  	+ " ORDER BY EmployeeID desc "; 
+				  + "  FROM [PCMS].[dbo].[ConfigCustomerUser] as a\r\n"
+			  	+ " where a.[EmployeeID] = '" + userId+ "' \r\n"
+			  	+ " ORDER BY EmployeeID desc ";
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<ConfigCustomerUserDetail>();
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genConfigCustomerUserDetail(map));
 		}
-		return list;   
-	} 
+		return list;
+	}
 }

@@ -13,7 +13,7 @@ import th.in.totemplate.core.authen.AuthenInfo;
  *
  * @author nuttapong.sri
  */
-public class AdInfo implements AuthenInfo { 
+public class AdInfo implements AuthenInfo {
 	 private static final String _domain   = "atech.co.th";
     @SuppressWarnings("unused")
 	private static final String _ipserver = "10.11.44.210";
@@ -24,8 +24,9 @@ public class AdInfo implements AuthenInfo {
     private static AdInfo _info;
     private AdInfo() { }
     public static AdInfo getInstance() {
-        if(AdInfo._info == null)
-            AdInfo._info = new AdInfo();
+        if(AdInfo._info == null) {
+			AdInfo._info = new AdInfo();
+		}
 
         return AdInfo._info;
     }

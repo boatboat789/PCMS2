@@ -1,6 +1,6 @@
 package entities;
 
-public class NCDetail { 
+public class NCDetail {
 	private String no;
 	private String ncDate;
 	private String carNo;
@@ -60,5 +60,5 @@ public class NCDetail {
 	}
 	public void setRemark(String remark) {
 		this.remark = remark;
-	} 
+	}
 }

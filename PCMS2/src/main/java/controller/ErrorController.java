@@ -10,17 +10,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class ErrorController { 
+public class ErrorController {
 
 	@RequestMapping(value = { "/error" }, method = { RequestMethod.GET })
 	public ModelAndView customError(HttpServletRequest request, HttpServletResponse response, Model model) {
 		// retrieve some useful information from the request
+		@SuppressWarnings("unused")
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+		@SuppressWarnings("unused")
 		Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
 //		// String servletName = (String)
 		// request.getAttribute("javax.servlet.error.servlet_name");
 //		String exceptionMessage = getExceptionMessage(throwable, statusCode);
 //
+		@SuppressWarnings("unused")
 		String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
 //		if (requestUri == null) {
 //			requestUri = "Unknown";
@@ -30,11 +33,11 @@ public class ErrorController {
 //				exceptionMessage);
 //		System.out.println(statusCode+" "+throwable.toString()+" "+requestUri);
 //		System.out.println(statusCode+" " +requestUri);
-		ModelAndView mv = new ModelAndView(); 
-		mv.setViewName("error/error"); 
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("error/error");
 //		mv.addAttribute("errorMessage", message);
 		return mv;
-	}  
+	}
 
 //	private String getExceptionMessage(Throwable throwable, Integer statusCode) {
 //		if (throwable != null) {

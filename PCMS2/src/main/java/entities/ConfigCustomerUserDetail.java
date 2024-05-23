@@ -5,7 +5,7 @@ public class ConfigCustomerUserDetail {
 	private String userId;
 	private String customerNo;
 	private String customerDivision;
-	private Boolean isPCMSDetailPage;;
+	private Boolean isPCMSDetailPage;
 	private Boolean isPCMSSumPage;
 	private Boolean isProdPathBtn;
 	private Boolean isLBMSPathBtn;
@@ -96,8 +96,8 @@ public class ConfigCustomerUserDetail {
 	}
 	public void setIsSFCPathBtn(Boolean isSFCPathBtn) {
 		this.isSFCPathBtn = isSFCPathBtn;
-	} 
-	
-	
-	
+	}
+
+
+
 }

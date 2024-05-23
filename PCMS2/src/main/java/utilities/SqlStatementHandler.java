@@ -26,67 +26,67 @@ public class SqlStatementHandler {
 			} else {
 				prepared.setInt(index, value);
 			}
-		} catch (Exception e) { 
-				prepared.setNull(index, java.sql.Types.INTEGER); 
+		} catch (Exception e) {
+				prepared.setNull(index, java.sql.Types.INTEGER);
 		}
 		return prepared;
 	}
 	@SuppressWarnings("unlikely-arg-type")
 	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, BigDecimal val, int index ) throws SQLException {
-		try {  
+		try {
 			if (val == null ) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
-			} 
+			}
 			else if ( val.equals("undefined") || val.equals("") ) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
-			} 
-			else {      
+			}
+			else {
 				prepared.setBigDecimal(index, val);
-			} 
+			}
 		}
 		catch(Exception e) {
 			prepared.setNull(index, java.sql.Types.DECIMAL);
 		}
 		return prepared;
-	} 
+	}
 
 	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, double val, int index ) throws SQLException {
-		try {       
-			prepared.setDouble(index, val); 
+		try {
+			prepared.setDouble(index, val);
 		}
 		catch(Exception e) {
 			prepared.setNull(index, java.sql.Types.DECIMAL);
 		}
 		return prepared;
-	} 
+	}
 
 	public PreparedStatement setSqlTime(PreparedStatement prepared, String timeString, int index)
 			throws SQLException, ParseException {
-		
+
 		if (timeString == null || timeString.equals("undefined") || timeString.equals("") ) {
 			prepared.setNull(index, java.sql.Types.TIME);
-		} 
-		else  { 
-			Time time = Time.valueOf(timeString); 
+		}
+		else  {
+			Time time = Time.valueOf(timeString);
 			prepared.setTime(index, time);
-		}	  
+		}
 		return prepared;
 	}
 
 	public PreparedStatement setSqlTimeStamp(PreparedStatement prepared, String dateStr, int index) throws SQLException   {
 		try {
-			if (dateStr == null) { 
+			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
 			} else if (dateStr.equals("undefined") || dateStr.equals("")) {
 				prepared.setNull(index, java.sql.Types.DATE);
-			} 
+			}
 			else if (dateStr.equals("01/01/0001 00:00:00") ) {
 				prepared.setNull(index, java.sql.Types.DATE);
-			}   
+			}
 			else if (isValidDate(dateStr, this.sdf10)) {
-				Date date = this.sdf10.parse(dateStr); 
+				Date date = this.sdf10.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			} 
+			}
 //			else if (isValidDate(dateStr, this.sdf2)) {
 //				Date date = sdf2.parse(dateStr);
 //				prepared.setDate(index, this.convertJavaDateToSqlDate(date));
@@ -100,14 +100,14 @@ public class SqlStatementHandler {
 			else {
 				prepared.setNull(index, java.sql.Types.DATE);
 			}
-		} catch (Exception e) { 
-			prepared.setNull(index, java.sql.Types.DATE); 
+		} catch (Exception e) {
+			prepared.setNull(index, java.sql.Types.DATE);
 		}
 		return prepared;
 	}
 	public PreparedStatement setSqlDate(PreparedStatement prepared, String dateStr, int index) throws SQLException   {
 		try {
-			if (dateStr == null) { 
+			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
 			} else if (dateStr.equals("undefined") || dateStr.equals("")) {
 				prepared.setNull(index, java.sql.Types.DATE);
@@ -126,23 +126,23 @@ public class SqlStatementHandler {
 			}else {
 				prepared.setNull(index, java.sql.Types.DATE);
 			}
-		} catch (Exception e) { 
-			prepared.setNull(index, java.sql.Types.DATE); 
+		} catch (Exception e) {
+			prepared.setNull(index, java.sql.Types.DATE);
 		}
 		return prepared;
 	}
 
 	public PreparedStatement setSqlDate(PreparedStatement prepared, Date dateStr, int index) throws SQLException   {
 		try {
-			if (dateStr == null) { 
+			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
-			} 
+			}
 			else {
 				prepared.setDate(index, this.convertJavaDateToSqlDate(dateStr));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block 
-			prepared.setNull(index, java.sql.Types.DATE); 
+			// TODO Auto-generated catch block
+			prepared.setNull(index, java.sql.Types.DATE);
 		}
 		return prepared;
 	}
@@ -152,11 +152,11 @@ public class SqlStatementHandler {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
 			}else if ( val.equals("undefined") || val.equals("") ) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
-			} 
-			else {  
-				BigDecimal bigDecimal = new BigDecimal(val.replace(",", "")); 
+			}
+			else {
+				BigDecimal bigDecimal = new BigDecimal(val.replace(",", ""));
 				prepared.setBigDecimal(index, bigDecimal);
-			}	 
+			}
 		}
 		catch(Exception e) {
 			prepared.setNull(index, java.sql.Types.DECIMAL);
@@ -173,8 +173,8 @@ public class SqlStatementHandler {
 				prepared.setString(index, value);
 			}
 		}
-		catch(Exception e) { 
-			prepared.setNull(index, java.sql.Types.VARCHAR); 
+		catch(Exception e) {
+			prepared.setNull(index, java.sql.Types.VARCHAR);
 		}
 		return prepared;
 	}
@@ -185,7 +185,7 @@ public class SqlStatementHandler {
 			bl_isDate = false;
 		}
 		else if ( date.equals("undefined") || date.equals("") || !isValidDate(date)){
-			bl_isDate = false; 
+			bl_isDate = false;
 		}
 		return bl_isDate;
 	}

@@ -27,8 +27,9 @@ public class FtpSapInfo implements FtpInfo {
     private static FtpSapInfo _info;
     private FtpSapInfo() { }
     public static FtpSapInfo getInstance() {
-        if(FtpSapInfo._info == null)
-            FtpSapInfo._info = new FtpSapInfo();
+        if(FtpSapInfo._info == null) {
+			FtpSapInfo._info = new FtpSapInfo();
+		}
 
         return FtpSapInfo._info;
     }

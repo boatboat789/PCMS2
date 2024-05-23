@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.SQLException;
+
 import javax.servlet.http.HttpServlet;
 
 import dao.BackGroundJobDao;
@@ -17,41 +18,42 @@ public class BackGroundJobModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-	public BackGroundJobModel() {	
+	public BackGroundJobModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());
 			this.dao = new BackGroundJobDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
-		} 
-	} 
+		}
+	}
 	public static String stringColumn() {
 	   return "[]";
-	} 
+	}
    	public static String[] arrayColumn() {
    		return "".replaceAll("'", "").split(",");
-   	} 
-   	public void destroy() {
+   	}
+   	@Override
+	public void destroy() {
    		this.database.close();
    		super.destroy();
-   	}  
+   	}
 	public void execUpsertToMainProd() {
 		// TODO Auto-generated method stub
-		 this.dao.execUpsertToMainProd(); 
-	}  
+		 this.dao.execUpsertToMainProd();
+	}
 	public void execUpsertToTEMPProdWorkDate( ) {
-		// TODO Auto-generated method stub	
-		 this.dao.execUpsertToTEMPProdWorkDate( ); 
-	} 
+		// TODO Auto-generated method stub
+		 this.dao.execUpsertToTEMPProdWorkDate( );
+	}
 	public void execUpsertToTEMPUserStatusOnWeb( ) {
-		// TODO Auto-generated method stub	
-		 this.dao.execUpsertToTEMPUserStatusOnWeb( ); 
+		// TODO Auto-generated method stub
+		 this.dao.execUpsertToTEMPUserStatusOnWeb( );
 	}
 	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String productionOrder) {
 		// TODO Auto-generated method stub
 		 this.dao.execUpsertToTEMPUserStatusOnWebWithProdOrder( productionOrder);
-		
-	}  
-	 
-} 
+
+	}
+
+}

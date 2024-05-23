@@ -4,7 +4,7 @@ public class InputDateDetail {
 	private String productionOrder;
 	private String saleOrder;
 	private String saleLine;
-	private String planDate; 
+	private String planDate;
 	private String createBy;
 	private String createDate;
 	private String inputFrom;
@@ -12,14 +12,14 @@ public class InputDateDetail {
 	private String iconStatus;
 	private String systemStatus;
 	private int countPlanDate;
-	public InputDateDetail(String productionOrder, String saleOrder, String saleLine, String planDate 
+	public InputDateDetail(String productionOrder, String saleOrder, String saleLine, String planDate
 			 , String createBy ,String CreateDate,String InputFrom,int CountPlanDate,String LotNo) {
 		super();
 		this.productionOrder = productionOrder;
 		this.saleOrder = saleOrder;
 		this.saleLine = saleLine;
-		this.planDate = planDate; 
-		this.createBy = createBy; 
+		this.planDate = planDate;
+		this.createBy = createBy;
 		this.createDate = CreateDate;
 		this.inputFrom = InputFrom;
 		this.countPlanDate = CountPlanDate;
@@ -94,6 +94,6 @@ public class InputDateDetail {
 	public void setCountPlanDate(int countPlanDate) {
 		this.countPlanDate = countPlanDate;
 	}
- 
+
 
 }

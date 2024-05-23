@@ -4,10 +4,11 @@ public class PCMSSecondTableDetail {
 	private String division;
 	private String saleOrder;
 	private String saleLine;
-	private String customerShortName;	
+	private String customerShortName;
 	private String saleCreateDate;
 	private String purchaseOrder;
 	private String materialNo;
+	private String customerMaterialBase;
 	private String customerMaterial;
 	private String price;
 	private String saleUnit;
@@ -43,7 +44,7 @@ public class PCMSSecondTableDetail {
 	private String lotShipping;
 	private String remarkOne;
 	private String remarkTwo;
-	private String remarkThree; 
+	private String remarkThree;
 	private String remark;
 	private String cfmLastest;
 	private String userId;
@@ -56,20 +57,20 @@ public class PCMSSecondTableDetail {
 	private String stockRemark;
 	private String grQuantity;
 	private String volumnFGAmount;
-	
+
 	private String dyePlan;
 	private String dyeActual;
 	private String dyeStatus;
-	
+
 
 	private String sendCFMCusDate;
 	private String causeOfDelay;
 	private String delayedDepartment;
-	
+
 	private String pcRemark;
 	private String switchRemark ;
-	private String typePrd ; 
-	private String typePrdRemark ;  
+	private String typePrd ;
+	private String typePrdRemark ;
 	private int countInSW;
 	private String saleOrderSW;
 	private String saleLineSW;
@@ -85,7 +86,7 @@ public class PCMSSecondTableDetail {
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
 				String saleUnit, String saleQuantity,String OrderAmount, String remainQuantity, String remainAmount, String totalQuantity,
-				String grade, String BillSendWeightQuantity, String billSendMRQuantity,String billSendYDQuantity, String billSendQuantity, 
+				String grade, String BillSendWeightQuantity, String billSendMRQuantity,String billSendYDQuantity, String billSendQuantity,
 				String customerDue, String dueDate,
 				String lotNo, String labNo, String labStatus, String cFMPlanLabDate, String cFMActualLabDate,
 				String cFMCusAnsLabDate, String userStatus, String tKCFM, String cFMPlanDate, String cFMSendDate,
@@ -96,9 +97,10 @@ public class PCMSSecondTableDetail {
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
 				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision,
-				String LotShipping,String dyeStatus
+				String LotShipping,String dyeStatus,String customerMaterialBase
 				) {
 			super();
+			this.customerMaterialBase = customerMaterialBase;
 			this.dyeStatus = dyeStatus;
 			this.lotShipping = LotShipping;
 			this.customerDivision = CustomerDivision;
@@ -167,6 +169,14 @@ public class PCMSSecondTableDetail {
 		}
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
+		}
+		public String getCustomerMaterialBase()
+		{
+			return customerMaterialBase;
+		}
+		public void setCustomerMaterialBase(String customerMaterialBase)
+		{
+			this.customerMaterialBase = customerMaterialBase;
 		}
 		public String getDyeStatus() {
 			return dyeStatus;
@@ -629,6 +639,6 @@ public class PCMSSecondTableDetail {
 		}
 		public void setCustomerDivision(String customerDivision) {
 			this.customerDivision = customerDivision;
-		} 
-		
+		}
+
 }

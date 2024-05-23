@@ -3,8 +3,8 @@ package entities;
 public class ReplacedProdOrderDetail {
 
 	private String saleOrder;
-	private String saleLine;  
-	private String productionOrder;  
+	private String saleLine;
+	private String productionOrder;
 	private String productionOrderRP;
 	private String volume;
 	private String changeBy;
@@ -79,6 +79,6 @@ public class ReplacedProdOrderDetail {
 	}
 	public void setSystemStatus(String systemStatus) {
 		this.systemStatus = systemStatus;
-	} 
-	
+	}
+
 }

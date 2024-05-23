@@ -2,11 +2,10 @@ package dao.master;
 
 import java.util.ArrayList;
 
-import entities.InputDateDetail;
 import entities.PCMSSecondTableDetail;
-import entities.ReplacedProdOrderDetail; 
+import entities.ReplacedProdOrderDetail;
 public interface ReplacedProdOrderDao {
-   
+
 	ReplacedProdOrderDetail upsertReplacedProdOrder(ReplacedProdOrderDetail bean, String dataStatus);
 
 	PCMSSecondTableDetail updateReplacedProdOrder(PCMSSecondTableDetail bean, String dataStatus);
@@ -16,7 +15,7 @@ public interface ReplacedProdOrderDao {
 	ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrd(String prodOrder);
 
 	ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder);
- 
- 
+
+
 
 }

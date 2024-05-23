@@ -1,6 +1,6 @@
 package entities;
 
-public class SaleDetail {    
+public class SaleDetail {
 	  private String billDate;
 	  private String billQtyPerSale;
 	  private String saleOrder;
@@ -44,5 +44,5 @@ public class SaleDetail {
 	}
 	public void setBillQtyPerStock(String billQtyPerStock) {
 		this.billQtyPerStock = billQtyPerStock;
-	} 
+	}
 }

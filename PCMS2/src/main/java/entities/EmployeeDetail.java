@@ -7,14 +7,14 @@
 //	private String FirstName;
 //	private String LastName;
 //	private String Role;
-//	private String Department; 
+//	private String Department;
 //    private String Email;
 //    private String ArrangedBy;
 //    private String AuthorizedBy;
 //	public EmployeeDetail() {
-//		
-//	} 
-//	 
+//
+//	}
+//
 //	public EmployeeDetail(String employeeID, String password, String firstName, String lastName, String role,
 //			String department, String email,String Id,String ArrangedBy,String AuthorizedBy ) {
 //		super();
@@ -115,7 +115,7 @@
 //		return "EmployeeDetail [Id=" + Id + ", EmployeeID=" + EmployeeID + ", Password=" + Password + ", FirstName="
 //				+ FirstName + ", LastName=" + LastName + ", Role=" + Role + ", Department=" + Department + ", Email="
 //				+ Email + ", ArrangedBy=" + ArrangedBy + ", AuthorizedBy=" + AuthorizedBy + "]";
-//	} 
-// 
-//	
+//	}
+//
+//
 //}

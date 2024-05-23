@@ -12,7 +12,7 @@ import entities.FinishingDetail;
 import entities.InputDateDetail;
 import entities.InspectDetail;
 import entities.NCDetail;
-import entities.PCMSAllDetail; 
+import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import entities.PODetail;
@@ -78,7 +78,7 @@ public class BeanCreateModel {
 	public FinishingDetail _genFinishingDetail(Map<String, Object> map) {
 		FinishingDetail bean = this.dao._genFinishingDetail(map);
 		return bean;
-	}  
+	}
 
 	public PackingDetail _genPackingDetail(Map<String, Object> map) {
 		PackingDetail bean = this.dao._genPackingDetail(map);

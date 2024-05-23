@@ -197,5 +197,5 @@ public class FinishingDetail {
 
 	public void setLotNo(String lotNo) {
 		this.lotNo = lotNo;
-	} 
+	}
 }

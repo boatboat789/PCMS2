@@ -2,11 +2,11 @@ package model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import javax.servlet.http.HttpServlet;
 
 import dao.PCMSDetailDao;
 import dao.implement.PCMSDetailDaoImpl;
-import entities.ColumnHiddenDetail;
 import entities.InputDateDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
@@ -42,6 +42,7 @@ public class PCMSDetailModel extends HttpServlet {
 		return "".replaceAll("'", "").split(",");
 	}
 
+	@Override
 	public void destroy() {
 		this.database.close();
 		super.destroy();
@@ -52,25 +53,25 @@ public class PCMSDetailModel extends HttpServlet {
 		ArrayList<PCMSSecondTableDetail> list = this.dao.searchByDetail(poList);
 		return list;
 	}
- 
+
 	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList);
 		return list;
 	}
-  
+
 	public ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.getDeliveryPlanDateDetail(poList);
 		return list;
 	}
- 
+
 
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
-	} 
+	}
 	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
@@ -86,7 +87,7 @@ public class PCMSDetailModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.saveInputDetail(poList);
 		return list;
-	} 
+	}
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList) {
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByPrd(poList);
@@ -98,5 +99,5 @@ public class PCMSDetailModel extends HttpServlet {
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByRowProd(poList);
 		return list;
 	}
- 
+
 }

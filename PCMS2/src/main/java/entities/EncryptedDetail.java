@@ -38,6 +38,6 @@ public class EncryptedDetail {
 
 	public void setDecrypted(String decrypted) {
 		this.decrypted = decrypted;
-	} 
+	}
 
 }

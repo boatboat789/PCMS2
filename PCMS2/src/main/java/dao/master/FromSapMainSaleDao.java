@@ -6,7 +6,6 @@ import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
-import entities.SORDetail;
 
 public interface FromSapMainSaleDao {
 
