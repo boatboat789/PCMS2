@@ -1,5 +1,5 @@
 .modal-header {
-/* 	display: block; */
+	/* 	display: block; */
 	border-radius: 6px;
 }
 
@@ -13,7 +13,7 @@
 
 .modal-content {
 	box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-	border: 0px solid rgba(0,0,0,.2);
+	border: 0px solid rgba(0, 0, 0, .2);
 	border-radius: .5rem;
 }
 

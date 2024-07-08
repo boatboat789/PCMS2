@@ -64,7 +64,8 @@ public class FtpTaskRunner {
    public FtpTaskRunner(Database database, FtpReceive ftp) {
       this.ftp = ftp;
       this.user = new UserDetail("SYSTEM", "");
-      this.importerNC = new DataImportNCDaoImpl(database, ftp);
+      this.importerPO = new DataImportPODaoImpl(database, ftp);
+      this.importerNC = new DataImportNCDaoImpl(database, ftp); 
       this.importerReceipe = new DataImportReceipeDaoImpl(database, ftp);
       this.importerSubmitDate = new DataImportSubmitDateDaoImpl(database, ftp);
       this.importerSaleInput = new DataImportSaleInputDaoImpl(database, ftp);
@@ -78,13 +79,11 @@ public class FtpTaskRunner {
       this.importerFinishing = new DataImportFinishingDaoImpl(database, ftp);
       this.importerDyeing = new DataImportDyeingDaoImpl(database, ftp);
       this.importerPreset = new DataImportPresetDaoImpl(database, ftp);
-      this.importerPO = new DataImportPODaoImpl(database, ftp);
-      this.importerMainProdSale = new DataImportMainProdSaleDaoImpl(database, ftp);
-      this.importerMainProd = new DataImportMainProdDaoImpl(database, ftp);
-      this.importerMainSale = new DataImportMainSaleDaoImpl(database, ftp);
-//      this.importerMainGrade = new DataImportMainGradeDaoImpl(database, ftp);
+      this.importerMainSale = new DataImportMainSaleDaoImpl(database, ftp); 
       this.importerGoodReceive = new DataImportGoodReceiveDaoImpl(database, ftp);
       this.importerBillBatch = new DataImportMainBillBatchDaoImpl(database, ftp);
+      this.importerMainProdSale = new DataImportMainProdSaleDaoImpl(database, ftp);
+      this.importerMainProd = new DataImportMainProdDaoImpl(database, ftp);
    }
    public void loadFTP() {
 		BackGroundJobModel bgjModel = new BackGroundJobModel();

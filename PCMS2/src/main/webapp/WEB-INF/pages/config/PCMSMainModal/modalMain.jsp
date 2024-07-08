@@ -47,7 +47,7 @@
 /* 						display: table;  */  
 /*  		 							height: 490px;             */
 /* height: 70vh;    */
-height: -webkit-fill-available;
+						height: -webkit-fill-available;
     min-height: fit-content;   
 /*     height: calc(100vh - 160px); */
 								border: 1px solid #212529;      

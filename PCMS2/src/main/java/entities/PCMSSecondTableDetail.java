@@ -55,6 +55,11 @@ public class PCMSSecondTableDetail {
 	private String iconStatus;
 	private String systemStatus;
 	private String stockRemark;
+
+	private String grQuantityKG;
+	private String grQuantityMR;
+	private String grQuantityYD;
+	
 	private String grQuantity;
 	private String volumnFGAmount;
 
@@ -97,9 +102,14 @@ public class PCMSSecondTableDetail {
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
 				String RollNoRemarkAll , String CFMDateActual,String CustomerType,String CustomerDivision,
-				String LotShipping,String dyeStatus,String customerMaterialBase
+				String LotShipping,String dyeStatus,String customerMaterialBase,
+				String grQuantityKG,String grQuantityMR,String grQuantityYD
 				) {
+ 
 			super();
+			this.grQuantityKG = grQuantityKG;
+			this.grQuantityMR = grQuantityMR;
+			this.grQuantityYD = grQuantityYD;
 			this.customerMaterialBase = customerMaterialBase;
 			this.dyeStatus = dyeStatus;
 			this.lotShipping = LotShipping;
@@ -169,6 +179,30 @@ public class PCMSSecondTableDetail {
 		}
 		public PCMSSecondTableDetail() {
 			// TODO Auto-generated constructor stub
+		}
+		public String getGrQuantityKG()
+		{
+			return grQuantityKG;
+		}
+		public void setGrQuantityKG(String grQuantityKG)
+		{
+			this.grQuantityKG = grQuantityKG;
+		}
+		public String getGrQuantityMR()
+		{
+			return grQuantityMR;
+		}
+		public void setGrQuantityMR(String grQuantityMR)
+		{
+			this.grQuantityMR = grQuantityMR;
+		}
+		public String getGrQuantityYD()
+		{
+			return grQuantityYD;
+		}
+		public void setGrQuantityYD(String grQuantityYD)
+		{
+			this.grQuantityYD = grQuantityYD;
 		}
 		public String getCustomerMaterialBase()
 		{

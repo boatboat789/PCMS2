@@ -295,7 +295,7 @@ $(document) .ready( function() {
 					$.ajax({
 					   type: "POST",     
 						contentType: "application/json",         
-						url: "Main/getEncrypted/"+userId,      
+						url: ctx+"/Main/getEncrypted/"+userId,      
 					    data : JSON.stringify(arrayTmp),             
 					    success : function(data) {   
 					    	goToLBMS(tblData,userId,data);   
@@ -366,7 +366,7 @@ $(document) .ready( function() {
 				$.ajax({
 				   type: "POST",     
 					contentType: "application/json",         
-					url: "Main/getEncrypted/"+userId,      
+					url: ctx+"/Main/getEncrypted/"+userId,      
 				    data : JSON.stringify(arrayTmp),             
 				    success : function(data) {   
 				    	goToInspect(tblData,userId,data); 
@@ -403,7 +403,7 @@ $(document) .ready( function() {
 				$.ajax({
 				   type: "POST",     
 					contentType: "application/json",         
-					url: "Main/getEncrypted/"+userId,      
+					url: ctx+"/Main/getEncrypted/"+userId,      
 				    data : JSON.stringify(arrayTmp),             
 				    success : function(data) {   
 				    	goToSFC(tblData,userId,data);   
@@ -443,7 +443,7 @@ $(document) .ready( function() {
 					$.ajax({
 					   type: "POST",     
 						contentType: "application/json",         
-						url: "Main/getEncrypted/"+userId,      
+						url: ctx+"/Main/getEncrypted/"+userId,      
 					    data : JSON.stringify(arrayTmp),             
 					    success : function(data) {    
 					    	goToQCMS(tblData,userId,data);
@@ -1424,7 +1424,7 @@ function getPrdDetailByRow(arrayTmp) {
 		type: "POST",
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "Main/getPrdDetailByRow", 
+		url: ctx+"/Main/getPrdDetailByRow", 
 		success: function(data) {       
 			setModalDetail(data);   
 		},   
@@ -1465,7 +1465,7 @@ function searchByDetailToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",   
 		data: JSON.stringify(arrayTmp),           
-		url: "Main/searchByDetail", 
+		url: ctx+"/Main/searchByDetail", 
 		success: function(data) {  
 // 			getVisibleColumnsTable();              
 // 			console.log('START  :'+'  '+new Date())  
@@ -1847,7 +1847,7 @@ function saveColSettingToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "Main/saveColSettingToServer", 
+		url: ctx+"/Main/saveColSettingToServer", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
@@ -2036,7 +2036,7 @@ function saveDefault( ){
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: "Main/saveDefault", 
+		url: ctx+"/Main/saveDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
@@ -2071,7 +2071,7 @@ function loadDefault(){
 		type: "POST",  
 		contentType: "application/json",  
 // 		data: JSON.stringify(arrayTmp),      
-		url: "Main/loadDefault", 
+		url: ctx+"/Main/loadDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];    

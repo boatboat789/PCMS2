@@ -1,358 +1,400 @@
 /* ID */
-#wrapper{
-	    min-height: 100vh;
-} 
+#wrapper {
+	min-height: 100vh;
+}
 /*.dataTables_scrollHeadInner{
 	    width: 100% !important;
 }         */
 /* .table.table.table-bordered.table-striped.text-center.dataTable.no-footer{ */
 /* 	width: 100% !important; */
-/* } */               
+/* } */
 /* CLASS */
-.bg-orderpuang{    
+.bg-orderpuang {
 	background-color: #b3d8ff !important;
-}   
-.bg-switch{    
+}
+
+.bg-switch {
 	background-color: #d0ffcd !important;
 }
-.bg-replaced{    
+
+.bg-replaced {
 	background-color: #fffea7 !important;
 }
-.font-bold{
-    font-weight: bold;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+
+.font-bold {
+	font-weight: bold;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
-.form-control {             
-/* 	margin-bottom: 5px;    */
-    height: 30px;        
-}  
-.font-weight-bold{ 
-    font-weight: bold; 
-} 
-.font-weight-900{ 
-    font-weight: 900; 
-}  
+
+.form-control {
+	/* 	margin-bottom: 5px;    */
+	height: 30px;
+}
+
+.font-weight-bold {
+	font-weight: bold;
+}
+
+.font-weight-900 {
+	font-weight: 900;
+}
 /* .form-control:disabled, .form-control[readonly] { */
 /*     background-color: #f9f9f9; */
 /*     opacity: 1; */
 /* }  */
-.header-border{
-/* 	margin-left: 10px; */
-	padding: 10px; position: relative; 
-    border: 2px solid #28a745;
-    border-radius: 12px; background-color: white;
-}      
-.label-inline{
-  display: inline-block;
-  width: 140px;
-  text-align: right;
+.header-border {
+	/* 	margin-left: 10px; */
+	padding: 10px;
+	position: relative;
+	border: 2px solid #28a745;
+	border-radius: 12px;
+	background-color: white;
 }
-.label-row{     
+
+.label-inline {
+	display: inline-block;
+	width: 140px;
+	text-align: right;
+}
+
+.label-row {
 	margin: 0;
 	position: absolute;
-	top: 50%;    
+	top: 50%;
 	-ms-transform: translateY(-50%);
 	transform: translateY(-50%);
-	white-space: nowrap; 
-} 
-.light-box{
-    background-color: snow;
+	white-space: nowrap;
 }
-.mould-box{
+
+.light-box {
+	background-color: snow;
+}
+
+.mould-box {
 	background-color: gainsboro;
 	border-top: inherit;
 }
+
 .nav-tabs .nav-link {
-    border: 1px solid rgba(0,123,255,.5);
-}  
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active { 
-    background-color: honeydew; 
-} 
- 
-.tab-pane{  
-	 height: 500px;
-     overflow-y: auto;
-     overflow-x: hidden;
+	border: 1px solid rgba(0, 123, 255, .5);
 }
-.tab-content{
-	height: 630px; 
-	border: 1px solid #212529;   
-	padding : 20px;   
-	background-color: honeydew; 
-	-webkit-box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
-	box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset w-2px -2px 2px rgba(0, 0, 0, .4);
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	background-color: honeydew;
 }
-  
+
+.tab-pane {
+	height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.tab-content {
+	height: 630px;
+	border: 1px solid #212529;
+	padding: 20px;
+	background-color: honeydew;
+	-webkit-box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset
+		-2px -2px 2px rgba(0, 0, 0, .4);
+	box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset w-2px -2px
+		2px rgba(0, 0, 0, .4);
+}
+
 .poDefaultWrapper {
-/*   margin: 10px; just for contrast */
-  position: relative;
-  border: 2px solid gainsboro;
-/*   border-radius: 12px; */
-  padding: 10px 15px 2px 15px;
-  margin-bottom: 30px;
- 
-} 
+	/*   margin: 10px; just for contrast */
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   border-radius: 12px; */
+	padding: 10px 15px 2px 15px;
+	margin-bottom: 30px;
+}
+
 .poDefaultWrapper::before {
-  content: 'PO Table';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-    white-space: nowrap; 
-   font-weight: 800;
-/*   background-image: linear-gradient(180deg, salmon, yellow); */
-    BACKGROUND-COLOR: beige;
-/*   border-radius: 70px 30px; */
+	content: 'PO Table';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	/*   background-image: linear-gradient(180deg, salmon, yellow); */
+	BACKGROUND-COLOR: beige;
+	/*   border-radius: 70px 30px; */
 }
 
-.presetWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+.presetWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .presetWrapper::before {
-  content: 'Preset';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+	content: 'Preset';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
 }
-.dyeingWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+
+.dyeingWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .dyeingWrapper::before {
-  content: 'Dyeing';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+	content: 'Dyeing';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
 }
-.finishingWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+
+.finishingWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .finishingWrapper::before {
-  content: 'Finishing';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+	content: 'Finishing';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
 }
-.inspectWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+
+.inspectWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .inspectWrapper::before {
-  content: 'Inspect';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+	content: 'Inspect';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
 }
-.packingWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+
+.packingWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .packingWrapper::before {
-  content: 'Packing';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
+	content: 'Packing';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
 }
-.sendTestQCWrapper { 
-  position: relative;
-  border: 2px solid gainsboro;
-/*   padding: 10px 15px 2px 15px; */
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+
+.sendTestQCWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	/*   padding: 10px 15px 2px 15px; */
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .sendTestQCWrapper::before {
-  content: 'รอส่งผลเทส QC';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
+	content: 'รอส่งผลเทส QC';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
 
+.workInLabWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
 
-.workInLabWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
 .workInLabWrapper::before {
-  content: 'งานเข้า Lab';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
-.waitTestWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.waitTestWrapper::before {
-  content: 'รอผล Test';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
-.cfmWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.cfmWrapper::before {
-  content: 'CFM';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
-.submitDateWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.submitDateWrapper::before {
-  content: 'วันนัดส่ง CFM';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
-.receipeWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.receipeWrapper::before {
-  content: 'ประวัติ Receipe';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
-.ncWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.ncWrapper::before {
-  content: 'NC';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-} 
+	content: 'งานเข้า Lab';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
 
-.saleInputWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
+.waitTestWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.waitTestWrapper::before {
+	content: 'รอผล Test';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.cfmWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.cfmWrapper::before {
+	content: 'CFM';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.submitDateWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.submitDateWrapper::before {
+	content: 'วันนัดส่ง CFM';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.receipeWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.receipeWrapper::before {
+	content: 'ประวัติ Receipe';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.ncWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.ncWrapper::before {
+	content: 'NC';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.saleInputWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
 .saleInputWrapper::before {
-  content: 'ข้อมูลขาย (คีย์เอง)';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige; 
-}       
-.saleWrapper { 
-  position: relative;
-  border: 2px solid gainsboro; 
-padding: 10px ;
-  margin-bottom: 5px;
-} 
-.saleWrapper::before {      
-  content: 'Sale';
-  position: absolute;
-  top: -10px;
-  padding: 0 10px;
-  background: #fff;
-  font-size: 14px;
-  white-space: nowrap; 
-  font-weight: 800; 
-  BACKGROUND-COLOR: beige;     
-}  
-.multipleTabNav{    
-	padding:0px !important;      
-}  
+	content: 'ข้อมูลขาย (คีย์เอง)';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.saleWrapper {
+	position: relative;
+	border: 2px solid gainsboro;
+	padding: 10px;
+	margin-bottom: 5px;
+}
+
+.saleWrapper::before {
+	content: 'Sale';
+	position: absolute;
+	top: -10px;
+	padding: 0 10px;
+	background: #fff;
+	font-size: 14px;
+	white-space: nowrap;
+	font-weight: 800;
+	BACKGROUND-COLOR: beige;
+}
+
+.multipleTabNav {
+	padding: 0px !important;
+}

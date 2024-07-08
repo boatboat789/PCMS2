@@ -35,8 +35,8 @@ public class BackGroundJob {
 	//        return executor;
 	//    }
 	@Async
-//	@Scheduled(fixedDelay = 10000000)
-	@Scheduled(cron = "0 4/10 * * * *")
+//	@Scheduled(fixedDelay = 1000000000)
+	@Scheduled(cron = "30 2/10 * * * *")
     public void sortBackGround1() {
 //		System.out.println("start");
 //		if(i== 0) {

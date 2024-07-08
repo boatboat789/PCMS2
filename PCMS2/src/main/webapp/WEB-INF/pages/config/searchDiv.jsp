@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@ page isELIgnored="false"%>              	               
 <iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
-<form target="fakeSubmit" method="post" action="Main/fakeSubmit" commandName="PCMSTable"  >    
+<form target="fakeSubmit" method="post" action="Main/fakeSubmit" >    
 	<div id="wrapper-top" class="row" style="  margin: 2px 5px; background-color: azure;     zoom: 85%; " >   
 		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >            
 			<div class="row">                   
@@ -14,7 +14,7 @@
 						<div class=" ">     		
 							<select id="multi_cusName"   class="selectpicker" 
 							multiple 
-							data-width="100%"    
+							data-width="100%"     
 							data-selected-text-format="count > 1"     
 							data-live-search="true"  
 						 	data-actions-box="true">   

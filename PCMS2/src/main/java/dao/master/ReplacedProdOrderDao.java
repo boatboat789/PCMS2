@@ -16,6 +16,8 @@ public interface ReplacedProdOrderDao {
 
 	ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder);
 
+	ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMainAndSO(String prdOrder, String saleOrder, String saleLine);
+
 
 
 }

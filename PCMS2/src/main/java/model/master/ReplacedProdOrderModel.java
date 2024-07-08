@@ -67,9 +67,16 @@ public class ReplacedProdOrderModel extends HttpServlet {
 			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrd(  prodOrder);
 					return list;
 		}
-		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder){
-			// TODO Auto-generated method stub
-			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdMain(  prodOrder);
-					return list;
-		}
+//		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder){
+//			// TODO Auto-generated method stub
+//			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdMain(  prodOrder);
+//					return list;
+//		}
+
+		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMainAndSO(String prdOrder, String saleOrder,
+				String saleLine){
+		// TODO Auto-generated method stub
+		ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdMainAndSO(  prdOrder,saleOrder,saleLine);
+				return list;
+	}
 }

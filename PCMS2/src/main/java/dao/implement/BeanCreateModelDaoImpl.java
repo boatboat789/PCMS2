@@ -1543,7 +1543,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			BigDecimal value = (BigDecimal) map.get("GRSumMR");
 			Double doubleVal = value.doubleValue();
 			QuantityMR = formatter.format(doubleVal);
-		}String GRQuantity = "";
+		}
+		String GRQuantity = "";
 		if((QuantityKG.trim().equals("") && QuantityYD.trim().equals("") && QuantityMR.trim().equals(""))||
 	       (QuantityKG.trim().equals("0.00") && QuantityYD.trim().equals("0.00") && QuantityMR.trim().equals("0.00"))
 	       ) {
@@ -1662,7 +1663,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
 				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
 				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,CustomerType, CustomerDivision, LotShipping,DyeStatus,
-				CustomerMaterialBase) ;
+				CustomerMaterialBase,
+				QuantityKG,QuantityMR,QuantityYD) ;
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);
 		bean.setSaleLineSW(SaleLineSW);

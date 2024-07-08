@@ -44,10 +44,7 @@
 							<th class="row-table" style="vertical-align: middle;">จำนวนต่อ LOT</th>
 							<th class="row-table" style="vertical-align: middle;">Volume FG Amt</th>
 							<th class="row-table" style="vertical-align: middle;">Grade</th>
-							<th class="row-table" style="vertical-align: middle;">GR Qty KG</th>
-							<th class="row-table" style="vertical-align: middle;">GR Qty MR</th>
-							<th class="row-table" style="vertical-align: middle;">GR Qty YD</th>
-<!-- 							<th class="row-table" style="vertical-align: middle;">GR Qty</th> -->
+							<th class="row-table" style="vertical-align: middle;">GR Qty</th>
 
 							<th class="row-table" style="vertical-align: middle;">จำนวน (FG) <span class="c" style="display: block;">KG/MR/YD</span>
 							</th>
@@ -372,15 +369,9 @@ $(document) .ready( function() {
 				    {"data" : "volumn" ,          "title":"Volume FG",'type': 'num' },                   //14
 				    {"data" : "volumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //15
 				    {"data" : "grade" ,           "title":"Grade" },                                     //16
-				    {"data" : "grQuantityKG" ,      "title":"GR Qty KG" ,                        
-// 					  	  className : 'dt-custom-td160',       
-					  	  type: 'num'    } ,                       //17                   //16
-				    {"data" : "grQuantityMR" ,      "title":"GR Qty MR" ,                        
-// 				  	  className : 'dt-custom-td160',         
-				  	  type: 'num'    } ,                            //17                   //16
-				    {"data" : "grQuantityYD" ,      "title":"GR Qty YD" ,                        
-// 				  	  className : 'dt-custom-td160',           
-				  	  type: 'num'    } ,                            //17
+				    {"data" : "grQuantity" ,      "title":"GR Qty<br>KG/MR/YD" ,                        
+					  	  className : 'dt-custom-td160',    
+					  	  type: 'string'    } ,                       //17
 				    {"data" : "billSendWeightQuantity" ,"title":"Bill Qty (Class)<br>KG/MR/YD" ,                        
 						  	  className : 'dt-custom-td160',    
 						  	  type: 'string'    },        //18
@@ -1000,42 +991,16 @@ $(document) .ready( function() {
 // 		MainTable.column($(this).data('index')).search(this.value).draw(); 
 		let searchVal = this.value;      
 		soLineTmp = '';            
-		soTmp = '';       
+		soTmp = '';      
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
-		let colHeaderData = columnsHeader[indexAfterReCol].data;
-// 		console.log($(this).data('index'))                     
-// 		console.log(columnsHeader[indexAfterReCol].data)           
-// 		console.log( MainTable.column( indexAfterReCol) .header() )
-// 		console.log( MainTable.column( indexAfterReCol).title() )
 		let regrex = '';   
 		let splitText = searchVal.split('/');
 		let size = splitText.length;
 		if(searchVal  == ' '){                        
 // 			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();
 			MainTable.column(indexAfterReCol).search( '^$', true, false ).draw();
-		}      
-// 		else if(indexAfterReCol == 26 || indexAfterReCol == 27 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  } 
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'$';  } 
-// 			}    
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
-// 		}   
-// 		else if(indexAfterReCol == 4 ||  indexAfterReCol == 30 || indexAfterReCol == 31 || indexAfterReCol == 32 ||
-// 				indexAfterReCol == 34 || indexAfterReCol == 35 || indexAfterReCol == 41 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  }
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'';  } 
-// 			}       
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
-// 		}
-		else if(colHeaderData == 'dyePlan' || colHeaderData == 'dyeActual' ){
+		}     
+		else if(indexAfterReCol == 26 || indexAfterReCol == 27 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  } 
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
@@ -1045,10 +1010,8 @@ $(document) .ready( function() {
 			else{regrex = ''+searchVal+''; }
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
 		}   
-		else if(colHeaderData == 'saleCreateDate' ||  colHeaderData == 'cfmActualLabDate' || 
-			   colHeaderData == 'cfmCusAnsLabDate' || colHeaderData == 'tkCFM' ||
-			   colHeaderData == 'sendCFMCusDate' || colHeaderData == 'cfmDateActual' || 
-			   colHeaderData == 'lotShipping' ){
+		else if(indexAfterReCol == 4 ||  indexAfterReCol == 30 || indexAfterReCol == 31 || indexAfterReCol == 32 ||
+				indexAfterReCol == 34 || indexAfterReCol == 35 || indexAfterReCol == 41 ){
 			if(size == 1){ regrex = '^'+searchVal+'';  }
 			else if(size == 2){
 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
@@ -2160,15 +2123,11 @@ function exportCSV(data){
         		 indexArray = mapsDataHeader.get(data);
         		 colType = mapsColumnHeader.get(data);       
         		 if(indexArray !== undefined){               
-//         			 if (colType === undefined){  
-//   						innerRowData[indexArray] = val;        
-//   					}
-//         			 else if (colType == 'string'){  
-//  						innerRowData[indexArray] = val;        
-//  					}                
-//  					else 
-					if (colType == 'num'){      
- 						if( data == 'saleQuantity' || data == 'remainQuantity' || data == 'remainAmount' || data == 'orderAmount'){  
+ 					if (colType === undefined){  
+ 						innerRowData[indexArray] = val;        
+ 					}                
+ 					else if (colType == 'num'){          
+ 						if(data == 'saleQuantity' || data == 'remainQuantity' || data == 'remainAmount' || data == 'orderAmount'){  
 							if(caseDupli == 0 || caseDupli == 2){   
 								if(val.trim() == ''){ innerRowData[indexArray] = '';  }
 		 						else{ innerRowData[indexArray] = parseFloat(val.replace(/,/g, '')) ; } 
@@ -2189,9 +2148,6 @@ function exportCSV(data){
 	 						else{ innerRowData[indexArray] =stringToDate(val)   ; }    
 //  						}    
  					    
- 					}
- 					else{ 
-  						innerRowData[indexArray] = val;  
  					}
  			  		 
  			  	}  
@@ -2239,7 +2195,7 @@ function saveColSettingToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/saveColSettingToServer", 
+		url: "Detail/saveColSettingToServer", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
@@ -2275,7 +2231,7 @@ function saveInputDateToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/saveInputDate", 
+		url: "Detail/saveInputDate", 
 		success: function(data) {  
 			if(data.length > 0){  
 				var bean = data[0]; 
@@ -2347,27 +2303,6 @@ function getSwitchProdOrderDetailByPrd( dataP) {
  	MainTable.rows.add(dataP).draw(false); // Add new data 
 }        
 
-function getReplaceProdOrderDetailByPrd( dataP) {      
-	let i = 0; 
-	for (i = 0  ; i < dataP.length; i++) {      
-		var prodOrder= dataP[i].productionOrder; 
-		var saleOrder = dataP[i].saleOrder; 
-		var saleLine = dataP[i].saleLine; 
-		var typePrd= dataP[i].typePrd;  
-		let indexes = MainTable .rows() .indexes() .filter( function ( value, index ) { 
-// 			if( MainTable.row(value).data().productionOrder == 'รอจัด Lot'){
-// 				return ( saleOrder === MainTable.row(value).data().saleOrder && 
-// 						 saleLine === MainTable.row(value).data().saleLine );
-// 			}
-// 			else {
-				return ( prodOrder === MainTable.row(value).data().productionOrder && 
-						 MainTable.row(value).data().TypePrd !== "orderPuang" );// return 'P2D031' === MainTable.row(value).data()[1];
-// 			} 
-      	} );                   
-		MainTable.rows(indexes).remove() ;   
-	}             
- 	MainTable.rows.add(dataP).draw(false); // Add new data 
-}    
 function setInputDetailToRowByPrd( array, objTmp) { //"DelayedDep"CauseOfDelay) {        
 	let i = 0;  
 	let fieldName = objTmp.fieldName 
@@ -2409,7 +2344,7 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 		type: "POST",  	
 		contentType: "application/json",       
 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/saveInputDetail", 
+		url: "Detail/saveInputDetail", 
 // 		async: false,
 		success: function(data) {  
 			if(data.length > 0){   
@@ -2422,11 +2357,8 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 						button: "confirm",  
    					});  
 					 
-					if(objTmp.fieldName == 'switchRemark' ){ 
+					if(objTmp.fieldName == 'switchRemark' || objTmp.fieldName == 'replacedRemark'){ 
 						getSwitchProdOrderDetailByPrd( data) ;
-			   		}
-					else if( objTmp.fieldName == 'replacedRemark'){ 
-						getReplaceProdOrderDetailByPrd( data) ;
 			   		}
 					else if(objTmp.fieldName == 'delayedDep' || objTmp.fieldName == 'causeOfDelay' ||  
 							objTmp.fieldName == 'sendCFMCusDate'){
@@ -2464,7 +2396,7 @@ function searchByDetailToServer(arrayTmp) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/searchByDetail",  
+		url: "Detail/searchByDetail",  
 		success: function(data) {    
 			MainTable.clear();      
 			MainTable.rows.add(data);      
@@ -2938,7 +2870,7 @@ function saveDefault( ){
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/saveDefault", 
+		url: "Detail/saveDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];   
@@ -2973,7 +2905,7 @@ function loadDefault(){
 		type: "POST",  
 		contentType: "application/json",  
 // 		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/loadDefault", 
+		url: "Detail/loadDefault", 
 		success: function(data) {   
 			if(data.length > 0){
 				var bean = data[0];    
@@ -3113,7 +3045,7 @@ function checkIfDigitOnly(_string) {
 		type: "POST",  
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),          
-		url: ctx+"/Detail/getSwitchProdOrderListByRowProd", 
+		url: "Detail/getSwitchProdOrderListByRowProd", 
 		async: false,
 		success: function(data) {  
 			if(data.length > 0){  

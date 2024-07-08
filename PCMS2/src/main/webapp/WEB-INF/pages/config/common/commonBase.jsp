@@ -6,3 +6,6 @@
 <%-- <c:set var="programname" value="Inspection System" /> --%>
 <%-- <c:set var="programshort" value="Inspection" /> --%>
 <%-- <c:set var="programversion" value="1.0.0" /> --%>
+<script>         
+var ctx = "${pageContext.request.contextPath}" 
+</script>      

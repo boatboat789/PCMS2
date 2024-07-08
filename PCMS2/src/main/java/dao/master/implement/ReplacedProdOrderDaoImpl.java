@@ -67,8 +67,30 @@ public class ReplacedProdOrderDaoImpl implements  ReplacedProdOrderDao{
 				+ "      ,[ProductionOrderRP]\r\n"
 				+ "      ,[Volume]\r\n"
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
-				+ "  where Productionorder <> [ProductionOrderRP] and DataStatus = 'O' and \r\n"
+				+ "  where Productionorder <> [ProductionOrderRP] and \r\n"
+				+ "        DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"+prodOrder+"' \r\n"
+				+ "  ORDER BY productionorder \r\n"
+				+ " ";
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) { list.add(this.bcModel._genReplacedProdOrderDetail(map)); }
+		return list;
+	} 
+	@Override
+	public  ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMainAndSO(String prodOrder, String saleOrder, String saleLine) {
+		ArrayList<ReplacedProdOrderDetail> list = null;
+		String sql = "SELECT \r\n"
+				+ "		  [SaleOrder]\r\n"
+				+ "      ,[SaleLine]\r\n"
+				+ "      ,[ProductionOrder]\r\n"
+				+ "      ,[ProductionOrderRP]\r\n"
+				+ "      ,[Volume]\r\n"
+				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
+				+ "  where DataStatus = 'O' and \r\n"
+				+ "       [ProductionOrder] = '"+prodOrder+"' and\r\n"
+				+ "       [SaleOrder] = '"+saleOrder+"' and\r\n" 
+				+ "       [SaleLine] = '"+saleLine+"' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
