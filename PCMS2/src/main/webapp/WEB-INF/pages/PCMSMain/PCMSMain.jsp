@@ -509,16 +509,16 @@ $(document) .ready( function() {
 			    {"data" : "dryer" ,  "title": 'Dryer Date','type': 'date-euro'},                          //22
 			    {"data" : "finishing",  "title": 'FN','type': 'date-euro'},                               //23
 			    {"data" : "inspectation",  "title": 'Inspect','type': 'date-euro'},                       //24
-			    {"data" : "cfmPlanDate",  "title": 'CFM Date[Plan]','type': 'date-euro'},       //25 
+			    {"data" : "cfmPlanDate",  "title": 'CFM Date[Plan]','type': 'date-euro'},       //25   
 			    {"data" : "cfmDateActual",  "title": 'CFM Date[Actual]','type': 'date-euro'},   //26
-			    {"data" : "cfmDetailAll",  "title": 'CFM Detail' },   //27
-			    {"data" : "rollNoRemarkAll",  "title": 'CFM Remark' },   //28
+			    {"data" : "cfmDetailAll",  "title": 'CFM Detail' , "className" : 'dt-custom-td300'       },   //27
+			    {"data" : "rollNoRemarkAll",  "title": 'CFM Remark' , "className" : 'dt-custom-td300'},   //28
 			    {"data" : "deliveryDate",  "title": 'Delivery Date','type': 'date-euro'},       //29
 			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //30    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
 			columnDefs :  [	        
-				{ targets:[10]  ,       
+				{ targets:[10]  ,           
 					render: function (data, type, row) {	   
 						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
 						return  html; 

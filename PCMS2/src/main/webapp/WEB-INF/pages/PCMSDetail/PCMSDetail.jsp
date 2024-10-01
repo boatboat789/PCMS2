@@ -2397,7 +2397,7 @@ function setUserStatusByStockLoad( array, objTmp,data) { //"DelayedDep"CauseOfDe
 	let oldVal = objTmp.oldValue 
    	var checkEQ = false;    
 	let userStatus = array[0].userStatus; 
-	let customerType = array[0].customerType;  
+// 	let customerType = array[0].customerType;  
 	rowData =  MainTable.row(idx).data();  
 	if(data[0].userStatus != ''){ 
 		rowData.userStatus = data[0].userStatus;

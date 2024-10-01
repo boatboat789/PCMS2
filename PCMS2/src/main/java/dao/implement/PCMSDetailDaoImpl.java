@@ -57,33 +57,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			  + "	FROM [PCMS].[dbo].[PlanDeliveryDate]  \r\n"
 			  + "	group by [ProductionOrder]  ,[SaleOrder] ,[SaleLine]\r\n"
 			  + " ) as b on a.Id = b.maxId  \r\n"  ;
-
-//	private String declareTempApproved = "\r\n"
-//			+ " 	IF OBJECT_ID('tempdb..#tempPOMainNPOInstead') IS NOT NULL \r\n"
-//			+ "					DROP TABLE #tempPOMainNPOInstead;  \r\n"
-//			+ "			 select\r\n"
-//			+ "			 a.[Id] \r\n"
-//			+ "				,case\r\n"
-//			+ "					when C.POIdFrom is not null then C.POIdFrom \r\n"
-//			+ "					ELSE A.POId\r\n"
-//			+ "				END AS POId\r\n"
-//			+ "			 ,a.[ForecastId] ,a.[PlanInsteadId] ,a.[RuleNo] ,a.[ColorType]\r\n"
-//			+ "			 ,a.[ProductionOrder] ,a.[FirstLot] ,a.[ProdOrderQty] ,a.[GroupOptions]\r\n"
-//			+ "			 ,a.[GroupBegin] ,a.[PPMMStatus] ,a.[DataStatus] ,a.[ChangeDate]\r\n"
-//			+ "			 ,a.[ChangeBy] ,a.[CreateDate] ,a.[CreateBy] ,a.[Batch]\r\n"
-//			+ "			 INTO #tempPOMainNPOInstead\r\n"
-//			+ "			 from [PPMM].[dbo].[SOR_TempProd] as a\r\n"
-//			+ "			 left join [PPMM].[dbo].[PlanInsteadProcessId] as b on a.PlanInsteadId = b.Id\r\n"
-//			+ "			 left join [PPMM].[dbo].[PlanInsteadProdOrder] as c on c.PlanInsteadProcessId = b.Id\r\n"
-//			+ "			 where ( a.POId is not null or a.PlanInsteadId is not null) and a.DataStatus = 'O'\r\n"
-//			+ "				  AND ( B.DataStatus = 'O' or B.DataStatus  is null )\r\n"
-//			+ "\r\n"
-//			+ " IF OBJECT_ID('tempdb..#tempApproved') IS NOT NULL   \r\n"
-//			+ "	  DROP TABLE #tempApproved\r\n"
-//			+ " select a.ProductionOrder,b.SORCFMDate,b.SORDueDate\r\n"
-//			+ " into #tempApproved\r\n"
-//			+ "	from #tempPOMainNPOInstead as a  \r\n"
-//			+ "	inner join [PPMM].[dbo].[ApprovedPlanDate] as b on a.POId = b.POId \r\n"  ;
+ 
 	private String createTempSumBill =
 			  " If(OBJECT_ID('tempdb..#tempSumBill') Is Not Null)\r\n"
 			+ "	begin\r\n"
@@ -105,7 +79,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "	end ; "
 			+ " SELECT DISTINCT \r\n"
 			+ "	   a.*\r\n"
-			+ "	  ,b.CustomerType \r\n"
+//			+ "	  ,b.CustomerType \r\n"
 			+ "	  ,a.[Division] AS CustomerDivision\r\n"
 			+ " INTO #tempMainSale \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
@@ -115,7 +89,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	private String selectFromTempMainPrdTemp = ""
 
 		+ "				SELECT distinct \r\n"
-		+ "				    a.SaleOrder\r\n"
+		+ "				     a.SaleOrder\r\n"
 		+ "                ,a.SaleLine\r\n"
 		+ "                ,CASE\r\n"
 		+ "                   WHEN b.[ProductionOrder] is not null THEN b.[ProductionOrder]\r\n"
@@ -131,35 +105,35 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		+ "                   WHEN a.[SaleStatus] = 'C' THEN 'ขาย stock'\r\n"
 		+ "                   ELSE 'รอจัด Lot'\r\n"
 		+ "                 END AS [LotNo]\r\n"
-		+ "                ,[TotalQuantity]\r\n"
-		+ "                ,[Unit]\r\n"
-		+ "                ,[RemAfterCloseOne]\r\n"
-		+ "                ,[RemAfterCloseTwo]\r\n"
-		+ "                ,[RemAfterCloseThree]\r\n"
-		+ "                ,[LabStatus]\r\n"
+		+ "                ,b.[TotalQuantity]\r\n"
+		+ "                ,b.[Unit]\r\n"
+		+ "                ,b.[RemAfterCloseOne]\r\n"
+		+ "                ,b.[RemAfterCloseTwo]\r\n"
+		+ "                ,b.[RemAfterCloseThree]\r\n"
+		+ "                ,b.[LabStatus]\r\n"
 		+ "                ,a.[DesignFG]\r\n"
 		+ "                ,a.[ArticleFG]\r\n"
-		+ "                ,[BookNo]\r\n"
-		+ "                ,[Center]\r\n"
-		+ "                ,[Batch]\r\n"
-		+ "                ,[LabNo]\r\n"
-		+ "                ,[RemarkOne]\r\n"
-		+ "                ,[RemarkTwo]\r\n"
-		+ "                ,[RemarkThree]\r\n"
-		+ "                ,[BCAware]\r\n"
-		+ "                ,[OrderPuang]\r\n"
-		+ "                ,[RefPrd]\r\n"
+		+ "                ,b.[BookNo]\r\n"
+		+ "                ,b.[Center]\r\n"
+		+ "                ,b.[Batch]\r\n"
+		+ "                ,b.[LabNo]\r\n"
+		+ "                ,b.[RemarkOne]\r\n"
+		+ "                ,b.[RemarkTwo]\r\n"
+		+ "                ,b.[RemarkThree]\r\n"
+		+ "                ,b.[BCAware]\r\n"
+		+ "                ,b.[OrderPuang]\r\n"
+		+ "                ,b.[RefPrd]\r\n"
 		+ "                ,b.[GreigeInDate]\r\n"
-		+ "                ,[BCDate]\r\n"
+		+ "                ,b.[BCDate]\r\n"
 		+ "                ,b.[Volumn]\r\n"
-		+ "                ,[CFdate]\r\n"
-		+ "                ,[CFType]\r\n"
-		+ "                ,[Shade]\r\n"
-		+ "                ,[PrdCreateDate]\r\n"
-		+ "                ,[GreigeArticle]\r\n"
-		+ "                ,[GreigeDesign]\r\n"
-		+ "                ,[GreigeMR]\r\n"
-		+ "                ,[GreigeKG]\r\n"
+		+ "                ,b.[CFdate]\r\n"
+		+ "                ,b.[CFType]\r\n"
+		+ "                ,b.[Shade]\r\n"
+		+ "                ,b.[PrdCreateDate]\r\n"
+		+ "                ,b.[GreigeArticle]\r\n"
+		+ "                ,b.[GreigeDesign]\r\n"
+		+ "                ,b.[GreigeMR]\r\n"
+		+ "                ,b.[GreigeKG]\r\n"
 		+ "                ,b.[BillSendQuantity]\r\n"
 		+ "				from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
 		+ "				left join [PCMS].[dbo].[FromSapMainProd] as b on  a.SaleLine = b.SaleLine and \r\n"
@@ -242,7 +216,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
   		    + "   , b.VolumnFGAmount  \r\n"
   		    + "   , 'WaitLot' as TypePrd \r\n"
   		    + "   , 'WaitLot' AS TypePrdRemark  \r\n"
-  		    + "   , a.CustomerType\r\n"
+//  		    + "   , a.CustomerType\r\n"
   		    + "   , CAST(null AS VARCHAR(10) ) as [DyeStatus]\r\n"
   		    + "   , a.[CustomerMaterialBase]\r\n";
 	private String selectOPV2 = ""
@@ -595,7 +569,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		  + "   , a.VolumnFGAmount \r\n"
 		  + "   , a.TypePrd \r\n"
 		  + "   , a.TypePrdRemark \r\n"
-		  + "   , a.CustomerType\r\n"
+//		  + "   , a.CustomerType\r\n"
 		  + "   , a.[DyeStatus]\r\n"
 		  + "   , a.[CustomerMaterialBase]\r\n";
     private String innerJoinWaitLotB = ""
@@ -835,7 +809,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,a.CustomerDue\r\n"
 			+ "                ,a.DueDate\r\n"
 			+ "                ,a.ShipDate\r\n"
-			+ "                ,a.CustomerType\r\n"
+//			+ "                ,a.CustomerType\r\n"
 			+ "                ,a.[SaleNumber]\r\n"
 			+ "                ,a.[SaleFullName]\r\n"
 			+ "                ,a.DistChannel\r\n"
@@ -1059,10 +1033,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , CASE  \r\n"
 			+ "     	WHEN ( b.SumVolFGAmount is not null and ( b.Grade = 'A' or b.Grade is null  or b.Grade  = '') ) THEN b.SumVolFGAmount \r\n"
 			+ "			ELSE  NULL\r\n"
-			+ "			END AS VolumnFGAmount  \r\n"
+			+ "			END AS VolumnFGAmount  \r\n" 
 			+ "   , 'Main' as TypePrd \r\n"
 			+ "   , 'Main' AS TypePrdRemark \r\n"
-			+ "   , CustomerType\r\n"
+//			+ "   , CustomerType\r\n"
 			+ "   , b.[DyeStatus]\r\n"
   		  	+ "   , b.[CustomerMaterialBase]\r\n"
   		    + " INTO #tempMain  \r\n"  ;
@@ -1172,7 +1146,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                 end AS BillSendQuantity\r\n"
 			+ "                ,FSMBB.BillSendMRQuantity\r\n"
 			+ "                ,FSMBB.BillSendYDQuantity\r\n"
-			+ "                ,CustomerType\r\n"
+//			+ "                ,CustomerType\r\n"
 			+ "                ,g.PlanGreigeDate\r\n"
 			+ "                ,g.[DyeStatus]\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
@@ -1203,7 +1177,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	+ "			END AS VolumnFGAmount  \r\n"
 	+ "   , 'OrderPuang' as TypePrd \r\n"
 	+ "   , a.TypePrdRemark \r\n"
-	+ "   , a.CustomerType\r\n"
+//	+ "   , a.CustomerType\r\n"
 	+ "   , a.[DyeStatus]\r\n"
   	+ "   , a.[CustomerMaterialBase]\r\n"
 	+ " into #tempPrdOP\r\n"
@@ -1238,7 +1212,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			END AS VolumnFGAmount  \r\n"
 			+ "	  , 'OrderPuang' as TypePrd \r\n"
 			+ "	  , a.TypePrdRemark \r\n"
-			+ "   , a.CustomerType\r\n"
+//			+ "   , a.CustomerType\r\n"
 			+ "   , g.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempPrdOPSW  \r\n"
@@ -1276,7 +1250,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                   WHEN b.Volumn <> 0 THEN b.Volumn\r\n"
 			+ "                   ELSE 0\r\n"
 			+ "                 END   AS Volumn\r\n"
-			+ "                ,CustomerType\r\n"
+//			+ "                ,CustomerType\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
 			+ "		 	from #tempMainSale as a  \r\n"
 			+ "		 	inner join ( \r\n"
@@ -1341,7 +1315,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	+ "			END AS VolumnFGAmount  \r\n"
 	+ "   , 'Switch' as TypePrd \r\n"
 	+ "   , TypePrdRemark \r\n"
-	+ "   , CustomerType\r\n"
+//	+ "   , CustomerType\r\n"
 	+ "   , g.[DyeStatus]\r\n"
   	+ "   , a.[CustomerMaterialBase]\r\n"
     + " INTO #tempPrdSW  \r\n"
@@ -1380,7 +1354,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	+ "                   ELSE 'SUB'\r\n"
 	+ "                 END                 TypePrdRemark\r\n"
 	+ "                ,C.SumVol\r\n"
-	+ "                ,a.CustomerType\r\n"
+//	+ "                ,a.CustomerType\r\n"
 	+ "                ,a.[CustomerMaterialBase]\r\n"
 	+ "		 	from #tempMainSale as a  \r\n"
 	+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleLine = b.SaleLineSW and a.SaleOrder = b.SaleOrderSW  \r\n \r\n"
@@ -1454,7 +1428,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	+ "			END AS VolumnFGAmount \r\n"
 	+ "   ,'Replaced' as TypePrd \r\n"
 	+ "   ,'SUB' as TypePrdRemark  \r\n"
-	+ "   , a.CustomerType\r\n"
+//	+ "   , a.CustomerType\r\n"
 	+ "   , g.[DyeStatus]\r\n"
   	+ "   , a.[CustomerMaterialBase]\r\n"
 	+ " into #tempPrdReplaced\r\n"
@@ -1542,17 +1516,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		if (!cusDiv.equals("")) {
 
 			String[] array = cusDiv.split(",");
-			String tmpWhere = "";
-//			tmpWhere += " and  ( ";
-//			for (int i = 0; i < cusDivList.length; i++) {
-//				tmpWhere += " a.Division = '" +cusDivList[i] + "' ";
-//				if (i != cusDivList.length - 1) {
-//					tmpWhere += " or ";
-//				} ;
-//			}
-//			tmpWhere += " ) \r\n";
-
-
+			String tmpWhere = ""; 
 
 			listString.clear();
 			for (String element : array) {
@@ -1959,8 +1923,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
 				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "
-				;
-//	 System.out.println(sql);
+				; 
+//	 System.out.println(this.selectFromTempMainPrdTemp);
 //		System.out.println("Before SQL: "+new Date());
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		System.out.println("AFTER SQL: "+new Date());
@@ -2560,7 +2524,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
 		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
-		String sql = ""
+		String sql = ""	
 					+ " SET NOCOUNT ON; ;\r\n"
 					+ " SELECT \r\n"
 					+ "		 [ProductionOrder]\r\n"

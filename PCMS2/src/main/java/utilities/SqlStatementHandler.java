@@ -251,16 +251,5 @@ public class SqlStatementHandler {
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
-	}
-
-	public Double tryParseDouble(String doubleVal) {
-		double dbVal = 0;
-		try {
-			doubleVal = doubleVal.replaceAll(",","");
-			dbVal = Double.parseDouble(doubleVal);
-		} catch (NumberFormatException e) {
-			dbVal = 0;
-		}
-		return dbVal;
-	}
+	} 
 }

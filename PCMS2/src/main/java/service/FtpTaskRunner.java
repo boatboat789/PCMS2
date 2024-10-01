@@ -23,19 +23,13 @@ import dao.implement.DataImportSendTestQCDaoImpl;
 import dao.implement.DataImportSubmitDateDaoImpl;
 import dao.implement.DataImportWaitTestDaoImpl;
 import dao.implement.DataImportWorkInLabDaoImpl;
-import entities.UserDetail;
-import model.BackGroundJobModel;
-//
-//import dao.DataImportTwoDao;
-//import dao.implement.DataImportTwoDaoImpl;
-//import entities.PPMMUserDetail;
+import entities.UserDetail;  
 import th.in.totemplate.core.net.FtpReceive;
 import th.in.totemplate.core.sql.Database;
 
-public class FtpTaskRunner {
-//{
-	@SuppressWarnings("unused")
-   private FtpReceive ftp;
+public class FtpTaskRunner { 
+   @SuppressWarnings("unused")
+private FtpReceive ftp;
    private UserDetail user;
    private DataImportDao importerNC;
    private DataImportDao importerReceipe;
@@ -56,8 +50,7 @@ public class FtpTaskRunner {
 
    private DataImportDao importerMainProdSale;
    private DataImportDao importerMainProd;
-   private DataImportDao importerMainSale;
-//   private DataImportDao importerMainGrade;
+   private DataImportDao importerMainSale; 
    private DataImportDao importerGoodReceive;
 
    private DataImportDao importerBillBatch;
@@ -85,34 +78,89 @@ public class FtpTaskRunner {
       this.importerMainProdSale = new DataImportMainProdSaleDaoImpl(database, ftp);
       this.importerMainProd = new DataImportMainProdDaoImpl(database, ftp);
    }
-   public void loadFTP() {
-		BackGroundJobModel bgjModel = new BackGroundJobModel();
+   public void loadFTPSapDetailOne() {
+//		BackGroundJobModel bgjModel = new BackGroundJobModel();
 
 	   boolean bl_check = false;
 //	   bl_check = true;
-	   System.out.println("PCMS2 :: FTP run at :: " + Calendar.getInstance().getTime().toString());
+//	   System.out.println("PCMS2 loadFTPSapDetailOne :: FTP run at :: " + Calendar.getInstance().getTime().toString());
+//	   // NEED WORK BEFORE importerMainProd
+//	   this.importerMainProdSale.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerMainProdSale :: " + Calendar.getInstance().getTime().toString()); } 
+//	   this.importerCFM.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerCFM        :: " + Calendar.getInstance().getTime().toString()); }  
+//	   this.importerMainProd.loadDataFTP(this.user);	 
+//	   if(bl_check) { System.out.println("importerMainProd    :: " + Calendar.getInstance().getTime().toString()); }
+//	   
+//	   // NEED WORK BEFORE importerMainSale
+//	   this.importerGoodReceive.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerGoodReceive :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerBillBatch.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerBillBatch   :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerMainSale.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerMainSale   :: " + Calendar.getInstance().getTime().toString()); }
+	   
+	   
 	   this.importerPO.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerPO         :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerNC.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerNC         :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerReceipe.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerReceipe    :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerSubmitDate.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerSubmitDate :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerSaleInput.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerSaleInput  :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerSale.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerSale       :: " + Calendar.getInstance().getTime().toString()); } 
+//	   this.importerWaitTest.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerWaitTest   :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerWorkInLab.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerWorkInLab  :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerSendTestQC.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerSendTestQC :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerPacking.loadDataFTP(this.user);	
+//	   if(bl_check) { System.out.println("importerPacking    :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerInspect.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerInspect    :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerFinishing.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerFinishing  :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerDyeing.loadDataFTP(this.user)	;
+//	   if(bl_check) { System.out.println("importerDyeing     :: " + Calendar.getInstance().getTime().toString()); }
+//	   this.importerPreset.loadDataFTP(this.user);
+//	   if(bl_check) { System.out.println("importerPreset     :: " + Calendar.getInstance().getTime().toString()); }   
+//	   bgjModel.execUpsertToTEMPProdWorkDate();
+//	   if(bl_check) { System.out.println("execUpsertToTEMPProdWorkDate    :: " + Calendar.getInstance().getTime().toString()); }
+//	   bgjModel.execUpsertToTEMPUserStatusOnWeb();
+//	   if(bl_check) { System.out.println("execUpsertToTEMPUserStatusOnWeb    :: " + Calendar.getInstance().getTime().toString()); }
+//	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString());
+   }
+   public void loadFTPSapDetailTwo() { 
+	   boolean bl_check = false;
+//	   bl_check = true; 
+//	   System.out.println("PCMS2 loadFTPSapDetailTwo :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
+	   this.importerWorkInLab.loadDataFTP(this.user);
+	   if(bl_check) { System.out.println("importerWorkInLab  :: " + Calendar.getInstance().getTime().toString()); }
+	   this.importerSendTestQC.loadDataFTP(this.user);
+	   if(bl_check) { System.out.println("importerSendTestQC :: " + Calendar.getInstance().getTime().toString()); }
+	   this.importerPacking.loadDataFTP(this.user);	
+	   if(bl_check) { System.out.println("importerPacking    :: " + Calendar.getInstance().getTime().toString()); }  
+  }
+   public void loadFTPSapDetailThree() { 
+	   boolean bl_check = false;
+//	   bl_check = true;  
 	   this.importerSubmitDate.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerSubmitDate :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerSaleInput.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerSaleInput  :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerSale.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerSale       :: " + Calendar.getInstance().getTime().toString()); }
-	   this.importerCFM.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerCFM        :: " + Calendar.getInstance().getTime().toString()); }
+	   if(bl_check) { System.out.println("importerSale       :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerWaitTest.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerWaitTest   :: " + Calendar.getInstance().getTime().toString()); }
-	   this.importerWorkInLab.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerWorkInLab  :: " + Calendar.getInstance().getTime().toString()); }
-	   this.importerSendTestQC.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerSendTestQC :: " + Calendar.getInstance().getTime().toString()); }
-	   this.importerPacking.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerPacking    :: " + Calendar.getInstance().getTime().toString()); }
+	   if(bl_check) { System.out.println("importerWaitTest   :: " + Calendar.getInstance().getTime().toString()); } 
+  }
+   public void loadFTPSapDetailFour() { 
+	   boolean bl_check = false;
+//	   bl_check = true;  
 	   this.importerInspect.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerInspect    :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerFinishing.loadDataFTP(this.user);
@@ -120,25 +168,28 @@ public class FtpTaskRunner {
 	   this.importerDyeing.loadDataFTP(this.user)	;
 	   if(bl_check) { System.out.println("importerDyeing     :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerPreset.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerPreset     :: " + Calendar.getInstance().getTime().toString()); }  
-//---------------------MUST UNDER SAMEGROUP------------------------
+	   if(bl_check) { System.out.println("importerPreset     :: " + Calendar.getInstance().getTime().toString()); }   
+ }
+   public void loadFTPCaseRequiredProd() { 
+	   boolean bl_check = false;
+//	   bl_check = true;
+//	   System.out.println("PCMS2 loadFTPCaseRequiredProd :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
+	   this.importerMainProd.loadDataFTP(this.user);	 
+	   if(bl_check) { System.out.println("importerMainProd    :: " + Calendar.getInstance().getTime().toString()); } 
+	   this.importerMainProdSale.loadDataFTP(this.user);
+	   if(bl_check) { System.out.println("importerMainProdSale :: " + Calendar.getInstance().getTime().toString()); } 
+	   this.importerCFM.loadDataFTP(this.user);
+	   if(bl_check) { System.out.println("importerCFM        :: " + Calendar.getInstance().getTime().toString()); }  
+   }
+   public void loadFTPCaseSO() { 
+	   boolean bl_check = false;
+//	   bl_check = true;
+//	   System.out.println("PCMS2 loadFTPCaseSO :: FTP run at :: " + Calendar.getInstance().getTime().toString());
 	   this.importerMainSale.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerMainSale   :: " + Calendar.getInstance().getTime().toString()); } 
+	   if(bl_check) { System.out.println("importerMainSale   :: " + Calendar.getInstance().getTime().toString()); }  
 	   this.importerGoodReceive.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerGoodReceive :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerBillBatch.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerBillBatch   :: " + Calendar.getInstance().getTime().toString()); }
-	   this.importerMainProdSale.loadDataFTP(this.user);
-	   if(bl_check) { System.out.println("importerMainProdSale :: " + Calendar.getInstance().getTime().toString()); }
-//-----------------------------------------------------------------
-//---------------------MUST LAST-----------------------------------
-	   this.importerMainProd.loadDataFTP(this.user);	//spd_UpsertToTEMP_ProdWorkDate  //spd_UpsertToTEMP_UserStatusOnWeb
-	   if(bl_check) { System.out.println("importerMainProd    :: " + Calendar.getInstance().getTime().toString()); }
-//-----------------------------------------------------------------
-	   bgjModel.execUpsertToTEMPProdWorkDate();
-	   if(bl_check) { System.out.println("execUpsertToTEMPProdWorkDate    :: " + Calendar.getInstance().getTime().toString()); }
-	   bgjModel.execUpsertToTEMPUserStatusOnWeb();
-	   if(bl_check) { System.out.println("execUpsertToTEMPUserStatusOnWeb    :: " + Calendar.getInstance().getTime().toString()); }
-	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString());
    }
 }

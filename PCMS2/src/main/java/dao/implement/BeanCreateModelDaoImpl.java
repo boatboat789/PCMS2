@@ -1637,10 +1637,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			java.util.Date timestamp1 = (Date) map.get("CFMDateActual");
 			CFMDateActual = sdf2.format(timestamp1);
 		}
-		String CustomerType   = "";
-		if (map.get("CustomerType") != null) {
-			CustomerType = (String) map.get("CustomerType");
-		}
+//		String CustomerType   = "";
+//		if (map.get("CustomerType") != null) {
+//			CustomerType = (String) map.get("CustomerType");
+//		}
 		String CustomerDivision   = "";
 		if (map.get("CustomerDivision") != null) {
 			CustomerDivision = (String) map.get("CustomerDivision");
@@ -1662,7 +1662,9 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CFMNumber, CFMStatus, CFMRemark, DeliveryDate, ShipDate, RemarkOne, RemarkTwo, RemarkThree,
 				Remark,CFMLastest,ProductionOrder,Volumn,ReplacedRemark,StockRemark,GRQuantity,VolumnFGAmount, DyePlan, DyeActual,
 				PCRemark,SwitchRemark,TypePrd,StockLoad,SendCFMCusDate,CauseOfDelay,DelayedDepartment,
-				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,CustomerType, CustomerDivision, LotShipping,DyeStatus,
+				CFMDetailAll,CFMNumberAll,CFMRemarkAll,RollNoRemarkAll,CFMDateActual,
+//				CustomerType, 
+				CustomerDivision, LotShipping,DyeStatus,
 				CustomerMaterialBase,
 				QuantityKG,QuantityMR,QuantityYD) ;
 		bean.setCountInSW(CountInSW);

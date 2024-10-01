@@ -24,7 +24,21 @@ import entities.SendTestQCDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 import model.BeanCreateModel;
+import model.master.FromSapCFMModel;
+import model.master.FromSapDyeingModel;
+import model.master.FromSapFinishingModel;
+import model.master.FromSapInspectModel;
 import model.master.FromSapMainProdModel;
+import model.master.FromSapNCModel;
+import model.master.FromSapPOModel;
+import model.master.FromSapPackingModel;
+import model.master.FromSapPresetModel;
+import model.master.FromSapReceipeModel;
+import model.master.FromSapSaleInputModel;
+import model.master.FromSapSaleModel;
+import model.master.FromSapSendTestQCModel;
+import model.master.FromSapWaitTestModel;
+import model.master.FromSapWorkInLabModel;
 import model.master.SearchSettingModel;
 import th.in.totemplate.core.sql.Database;
 
@@ -148,7 +162,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			  + "   , g.PlanGreigeDate \r\n"
 			  + "   , g.CFMDetailAll \r\n"
 			  + "   , g.RollNoRemarkAll \r\n"
-			  + "   ,'Switch' as TypePrd \r\n"
+			  + "   , 'Switch' as TypePrd \r\n"
     		  + "   , a.TypePrdRemark \r\n"
 	  		  + "   , a.[PurchaseOrder] \r\n" ;
 	private String selectOP = ""
@@ -425,70 +439,55 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	  		      + "   , b.CFMDetailAll \r\n"
 	  		      + "   , b.RollNoRemarkAll \r\n"   ;
 	private String selectTwo = ""
-		    + "     b.[ProductionOrder]\r\n"
-			+ "   , ColorCustomer \r\n"
-		    + "   , [LotNo]\r\n"
-		    + "   , [Batch]\r\n"
-		    + "   , [LabNo]\r\n"
-			+ "	  , [PrdCreateDate]\r\n"
-			+ "   , b.[DueDate]\r\n"
-			+ "   , b.[SaleOrder]\r\n"
-			+ "	  , CASE PATINDEX('%[^0 ]%', b.[SaleLine]  + ' ‘')\r\n"
-			+ "			WHEN 0 THEN ''  \r\n"
-			+ "			ELSE SUBSTRING(b.[SaleLine] , PATINDEX('%[^0 ]%', b.[SaleLine]  + ' '), LEN(b.[SaleLine] ) )\r\n"
-			+ "			END AS [SaleLine] \r\n"
-			+ "	  , PurchaseOrder\r\n"
-			+ "   , b.ArticleFG\r\n"
-			+ "   , b.DesignFG\r\n"
-			+ "	  , CustomerName\r\n"
-			+ "   , CustomerShortName\r\n"
-			+ "   , Shade\r\n"
-			+ "   , BookNo\r\n"
-			+ "   , Center\r\n"
-			+ "	  , MaterialNo\r\n"
-			+ "   , Volumn\r\n"
-			+ "   , SaleUnit\r\n"
-			+ "   , Unit as STDUnit\r\n"
-			+ "	  , Color\r\n"
-			+ "   , g.PlanGreigeDate\r\n"
-			+ "   , RefPrd\r\n"
-			+ "   , b.GreigeInDate\r\n"
-			+ "	  , BCAware\r\n"
-			+ "   , OrderPuang\r\n"
-			+ "   , UserStatus\r\n"
-			+ "   , LabStatus\r\n"
-			+ "   , b.CFMPlanDate AS CFMPlanDate \r\n"
-			+ "   , CASE  \r\n"
-			+ "		  WHEN b.DeliveryDate is not null THEN b.DeliveryDate  \r\n"
-			+ "		  ELSE b.CFTYPE  \r\n"
-			+ "		  END AS DeliveryDate \r\n"
-			+ "   , BCDate\r\n"
-			+ "   , RemarkOne\r\n"
-			+ "	  , RemarkTwo\r\n"
-			+ "   , RemarkThree\r\n"
-			+ "   , RemAfterCloseOne\r\n"
-			+ "   , RemAfterCloseTwo\r\n"
-			+ "	  , RemAfterCloseThree \r\n"
-			+ "   , GreigeArticle \r\n "
-			+ "   , GreigeDesign \r\n"
-  		    + "   , b.[PurchaseOrder] \r\n";
-	private String selectPO = ""
-			+ "     [ProductionOrder]\r\n"
-		    + "   , [RollNo]\r\n"
-		    + "   , [QuantityKG]\r\n"
-			+ "   , [QuantityMR]\r\n"
-			+ "   , [POCreatedate]\r\n"
-			+ "   , [PurchaseOrder]\r\n"
-			+ "   , CASE PATINDEX('%[^0 ]%', [PurchaseOrderLine]  + ' ‘')\r\n"
-			+ "			WHEN 0 THEN ''  \r\n"
-			+ "		 	ELSE SUBSTRING( [PurchaseOrderLine] , PATINDEX('%[^0 ]%', [PurchaseOrderLine]  + ' '), LEN( [PurchaseOrderLine] ) )\r\n"
-			+ "       	END AS [PurchaseOrderLine] \r\n"
-			+ "   , [RequiredDate]\r\n"
-			+ "   , [PurchaseOrderDate]\r\n"
-			+ "   , [PODefault]\r\n"
-			+ "   , [POLineDefault]\r\n"
-			+ "   , [POPostingDateDefault]\r\n"
-			+ "   , a.[DataStatus] \r\n";
+		    + "    b.[ProductionOrder]\r\n"
+		    + ",b.ColorCustomer\r\n"
+		    + ",b.[LotNo]\r\n"
+		    + ",b.[Batch]\r\n"
+		    + ",b.[LabNo]\r\n"
+		    + ",b.[PrdCreateDate]\r\n"
+		    + ",b.[DueDate]\r\n"
+		    + ",b.[SaleOrder]\r\n"
+		    + ",CASE Patindex('%[^0 ]%', b.[SaleLine] + ' ‘')\r\n"
+		    + "    WHEN 0 THEN ''\r\n"
+		    + "    ELSE Substring(b.[SaleLine], Patindex('%[^0 ]%',\r\n"
+		    + "                                b.[SaleLine] + ' '),\r\n"
+		    + "                Len(b.[SaleLine]))\r\n"
+		    + "    END           AS [SaleLine]\r\n"
+		    + ",b.PurchaseOrder\r\n"
+		    + ",b.ArticleFG\r\n"
+		    + ",b.DesignFG\r\n"
+		    + ",b.CustomerName\r\n"
+		    + ",b.CustomerShortName\r\n"
+		    + ",b.Shade\r\n"
+		    + ",b.BookNo\r\n"
+		    + ",b.Center\r\n"
+		    + ",b.MaterialNo\r\n"
+		    + ",b.Volumn\r\n"
+		    + ",b.SaleUnit\r\n"
+		    + ",b.Unit          as STDUnit\r\n"
+		    + ",b.Color\r\n"
+		    + ",g.PlanGreigeDate\r\n"
+		    + ",b.RefPrd\r\n"
+		    + ",b.GreigeInDate\r\n"
+		    + ",BCAware\r\n"
+		    + ",OrderPuang\r\n"
+		    + ",UserStatus\r\n"
+		    + ",LabStatus\r\n"
+		    + ",b.CFMPlanDate AS CFMPlanDate\r\n"
+		    + ",CASE\r\n"
+		    + "    WHEN b.DeliveryDate is not null THEN b.DeliveryDate\r\n"
+		    + "    ELSE b.CFTYPE\r\n"
+		    + "    END           AS DeliveryDate\r\n"
+		    + ",b.BCDate\r\n"
+		    + ",b.RemarkOne\r\n"
+		    + ",b.RemarkTwo\r\n"
+		    + ",b.RemarkThree\r\n"
+		    + ",b.RemAfterCloseOne\r\n"
+		    + ",b.RemAfterCloseTwo\r\n"
+		    + ",b.RemAfterCloseThree\r\n"
+		    + ",b.GreigeArticle\r\n"
+		    + ",b.GreigeDesign\r\n"
+		    + ",b.[PurchaseOrder] \r\n";
 
 	   private String leftJoinFSMBBTempSumBill = ""
 	    		+ " left join #tempSumBill AS FSMBB ON FSMBB.[ProductionOrder] = b.[ProductionOrder] AND\r\n"
@@ -742,7 +741,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	  + "           ) as s on b.ProductionOrder = s.ProductionOrderRP  \r\n" ;
 	 private String leftJoinBPartOneH =  ""
 	  + "           left join #tempPlandeliveryDate as h on h.ProductionOrder = b.ProductionOrder and\r\n"
-	  + "                                                   h.SaleOrder = a.SaleOrder and h.SaleLine = a.SaleLine\r\n";
+	  + "                                                   h.SaleOrder = a.SaleOrder and\r\n"
+	  + "											        h.SaleLine = a.SaleLine\r\n";
 
 		private String createTempPlanDeliveryDate =
 				  "  If(OBJECT_ID('tempdb..#tempPlandeliveryDate') Is Not Null)\r\n"
@@ -857,7 +857,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.CustomerDue\r\n"
 	 		  + "                ,a.DueDate\r\n"
 	 		  + "                ,a.ShipDate\r\n"
-	 		  + "                ,a.CustomerType\r\n"
+//	 		  + "                ,a.CustomerType\r\n"
 	 		  + "                ,a.[SaleNumber]\r\n"
 	 		  + "                ,a.[SaleFullName]\r\n"
 	 		  + "                ,a.DistChannel\r\n"
@@ -907,35 +907,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
  			+ "     select ProductionOrder , ProductionOrderSW\r\n"
 	  		+ "     FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 	  	    + "		WHERE DataStatus = 'O'\r\n"
-	  		+ " ) as R on b.ProductionOrder = R.ProductionOrderSW  \r\n";
-	private String selectPreset = ""
-			+ "      [ProductionOrder],[PostingDate],[WorkCenter]\r\n"
-			+ "      ,[Operation],[No],[DataStatus] \r\n";
-	private String selectDyeing =  ""
-			+ "[ProductionOrder],[PostingDate],[Operation]\r\n"
-			+ "      ,[WorkCenter],[DyeStatus],[Remark],[ReDye]\r\n"
-			+ "      ,[RollNo],[Da],[Db],[L],[ST]\r\n"
-			+ "      ,[ColorStatus],[ColorRemark],[DeltaE],[No]\r\n"
-			+ "      ,[DataStatus]\r\n ";
-	private String selectPacking =
-			  "      [ProductionOrder],[PostingDate],[Quantity]\r\n"
-			+ "      ,[RollNo],[Status],[QuantityKG],[Grade]\r\n"
-			+ "      ,[No],[DataStatus],[QuantityYD]\r\n ";
-	private String selectInspect =
-			  "      [ProductionOrder],[PostingDate],[QuantityGreige]\r\n"
-			+ "      ,[Operation],[QuantityFG],[Remark],[No]\r\n"
-			+ "      ,[DataStatus]\r\n ";
-	private String selectFinishing =
-			  "      [ProductionOrder],[No],[PostingDate]\r\n"
-			+ "      ,[WorkCenter],[Status],[NCDate],[Cause]\r\n"
-			+ "      ,[CarNo],[DeltaE],[Color],[Operation]\r\n"
-			+ "      ,[CCStatus],[CCRemark],[RollNo],[Da]\r\n"
-			+ "      ,[Db],[L],[ST],[CCPostingDate]\r\n"
-			+ "      ,[CCOperation],[LotNo],[DataStatus]\r\n ";
-	private String selectSendTestQC =
-			  "      [ProductionOrder],[No],[SendDate]\r\n"
-			+ "      ,[CheckColorDate],[RollNo],[Status],[DeltaE]\r\n"
-			+ "      ,[Color],[Remark],[DataStatus]\r\n ";
+	  		+ " ) as R on b.ProductionOrder = R.ProductionOrderSW  \r\n";   
 
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
@@ -1540,7 +1512,12 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 					+ this.selectRP
 		  		    + " INTO #tempPrdReplaced  \r\n"
 					+ " from #tempMainSale as a  \r\n"
-		  		    + " inner join ( select SaleOrder , SaleLine, [ProductionOrderRP] AS ProductionOrder,DataStatus from [PCMS].[dbo].[ReplacedProdOrder] )  as rpo on a.SaleLine = rpo.SaleLine and a.SaleOrder = rpo.SaleOrder and  rpo.DataStatus <> 'X'  \r\n"
+		  		    + " inner join ( \r\n"
+		  		    + "		select SaleOrder , SaleLine, [ProductionOrderRP] AS ProductionOrder,DataStatus \r\n"
+		  		    + "		from [PCMS].[dbo].[ReplacedProdOrder] \r\n"
+		  		    + " )  as rpo on a.SaleLine = rpo.SaleLine and \r\n"
+		  		    + "              a.SaleOrder = rpo.SaleOrder and  \r\n"
+		  		    + "              rpo.DataStatus <> 'X'  \r\n"
 					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n"
 					+ this.leftJoinTempG
 					+ this.leftJoinSCC
@@ -1631,7 +1608,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			+ "	end ; "
 			+ " SELECT DISTINCT \r\n"
 			+ "	   a.*\r\n"
-			+ "	  ,b.CustomerType \r\n"
+//			+ "	  ,b.CustomerType \r\n"
 			+ "	  ,a.[Division] AS CustomerDivision\r\n"
 			+ " INTO #tempMainSale \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
@@ -1681,21 +1658,36 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			list.add(this.bcModel._genPCMSAllDetail(map));
 		}
 		if (list.size() > 0) {
-			ArrayList<PODetail> poDetailList = getPODetail(poList);
-			ArrayList<PresetDetail> presetDetailList = getPresetDetail(poList);
-			ArrayList<DyeingDetail> dyeingDetailList = getDyeingDetail(poList);
-			ArrayList<SendTestQCDetail> sendTestQCDetailList = getSendTestQCDetail(poList);
-			ArrayList<FinishingDetail> finDetailList = getFinishingDetail(poList);
-			ArrayList<InspectDetail> insDetailList = getInspectDetail(poList);
-			ArrayList<PackingDetail> packDetailList = getPackingDetail(poList);
-			ArrayList<WorkInLabDetail> workInLabDetailList = getWorkInLabDetail(poList);
-			ArrayList<WaitTestDetail> waitTestDetailList = getWaitTestDetail(poList);
-			ArrayList<CFMDetail> cfmDetailList = getCFMDetail(poList);
-			ArrayList<SaleDetail> saleDetailList = this.getFromSapSaleDetail(poList);
-			ArrayList<SaleInputDetail> saleInputDetailList = getSaleInputDetail(poList);
+			FromSapPOModel fspoModel = new FromSapPOModel();
+			FromSapFinishingModel fsfModel = new FromSapFinishingModel();
+			FromSapPresetModel fspModel = new FromSapPresetModel();
+			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
+			FromSapSendTestQCModel fsstQCModel = new FromSapSendTestQCModel( );
+			FromSapReceipeModel fsrModel = new FromSapReceipeModel( );
+			FromSapNCModel fsNCModel = new FromSapNCModel( );
+			FromSapSaleInputModel fssiModel = new FromSapSaleInputModel( );
+			FromSapSaleModel fssModel = new FromSapSaleModel( );
+			FromSapCFMModel fsCFMModel = new FromSapCFMModel( );
+			FromSapWaitTestModel fswtModel = new FromSapWaitTestModel( );
+			FromSapInspectModel fsiModel = new FromSapInspectModel( );
+			FromSapWorkInLabModel fswilModel = new FromSapWorkInLabModel( );
+			FromSapPackingModel fspackingModel = new FromSapPackingModel( );
+			String productionOrder = bean.getProductionOrder();
+			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder);
+			ArrayList<PresetDetail> presetDetailList = fspModel.getFromSapPresetDetailByProductionOrder(productionOrder);
+			ArrayList<DyeingDetail> dyeingDetailList = fsdModel.getFromSapDyeingDetailByProductionOrder(productionOrder);
+			ArrayList<SendTestQCDetail> sendTestQCDetailList = fsstQCModel.getFromSapSendTestQCByProductionOrder(productionOrder);
+			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
+			ArrayList<InspectDetail> insDetailList = fsiModel.getFromSapInspectDetailByProductionOrder(productionOrder);
+			ArrayList<PackingDetail> packDetailList = fspackingModel.getFromSapPackingDetailByProductionOrder(productionOrder);
+			ArrayList<WorkInLabDetail> workInLabDetailList = fswilModel.getFromSapWorkInLabDetailByProductionOrder(productionOrder);
+			ArrayList<WaitTestDetail> waitTestDetailList = fswtModel.getFromSapWaitTestDetailByProductionOrder(productionOrder);
+			ArrayList<CFMDetail> cfmDetailList = fsCFMModel.getFromSapCFMDetailByProductionOrder(productionOrder);
+			ArrayList<SaleDetail> saleDetailList = fssModel.getFromSapSaleDetailByProductionOrder(productionOrder);
+			ArrayList<SaleInputDetail> saleInputDetailList = fssiModel.getFromSapSaleInputDetailByProductionOrder(productionOrder);
 			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);
-			ArrayList<NCDetail> ncDetailList = getNCDetail(poList);
-			ArrayList<ReceipeDetail> receipeDetailList = getReceipeDetail(poList);
+			ArrayList<NCDetail> ncDetailList = fsNCModel.getFromSapNCDetailByProductionOrder(productionOrder);
+			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
 			PCMSAllDetail beanTmp = list.get(0);
 			beanTmp.setPoDetailList(poDetailList);
 			beanTmp.setPresetDetailList(presetDetailList);
@@ -1716,53 +1708,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 
 		}
 		return list;
-	}
-
-	private ArrayList<ReceipeDetail> getReceipeDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<ReceipeDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  "SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[No],[PostingDate] ,[LotNo],[Receipe],a.[DataStatus] \r\n"
-				+ " from [PCMS].[dbo].[FromSapReceipe] as a \r\n "
-				+ where
-				+ " Order by No";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genReceipeDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<NCDetail> getNCDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<NCDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql = "SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[SaleOrder],[SaleLine]\r\n"
-				+ "   ,[No],[NCDate],[CarNo],[Remark]\r\n"
-				+ "   ,[Quantity],[Unit],[NCFrom],a.[DataStatus]\r\n"
-				+ " from [PCMS].[dbo].[FromSapNC] as a \r\n "
-				+ where
-				+ " Order by No";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genNCDetail(map));
-		}
-		return list;
-	}
-
+	} 
+ 
 	private ArrayList<InputDateDetail> getSubmitDateDetail(ArrayList<PCMSTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSTableDetail bean = poList.get(0);
@@ -1802,303 +1749,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			list.add(this.bcModel._genInputDateDetail(map));
 		}
 		return list;
-	}
-
-	private ArrayList<SaleInputDetail> getSaleInputDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<SaleInputDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-		        + " 	[ProductionOrder],[BillDate]\r\n"
-				+ "     ,[BillQtyPerSale],[SaleOrder]\r\n"
-				+ "		,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
-				+ "			WHEN 0 THEN ''  \r\n"
-				+ "			ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
-				+ "			END AS [SaleLine] \r\n"
-				+ "     ,[BillQtyPerStock],[Remark],[CustomerNo]\r\n"
-				+ "     ,[CustomerName1],[CustomerPO],[DueDate]\r\n"
-				+ "     ,[Color],[No],a.[DataStatus]\r\n" + " "
-				+ " from [PCMS].[dbo].[FromSapSaleInput] as a \r\n "
-				+ where
-				+ " Order by [No]";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genSaleInputDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<SaleDetail> getFromSapSaleDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<SaleDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[BillDate]\r\n"
-				+ "   ,[BillQtyPerSale],[SaleOrder] \r\n"
-				+ "	  ,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
-				+ "			WHEN 0 THEN ''  \r\n"
-				+ "			ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
-				+ "			END AS [SaleLine] \r\n"
-				+ "   ,[BillQtyPerStock],[Remark],[CustomerNo]\r\n"
-				+ "   ,[CustomerName1],[CustomerPO],[DueDate]\r\n"
-				+ "   ,[Color],[No],a.[DataStatus]\r\n" + "  "
-				+ " from [PCMS].[dbo].[FromSapSale] as a \r\n "
-				+ where
-				+ " Order by [No]";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genSaleDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<CFMDetail> getCFMDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<CFMDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[CFMNo],[CFMNumber]\r\n"
-				+ "   ,[CFMSendDate],[CFMAnswerDate],[CFMStatus]\r\n"
-				+ "   ,[CFMRemark],[Da],[Db],[L]\r\n"
-				+ "   ,[ST],[SaleOrder]"
-				+ "   ,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
-				+ "			WHEN 0 THEN ''  \r\n"
-				+ "			ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
-				+ "			END AS [SaleLine] "
-				+ "   ,[CFMCheckLab]\r\n"
-				+ "   ,[CFMNextLab],[CFMCheckLot],[CFMNextLot]\r\n"
-				+ "   ,[NextLot],[SOChange],[SOChangeQty]\r\n"
-				+ "   ,[SOChangeUnit],[RollNo],[RollNoRemark]\r\n"
-				+ "   ,a.[DataStatus]\r\n"
-				+ "   ,[DE]\r\n"
-				+ " from [PCMS].[dbo].[FromSapCFM] as a \r\n "
-				+ where
-				+ " Order by [CFMNo]";
-
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genCFMDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<WaitTestDetail> getWaitTestDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<WaitTestDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				+ "    [ProductionOrder],[No],[DateInTest]\r\n"
-				+ "   ,[DateOutTest],[Status],[Remark],a.[DataStatus]\r\n"
-				+ " from [PCMS].[dbo].[FromSapWaitTest] as a \r\n "
-				+ where
-				+ " Order by [No]";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genWaitTestDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<WorkInLabDetail> getWorkInLabDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<WorkInLabDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[SaleOrder]\r\n"
-				+ "   ,[SaleLine],[No],[SendDate],[NOK]\r\n"
-				+ "   ,[LotNo],[ReceiveDate],[Remark],[Da]\r\n"
-				+ "   ,[Db],[L],[ST],a.[DataStatus]\r\n" + "   "
-				+ " from [PCMS].[dbo].[FromSapWorkInLab] as a \r\n "
-				+ where
-				+ " Order by No";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genWorkInLabDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<PackingDetail> getPackingDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<PackingDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				 "SELECT DISTINCT  \r\n"
-				+ this.selectPacking
-				+ " from [PCMS].[dbo].[FromSapPacking] as a \r\n "
-				+ where;
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genPackingDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<FinishingDetail> getFinishingDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<FinishingDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				 " SELECT DISTINCT  \r\n"
-				+ this.selectFinishing
-				+ " from [PCMS].[dbo].[FromSapFinishing] as a \r\n "
-				+ where
-				+ " Order by Operation";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genFinishingDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<InspectDetail> getInspectDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<InspectDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				 " SELECT DISTINCT  \r\n"
-		        + this.selectInspect
-		        + " from [PCMS].[dbo].[FromSapInspect] as a \r\n "
-		        + where
-				+ " Order by Operation";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genInspectDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<SendTestQCDetail> getSendTestQCDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<SendTestQCDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				 " SELECT DISTINCT  \r\n"
-			    + this.selectSendTestQC
-			    + " from [PCMS].[dbo].[FromSapSendTestQC] as a \r\n "
-				+ where;
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genSendTestQCDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<DyeingDetail> getDyeingDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<DyeingDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				 + this.selectDyeing
-				 + " from [PCMS].[dbo].[FromSapDyeing] as a \r\n "
-				 + where
-				 + " Order by Operation";
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genDyeingDetail(map));
-		}
-		return list;
-	}
-
-	private ArrayList<PresetDetail> getPresetDetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<PresetDetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				" SELECT DISTINCT \r\n "
-		       + this.selectPreset
-		       + " from [PCMS].[dbo].[FromSapPreset] as a \r\n "
-		       + where;
-//		 System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genPresetDetail(map));
-		}
-		return list;
-	}
-
-	public ArrayList<PODetail> getPODetail(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<PODetail> list = null;
-		String where = " where  ";
-		String prdOrder = "";
-		PCMSTableDetail bean = poList.get(0);
-		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql =
-				  " SELECT DISTINCT  \r\n"
-				+ this.selectPO
-				+ " from [PCMS].[dbo].[FromSapPO] as a \r\n "
-				+ where
-				+ " Order by [RollNo]";
-//
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genPODetail(map));
-		}
-		return list;
-	}
-
+	}    
 	@Override
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
 		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
