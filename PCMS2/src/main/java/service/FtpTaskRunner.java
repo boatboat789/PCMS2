@@ -54,6 +54,9 @@ private FtpReceive ftp;
    private DataImportDao importerGoodReceive;
 
    private DataImportDao importerBillBatch;
+//   private boolean bl_check = true;
+   private boolean bl_check = false;
+   
    public FtpTaskRunner(Database database, FtpReceive ftp) {
       this.ftp = ftp;
       this.user = new UserDetail("SYSTEM", "");
@@ -81,7 +84,7 @@ private FtpReceive ftp;
    public void loadFTPSapDetailOne() {
 //		BackGroundJobModel bgjModel = new BackGroundJobModel();
 
-	   boolean bl_check = false;
+//	   boolean bl_check = false;
 //	   bl_check = true;
 //	   System.out.println("PCMS2 loadFTPSapDetailOne :: FTP run at :: " + Calendar.getInstance().getTime().toString());
 //	   // NEED WORK BEFORE importerMainProd
@@ -135,10 +138,7 @@ private FtpReceive ftp;
 //	   if(bl_check) { System.out.println("execUpsertToTEMPUserStatusOnWeb    :: " + Calendar.getInstance().getTime().toString()); }
 //	   System.out.println("PCMS STOP FTP run at :: " + Calendar.getInstance().getTime().toString());
    }
-   public void loadFTPSapDetailTwo() { 
-	   boolean bl_check = false;
-//	   bl_check = true; 
-//	   System.out.println("PCMS2 loadFTPSapDetailTwo :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
+   public void loadFTPSapDetailTwo() {  
 	   this.importerWorkInLab.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerWorkInLab  :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerSendTestQC.loadDataFTP(this.user);
@@ -146,9 +146,7 @@ private FtpReceive ftp;
 	   this.importerPacking.loadDataFTP(this.user);	
 	   if(bl_check) { System.out.println("importerPacking    :: " + Calendar.getInstance().getTime().toString()); }  
   }
-   public void loadFTPSapDetailThree() { 
-	   boolean bl_check = false;
-//	   bl_check = true;  
+   public void loadFTPSapDetailThree() {  
 	   this.importerSubmitDate.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerSubmitDate :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerSaleInput.loadDataFTP(this.user);
@@ -158,9 +156,7 @@ private FtpReceive ftp;
 	   this.importerWaitTest.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerWaitTest   :: " + Calendar.getInstance().getTime().toString()); } 
   }
-   public void loadFTPSapDetailFour() { 
-	   boolean bl_check = false;
-//	   bl_check = true;  
+   public void loadFTPSapDetailFour() {  
 	   this.importerInspect.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerInspect    :: " + Calendar.getInstance().getTime().toString()); }
 	   this.importerFinishing.loadDataFTP(this.user);
@@ -170,10 +166,7 @@ private FtpReceive ftp;
 	   this.importerPreset.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerPreset     :: " + Calendar.getInstance().getTime().toString()); }   
  }
-   public void loadFTPCaseRequiredProd() { 
-	   boolean bl_check = false;
-//	   bl_check = true;
-//	   System.out.println("PCMS2 loadFTPCaseRequiredProd :: FTP run at :: " + Calendar.getInstance().getTime().toString()); 
+   public void loadFTPCaseRequiredProd() {   
 	   this.importerMainProd.loadDataFTP(this.user);	 
 	   if(bl_check) { System.out.println("importerMainProd    :: " + Calendar.getInstance().getTime().toString()); } 
 	   this.importerMainProdSale.loadDataFTP(this.user);
@@ -181,10 +174,7 @@ private FtpReceive ftp;
 	   this.importerCFM.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerCFM        :: " + Calendar.getInstance().getTime().toString()); }  
    }
-   public void loadFTPCaseSO() { 
-	   boolean bl_check = false;
-//	   bl_check = true;
-//	   System.out.println("PCMS2 loadFTPCaseSO :: FTP run at :: " + Calendar.getInstance().getTime().toString());
+   public void loadFTPCaseSO() {   
 	   this.importerMainSale.loadDataFTP(this.user);
 	   if(bl_check) { System.out.println("importerMainSale   :: " + Calendar.getInstance().getTime().toString()); }  
 	   this.importerGoodReceive.loadDataFTP(this.user);
