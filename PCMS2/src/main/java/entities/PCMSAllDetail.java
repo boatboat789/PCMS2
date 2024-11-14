@@ -51,7 +51,7 @@ public class PCMSAllDetail {
 	  private ArrayList<InspectDetail> inspectDetailList;
 	  private ArrayList<PackingDetail> packingDetailList;
 	  private ArrayList<WorkInLabDetail> workInLabDetailList;
-	  private ArrayList<WaitTestDetail> waitTestDetailList;
+//	  private ArrayList<WaitTestDetail> waitTestDetailList;
 	  private ArrayList<CFMDetail> cfmDetailList;
 	  private ArrayList<SaleDetail> saleDetailList;
 	  private ArrayList<SaleInputDetail> saleInputDetailList;
@@ -400,12 +400,12 @@ public class PCMSAllDetail {
 	public void setWorkInLabDetailList(ArrayList<WorkInLabDetail> workInLabDetailList) {
 		this.workInLabDetailList = workInLabDetailList;
 	}
-	public ArrayList<WaitTestDetail> getWaitTestDetailList() {
-		return waitTestDetailList;
-	}
-	public void setWaitTestDetailList(ArrayList<WaitTestDetail> waitTestDetailList) {
-		this.waitTestDetailList = waitTestDetailList;
-	}
+//	public ArrayList<WaitTestDetail> getWaitTestDetailList() {
+//		return waitTestDetailList;
+//	}
+//	public void setWaitTestDetailList(ArrayList<WaitTestDetail> waitTestDetailList) {
+//		this.waitTestDetailList = waitTestDetailList;
+//	}
 	public ArrayList<CFMDetail> getCfmDetailList() {
 		return cfmDetailList;
 	}

@@ -29,7 +29,7 @@ import model.master.FromSapDyeingModel;
 import model.master.FromSapFinishingModel;
 import model.master.FromSapInspectModel;
 import model.master.FromSapMainProdModel;
-import model.master.FromSapNCModel;
+//import model.master.FromSapNCModel;
 import model.master.FromSapPOModel;
 import model.master.FromSapPackingModel;
 import model.master.FromSapPresetModel;
@@ -40,6 +40,7 @@ import model.master.FromSapSendTestQCModel;
 import model.master.FromSapWaitTestModel;
 import model.master.FromSapWorkInLabModel;
 import model.master.SearchSettingModel;
+import model.master.InspectSystem.InspectNcModel;
 import th.in.totemplate.core.sql.Database;
 
 public class PCMSMainDaoImpl implements PCMSMainDao {
@@ -1664,11 +1665,11 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
 			FromSapSendTestQCModel fsstQCModel = new FromSapSendTestQCModel( );
 			FromSapReceipeModel fsrModel = new FromSapReceipeModel( );
-			FromSapNCModel fsNCModel = new FromSapNCModel( );
+			InspectNcModel insNCModel = new InspectNcModel( );
 			FromSapSaleInputModel fssiModel = new FromSapSaleInputModel( );
 			FromSapSaleModel fssModel = new FromSapSaleModel( );
 			FromSapCFMModel fsCFMModel = new FromSapCFMModel( );
-			FromSapWaitTestModel fswtModel = new FromSapWaitTestModel( );
+//			FromSapWaitTestModel fswtModel = new FromSapWaitTestModel( );
 			FromSapInspectModel fsiModel = new FromSapInspectModel( );
 			FromSapWorkInLabModel fswilModel = new FromSapWorkInLabModel( );
 			FromSapPackingModel fspackingModel = new FromSapPackingModel( );
@@ -1681,12 +1682,12 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			ArrayList<InspectDetail> insDetailList = fsiModel.getFromSapInspectDetailByProductionOrder(productionOrder);
 			ArrayList<PackingDetail> packDetailList = fspackingModel.getFromSapPackingDetailByProductionOrder(productionOrder);
 			ArrayList<WorkInLabDetail> workInLabDetailList = fswilModel.getFromSapWorkInLabDetailByProductionOrder(productionOrder);
-			ArrayList<WaitTestDetail> waitTestDetailList = fswtModel.getFromSapWaitTestDetailByProductionOrder(productionOrder);
+//			ArrayList<WaitTestDetail> waitTestDetailList = fswtModel.getFromSapWaitTestDetailByProductionOrder(productionOrder);
 			ArrayList<CFMDetail> cfmDetailList = fsCFMModel.getFromSapCFMDetailByProductionOrder(productionOrder);
 			ArrayList<SaleDetail> saleDetailList = fssModel.getFromSapSaleDetailByProductionOrder(productionOrder);
 			ArrayList<SaleInputDetail> saleInputDetailList = fssiModel.getFromSapSaleInputDetailByProductionOrder(productionOrder);
 			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);
-			ArrayList<NCDetail> ncDetailList = fsNCModel.getFromSapNCDetailByProductionOrder(productionOrder);
+			ArrayList<NCDetail> ncDetailList = insNCModel.getInspectNcByProductionOrder(prdOrder);
 			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
 			PCMSAllDetail beanTmp = list.get(0);
 			beanTmp.setPoDetailList(poDetailList);
@@ -1698,7 +1699,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			beanTmp.setPackingDetailList(packDetailList);
 
 			beanTmp.setWorkInLabDetailList(workInLabDetailList);
-			beanTmp.setWaitTestDetailList(waitTestDetailList);
+//			beanTmp.setWaitTestDetailList(waitTestDetailList);
 			beanTmp.setCfmDetailList(cfmDetailList);
 			beanTmp.setSaleDetailList(saleDetailList);
 			beanTmp.setSaleInputDetailList(saleInputDetailList);

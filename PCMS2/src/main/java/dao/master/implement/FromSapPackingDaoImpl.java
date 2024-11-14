@@ -23,9 +23,20 @@ public class FromSapPackingDaoImpl implements  FromSapPackingDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	private String selectPacking =
-			  "      [ProductionOrder],[PostingDate],[Quantity]\r\n"
-			+ "      ,[RollNo],[Status],[QuantityKG],[Grade]\r\n"
-			+ "      ,[No],[DataStatus],[QuantityYD]\r\n ";  ; 
+			  "      fsp.[Id]\r\n"
+			  + "      ,[ProductionOrder]\r\n"
+			  + "      ,[PostingDate]\r\n"
+			  + "      ,[Quantity]\r\n"
+			  + "      ,[RollNo]\r\n"
+			  + "      ,[Status]\r\n"
+			  + "	  ,insorder.[RollupNote] as [Status]\r\n"
+			  + "      ,[QuantityKG]\r\n"
+			  + "      ,[Grade]\r\n"
+			  + "      ,[No]\r\n"
+			  + "      ,[DataStatus]\r\n"
+			  + "      ,[QuantityYD]\r\n"
+			  + "      ,fsp.[ChangeDate]\r\n"
+			  + "      ,[CreateDate] \r\n ";  ; 
 	public FromSapPackingDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
@@ -38,11 +49,15 @@ public class FromSapPackingDaoImpl implements  FromSapPackingDao{
 	public  ArrayList<PackingDetail> getFromSapPackingDetailByProductionOrder(String prodOrder){
 		ArrayList<PackingDetail> list = null;
 		String where = " where  "; 
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " "
+				+ " fsp.ProductionOrder = '" + prodOrder + "'  and \r\n"
+				+ " fsp.[DataStatus] = 'O' \r\n";
 		String sql =
-				 "SELECT DISTINCT  \r\n"
-				+ this.selectPacking
-				+ " from [PCMS].[dbo].[FromSapPacking] as a \r\n "
+				 ""
+				 + " SELECT DISTINCT  \r\n"
+				+ this.selectPacking 
+				+ "  from [PCMS].[dbo].[FromSapPacking] as fsp\r\n"
+				+ "  left join [InspectSystem].[dbo].[InspectOrders] as insorder on fsp.[ProductionOrder] = insorder.[PrdNumber] \r\n "
 				+ where; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

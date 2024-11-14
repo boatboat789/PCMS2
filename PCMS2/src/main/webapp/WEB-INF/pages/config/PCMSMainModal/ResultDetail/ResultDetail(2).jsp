@@ -63,9 +63,10 @@
 					                <td style="vertical-align: middle;">NC Date</td>
 					                <td style="vertical-align: middle;">Car No.</td>
 					                <td style="vertical-align: middle;">Quantity</td>
-					                <td style="vertical-align: middle;">Unit</td> 
+<!-- 					                <td style="vertical-align: middle;">Unit</td>  -->
 				                  	<td style="vertical-align: middle;">NC Form	</td>
 					                <td style="vertical-align: middle;">Problem</td>   
+					                <td style="vertical-align: middle;">Solution</td>   
 					        	</tr> 
 					        </thead>     
 					        <tbody> 

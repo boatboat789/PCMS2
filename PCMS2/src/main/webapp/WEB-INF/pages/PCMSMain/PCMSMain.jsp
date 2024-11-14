@@ -99,7 +99,9 @@ var divisionList ;
 var configCusList;
 var cusShortNameList ;  
 var isCustomer = 0 ;  	
-var workInLabTable ;var waitTestTable;var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
+var workInLabTable ;
+// var waitTestTable;
+var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
 // var domain = "http://"+window.location.hostname+":8080";
@@ -816,27 +818,25 @@ $(document) .ready( function() {
 		],  order: [[ 0, "desc" ]]
  	 });       
      
-    waitTestTable = $('#waitTestTable').DataTable({   
-    	scrollY:        '175px',       
-    	scrollX: true,      
-    	paging: false,      
-// 		orderClasses : false, 
-		lengthChange: false,         	  
- 	   	columns :  
- 		[           
-		    {"data" : "no"} ,         //0
-		    {"data" : "dateInTest"},  
-		    {"data" : "dateOutTest"},  
-		    {"data" : "status"},  
-		    {"data" : "remark"},  
-		],  	          
-		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4 ],                
-			  	  className : 'data-custom-padding0505',    
-// 		  	 	  type: 'string'      
-				} ,           
-		],     order: [[ 0, "desc" ]]        
- 	 }); 
+//     waitTestTable = $('#waitTestTable').DataTable({   
+//     	scrollY:        '175px',       
+//     	scrollX: true,      
+//     	paging: false,       
+// 		lengthChange: false,         	  
+//  	   	columns :  
+//  		[           
+// 		    {"data" : "no"} ,         //0
+// 		    {"data" : "dateInTest"},  
+// 		    {"data" : "dateOutTest"},  
+// 		    {"data" : "status"},  
+// 		    {"data" : "remark"},  
+// 		],  	          
+// 		columnDefs :  [	   	
+// 			{ targets : [ 0,1,2,3,4 ],                
+// 			  	  className : 'data-custom-padding0505',     
+// 				} ,           
+// 		],     order: [[ 0, "desc" ]]        
+//  	 }); 
      
     cfmTable = $('#cfmTable').DataTable({   
     	scrollY:        '175px',    
@@ -953,11 +953,11 @@ $(document) .ready( function() {
 	 		[           
 			    {"data" : "no"} ,         //0
 			    {"data" : "ncDate"},  
-			    {"data" : "carNo"},  
-			    {"data" : "quantity"},  
-			    {"data" : "unit"}, 
-			    {"data" : "ncFrom"}, 
-			    {"data" : "remark"},      //6
+			    {"data" : "ncCarNumber"},  
+			    {"data" : "ncLength"},   
+			    {"data" : "ncReceiverBase"}, 
+			    {"data" : "ncProblem"},
+			    {"data" : "ncSolution"},      //6
 			],  	          
 			columnDefs :  [	   	
 				{ targets : [ 0,1,2,3,4,5,6 ],                
@@ -1051,7 +1051,7 @@ $(document) .ready( function() {
 	$("#poTable_filter").hide();	
 	
 	$("#workInLabTable_filter").hide();  
-	$("#waitTestTable_filter").hide();  
+// 	$("#waitTestTable_filter").hide();  
 	$("#cfmTable_filter").hide();  
 	$("#saleTable_filter").hide();  
 	$("#saleInputTable_filter").hide();  
@@ -1060,7 +1060,7 @@ $(document) .ready( function() {
 	$("#receipeTable_filter").hide();  
 	
 	$("#workInLabTable_info").hide();
-	$("#waitTestTable_info").hide();
+// 	$("#waitTestTable_info").hide();
 	$("#cfmTable_info").hide();
 	$("#saleTable_info").hide();
 	$("#saleInputTable_info").hide();
@@ -1152,7 +1152,7 @@ $(document) .ready( function() {
     	sendTestQCTable.columns.adjust(); 
     	
     	workInLabTable.columns.adjust(); 
-    	waitTestTable.columns.adjust(); 
+//     	waitTestTable.columns.adjust(); 
     	cfmTable.columns.adjust(); 
     	saleTable.columns.adjust(); 
     	saleInputTable.columns.adjust(); 
@@ -1168,7 +1168,7 @@ $(document) .ready( function() {
 		packingTable.columns.adjust(); 
 		sendTestQCTable.columns.adjust(); 
     	workInLabTable.columns.adjust(); 
-    	waitTestTable.columns.adjust(); 
+//     	waitTestTable.columns.adjust(); 
     	cfmTable.columns.adjust(); 
     	saleTable.columns.adjust(); 
     	saleInputTable.columns.adjust(); 
@@ -1529,10 +1529,10 @@ function setModalDetail(data){
 	else{ workInLabTable.rows.add(innnerText.workInLabDetailList); }  
 	workInLabTable.draw();  
 	
-	waitTestTable.clear();    	   
-	if(innnerText.waitTestDetailList.length == 0){       }     
-	else{ waitTestTable.rows.add(innnerText.waitTestDetailList); }  
-	waitTestTable.draw();  
+// 	waitTestTable.clear();    	   
+// 	if(innnerText.waitTestDetailList.length == 0){       }     
+// 	else{ waitTestTable.rows.add(innnerText.waitTestDetailList); }  
+// 	waitTestTable.draw();  
 
 // 	console.log(innnerText.cfmDetailList)     
 	cfmTable.clear();    	   
@@ -1550,6 +1550,7 @@ function setModalDetail(data){
 	else{ submitDateTable.rows.add(innnerText.submitDateDetailList); }  
 	submitDateTable.draw();  
 	
+
 	ncTable.clear();    	   
 	if(innnerText.ncDetailList.length == 0){       }     
 	else{ ncTable.rows.add(innnerText.ncDetailList); }  

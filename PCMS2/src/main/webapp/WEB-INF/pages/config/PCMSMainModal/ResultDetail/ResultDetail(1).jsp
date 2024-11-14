@@ -29,25 +29,24 @@
 					    </table>  
 			    	</div>  
 				</div>        
-			  	 <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 waitTestWrapper " style="display: inline-flex;
-				 			 text-align: right;"> 
-<!-- 				 	<label class="my-1 mr-2 " for="waitTestTable">รอผล Test</label>            -->
-			  	 	<div class="table-responsive ">
-						<table id="waitTestTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
-					        <thead>
-					            <tr> 
-					                <td style="vertical-align: middle;">ครั้งที่</td>
-					                <td style="vertical-align: middle;">วันที่เข้า Test</td>
-					                <td style="vertical-align: middle;">วันที่ออกผล Test</td>
-					                <td style="vertical-align: middle;">Status</td>
-					                <td style="vertical-align: middle;">Remark</td>    
-					        	</tr> 
-					        </thead>     
-					        <tbody> 
-					        </tbody> 
-					    </table>  
-			    	</div>    
-				</div>        
+<!-- 			  	 <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 waitTestWrapper " style="display: inline-flex; -->
+<!-- 				 			 text-align: right;">  --> 
+<!-- 			  	 	<div class="table-responsive "> -->
+<!-- 						<table id="waitTestTable" class="table table-bordered table-striped text-center display compact" style="width:100%"> -->
+<!-- 					        <thead> -->
+<!-- 					            <tr>  -->
+<!-- 					                <td style="vertical-align: middle;">ครั้งที่</td> -->
+<!-- 					                <td style="vertical-align: middle;">วันที่เข้า Test</td> -->
+<!-- 					                <td style="vertical-align: middle;">วันที่ออกผล Test</td> -->
+<!-- 					                <td style="vertical-align: middle;">Status</td> -->
+<!-- 					                <td style="vertical-align: middle;">Remark</td>     -->
+<!-- 					        	</tr>  -->
+<!-- 					        </thead>      -->
+<!-- 					        <tbody>  -->
+<!-- 					        </tbody>  -->
+<!-- 					    </table>   -->
+<!-- 			    	</div>     -->
+<!-- 				</div>         -->
 				<div class="col-12 	col-sm-12 col-md-12 col-lg-10 col-xl-10 cfmWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -->

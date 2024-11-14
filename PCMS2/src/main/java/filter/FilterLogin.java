@@ -51,9 +51,12 @@ public class FilterLogin implements Filter {
 //	        	}
 //	        }
 	      else {
-//    		 res.sendRedirect(loginURL);             //CREATE NEW LINK FOR REDIRECT
-    		 RequestDispatcher dispatcher = request.getRequestDispatcher("login");
-             dispatcher.forward(request, response);  //GET OLD LINK FOR REDIRECT
+
+				HttpSession session = req.getSession();
+			    session.setAttribute("originalURI", uri);
+				res.sendRedirect(loginURL);             //CREATE NEW LINK FOR REDIRECT 
+//    		 RequestDispatcher dispatcher = request.getRequestDispatcher("login");
+//             dispatcher.forward(request, response);  //GET OLD LINK FOR REDIRECT
    			}
    }
 	@Override
