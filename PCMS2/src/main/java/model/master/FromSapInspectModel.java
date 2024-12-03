@@ -53,5 +53,5 @@ public class FromSapInspectModel  extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<InspectDetail> list = this.dao.getFromSapInspectDetailByProductionOrder(prodOrder);
 		return list;
-	}
+	} 
 }

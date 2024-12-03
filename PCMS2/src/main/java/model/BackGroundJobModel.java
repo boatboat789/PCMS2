@@ -38,6 +38,9 @@ public class BackGroundJobModel extends HttpServlet {
    		this.database.close();
    		super.destroy();
    	}
+   	public void handlerERPAtechToWebApp() {
+   		this.dao.handlerERPAtechToWebApp();
+   	}
 	public void execUpsertToMainProd() {
 		// TODO Auto-generated method stub
 		 this.dao.execUpsertToMainProd();

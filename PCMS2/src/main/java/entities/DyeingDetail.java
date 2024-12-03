@@ -1,121 +1,169 @@
 package entities;
 
 public class DyeingDetail {
-	private String postingDate;
+	private String productionOrder;
+	private String lotNo;
 	private String operation;
-	private String workCenter;
-	private String dyeStatus;
+	private String cartNo;
+	private String cartType;
+	private String workDate;
+	private String workCenter; 
+	private String dyeingStatus;
+	private String dyeRemark;
 	private String deltaE;
 	private String l;
 	private String da;
 	private String db;
 	private String st	;
-	private String remark	;
-	private String redye;
-	private String batch;
-	private String colorStatus;
-	private String colorRemark;
-	public DyeingDetail(String postingDate, String operation, String workCenter, String dyeStatus, String deltaE,
-			String l, String da, String db, String sT, String remark, String redye, String batch, String colorStatus,
-			String colorRemark) {
+	private String colorCheckStatus;
+	private String colorCheckRemark;
+	public DyeingDetail(String productionOrder, String lotNo, String operation, String cartNo, String cartType, String workDate,
+			String workCenter, String dyeingStatus, String deltaE, String l, String da, String db, String st, String dyeRemark,
+			String colorCheckStatus, String colorCheckRemark) {
 		super();
-		this.postingDate = postingDate;
+		this.productionOrder = productionOrder;
+		this.lotNo = lotNo;
 		this.operation = operation;
+		this.cartNo = cartNo;
+		this.cartType = cartType;
+		this.workDate = workDate;
 		this.workCenter = workCenter;
-		this.dyeStatus = dyeStatus;
+		this.dyeingStatus = dyeingStatus;
 		this.deltaE = deltaE;
 		this.l = l;
 		this.da = da;
 		this.db = db;
-		this.st = sT;
-		this.remark = remark;
-		this.redye = redye;
-		this.batch = batch;
-		this.colorStatus = colorStatus;
-		this.colorRemark = colorRemark;
+		this.st = st;
+		this.dyeRemark = dyeRemark;
+		this.colorCheckStatus = colorCheckStatus;
+		this.colorCheckRemark = colorCheckRemark;
 	}
-	public String getPostingDate() {
-		return postingDate;
+	public String getProductionOrder()
+	{
+		return productionOrder;
 	}
-	public void setPostingDate(String postingDate) {
-		this.postingDate = postingDate;
+	public void setProductionOrder(String productionOrder)
+	{
+		this.productionOrder = productionOrder;
 	}
-	public String getOperation() {
+	public String getLotNo()
+	{
+		return lotNo;
+	}
+	public void setLotNo(String lotNo)
+	{
+		this.lotNo = lotNo;
+	}
+	public String getOperation()
+	{
 		return operation;
 	}
-	public void setOperation(String operation) {
+	public void setOperation(String operation)
+	{
 		this.operation = operation;
 	}
-	public String getWorkCenter() {
+	public String getCartNo()
+	{
+		return cartNo;
+	}
+	public void setCartNo(String cartNo)
+	{
+		this.cartNo = cartNo;
+	}
+	public String getCartType()
+	{
+		return cartType;
+	}
+	public void setCartType(String cartType)
+	{
+		this.cartType = cartType;
+	}
+	public String getWorkDate()
+	{
+		return workDate;
+	}
+	public void setWorkDate(String workDate)
+	{
+		this.workDate = workDate;
+	}
+	public String getWorkCenter()
+	{
 		return workCenter;
 	}
-	public void setWorkCenter(String workCenter) {
+	public void setWorkCenter(String workCenter)
+	{
 		this.workCenter = workCenter;
 	}
-	public String getDyeStatus() {
-		return dyeStatus;
+	public String getDyeingStatus()
+	{
+		return dyeingStatus;
 	}
-	public void setDyeStatus(String dyeStatus) {
-		this.dyeStatus = dyeStatus;
+	public void setDyeingStatus(String dyeingStatus)
+	{
+		this.dyeingStatus = dyeingStatus;
 	}
-	public String getDeltaE() {
+	public String getDeltaE()
+	{
 		return deltaE;
 	}
-	public void setDeltaE(String deltaE) {
+	public void setDeltaE(String deltaE)
+	{
 		this.deltaE = deltaE;
 	}
-	public String getL() {
+	public String getL()
+	{
 		return l;
 	}
-	public void setL(String l) {
+	public void setL(String l)
+	{
 		this.l = l;
 	}
-	public String getDa() {
+	public String getDa()
+	{
 		return da;
 	}
-	public void setDa(String da) {
+	public void setDa(String da)
+	{
 		this.da = da;
 	}
-	public String getDb() {
+	public String getDb()
+	{
 		return db;
 	}
-	public void setDb(String db) {
+	public void setDb(String db)
+	{
 		this.db = db;
 	}
-	public String getSt() {
+	public String getSt()
+	{
 		return st;
 	}
-	public void setSt(String st) {
+	public void setSt(String st)
+	{
 		this.st = st;
 	}
-	public String getRemark() {
-		return remark;
+	public String getDyeRemark()
+	{
+		return dyeRemark;
 	}
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setDyeRemark(String dyeRemark)
+	{
+		this.dyeRemark = dyeRemark;
 	}
-	public String getRedye() {
-		return redye;
+	public String getColorCheckStatus()
+	{
+		return colorCheckStatus;
 	}
-	public void setRedye(String redye) {
-		this.redye = redye;
+	public void setColorCheckStatus(String colorCheckStatus)
+	{
+		this.colorCheckStatus = colorCheckStatus;
 	}
-	public String getBatch() {
-		return batch;
+	public String getColorCheckRemark()
+	{
+		return colorCheckRemark;
 	}
-	public void setBatch(String batch) {
-		this.batch = batch;
-	}
-	public String getColorStatus() {
-		return colorStatus;
-	}
-	public void setColorStatus(String colorStatus) {
-		this.colorStatus = colorStatus;
-	}
-	public String getColorRemark() {
-		return colorRemark;
-	}
-	public void setColorRemark(String colorRemark) {
-		this.colorRemark = colorRemark;
-	}
+	public void setColorCheckRemark(String colorCheckRemark)
+	{
+		this.colorCheckRemark = colorCheckRemark;
+	}  
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import dao.master.FromSapSaleInputDao;
 import dao.master.implement.FromSapSaleInputDaoImpl;
 import entities.SaleInputDetail;
+import entities.erp.atech.FromErpSaleInputDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
  
@@ -52,5 +53,11 @@ public class FromSapSaleInputModel extends HttpServlet {
 	{ 
 		ArrayList<SaleInputDetail> list = this.dao.getFromSapSaleInputDetailByProductionOrder(prodOrder);
 		return list;
+	}
+	public String upsertFromSapSaleInputDetail(ArrayList<FromErpSaleInputDetail> paList)
+	{
+		// TODO Auto-generated method stub
+		String iconStatus = this.dao.upsertFromSapSaleInputDetail(paList);
+		return iconStatus;
 	}
 }

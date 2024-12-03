@@ -1,201 +1,191 @@
 package entities;
 
 public class FinishingDetail {
-	private String postingDate;
-	private String workCenter;
-	private String status;
-	private String ncDate;
-	private String cause;
-	private String carNo;
-	private String deltaE;
-	private String color;
+	private String productionOrder;
+	private String lotNo;
 	private String operation;
-	private String ccStatus;
-	private String ccRemark;
-	private String rollNo;
+	private String workDate;
+	private String workCenter; 
+	private String cartNo;
+	private String cartType;
+	private String colorCheckOperation;
+	private String colorCheckWorkDate;
 	private String da;
 	private String db;
 	private String l;
 	private String st;
-	private String ccPostingDate;
-	private String ccOperation;
-	private String lotNo;
-
-	public FinishingDetail(String postingDate, String workCenter, String status, String nCDate, String cause,
-			String carNo, String deltaE, String color, String operation, String cCStatus, String cCRemark,
-			String rollNo, String da, String db, String l, String sT, String cCPostingDate, String cCOperation,
-			String lotNo) {
+	private String deltaE;
+	private String colorCheckName;
+	private String colorCheckStatus;
+	private String colorCheckRollNo;
+	private String colorCheckRemark;
+	
+	public FinishingDetail(String productionOrder, String lotNo, String operation, String workDate,String workCenter, String cartNo,
+			String cartType, String colorCheckOperation, String colorCheckWorkDate, String da, String db, String l, String st,
+			String deltaE, String colorCheckName, String colorCheckStatus, String colorCheckRollNo, String colorCheckRemark) {
 		super();
-		this.postingDate = postingDate;
-		this.workCenter = workCenter;
-		this.status = status;
-		this.ncDate = nCDate;
-		this.cause = cause;
-		this.carNo = carNo;
-		this.deltaE = deltaE;
-		this.color = color;
+		this.productionOrder = productionOrder;
+		this.lotNo = lotNo;
 		this.operation = operation;
-		this.ccStatus = cCStatus;
-		this.ccRemark = cCRemark;
-		this.rollNo = rollNo;
+		this.workDate = workDate;
+		this.workCenter = workCenter;
+		this.cartNo = cartNo;
+		this.cartType = cartType;
+		this.colorCheckOperation = colorCheckOperation;
+		this.colorCheckWorkDate = colorCheckWorkDate;
 		this.da = da;
 		this.db = db;
 		this.l = l;
-		this.st = sT;
-		this.ccPostingDate = cCPostingDate;
-		this.ccOperation = cCOperation;
-		this.lotNo = lotNo;
+		this.st = st;
+		this.deltaE = deltaE;
+		this.colorCheckName = colorCheckName;
+		this.colorCheckStatus = colorCheckStatus;
+		this.colorCheckRollNo = colorCheckRollNo;
+		this.colorCheckRemark = colorCheckRemark;
 	}
-
-	public String getPostingDate() {
-		return postingDate;
-	}
-
-	public void setPostingDate(String postingDate) {
-		this.postingDate = postingDate;
-	}
-
-	public String getWorkCenter() {
+	public String getWorkCenter()
+	{
 		return workCenter;
 	}
-
-	public void setWorkCenter(String workCenter) {
+	public void setWorkCenter(String workCenter)
+	{
 		this.workCenter = workCenter;
 	}
-
-	public String getStatus() {
-		return status;
+	public String getProductionOrder()
+	{
+		return productionOrder;
 	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	public void setProductionOrder(String productionOrder)
+	{
+		this.productionOrder = productionOrder;
 	}
-
-	public String getNcDate() {
-		return ncDate;
-	}
-
-	public void setNcDate(String ncDate) {
-		this.ncDate = ncDate;
-	}
-
-	public String getCause() {
-		return cause;
-	}
-
-	public void setCause(String cause) {
-		this.cause = cause;
-	}
-
-	public String getCarNo() {
-		return carNo;
-	}
-
-	public void setCarNo(String carNo) {
-		this.carNo = carNo;
-	}
-
-	public String getDeltaE() {
-		return deltaE;
-	}
-
-	public void setDeltaE(String deltaE) {
-		this.deltaE = deltaE;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public String getOperation() {
-		return operation;
-	}
-
-	public void setOperation(String operation) {
-		this.operation = operation;
-	}
-
-	public String getCcStatus() {
-		return ccStatus;
-	}
-
-	public void setCcStatus(String ccStatus) {
-		this.ccStatus = ccStatus;
-	}
-
-	public String getCcRemark() {
-		return ccRemark;
-	}
-
-	public void setCcRemark(String ccRemark) {
-		this.ccRemark = ccRemark;
-	}
-
-	public String getRollNo() {
-		return rollNo;
-	}
-
-	public void setRollNo(String rollNo) {
-		this.rollNo = rollNo;
-	}
-
-	public String getDa() {
-		return da;
-	}
-
-	public void setDa(String da) {
-		this.da = da;
-	}
-
-	public String getDb() {
-		return db;
-	}
-
-	public void setDb(String db) {
-		this.db = db;
-	}
-
-	public String getL() {
-		return l;
-	}
-
-	public void setL(String l) {
-		this.l = l;
-	}
-
-	public String getSt() {
-		return st;
-	}
-
-	public void setSt(String st) {
-		this.st = st;
-	}
-
-	public String getCcPostingDate() {
-		return ccPostingDate;
-	}
-
-	public void setCcPostingDate(String ccPostingDate) {
-		this.ccPostingDate = ccPostingDate;
-	}
-
-	public String getCcOperation() {
-		return ccOperation;
-	}
-
-	public void setCcOperation(String ccOperation) {
-		this.ccOperation = ccOperation;
-	}
-
-	public String getLotNo() {
+	public String getLotNo()
+	{
 		return lotNo;
 	}
-
-	public void setLotNo(String lotNo) {
+	public void setLotNo(String lotNo)
+	{
 		this.lotNo = lotNo;
 	}
+	public String getOperation()
+	{
+		return operation;
+	}
+	public void setOperation(String operation)
+	{
+		this.operation = operation;
+	}
+	public String getWorkDate()
+	{
+		return workDate;
+	}
+	public void setWorkDate(String workDate)
+	{
+		this.workDate = workDate;
+	}
+	public String getCartNo()
+	{
+		return cartNo;
+	}
+	public void setCartNo(String cartNo)
+	{
+		this.cartNo = cartNo;
+	}
+	public String getCartType()
+	{
+		return cartType;
+	}
+	public void setCartType(String cartType)
+	{
+		this.cartType = cartType;
+	}
+	public String getColorCheckOperation()
+	{
+		return colorCheckOperation;
+	}
+	public void setColorCheckOperation(String colorCheckOperation)
+	{
+		this.colorCheckOperation = colorCheckOperation;
+	}
+	public String getColorCheckWorkDate()
+	{
+		return colorCheckWorkDate;
+	}
+	public void setColorCheckWorkDate(String colorCheckWorkDate)
+	{
+		this.colorCheckWorkDate = colorCheckWorkDate;
+	}
+	public String getDa()
+	{
+		return da;
+	}
+	public void setDa(String da)
+	{
+		this.da = da;
+	}
+	public String getDb()
+	{
+		return db;
+	}
+	public void setDb(String db)
+	{
+		this.db = db;
+	}
+	public String getL()
+	{
+		return l;
+	}
+	public void setL(String l)
+	{
+		this.l = l;
+	}
+	public String getSt()
+	{
+		return st;
+	}
+	public void setSt(String st)
+	{
+		this.st = st;
+	}
+	public String getDeltaE()
+	{
+		return deltaE;
+	}
+	public void setDeltaE(String deltaE)
+	{
+		this.deltaE = deltaE;
+	}
+	public String getColorCheckName()
+	{
+		return colorCheckName;
+	}
+	public void setColorCheckName(String colorCheckName)
+	{
+		this.colorCheckName = colorCheckName;
+	}
+	public String getColorCheckStatus()
+	{
+		return colorCheckStatus;
+	}
+	public void setColorCheckStatus(String colorCheckStatus)
+	{
+		this.colorCheckStatus = colorCheckStatus;
+	}
+	public String getColorCheckRollNo()
+	{
+		return colorCheckRollNo;
+	}
+	public void setColorCheckRollNo(String colorCheckRollNo)
+	{
+		this.colorCheckRollNo = colorCheckRollNo;
+	}
+	public String getColorCheckRemark()
+	{
+		return colorCheckRemark;
+	}
+	public void setColorCheckRemark(String colorCheckRemark)
+	{
+		this.colorCheckRemark = colorCheckRemark;
+	}  
+ 
 }

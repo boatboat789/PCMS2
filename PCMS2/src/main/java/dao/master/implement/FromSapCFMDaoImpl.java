@@ -1,12 +1,18 @@
 	package dao.master.implement;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import dao.master.FromSapCFMDao;
 import entities.CFMDetail;
+import entities.erp.atech.FromErpCFMDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
@@ -38,7 +44,8 @@ public class FromSapCFMDaoImpl implements  FromSapCFMDao{
 		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql =
 				  " SELECT DISTINCT  \r\n"
-				+ "   [ProductionOrder],[CFMNo],[CFMNumber]\r\n"
+				+ "   [Id]"
+				+ "   ,[ProductionOrder],[CFMNo],[CFMNumber]\r\n"
 				+ "   ,[CFMSendDate],[CFMAnswerDate],[CFMStatus]\r\n"
 				+ "   ,[CFMRemark],[Da],[Db],[L]\r\n"
 				+ "   ,[ST],[SaleOrder]"
@@ -61,5 +68,119 @@ public class FromSapCFMDaoImpl implements  FromSapCFMDao{
 			list.add(this.bcModel._genCFMDetail(map));
 		}
 		return list;
+	}
+
+	@Override
+	public String upsertFromSapCFMDetail(ArrayList<FromErpCFMDetail> paList)
+	{
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection(); 
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		
+		String iconStatus = "I";
+		String sql =
+				  "-- Update if the record exists\r\n"
+				  + " "
+				  + "UPDATE [dbo].[FromSapCFM]\r\n"
+				  + "SET \r\n"   
+				  + "    [CFMNumber] = ?,\r\n"
+				  + "    [CFMSendDate] = ?,\r\n"  
+				  + "    [CFMAnswerDate] = ?,\r\n"
+				  + "    [CFMStatus] = ? \r\n" 
+				  + "    [CFMRemark] = ? \r\n" 
+				  + "    [SaleOrder] = ? \r\n" 
+				  + "    [SaleLine] = ? \r\n" 
+				  + "    [SOChange] = ? \r\n" 
+				  + "    [NextLot] = ? \r\n" 
+				  + "    [SOChange] = ? \r\n" 
+				  + "    [SOChangeQty] = ? \r\n" 
+				  + "    [SOChangeUnit] = ? \r\n" 
+				  + "    [RollNo] = ? \r\n" 
+				  + "    [RollNoRemark] = ? \r\n" 
+				  + "    [DataStatus] = ? \r\n" 
+				  + "    [ChangeDate]= ? \r\n" 
+				  + "WHERE \r\n"
+				  + "    [ProductionOrder] = ? AND\r\n" 
+				  + "    [CFMNo] = ? ;\r\n"
+				  + "-- Check if rows were updated\r\n"
+				  + "DECLARE @rc INT = @@ROWCOUNT;\r\n"
+				  + "IF @rc <> 0\r\n"
+				  + "    PRINT @rc;\r\n"
+				  + "ELSE \r\n"
+				  + "    -- Insert if no rows were updated\r\n"
+				  + "    INSERT INTO [dbo].[FromSapCFM] (\r\n"
+				  + "        [ProductionOrder] ,[CFMNo] ,[CFMNumber] ,[CFMSendDate] ,[CFMAnswerDate]\r\n"
+				  + "      ,[CFMStatus] ,[CFMRemark] ,[SaleOrder] ,[SaleLine] ,[NextLot]\r\n"
+				  + "      ,[SOChange] ,[SOChangeQty] ,[SOChangeUnit] ,[RollNo] ,[RollNoRemark]"
+				  + "      ,[DataStatus] ,[ChangeDate] ,[CreateDate]\r\n"
+				  + "    ) VALUES (\r\n"
+				  + "		?, ?, ?, ?, ?, "
+				  + "		?, ?, ?, ?, ?, "
+				  + "		?, ?, ?, ?, ?, "
+				  + "		?, ?, ? "//10  
+				  + "    ); "
+				+ ";"  ;
+		try {
+
+			int index = 1;
+			prepared = connection.prepareStatement(sql); 
+			for(FromErpCFMDetail bean : paList) {
+				index = 1;
+
+				prepared.setString(index++, bean.getCfmNumber()    );
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate() , index++); 
+				prepared.setString(index++, bean.getCfmStatus()    );
+				prepared.setString(index++, bean.getCfmRemark()    );
+				prepared.setString(index++, bean.getSaleOrder()    );
+				prepared.setString(index++, bean.getSaleLine()    );
+				prepared.setString(index++, bean.getNextLot()    );
+				prepared.setString(index++, bean.getSoChange()    );
+				prepared.setString(index++, bean.getSoChangeQty()    );
+				prepared.setString(index++, bean.getSoChangeUnit()    );
+				prepared.setString(index++, bean.getRollNo()    );
+				prepared.setString(index++, bean.getRollNoRemark()    ); 
+				prepared.setTimestamp(index++, new Timestamp(time));
+				prepared.setString(index++, bean.getProductionOrder()    );
+				prepared.setString(index++, bean.getCfmNo()    );
+				
+				prepared.setString(index++, bean.getProductionOrder()    );
+				prepared.setString(index++, bean.getCfmNo()    );
+				prepared.setString(index++, bean.getCfmNumber()    );
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate() , index++); 
+				prepared.setString(index++, bean.getCfmStatus()    );
+				prepared.setString(index++, bean.getCfmRemark()    );
+				prepared.setString(index++, bean.getSaleOrder()    );
+				prepared.setString(index++, bean.getSaleLine()    );
+				prepared.setString(index++, bean.getNextLot()    );
+				prepared.setString(index++, bean.getSoChange()    );
+				prepared.setString(index++, bean.getSoChangeQty()    );
+				prepared.setString(index++, bean.getSoChangeUnit()    );
+				prepared.setString(index++, bean.getRollNo()    );
+				prepared.setString(index++, bean.getRollNoRemark()    ); 
+				prepared.setTimestamp(index++, new Timestamp(time));
+				prepared.setTimestamp(index++, new Timestamp(time));  
+//				prepared.setString(index++, bean.get    );
+//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//				prepared.setTimestamp(index++, new Timestamp(time));
+//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+				prepared.addBatch();
+			}
+			prepared.executeBatch();
+			prepared.close(); 
+		} catch (SQLException e) {
+			System.err.println(e); 
+			iconStatus = "E";
+		}finally {
+			//this.database.close();
+		}
+		return iconStatus;
 	} 
+
+	 
 }

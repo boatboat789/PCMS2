@@ -53,5 +53,5 @@ public class FromSapFinishingModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<FinishingDetail> list = this.dao.getFromSapFinishingDetailByProductionOrder(prodOrder);
 		return list;
-	}
+	} 
 }

@@ -12,11 +12,11 @@
 						<table id="inspectTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>
 					            <tr> 
-					                <th style="vertical-align: middle;">Date</th>
+					                <th style="vertical-align: middle;">WorkDate</th>
 					                <th style="vertical-align: middle;">Operation</th>
-					                <th style="vertical-align: middle;">Qty. Greige</th>
-					                <th style="vertical-align: middle;">Qty. FG.</th>
-					                <th style="vertical-align: middle;">Remark</th>   
+					                <th style="vertical-align: middle;">WorkCenter</th>
+					                <th style="vertical-align: middle;">InspectMachine</th> 
+					                <th style="vertical-align: middle;">InspectRemark</th> 
 					        	</tr> 
 					        </thead>     
 					        <tbody> 
@@ -31,7 +31,7 @@
 						<table id="sendTestQCTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>          
 					            <tr>  
-					                <th style="vertical-align: middle;">Date</th>
+					                <th style="vertical-align: middle;">WorkDate</th>
 					                <th style="vertical-align: middle;">Batch</th>
 					                <th style="vertical-align: middle;">Status</th>
 					                <th style="vertical-align: middle;">ColorCheckDate</th>
@@ -56,7 +56,7 @@
 						<table id="packingTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>
 					            <tr> 
-					                <th style="vertical-align: middle;">Date</th>
+					                <th style="vertical-align: middle;">WorkDate</th>
 					                <th style="vertical-align: middle;">ความยาว(M)</th>
 					                <th style="vertical-align: middle;">Batch</th>
 					                <th style="vertical-align: middle;">Grade</th>

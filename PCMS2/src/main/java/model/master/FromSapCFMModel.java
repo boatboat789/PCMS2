@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import dao.master.FromSapCFMDao;
 import dao.master.implement.FromSapCFMDaoImpl;
 import entities.CFMDetail;
+import entities.erp.atech.FromErpCFMDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
@@ -53,5 +54,10 @@ public class FromSapCFMModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<CFMDetail> list = this.dao.getFromSapCFMDetailByProductionOrder(prodOrder);
 		return list;
+	}
+	public  String upsertFromSapCFMDetail( ArrayList<FromErpCFMDetail> paList ){
+		// TODO Auto-generated method stub
+		String  iconStatus = this.dao.upsertFromSapCFMDetail(paList );
+		return iconStatus;
 	}
 }

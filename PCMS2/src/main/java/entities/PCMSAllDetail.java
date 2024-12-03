@@ -2,6 +2,9 @@ package entities;
 
 import java.util.ArrayList;
 
+import entities.LBMS.ImportDetail;
+import entities.PPMM.ShopFloorControlDetail;
+
 public class PCMSAllDetail {
 	private String productionOrder;
 	  private String lotNo;
@@ -44,13 +47,13 @@ public class PCMSAllDetail {
 	  private String greigeArticle;
 	  private String greigeDesign;
 	  private ArrayList<PODetail> poDetailList;
-	  private ArrayList<PresetDetail> presetDetailList;
-	  private ArrayList<DyeingDetail> dyeingDetailList;
+	  private ArrayList<ShopFloorControlDetail> presetDetailList;
+	  private ArrayList<ShopFloorControlDetail> dyeingDetailList;
 	  private ArrayList<SendTestQCDetail> sendTestQCDetailList;
-	  private ArrayList<FinishingDetail> finishingDetailList;
-	  private ArrayList<InspectDetail> inspectDetailList;
+	  private ArrayList<ShopFloorControlDetail> finishingDetailList;
+	  private ArrayList<ShopFloorControlDetail> inspectDetailList;
 	  private ArrayList<PackingDetail> packingDetailList;
-	  private ArrayList<WorkInLabDetail> workInLabDetailList;
+	  private ArrayList<ImportDetail> workInLabDetailList;
 //	  private ArrayList<WaitTestDetail> waitTestDetailList;
 	  private ArrayList<CFMDetail> cfmDetailList;
 	  private ArrayList<SaleDetail> saleDetailList;
@@ -358,16 +361,16 @@ public class PCMSAllDetail {
 	public void setPoDetailList(ArrayList<PODetail> poDetailList) {
 		this.poDetailList = poDetailList;
 	}
-	public ArrayList<PresetDetail> getPresetDetailList() {
+	public ArrayList<ShopFloorControlDetail> getPresetDetailList() {
 		return presetDetailList;
 	}
-	public void setPresetDetailList(ArrayList<PresetDetail> presetDetailList) {
+	public void setPresetDetailList(ArrayList<ShopFloorControlDetail> presetDetailList) {
 		this.presetDetailList = presetDetailList;
 	}
-	public ArrayList<DyeingDetail> getDyeingDetailList() {
+	public ArrayList<ShopFloorControlDetail> getDyeingDetailList() {
 		return dyeingDetailList;
 	}
-	public void setDyeingDetailList(ArrayList<DyeingDetail> dyeingDetailList) {
+	public void setDyeingDetailList(ArrayList<ShopFloorControlDetail> dyeingDetailList) {
 		this.dyeingDetailList = dyeingDetailList;
 	}
 	public ArrayList<SendTestQCDetail> getSendTestQCDetailList() {
@@ -376,16 +379,16 @@ public class PCMSAllDetail {
 	public void setSendTestQCDetailList(ArrayList<SendTestQCDetail> sendTestQCDetailList) {
 		this.sendTestQCDetailList = sendTestQCDetailList;
 	}
-	public ArrayList<FinishingDetail> getFinishingDetailList() {
+	public ArrayList<ShopFloorControlDetail> getFinishingDetailList() {
 		return finishingDetailList;
 	}
-	public void setFinishingDetailList(ArrayList<FinishingDetail> finishingDetailList) {
+	public void setFinishingDetailList(ArrayList<ShopFloorControlDetail> finishingDetailList) {
 		this.finishingDetailList = finishingDetailList;
 	}
-	public ArrayList<InspectDetail> getInspectDetailList() {
+	public ArrayList<ShopFloorControlDetail> getInspectDetailList() {
 		return inspectDetailList;
 	}
-	public void setInspectDetailList(ArrayList<InspectDetail> inspectDetailList) {
+	public void setInspectDetailList(ArrayList<ShopFloorControlDetail> inspectDetailList) {
 		this.inspectDetailList = inspectDetailList;
 	}
 	public ArrayList<PackingDetail> getPackingDetailList() {
@@ -394,10 +397,10 @@ public class PCMSAllDetail {
 	public void setPackingDetailList(ArrayList<PackingDetail> packingDetailList) {
 		this.packingDetailList = packingDetailList;
 	}
-	public ArrayList<WorkInLabDetail> getWorkInLabDetailList() {
+	public ArrayList<ImportDetail> getWorkInLabDetailList() {
 		return workInLabDetailList;
 	}
-	public void setWorkInLabDetailList(ArrayList<WorkInLabDetail> workInLabDetailList) {
+	public void setWorkInLabDetailList(ArrayList<ImportDetail> workInLabDetailList) {
 		this.workInLabDetailList = workInLabDetailList;
 	}
 //	public ArrayList<WaitTestDetail> getWaitTestDetailList() {

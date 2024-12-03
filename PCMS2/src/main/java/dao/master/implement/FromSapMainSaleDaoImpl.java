@@ -1,7 +1,12 @@
 	package dao.master.implement;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +15,7 @@ import entities.ConfigCustomerUserDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
+import entities.erp.atech.FromErpMainSaleDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
@@ -156,6 +162,181 @@ public class FromSapMainSaleDaoImpl implements  FromSapMainSaleDao{
 			list.add(this.bcModel._genPCMSTableDetail(map));
 		}
 		return list;
+	}
+	@Override
+	public String upsertFromSapMainSaleDetail( ArrayList<FromErpMainSaleDetail> paList ) {
+		PreparedStatement prepared = null;
+		Connection connection;
+		connection = this.database.getConnection(); 
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date currentTime = calendar.getTime();
+		long time = currentTime.getTime();
+		
+		String iconStatus = "I";
+		String sql =
+				  "-- Update if the record exists\r\n"
+				  + "UPDATE [dbo].[FromSapMainSale]\r\n"
+				  + "SET \r\n" 
+				  + "    [MaterialNo] = ?,\r\n"
+				  + "    [DueDate] = ?,\r\n"
+				  + "    [PlanGreigeDate] = ?,\r\n"
+				  + "    [SaleUnit] = ?,\r\n" 
+				  + "    [SaleQuantity] = ?,\r\n"
+				  + "    [CustomerMaterial] = ?,\r\n"
+				  + "    [CustomerNo] = ?,\r\n"
+				  + "    [PurchaseOrder] = ?,\r\n"
+				  + "    [SaleOrg] = ?,\r\n"
+				  + "    [DistChannel] = ?,\r\n"
+				  + "    [Division] = ?,\r\n"
+				  + "    [CustomerName] = ?,\r\n"
+				  + "    [CustomerShortName] = ?,\r\n"
+				  + "    [CustomerDue] = ?,\r\n"
+				  + "    [RemainQuantity] = ?,\r\n"
+				  + "    [ShipDate] = ?,\r\n"
+				  + "    [SaleStatus] = ?,\r\n"
+				  + "    [Currency] = ?,\r\n"
+				  + "    [Price] = ?,\r\n"
+				  + "    [OrderAmount] = ?,\r\n"
+				  + "    [RemainAmount] = ?,\r\n"
+				  + "    [SaleCreateDate] = ?,\r\n"
+				  + "    [SaleNumber] = ?,\r\n"
+				  + "    [SaleFullName] = ?,\r\n"
+				  + "    [DeliveryStatus] = ?,\r\n"
+				  + "    [DesignFG] = ?,\r\n"
+				  + "    [ArticleFG] = ?,\r\n"
+				  + "    [OrderSheetPrintDate] = ?,\r\n"
+				  + "    [CustomerMaterialBase] = ?,\r\n"
+				  + "    [ChangeDate] = ?,\r\n" 
+				  + "    [DataStatus] = ?,\r\n"  
+				  + "WHERE \r\n"
+				  + "    [SaleOrder] = ? and"
+				  + "    [SaleLine] = ? and"
+				  + "    ;\r\n"
+				  + "\r\n"
+				  + "-- Check if rows were updated\r\n"
+				  + "DECLARE @rc INT = @@ROWCOUNT;\r\n"
+				  + "IF @rc <> 0\r\n"
+				  + "    PRINT @rc;\r\n"
+				  + "ELSE \r\n"
+				  + "    -- Insert if no rows were updated\r\n"
+				  + "    INSERT INTO [dbo].[FromSapMainSale] (\r\n"
+				  + "        [SaleOrder] ,[SaleLine] ,[MaterialNo] ,[DueDate] ,[PlanGreigeDate]\r\n"
+				  + "      ,[SaleUnit] ,[SaleQuantity] ,[CustomerMaterial] ,[Color] ,[CustomerNo]\r\n"
+				  + "      ,[PurchaseOrder] ,[SaleOrg] ,[DistChannel] ,[Division] ,[CustomerName]\r\n"
+				  + "      ,[CustomerShortName] ,[ColorCustomer] ,[CustomerDue] ,[RemainQuantity] ,[ShipDate]\r\n"
+				  + "      ,[SaleStatus] ,[Currency] ,[Price] ,[OrderAmount] ,[RemainAmount]\r\n"
+				  + "      ,[SaleCreateDate] ,[SaleNumber] ,[SaleFullName] ,[DeliveryStatus] ,[DesignFG]\r\n"
+				  + "      ,[ArticleFG] ,[OrderSheetPrintDate] ,[CustomerMaterialBase] ,[ChangeDate] ,[CreateDate]\r\n"
+				  + "      ,[DataStatus]\r\n"
+				  + "    ) VALUES (\r\n"
+				  + "?, ?, ?, ?, ?, "
+				  + "?, ?, ?, ?, ?, "//10 
+				  + "?, ?, ?, ?, ?, " 
+				  + "?, ?, ?, ?, ?, "//10 
+				  + "?, ?, ?, ?, ?, " 
+				  + "?, ?, ?, ?, ?, "//10 
+				  + "?, ?, ?, ?, ?, " 
+				  + "? \r\n"
+				  + "    ); "
+				+ ";"  ;
+		try {
+
+			int index = 1;
+			prepared = connection.prepareStatement(sql); 
+			for(FromErpMainSaleDetail bean : paList) {
+				index = 1; 
+
+				prepared.setString(index++, bean.getMaterialNo()  ); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate() , index++);  
+				prepared.setString(index++, bean.getSaleUnit()  ); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity() , index++); 
+				prepared.setString(index++, bean.getCustomerMaterial()    );
+				prepared.setString(index++, bean.getColor()    );
+				prepared.setString(index++, bean.getCustomerNo()    );
+				prepared.setString(index++, bean.getPurchaseOrder()    );
+				prepared.setString(index++, bean.getSaleOrg()     );
+				prepared.setString(index++, bean.getDistChannel()    );
+				prepared.setString(index++, bean.getDivision()    );
+				prepared.setString(index++, bean.getCustomerName()    );
+				prepared.setString(index++, bean.getCustomerShortName()    );
+				prepared.setString(index++, bean.getColorCustomer()    );
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate() , index++);  
+				prepared.setString(index++, bean.getSaleStatus()    );
+				prepared.setString(index++, bean.getCurrency()    );
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate() , index++); 
+				prepared.setString(index++, bean.getSaleNumber()    );
+				prepared.setString(index++, bean.getSaleFullName()    );
+				prepared.setString(index++, bean.getDeliveryStatus()    );
+				prepared.setString(index++, bean.getDesignFG()    );
+				prepared.setString(index++, bean.getArticleFG()    );
+				prepared.setString(index++, bean.getOrderSheetPrintDate()    );
+				prepared.setString(index++, bean.getCustomerMaterialBase()    );
+				prepared.setTimestamp(index++, new Timestamp(time)); 
+				prepared.setString(index++, bean.getDataStatus()   ); 
+
+				prepared.setString(index++, bean.getSaleOrder()   );
+				prepared.setString(index++, bean.getSaleLine()   );  
+				
+				
+				prepared.setString(index++, bean.getSaleOrder()   );
+				prepared.setString(index++, bean.getSaleLine()   );  
+				prepared.setString(index++, bean.getMaterialNo()  ); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate() , index++);  
+				prepared.setString(index++, bean.getSaleUnit()  ); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity() , index++); 
+				prepared.setString(index++, bean.getCustomerMaterial()    );
+				prepared.setString(index++, bean.getColor()    );
+				prepared.setString(index++, bean.getCustomerNo()    );
+				prepared.setString(index++, bean.getPurchaseOrder()    );
+				prepared.setString(index++, bean.getSaleOrg()     );
+				prepared.setString(index++, bean.getDistChannel()    );
+				prepared.setString(index++, bean.getDivision()    );
+				prepared.setString(index++, bean.getCustomerName()    );
+				prepared.setString(index++, bean.getCustomerShortName()    );
+				prepared.setString(index++, bean.getColorCustomer()    );
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate() , index++);  
+				prepared.setString(index++, bean.getSaleStatus()    );
+				prepared.setString(index++, bean.getCurrency()    );
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount() , index++); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate() , index++); 
+				prepared.setString(index++, bean.getSaleNumber()    );
+				prepared.setString(index++, bean.getSaleFullName()    );
+				prepared.setString(index++, bean.getDeliveryStatus()    );
+				prepared.setString(index++, bean.getDesignFG()    );
+				prepared.setString(index++, bean.getArticleFG()    );
+				prepared.setString(index++, bean.getOrderSheetPrintDate()    );
+				prepared.setString(index++, bean.getCustomerMaterialBase()    );
+				prepared.setTimestamp(index++, new Timestamp(time));
+				prepared.setTimestamp(index++, new Timestamp(time));  
+				prepared.setString(index++, bean.getDataStatus()   ); 
+				
+				prepared.addBatch();
+//				prepared.setString(index++, bean.get    );
+//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//				prepared.setTimestamp(index++, new Timestamp(time));
+//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+			}
+			prepared.executeBatch();
+			prepared.close(); 
+		} catch (SQLException e) {
+			System.err.println(e); 
+			iconStatus = "E";
+		}finally {
+			//this.database.close();
+		}
+		return iconStatus;
 	}
 
 }

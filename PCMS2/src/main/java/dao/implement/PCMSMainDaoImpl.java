@@ -7,40 +7,34 @@ import java.util.Map;
 
 import dao.PCMSMainDao;
 import entities.CFMDetail;
-import entities.DyeingDetail;
-import entities.FinishingDetail;
 import entities.InputDateDetail;
-import entities.InspectDetail;
 import entities.NCDetail;
 import entities.PCMSAllDetail;
 import entities.PCMSTableDetail;
 import entities.PODetail;
 import entities.PackingDetail;
-import entities.PresetDetail;
 import entities.ReceipeDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
-import entities.WaitTestDetail;
-import entities.WorkInLabDetail;
+import entities.LBMS.ImportDetail;
+import entities.PPMM.InspectOrdersDetail;
+import entities.PPMM.ShopFloorControlDetail;
 import model.BeanCreateModel;
 import model.master.FromSapCFMModel;
-import model.master.FromSapDyeingModel;
-import model.master.FromSapFinishingModel;
-import model.master.FromSapInspectModel;
 import model.master.FromSapMainProdModel;
 //import model.master.FromSapNCModel;
 import model.master.FromSapPOModel;
 import model.master.FromSapPackingModel;
-import model.master.FromSapPresetModel;
 import model.master.FromSapReceipeModel;
 import model.master.FromSapSaleInputModel;
 import model.master.FromSapSaleModel;
 import model.master.FromSapSendTestQCModel;
-import model.master.FromSapWaitTestModel;
-import model.master.FromSapWorkInLabModel;
 import model.master.SearchSettingModel;
 import model.master.InspectSystem.InspectNcModel;
+import model.master.InspectSystem.InspectOrdersModel;
+import model.master.LBMS.ImportDetailModel;
+import model.master.PPMM.ShopFloorControlModel;
 import th.in.totemplate.core.sql.Database;
 
 public class PCMSMainDaoImpl implements PCMSMainDao {
@@ -1659,10 +1653,13 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			list.add(this.bcModel._genPCMSAllDetail(map));
 		}
 		if (list.size() > 0) {
+			ShopFloorControlModel sfcModel = new ShopFloorControlModel();
+			ImportDetailModel idModel = new ImportDetailModel();
+			InspectOrdersModel insOrderModel = new InspectOrdersModel();
 			FromSapPOModel fspoModel = new FromSapPOModel();
-			FromSapFinishingModel fsfModel = new FromSapFinishingModel();
-			FromSapPresetModel fspModel = new FromSapPresetModel();
-			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
+//			FromSapFinishingModel fsfModel = new FromSapFinishingModel();
+//			FromSapPresetModel fspModel = new FromSapPresetModel();
+//			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
 			FromSapSendTestQCModel fsstQCModel = new FromSapSendTestQCModel( );
 			FromSapReceipeModel fsrModel = new FromSapReceipeModel( );
 			InspectNcModel insNCModel = new InspectNcModel( );
@@ -1670,18 +1667,16 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			FromSapSaleModel fssModel = new FromSapSaleModel( );
 			FromSapCFMModel fsCFMModel = new FromSapCFMModel( );
 //			FromSapWaitTestModel fswtModel = new FromSapWaitTestModel( );
-			FromSapInspectModel fsiModel = new FromSapInspectModel( );
-			FromSapWorkInLabModel fswilModel = new FromSapWorkInLabModel( );
+//			FromSapInspectModel fsiModel = new FromSapInspectModel( );
+//			FromSapWorkInLabModel fswilModel = new FromSapWorkInLabModel( );
 			FromSapPackingModel fspackingModel = new FromSapPackingModel( );
 			String productionOrder = bean.getProductionOrder();
-			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder);
-			ArrayList<PresetDetail> presetDetailList = fspModel.getFromSapPresetDetailByProductionOrder(productionOrder);
-			ArrayList<DyeingDetail> dyeingDetailList = fsdModel.getFromSapDyeingDetailByProductionOrder(productionOrder);
+			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder); 
 			ArrayList<SendTestQCDetail> sendTestQCDetailList = fsstQCModel.getFromSapSendTestQCByProductionOrder(productionOrder);
-			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
-			ArrayList<InspectDetail> insDetailList = fsiModel.getFromSapInspectDetailByProductionOrder(productionOrder);
+//			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
 			ArrayList<PackingDetail> packDetailList = fspackingModel.getFromSapPackingDetailByProductionOrder(productionOrder);
-			ArrayList<WorkInLabDetail> workInLabDetailList = fswilModel.getFromSapWorkInLabDetailByProductionOrder(productionOrder);
+//			ArrayList<WorkInLabDetail> workInLabDetailList = fswilModel.getFromSapWorkInLabDetailByProductionOrder(productionOrder);
+			ArrayList<ImportDetail> workInLabDetailList = idModel.getImportDetailByProductionOrder(prdOrder);
 //			ArrayList<WaitTestDetail> waitTestDetailList = fswtModel.getFromSapWaitTestDetailByProductionOrder(productionOrder);
 			ArrayList<CFMDetail> cfmDetailList = fsCFMModel.getFromSapCFMDetailByProductionOrder(productionOrder);
 			ArrayList<SaleDetail> saleDetailList = fssModel.getFromSapSaleDetailByProductionOrder(productionOrder);
@@ -1689,6 +1684,37 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);
 			ArrayList<NCDetail> ncDetailList = insNCModel.getInspectNcByProductionOrder(prdOrder);
 			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
+			
+
+			ArrayList<ShopFloorControlDetail> presetDetailList = new ArrayList<ShopFloorControlDetail>();
+			ArrayList<ShopFloorControlDetail> dyeingDetailList = new ArrayList<ShopFloorControlDetail>();
+			ArrayList<ShopFloorControlDetail> insDetailList = new ArrayList<ShopFloorControlDetail>();
+			ArrayList<ShopFloorControlDetail> finDetailList = new ArrayList<ShopFloorControlDetail>();
+			ArrayList<ShopFloorControlDetail> sfcList = sfcModel.getShopFloorControlDetailByProductionOrder(prdOrder);
+			for(ShopFloorControlDetail sfcBean : sfcList) {
+				if(sfcBean.getOperation().equals("60")||sfcBean.getOperation().equals("145")||sfcBean.getOperation().equals("180")||
+					sfcBean.getOperation().equals("200")||sfcBean.getOperation().equals("201") ) {
+					if(sfcBean.getOperation().equals("200")||sfcBean.getOperation().equals("201")) {
+						ArrayList<InspectOrdersDetail> insOrderList = insOrderModel.getInspectOrdersByProductionOrder(prdOrder);
+						for(InspectOrdersDetail insBean : insOrderList) {
+							sfcBean.setMachineInspect(insBean.getMachineInspect());
+							sfcBean.setInspectRemark(insBean.getInspectNote());
+						}
+					}
+					insDetailList.add(sfcBean);
+				}
+				else if(sfcBean.getOperation().equals("100")||sfcBean.getOperation().equals("101")||sfcBean.getOperation().equals("102")||
+						sfcBean.getOperation().equals("103")||sfcBean.getOperation().equals("104") ) {
+					dyeingDetailList.add(sfcBean);
+					}
+				else if(sfcBean.getOperation().equals("50") ) {
+					presetDetailList.add(sfcBean);
+					}
+				else if(sfcBean.getOperation().equals("190")||sfcBean.getOperation().equals("191")||sfcBean.getOperation().equals("192")||
+						sfcBean.getOperation().equals("193") )  {
+					finDetailList.add(sfcBean);
+				}
+			}
 			PCMSAllDetail beanTmp = list.get(0);
 			beanTmp.setPoDetailList(poDetailList);
 			beanTmp.setPresetDetailList(presetDetailList);

@@ -8,4 +8,6 @@ public interface BackGroundJobDao {
 	void execUpsertToTEMPUserStatusOnWeb();
 
 	void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder);
+
+	void handlerERPAtechToWebApp();
 }

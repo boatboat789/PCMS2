@@ -16,23 +16,23 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
 	private String selectDyeing = ""
-			+ "       [ProductionOrder]"
-			+ "      ,[PostingDate]"
-			+ "      ,[Operation]\r\n"
-			+ "      ,[WorkCenter]"
-			+ "      ,[DyeStatus]"
-			+ "      ,[Remark]"
-			+ "      ,[ReDye]\r\n"
-			+ "      ,[RollNo]"
-			+ "      ,[Da]"
-			+ "      ,[Db]"
-			+ "      ,[L]"
-			+ "      ,[ST]\r\n"
-			+ "      ,[ColorStatus]"
-			+ "      ,[ColorRemark]"
-			+ "      ,[DeltaE]"
-			+ "      ,[No]\r\n"
-			+ "      ,[DataStatus]\r\n ";
+			+ "      \r\n"
+			+ "dfs.[ProductionOrder] \r\n"
+			+ ",dfs.[LotNo]\r\n"
+			+ ",dfs.[Operation]	\r\n"
+			+ ",dfs.[OperationEndDate] as WorkDate\r\n"
+			+ ",dfs.[WorkCenter]\r\n"
+			+ ",sfc.[CartNo]\r\n"
+			+ ",sfc.[CartType] \r\n"
+			+ ",sfc.[DyeingStatus]\r\n"
+			+ ",sfc.[Da]\r\n"
+			+ ",sfc.[Db]\r\n"
+			+ ",sfc.[ST]\r\n"
+			+ ",sfc.[L]\r\n"
+			+ ",sfc.[ValDeltaE]\r\n"
+			+ ",sfc.[DyeRemark] \r\n"
+			+ ",sfc.[ColorCheckStatus] \r\n"
+			+ ",sfc.[ColorCheckRemark]\r\n ";
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
@@ -53,14 +53,18 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	public  ArrayList<DyeingDetail> getFromSapDyeingDetailByProductionOrder(String prodOrder){
 		ArrayList<DyeingDetail> list = null;
 		String where = " where  "; 
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " dfs.ProductionOrder = '" + prodOrder + "'  and "
+				+ "		dfs.[Operation] >= 100 and dfs.Operation <= 104 and\r\n"
+				+ "	    dfs.[AdminStatus] = '-'\r\n";
 		String sql =
 				  " SELECT DISTINCT  \r\n"
 				 + this.selectDyeing
-				 + " from [PCMS].[dbo].[FromSapDyeing] as a \r\n "
+				 + " \r\n"
+				 + "  FROM [PPMM].[dbo].[DataFromSap] as dfs  \r\n"
+				 + "  left join [PPMM].[dbo].[ShopFloorControlDetail] as sfc on sfc.[ProductionOrder] = dfs.[ProductionOrder] and\r\n"
+				 + "													        sfc.[Operation] = dfs.[Operation]\r\n "
 				 + where
-				 + " Order by Operation";
-//		 System.out.println(sql);
+				 + " Order by dfs.Operation"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

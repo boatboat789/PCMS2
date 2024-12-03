@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServlet;
 import dao.master.FromSapPackingDao;
 import dao.master.implement.FromSapPackingDaoImpl;
 import entities.PackingDetail;
+import entities.erp.atech.FromErpPackingDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
-public class FromSapPackingModel  extends HttpServlet {
+public class FromSapPackingModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
 	private FromSapPackingDao dao;
@@ -53,5 +54,13 @@ public class FromSapPackingModel  extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<PackingDetail> list = this.dao.getFromSapPackingDetailByProductionOrder(prodOrder);
 		return list;
+	}
+ 
+	public String upsertFromSapPackingDetail(ArrayList<FromErpPackingDetail> paList)
+	{
+		// TODO Auto-generated method stub
+		String iconStatus = this.dao.upsertFromSapPackingDetail(paList);
+		return iconStatus;
+		
 	}
 }

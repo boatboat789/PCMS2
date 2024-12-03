@@ -29,6 +29,22 @@ import entities.SwitchProdOrderDetail;
 import entities.TempUserStatusAutoDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
+import entities.LBMS.ImportDetail;
+import entities.PPMM.InspectOrdersDetail;
+import entities.PPMM.ShopFloorControlDetail;
+import entities.erp.atech.CustomerDetail;
+import entities.erp.atech.FromErpCFMDetail;
+import entities.erp.atech.FromErpGoodReceiveDetail;
+import entities.erp.atech.FromErpMainBillBatchDetail;
+import entities.erp.atech.FromErpMainProdDetail;
+import entities.erp.atech.FromErpMainProdSaleDetail;
+import entities.erp.atech.FromErpMainSaleDetail;
+import entities.erp.atech.FromErpPODetail;
+import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
+import entities.erp.atech.FromErpSaleDetail;
+import entities.erp.atech.FromErpSaleInputDetail;
+import entities.erp.atech.FromErpSubmitDateDetail;
 
 public class BeanCreateModel {
 	private BeanCreateModelDao dao;
@@ -162,6 +178,103 @@ public class BeanCreateModel {
 
 	public TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map) {
 		TempUserStatusAutoDetail bean = this.dao._genTempUserStatusAutoDetail(map);
+		return bean;
+	}
+
+	public ShopFloorControlDetail _genShopFloorControlDetail(Map<String, Object> map)
+	{ 
+		ShopFloorControlDetail bean = this.dao._genShopFloorControlDetail(map);
+		return bean;
+	}
+
+	public InspectOrdersDetail _genInspectOrdersDetail(Map<String, Object> map)
+	{
+		InspectOrdersDetail bean = this.dao._genInspectOrdersDetail(map);
+		return bean;
+	}
+
+	public ImportDetail _genImportDetail(Map<String, Object> map)
+	{
+		ImportDetail bean = this.dao._genImportDetail(map);
+		return bean;
+	}
+
+	public CustomerDetail _genCustomerDetail(Map<String, Object> map)
+	{
+		CustomerDetail bean = this.dao._genCustomerDetail(map);
+		return bean;
+	}
+
+	public FromErpCFMDetail _genFromErpCFMDetail(Map<String, Object> map)
+	{
+		FromErpCFMDetail bean = this.dao._genFromErpCFMDetail(map);
+		return bean;
+	}
+
+	public FromErpGoodReceiveDetail _genFromErpGoodReceiveDetail(Map<String, Object> map)
+	{
+		FromErpGoodReceiveDetail bean = this.dao._genFromErpGoodReceiveDetail(map);
+		return bean;
+	}
+
+	public FromErpMainBillBatchDetail _genFromErpMainBillBatchDetail(Map<String, Object> map)
+	{
+		FromErpMainBillBatchDetail bean = this.dao._genFromErpMainBillBatchDetail(map);
+		return bean;
+	}
+
+	public FromErpMainProdDetail _genFromErpMainProdDetail(Map<String, Object> map)
+	{
+		FromErpMainProdDetail bean = this.dao._genFromErpMainProdDetail(map);
+		return bean;
+	}
+
+	public FromErpMainProdSaleDetail _genFromErpMainProdSaleDetail(Map<String, Object> map)
+	{
+		FromErpMainProdSaleDetail bean = this.dao._genFromErpMainProdSaleDetail(map);
+		return bean;
+	}
+
+	public FromErpMainSaleDetail _genFromErpMainSaleDetail(Map<String, Object> map)
+	{
+		FromErpMainSaleDetail bean = this.dao._genFromErpMainSaleDetail(map);
+		return bean;
+	}
+
+	public FromErpPackingDetail _genFromErpPackingDetail(Map<String, Object> map)
+	{
+		FromErpPackingDetail bean = this.dao._genFromErpPackingDetail(map);
+		return bean;
+	}
+
+	public FromErpPODetail _genFromErpPODetail(Map<String, Object> map)
+	{
+		FromErpPODetail bean = this.dao._genFromErpPODetail(map);
+		return bean;
+	}
+
+	public FromErpReceipeDetail _genFromErpReceipeDetail(Map<String, Object> map)
+	{
+		FromErpReceipeDetail bean = this.dao._genFromErpReceipeDetail(map);
+		return bean;
+	}
+
+	public FromErpSaleDetail _genFromErpSaleDetail(Map<String, Object> map)
+	{
+		FromErpSaleDetail bean = this.dao._genFromErpSaleDetail(map);
+		return bean;
+	}
+
+	public FromErpSaleInputDetail _genFromErpSaleInputDetail(Map<String, Object> map)
+	{
+		FromErpSaleInputDetail bean = this.dao._genFromErpSaleInputDetail(map);
+		return bean;
+	}
+  
+
+	public FromErpSubmitDateDetail _genFromErpSubmitDateDetail(Map<String, Object> map)
+	{
+		FromErpSubmitDateDetail bean = this.dao._genFromErpSubmitDateDetail(map);
 		return bean;
 	}
 }

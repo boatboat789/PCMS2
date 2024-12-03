@@ -1,6 +1,8 @@
 package entities;
 
 public class CFMDetail {
+	  private int id;
+	  private String productionOrder;
 	  private String cfmNo;
 	  private String cfmNumber;
 	  private String cfmSendDate;
@@ -21,11 +23,15 @@ public class CFMDetail {
 	  private String soChange;
 	  private String soChangeQty;
 	  private String soChangeUnit;
-	public CFMDetail(String cFMNo, String cFMNumber, String cFMSendDate, String rollNo, String rollNoRemark, String l,
+	  private String changeBy;
+	  private String changeDate;
+	public CFMDetail(int id ,String productionOrder,String cFMNo, String cFMNumber, String cFMSendDate, String rollNo, String rollNoRemark, String l,
 			String da, String db, String sT, String saleOrder, String saleLine, String color, String cFMAnswerDate,
 			String cFMStatus, String cFMRemark, String NextLot, String sOChange, String sOChangeQty,
 			String sOChangeUnit,String de) {
 		super();
+		this.productionOrder = productionOrder;
+		this.id = id;
 		this.de = de;
 		this.cfmNo = cFMNo;
 		this.cfmNumber = cFMNumber;
@@ -46,6 +52,38 @@ public class CFMDetail {
 		this.soChange = sOChange;
 		this.soChangeQty = sOChangeQty;
 		this.soChangeUnit = sOChangeUnit;
+	}
+	public String getProductionOrder()
+	{
+		return productionOrder;
+	}
+	public void setProductionOrder(String productionOrder)
+	{
+		this.productionOrder = productionOrder;
+	}
+	public int getId()
+	{
+		return id;
+	}
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+	public String getChangeBy()
+	{
+		return changeBy;
+	}
+	public void setChangeBy(String changeBy)
+	{
+		this.changeBy = changeBy;
+	}
+	public String getChangeDate()
+	{
+		return changeDate;
+	}
+	public void setChangeDate(String changeDate)
+	{
+		this.changeDate = changeDate;
 	}
 	public String getCfmNo() {
 		return cfmNo;

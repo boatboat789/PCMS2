@@ -27,6 +27,22 @@ import entities.SwitchProdOrderDetail;
 import entities.TempUserStatusAutoDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
+import entities.LBMS.ImportDetail;
+import entities.PPMM.InspectOrdersDetail;
+import entities.PPMM.ShopFloorControlDetail;
+import entities.erp.atech.CustomerDetail;
+import entities.erp.atech.FromErpCFMDetail;
+import entities.erp.atech.FromErpGoodReceiveDetail;
+import entities.erp.atech.FromErpMainBillBatchDetail;
+import entities.erp.atech.FromErpMainProdDetail;
+import entities.erp.atech.FromErpMainProdSaleDetail;
+import entities.erp.atech.FromErpMainSaleDetail;
+import entities.erp.atech.FromErpPODetail;
+import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
+import entities.erp.atech.FromErpSaleDetail;
+import entities.erp.atech.FromErpSaleInputDetail;
+import entities.erp.atech.FromErpSubmitDateDetail;
 
 public interface BeanCreateModelDao {
 
@@ -83,5 +99,37 @@ public interface BeanCreateModelDao {
 	ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map);
 
 	TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map);
+
+	ShopFloorControlDetail _genShopFloorControlDetail(Map<String, Object> map);
+
+	InspectOrdersDetail _genInspectOrdersDetail(Map<String, Object> map);
+
+	ImportDetail _genImportDetail(Map<String, Object> map);
+
+	CustomerDetail _genCustomerDetail(Map<String, Object> map);
+
+	FromErpCFMDetail _genFromErpCFMDetail(Map<String, Object> map);
+
+	FromErpGoodReceiveDetail _genFromErpGoodReceiveDetail(Map<String, Object> map);
+
+	FromErpMainBillBatchDetail _genFromErpMainBillBatchDetail(Map<String, Object> map);
+
+	FromErpMainProdDetail _genFromErpMainProdDetail(Map<String, Object> map);
+
+	FromErpMainProdSaleDetail _genFromErpMainProdSaleDetail(Map<String, Object> map);
+
+	FromErpMainSaleDetail _genFromErpMainSaleDetail(Map<String, Object> map);
+
+	FromErpPackingDetail _genFromErpPackingDetail(Map<String, Object> map);
+
+	FromErpPODetail _genFromErpPODetail(Map<String, Object> map);
+
+	FromErpReceipeDetail _genFromErpReceipeDetail(Map<String, Object> map);
+
+	FromErpSaleDetail _genFromErpSaleDetail(Map<String, Object> map);
+
+	FromErpSaleInputDetail _genFromErpSaleInputDetail(Map<String, Object> map);
+
+	FromErpSubmitDateDetail _genFromErpSubmitDateDetail(Map<String, Object> map);
 
 }

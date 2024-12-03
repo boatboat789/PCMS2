@@ -648,35 +648,32 @@ $(document) .ready( function() {
 		 order: [[ 4, "asc" ]],   
 		 createdRow : function(row, data, index) {      
 		 },   
- 	 });   
+ 	 });    
     dyeingTable = $('#dyeingTable').DataTable({  
     	scrollY: '160px',       
     	scrollX: true,            
-    	paging: false,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,     
-// 		orderClasses : false, 
-// 		lengthChange: false,    
-// 		"autoWidth":false,
+    	paging: false,                
  	   	columns : 
- 	[      
-		    {"data" : "postingDate"} ,         //0
+ 	[        
+		    {"data" : "workDate"} ,         //0
 		    {"data" : "operation"}, 
 		    {"data" : "workCenter"}, 
-		    {"data" : "dyeStatus"}, 
-		    {"data" : "deltaE"}, 
-		    {"data" : "l"},                    //5
+		    {"data" : "cartNo"}, 
+		    {"data" : "cartType"}, 
+		    
+		    {"data" : "dyeingStatus"}, 
+		    {"data" : "deltaE"},                   //5
 		    {"data" : "da"}, 
 		    {"data" : "db"}, 
 		    {"data" : "st"}, 
-		    {"data" : "remark"},
-		    {"data" : "redye"},                //10
-		    {"data" : "batch"},
-		    {"data" : "colorStatus"},
-		    {"data" : "colorRemark"},          //12
+		    
+		    {"data" : "l"},    
+		    {"data" : "dyeRemark"}, 
+		    {"data" : "colorCheckStatus"},
+		    {"data" : "colorCheckRemark"},          //12
 		],  	      
 		columnDefs :  [	   	 
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ,13],                
 			  	  className : 'data-custom-padding0505',    
 // 		  	 	  type: 'string'      
 			} ,                    
@@ -685,32 +682,33 @@ $(document) .ready( function() {
     fnTable = $('#fnTable').DataTable({     
     	scrollY:        '160px',        
     	scrollX: true,           
-    	paging: false,    
-//  	 	scrollCollapse: true,                    
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
+    	paging: false,     
 		lengthChange: false,         	  
  	   	columns : 
  		[      
-			{"data" : "postingDate"} ,         //0
- 		    {"data" : "workCenter"  }, 
- 		    {"data" : "rollNo"}, 
- 		    {"data" : "status"}, 
- 		    {"data" : "ccOperation"}, 
- 		    {"data" : "ccPostingDate"},         //5
- 		    {"data" : "deltaE"}, 
- 		    {"data" : "color"}, 
- 		    {"data" : "l"}, 
+// 			{"data" : "lotNo"} ,         //0
+ 		    {"data" : "workDate"}, 
+ 		    {"data" : "operation"  }, 
+ 		    {"data" : "workCenter"}, 
+ 		    {"data" : "cartNo"}, 
+ 		    {"data" : "cartType"},
+
+ 		    {"data" : "colorCheckOperation"},    //5
+ 		    {"data" : "colorCheckWorkDate"},   
 		    {"data" : "da"}, 
-		    {"data" : "db"},                   //10
-		    {"data" : "st"},  
- 		    {"data" : "ncDate"},
- 		    {"data" : "cause"},
- 		    {"data" : "carNo"},
- 		    {"data" : "lotNo"},                //15
+		    {"data" : "db"},     
+ 		    {"data" : "l"},     
+ 		    
+		    {"data" : "st"},   //10 
+ 		    {"data" : "deltaE"},  
+ 		    {"data" : "colorCheckName"},      
+ 		    {"data" : "colorCheckStatus"},
+ 		    {"data" : "colorCheckRollNo"},
+ 		    
+ 		    {"data" : "colorCheckRemark"} 
 		],  	      
 		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15    ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
 				} ,                    
@@ -719,20 +717,17 @@ $(document) .ready( function() {
     inspectTable = $('#inspectTable').DataTable({   
     	scrollY:       '190px',    
     	scrollX: true,               
-    	paging: false,
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
-		lengthChange: false,         	  
+    	paging: false, 
+		lengthChange: false,         	   
  	   	columns : 
  	[      
-		    {"data" : "postingDate"} ,         //0
+		    {"data" : "workDate"} ,         //0
 		    {"data" : "operation"},  
-		    {"data" : "quantityGreige"},  
-		    {"data" : "quantityFG"},  
-		    {"data" : "remark"},   
+		    {"data" : "workCenter"} ,         //0
+		    {"data" : "machineInspect"},   
+		    {"data" : "inspectRemark"}, 
 		],  	      
-		columnDefs :  [	   	
+		columnDefs :  [	   	   	
 			{ targets : [ 0,1,2,3,4 ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
@@ -1483,8 +1478,9 @@ function searchByDetailToServer(arrayTmp) {
 }      
 function setModalDetail(data){
     
-   	var innnerText = data[0];        
-   	poTable.clear();    	          
+   	var innnerText = data[0];             
+   	poTable.clear();    
+//    	console.log(innnerText)
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
@@ -1495,7 +1491,7 @@ function setModalDetail(data){
 	poTable.draw();       	   
 	if(innnerText.presetDetailList.length == 0){       }     
 	else{ 
-		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].postingDate;    
+		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].workDate;    
 		document.getElementById("input_presetWorkCenter").value = innnerText.presetDetailList[0].workCenter; 
 	}   
 	
