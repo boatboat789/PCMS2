@@ -96,6 +96,6 @@
 <!-- 	   <location>/404.jsp</location> -->
 <!-- 	</error-page> -->
  <error-page>    
-  <location>/error</location>
+  <location>/handleError</location>
  </error-page>
 </web-app>

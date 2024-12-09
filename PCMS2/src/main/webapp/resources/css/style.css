@@ -187,7 +187,35 @@ body {
 	padding: 5px 15px;
 	font-weight: 300;
 }
-
+.dropdown-menu-custom {  
+    width: 100%; /* Full width on mobile */
+    max-width: 80vw; /* Use 80% of the viewport width */   
+    min-width: 60vw; 
+/*     max-width: 900px; /* Limit width on larger screens */    
+    padding: 8px; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);   
+  }
+  @media (max-width: 576px) {
+    .dropdown-menu-custom {
+      padding: 4px; /* Reduce padding on small screens */     
+    }
+  }  
+    @media (max-width: 768px) {
+    .dropdown-menu-custom {
+      padding: 8px; /* Reduce padding on small screens */  
+    }
+  }
+    @media (max-width: 992px) {
+    .dropdown-menu-custom {
+      padding: 8px; /* Reduce padding on small screens */  
+    }
+  }
+  /* Adjustments for small screens */
+  @media (max-width: 1140px) {
+    .dropdown-menu-custom {
+      padding: 8px; /* Reduce padding on small screens */ 
+    }
+  }   
 .float-right {
 	float: right;
 }

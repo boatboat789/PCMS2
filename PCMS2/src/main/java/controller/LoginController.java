@@ -67,16 +67,7 @@ public class LoginController {
 //		final Gson g = new Gson();
 		final UserDetail user = new UserDetail();
 		final TempLogin temp = new TempLogin();
-		String redirect = "";
-//		String path = null;
-//		try {
-//			path = new URL(request.getHeader("referer")).getPath();
-////			path = path.replaceFirst("/", "");
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		String oriPath = path.substring(request.getContextPath().length());
+		String redirect = ""; 
 		String originalURI = (String) session.getAttribute("originalURI");
 		ConfigCustomerUserDetail bean = null;
 		String homePath = "/Main";
