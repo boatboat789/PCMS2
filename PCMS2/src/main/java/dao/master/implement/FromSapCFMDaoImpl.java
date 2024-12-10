@@ -21,10 +21,9 @@ public class FromSapCFMDaoImpl implements  FromSapCFMDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New 
-	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
-	private Database database;
+	private Database database; 
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");

@@ -8,7 +8,37 @@ body {
 	position: relative;
 	zoom: 100%;
 }
-
+.body-error{
+	
+    font-family: Arial, sans-serif;
+    background-color: #f8d7da;
+    color: #721c24;
+/*             display: flex; */
+    justify-content: center;   
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.container-error{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 30em;
+    height: 18em;
+    margin-top: -9em;
+    margin-left: -15em;     
+    border: 1px solid #ccc;
+/*     background-color: #f3f3f3; */
+    place-content: space-evenly;
+    
+	text-align: center;
+	border: 1px solid #f5c6cb;
+	background-color: #f8d7da;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		
+}
 .tooltip-inner {
 	/*     min-width: 300px; the minimum width */
 	/*      border: 2px solid #44cec3;    */

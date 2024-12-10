@@ -1099,13 +1099,11 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					beanAllList.add(bean);
 //					System.out.println(tmpForecastId+" | AFTER "+bean.getTempProdId()+" "+tmpColorType+" "+tmpSumProdQtyBL+" > "+tmpRemainBL);
 
-				} else if (isHandlerYet) {
-//					System.out.println("wtf 1");
+				} else if (isHandlerYet) { 
 					bean.setDbProdQty(0);
 					bean.setDataStatus(Config.C_CLOSE_STATUS);
 					beanAllList.add(bean);
-				} else {
-//					System.out.println("wtf 2");
+				} else { 
 				}
 			} else {
 //				System.out.println(tmpForecastId+" | TEMPProdID "+bean.getTempProdId()+" "+tmpColorType+" "+tmpSumProdQtyBL+" "+tmpRemainBL);
@@ -1457,9 +1455,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					listForRecreate = spdModel.getPODetailWithSOASPOItemDetail(po, matNo, poQtyStr, soldTo,
 							Config.C_CLOSE_STATUS);
 
-//					if(po.equals("11230191831FRM")) {
-//						System.out.println(po+" "+ matNo+"  "+poQtyStr+" "+soldTo);
-//					}System.out.println(" listForRecreate "+listForRecreate.isEmpty());
 					if ( ! listForRecreate.isEmpty()) {
 						InputPODetail beanCancel = listForRecreate.get(0);
 						ArrayList<POManagementDetail> listLotIsInSap = new ArrayList<>();
@@ -1486,9 +1481,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 							poCreateList.add(beanTempTwo);
 							// CANCEL PO POLINE MAIN
 
-//							if(po.equals("11230191831FRM")) {
-//								System.out.println(beanCancel.getId()+" "+ beanCancel.getPo() );
-//							}
 							if ( ! poListTemp.isEmpty()) {
 								pomModel.handlerChangeSORPODetailWithDataStatus(poListTemp,
 										Config.C_ACTION_TEXT_UPDATE_08);
@@ -1517,9 +1509,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 					ArrayList<InputPODetail> listForCancel = new ArrayList<>();
 
-//					if(po.equals("11230191831FRM")) {
-//						System.out.println(po+" "+ matNo+"  "+poQtyStr+" "+soldTo);
-//					}
 					listForCancel =
 							spdModel.getPODetailWithSOASPOItemDetail(po, matNo, poQtyStr, soldTo, Config.C_OPEN_STATUS);
 					// TODO Auto-generated method stub

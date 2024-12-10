@@ -1620,11 +1620,11 @@ function goToLBMS(tblData,pUserId,data){
 // 					tab.document.getElementById('input_prdMS0').value = "ddddddddd"  ;    
 // 					}, 2000);   
 				setTimeout(function(){     
-// 					tab.document.getElementById('byPrdTable_filter').value = prdOrder  ;
-// 					tab.$("#byPrdTable_filter input").value(prdOrder);     
-					tab.$('#byPrdTable').DataTable().search(prdOrder).draw();
+// 					tab.document.getElementById('prodOrderTable_filter').value = prdOrder  ;
+// 					tab.$("#prodOrderTable_filter input").value(prdOrder);     
+					tab.$('#prodOrderTable').DataTable().search(prdOrder).draw();
 					},500);                      
-// 				console.log( tab.$('#byPrdTable').DataTable()  )  
+// 				console.log( tab.$('#prodOrderTable').DataTable()  )  
    	    	};     
 	   		tab.addEventListener('load', (event) => { 
 

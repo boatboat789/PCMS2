@@ -1,55 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="false"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page isELIgnored="false"%>
 <html>
 
 <head>
-    <title>404</title>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8d7da;
-            color: #721c24;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            border: 1px solid #f5c6cb;
-            background-color: #f8d7da;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
-            margin-bottom: 10px;
-        }
-        p {
-            margin: 5px 0;
-        }
-        a {
-            text-decoration: none;
-            color: #0056b3;
-            font-weight: bold;
-        }
-    </style>   
+	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>    
+	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
+	<title id="title_header"	>404</title>      
 </head>
-<body>
-<%@include file="../common/commonBase.jsp"%>
+<body>  
+	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
     <table>
         <tr>      
             <td>       
-            <h1>Fail</h1>
-                <h1>${statusCode}</h1>
+            <h1 style="margin-bottom: 10px;">Fail</h1>
+                <h1 style="margin-bottom: 10px;">${statusCode}</h1>
             </td>
         </tr>
         <tr>
             <td>
-                <h1>${errorMsg}</h1>
+                <h1 style="margin-bottom: 10px;">${errorMsg}</h1>
             </td>      
         </tr> 
     </table>

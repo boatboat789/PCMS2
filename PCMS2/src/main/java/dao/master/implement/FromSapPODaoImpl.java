@@ -37,8 +37,7 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 			+ "   , [PODefault]\r\n"
 			+ "   , [POLineDefault]\r\n"
 			+ "   , [POPostingDateDefault]\r\n"
-			+ "   , a.[DataStatus] \r\n";
-	@SuppressWarnings("unused")
+			+ "   , a.[DataStatus] \r\n"; 
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;

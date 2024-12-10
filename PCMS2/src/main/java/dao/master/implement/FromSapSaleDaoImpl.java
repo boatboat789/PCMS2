@@ -21,7 +21,6 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
-	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;

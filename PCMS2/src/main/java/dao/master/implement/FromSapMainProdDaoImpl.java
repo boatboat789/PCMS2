@@ -21,8 +21,7 @@ import utilities.SqlStatementHandler;
 public class FromSapMainProdDaoImpl implements  FromSapMainProdDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New
-	@SuppressWarnings("unused")
+	// Sale - Lab-New 
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
