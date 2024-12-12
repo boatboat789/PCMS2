@@ -15,6 +15,7 @@ import entities.erp.atech.FromErpMainProdSaleDetail;
 import entities.erp.atech.FromErpMainSaleDetail;
 import entities.erp.atech.FromErpPODetail;
 import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
 import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
@@ -50,7 +51,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "CustomerType,\r\n"
 				+ "DistChannel \r\n" 
 				+ " from CustomerDetail"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -80,7 +81,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "SaleLine,\r\n"
 				+ "RollNoRemark \r\n" 
 				+ " from FromErpCFM"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -100,7 +101,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpDyeing"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();
@@ -120,7 +121,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpFinishing"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();
@@ -149,7 +150,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "PriceSTD \r\n"
 				+ " "
 				+ " from FromErpGoodReceive"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -169,7 +170,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpInspect"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();
@@ -201,7 +202,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "LotNo\r\n"
 				+ "  " 
 				+ " from FromErpMainBillBatch"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -259,7 +260,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "GreigeKG,\r\n"
 				+ "OrderType \r\n"
 				+ " from FromErpMainProd"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -283,7 +284,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "Volumn\r\n"
 				+ " " 
 				+ " from FromErpMainProdSale"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -336,7 +337,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "CustomerMaterialBase \r\n"
 				+ " " 
 				+ " from FromErpMainSale"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -364,7 +365,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "QuantityYD\r\n"
 				+ " " 
 				+ " from FromErpPacking"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -395,7 +396,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "POPostingDateDefault\r\n"
 				+ " " 
 				+ " from FromErpPO"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -415,7 +416,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpPreset"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();
@@ -426,24 +427,25 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //	}
 
 	 
-//	@Override
-//	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail()
-//	{
-//		ArrayList<FromErpReceipeDetail> list = new ArrayList<>(); 
-//		String sql =
-//				" "
-//				+ " SELECT distinct   \r\n"
-//				+ this.select 
-//				+ " from FromErpReceipe"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
-//				; 
-//		List<Map<String, Object>> datas = this.database.queryList(sql);
-//		list = new ArrayList<>();
-//		for (Map<String, Object> map : datas) {
-//			list.add(this.bcModel._genFromErpReceipeDetail(map));
-//		}
-//		return list;
-//	}
+	@Override
+	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail()
+	{
+		ArrayList<FromErpReceipeDetail> list = new ArrayList<>(); 
+		String sql =
+				" "
+				+ " SELECT distinct   \r\n"
+				+ " [ProductionOrder]\r\n"
+				+ "      ,[LotNo]"
+				+ " from FromErpReceipe"
+				
+				; 
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genFromErpReceipeDetail(map));
+		}
+		return list;
+	}
 
 
 
@@ -470,7 +472,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "No \r\n"
 				+ "" 
 				+ " from FromErpSale"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -505,7 +507,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "No\r\n"
 				+ " " 
 				+ " from FromErpSaleInput"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -527,7 +529,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpSendTestQC"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();
@@ -555,7 +557,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " Remark\r\n"
 				+ " " 
 				+ " from FromErpSubmitDate"
-				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+				
 				; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -577,7 +579,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 	//				+ " SELECT distinct   \r\n"
 	//				+ this.select 
 	//				+ " from FromErpWaitTest"
-	//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+	//				
 	//				; 
 	//		List<Map<String, Object>> datas = this.database.queryList(sql);
 	//		list = new ArrayList<>();
@@ -599,7 +601,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " SELECT distinct   \r\n"
 //				+ this.select 
 //				+ " from FromErpWorkInLab"
-//				+ " where [ChangeDate] >= dateadd(MINUTE, -15, getdate())\r\n"
+//				
 //				; 
 //		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		list = new ArrayList<>();

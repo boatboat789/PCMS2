@@ -11,6 +11,7 @@ import entities.erp.atech.FromErpMainProdSaleDetail;
 import entities.erp.atech.FromErpMainSaleDetail;
 import entities.erp.atech.FromErpPODetail;
 import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
 import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
@@ -40,6 +41,8 @@ public interface ERPAtechDao {
 	ArrayList<FromErpSaleInputDetail> getFromErpSaleInputDetail();
 
 	ArrayList<FromErpSubmitDateDetail> getFromErpSubmitDateDetail();
+
+	ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail();
  
 
 }

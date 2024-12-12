@@ -23,16 +23,24 @@
 			</c:if>
 		</ul>
 	</div>
-	<ul class="nav navbar-nav navbar-right ml-auto">
-		<li class="dropdown text-small nav-profile">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarViewPagesDropdownMenuLink" data-toggle="dropdown" data-target="#navbarDropdownLogout" aria-haspopup="true" aria-expanded="false">
-				<span><i class="fa fa-user" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i> &nbsp; <%=session.getAttribute("user")%> <%-- <%= session.getAttribute("userObject")%>.FirstName  --%> <%-- <%= session.getAttribute("userObject")%>.LastName --%> </span>
-			</a>
-			<div id="navbarDropdownLogout" class="dropdown-menu" aria-labelledby="navbarDropdownLogout">
-				<a href="${contextpath}/logout" class=" waves-effect waves-block">
-					<i class="fa fa-sign-out" aria-hidden="true"></i>Sign Out
-				</a>
-			</div>
-		</li>
-	</ul>  
+	<ul class="nav navbar-nav navbar-right ml-auto">    
+				<li class="nav-item dropdown">
+					<a class="nav-item nav-link dropdown-toggle mr-md-2" 
+						href="#" 
+						id="navbarViewPagesDropdownMenuLink" 
+						data-toggle="dropdown"       
+						aria-haspopup="true" 
+						aria-expanded="false">
+						<span>
+						<i class="fa fa-user"  ></i> &nbsp;<%=session.getAttribute("user")%> </span>
+					</a> 
+					<div id="navbarDropdownLogout" 
+						class="dropdown-menu dropdown-menu-right " 
+						aria-labelledby="navbarViewPagesDropdownMenuLink">
+						<a href="${contextpath}/logout" class=" dropdown-item">
+							<i class="fa fa-sign-out" aria-hidden="true"></i>Sign Out
+						</a>
+					</div>
+				</li>
+			</ul>
 	</header> 

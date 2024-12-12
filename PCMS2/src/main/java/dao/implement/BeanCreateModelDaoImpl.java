@@ -2400,8 +2400,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String LotShipping = "";
 		if (map.get("LotShipping") != null) {
-			java.util.Date dateValue = (Date) map.get("LotShipping");
-			LotShipping = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("LotShipping");
+//			LotShipping = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("LotShipping"); 
+			LotShipping = sdf2.format(timestamp1);
 		}
 		String ProductionOrder = "";
 		if (map.get("ProductionOrder") != null) {
@@ -2554,14 +2556,18 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String GreigeInDate = "";
 		if (map.get("GreigeInDate") != null) {
-			java.util.Date dateValue = (Date) map.get("GreigeInDate");
-			GreigeInDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("GreigeInDate");
+//			GreigeInDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("GreigeInDate"); 
+			GreigeInDate = sdf2.format(timestamp1);
 
 		}
 		String BCDate = "";
 		if (map.get("BCDate") != null) {
-			java.util.Date dateValue = (Date) map.get("BCDate");
-			BCDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("BCDate");
+//			BCDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("BCDate"); 
+			BCDate = sdf2.format(timestamp1);
 		}
 		String Volumn = "";
 		if (map.get("Volumn") != null) {
@@ -2572,13 +2578,17 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String CFdate = "";
 		if (map.get("CFdate") != null) {
-			java.util.Date dateValue = (Date) map.get("CFdate");
-			CFdate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("CFdate");
+//			CFdate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("CFdate"); 
+			CFdate = sdf2.format(timestamp1);
 		}
 		String CFType = "";
 		if (map.get("CFType") != null) {
-			java.util.Date dateValue = (Date) map.get("CFType");
-			CFType = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("CFType");
+//			CFType = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("CFType"); 
+			CFType = sdf2.format(timestamp1);
 		}
 		String Shade = "";
 		if (map.get("Shade") != null) {
@@ -2586,8 +2596,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String LotShipping = "";
 		if (map.get("LotShipping") != null) {
-			java.util.Date dateValue = (Date) map.get("LotShipping");
-			LotShipping = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("LotShipping");
+//			LotShipping = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("LotShipping"); 
+			LotShipping = sdf2.format(timestamp1);
 		}
 		String BillSendQuantity = "";
 		if (map.get("BillSendQuantity") != null) {
@@ -2605,8 +2617,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String PrdCreateDate = "";
 		if (map.get("PrdCreateDate") != null) {
-			java.util.Date dateValue = (Date) map.get("PrdCreateDate");
-			PrdCreateDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("PrdCreateDate");
+//			PrdCreateDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("PrdCreateDate"); 
+			PrdCreateDate = sdf2.format(timestamp1);
 		}
 		String GreigeArticle = "";
 		if (map.get("GreigeArticle") != null) {
@@ -2686,13 +2700,17 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String DueDate = "";
 		if (map.get("DueDate") != null) {
-			java.util.Date dateValue = (Date) map.get("DueDate");
-			DueDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("DueDate");
+//			DueDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("DueDate"); 
+			DueDate = sdf2.format(timestamp1);
 		}
 		String PlanGreigeDate = "";
 		if (map.get("PlanGreigeDate") != null) {
-			java.util.Date dateValue = (Date) map.get("PlanGreigeDate");
-			PlanGreigeDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("PlanGreigeDate");
+//			PlanGreigeDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("PlanGreigeDate"); 
+			PlanGreigeDate = sdf2.format(timestamp1);
 		}
 		String SaleUnit = "";
 		if (map.get("SaleUnit") != null) {
@@ -2746,8 +2764,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String CustomerDue = "";
 		if (map.get("CustomerDue") != null) {
-			java.util.Date dateValue = (Date) map.get("CustomerDue");
-			CustomerDue = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("CustomerDue");
+//			CustomerDue = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("CustomerDue"); 
+			CustomerDue = sdf2.format(timestamp1);
 		}
 		String RemainQuantity = "";
 		if (map.get("RemainQuantity") != null) {
@@ -2757,8 +2777,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String ShipDate = "";
 		if (map.get("ShipDate") != null) {
-			java.util.Date dateValue = (Date) map.get("ShipDate");
-			ShipDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("ShipDate");
+//			ShipDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("ShipDate"); 
+			ShipDate = sdf2.format(timestamp1);
 		}
 		String SaleStatus = "";
 		if (map.get("SaleStatus") != null) {
@@ -2788,8 +2810,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String SaleCreateDate = "";
 		if (map.get("SaleCreateDate") != null) {
-			java.util.Date dateValue = (Date) map.get("SaleCreateDate");
-			SaleCreateDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("SaleCreateDate");
+//			SaleCreateDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("SaleCreateDate"); 
+			SaleCreateDate = sdf2.format(timestamp1);
 		}
 		String SaleNumber = "";
 		if (map.get("SaleNumber") != null) {
@@ -2813,8 +2837,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String OrderSheetPrintDate = "";
 		if (map.get("OrderSheetPrintDate") != null) {
-			java.util.Date dateValue = (Date) map.get("OrderSheetPrintDate");
-			OrderSheetPrintDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("OrderSheetPrintDate");
+//			OrderSheetPrintDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("OrderSheetPrintDate"); 
+			OrderSheetPrintDate = sdf2.format(timestamp1);
 		}
 		String CustomerMaterialBase = "";
 		if (map.get("CustomerMaterialBase") != null) {
@@ -2908,13 +2934,17 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String POCreatedate = "";
 		if (map.get("POCreatedate") != null) {
-			java.util.Date dateValue = (Date) map.get("POCreatedate");
-			POCreatedate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("POCreatedate");
+//			POCreatedate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("POCreatedate"); 
+			POCreatedate = sdf2.format(timestamp1);
 		}
 		String RequiredDate = "";
 		if (map.get("RequiredDate") != null) {
-			java.util.Date dateValue = (Date) map.get("RequiredDate");
-			RequiredDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("RequiredDate");
+//			RequiredDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("RequiredDate"); 
+			RequiredDate = sdf2.format(timestamp1);
 		}
 		String PurchaseOrder = "";
 		if (map.get("PurchaseOrder") != null) {
@@ -2934,8 +2964,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String POPostingDateDefault = "";
 		if (map.get("POPostingDateDefault") != null) {
-			java.util.Date dateValue = (Date) map.get("POPostingDateDefault");
-			POPostingDateDefault = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("POPostingDateDefault");
+//			POPostingDateDefault = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("POPostingDateDefault"); 
+			POPostingDateDefault = sdf2.format(timestamp1);
 		}
 		String DataStatus = "";
 		if (map.get("DataStatus") != null) {
@@ -2963,8 +2995,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String BillDate = "";
 		if (map.get("BillDate") != null) {
 
-			java.util.Date dateValue = (Date) map.get("BillDate");
-			BillDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("BillDate");
+//			BillDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("BillDate"); 
+			BillDate = sdf2.format(timestamp1);
 		}
 		String BillQtyPerSale = "";
 		if (map.get("BillQtyPerSale") != null) {
@@ -3006,8 +3040,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String DueDate = "";
 		if (map.get("DueDate") != null) {
-			java.util.Date dateValue = (Date) map.get("DueDate");
-			DueDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("DueDate");
+//			DueDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("DueDate"); 
+			DueDate = sdf2.format(timestamp1);
 		}
 		String Color = "";
 		if (map.get("Color") != null) {
@@ -3036,8 +3072,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String BillDate = "";
 		if (map.get("BillDate") != null) {
 
-			java.util.Date dateValue = (Date) map.get("BillDate");
-			BillDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("BillDate");
+//			BillDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("BillDate"); 
+			BillDate = sdf2.format(timestamp1);
 		}
 		String BillQtyPerSale = "";
 		if (map.get("BillQtyPerSale") != null) {
@@ -3079,8 +3117,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String DueDate = "";
 		if (map.get("DueDate") != null) {
-			java.util.Date dateValue = (Date) map.get("DueDate");
-			DueDate = sdf2.format(dateValue);
+//			java.util.Date dateValue = (Date) map.get("DueDate");
+//			DueDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp)map.get("DueDate"); 
+			DueDate = sdf2.format(timestamp1);
 		}
 		String Color = "";
 		if (map.get("Color") != null) {
@@ -3119,10 +3159,11 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			No = (String) map.get("No");
 		}
 		String SubmitDate = "";
-		if (map.get("SubmitDate") != null) {
-
-			java.util.Date dateValue = (Date) map.get("SubmitDate");
-			SubmitDate = sdf2.format(dateValue);
+		if (map.get("SubmitDate") != null) { 
+			Timestamp timestamp1 = (Timestamp)map.get("SubmitDate"); 
+			SubmitDate = sdf2.format(timestamp1);
+//			java.util.Date dateValue = (Date) map.get("SubmitDate");
+//			SubmitDate = sdf2.format(dateValue);
 		}
 		String Remark = "";
 		if (map.get("Remark") != null) {
