@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ public class LogInDaoImpl implements LogInDao {
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
 	public SimpleDateFormat sdf4 = new SimpleDateFormat("yyyyMMdd");
 
+	public SimpleDateFormat sdfDateTime1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	public LogInDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
@@ -72,6 +74,27 @@ public class LogInDaoImpl implements LogInDao {
 //     				 if (resultset.getString("Password") != null) {
 //     					Password = resultset.getString("Password");
 //         			 }
+      				 
+      				String ChangeDate = "";
+      				if (resultset.getDate("ChangeDate") != null) {
+      					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("ChangeDate");
+      					ChangeDate = this.sdfDateTime1.format(timestamp1);
+      				}
+      				String ChangeBy = "";
+      				if (resultset.getString("ChangeBy") != null) {
+      					ChangeBy = (String) resultset.getString("ChangeBy");
+      				}  
+      				String LastSignDate = "";
+      				LastSignDate = this.sdfDateTime1.format(Calendar.getInstance().getTime());
+      				String RegistDate = "";
+      				if (resultset.getDate("RegistDate") != null) {
+      					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("RegistDate");
+      					RegistDate = this.sdfDateTime1.format(timestamp1);
+      				} 
+      				String registBy = "";
+      				if (resultset.getString("registBy") != null) {
+      					registBy = (String) resultset.getString("registBy");
+      				}    
                 	 user = new UserDetail();
                      user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);
@@ -81,12 +104,12 @@ public class LogInDaoImpl implements LogInDao {
                      user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
                      user.setPermitId(resultset.getString("PermissionId"));
                      user.setResponsible(resultset.getString("Responsible"));
-                     user.setLastSignDate(Calendar.getInstance().getTime());
+                     user.setLastSignDate(LastSignDate);
                      user.setChangeBy(resultset.getString("ChangeBy"));
-                     user.setChangeDate(resultset.getDate("ChangeDate"));
+                     user.setChangeDate(ChangeDate);
                      user.setRegistBy(resultset.getString("RegistBy"));
-                     user.setRegistDate(resultset.getDate("RegistDate"));
-                     user.setIsCustomer(resultset.getBoolean("IsCustomer"));
+                     user.setRegistDate(RegistDate);
+                     user.setCustomer(resultset.getBoolean("IsCustomer"));
                      user.setUserType("USER");
 
                  }
@@ -142,6 +165,27 @@ public class LogInDaoImpl implements LogInDao {
 //     				 if (resultset.getString("Password") != null) {
 //     					Password = resultset.getString("Password");
 //         			 }
+      				 
+      				String ChangeDate = "";
+      				if (resultset.getDate("ChangeDate") != null) {
+      					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("ChangeDate");
+      					ChangeDate = this.sdfDateTime1.format(timestamp1);
+      				}
+      				String ChangeBy = "";
+      				if (resultset.getString("ChangeBy") != null) {
+      					ChangeBy = (String) resultset.getString("ChangeBy");
+      				}  
+      				String LastSignDate = "";
+      				LastSignDate = this.sdfDateTime1.format(Calendar.getInstance().getTime());
+      				String RegistDate = "";
+      				if (resultset.getDate("RegistDate") != null) {
+      					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("RegistDate");
+      					RegistDate = this.sdfDateTime1.format(timestamp1);
+      				} 
+      				String registBy = "";
+      				if (resultset.getString("registBy") != null) {
+      					registBy = (String) resultset.getString("registBy");
+      				}    
                 	 user = new UserDetail();
                      user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);
@@ -151,13 +195,13 @@ public class LogInDaoImpl implements LogInDao {
                      user.setIsAdmin(resultset.getBoolean("IsAdminUser"));
                      user.setPermitId(resultset.getString("PermissionId"));
                      user.setResponsible(resultset.getString("Responsible"));
-                     user.setLastSignDate(Calendar.getInstance().getTime());
+                     user.setLastSignDate(LastSignDate);
                      user.setChangeBy(resultset.getString("ChangeBy"));
-                     user.setChangeDate(resultset.getDate("ChangeDate"));
+                     user.setChangeDate(ChangeDate);
                      user.setRegistBy(resultset.getString("RegistBy"));
-                     user.setRegistDate(resultset.getDate("RegistDate"));
-                     user.setIsCustomer(resultset.getBoolean("IsCustomer"));
-                     user.setUserType("USER");
+                     user.setRegistDate(RegistDate);
+                     user.setCustomer(resultset.getBoolean("IsCustomer"));
+                     user.setUserType("USER"); 
 
                  }
              } catch(SQLException e) {

@@ -10,6 +10,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import model.BackGroundJobModel;
 import model.SORModel;
 
+import th.in.totemplate.core.net.FtpReceive;
+import th.in.totemplate.core.sql.Database;
 @EnableAsync
 public class BackGroundJob {
 	private String LOCAL_DIRECTORY;

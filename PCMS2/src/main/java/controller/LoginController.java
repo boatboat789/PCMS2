@@ -87,7 +87,7 @@ public class LoginController {
 				user.setChangeDate(userTMP.getChangeDate());
 				user.setRegistBy(userTMP.getRegistBy());
 				user.setRegistDate(userTMP.getRegistDate());
-				user.setIsCustomer(userTMP.getIsCustomer());
+				user.setCustomer(userTMP.isCustomer());
 				user.setUserType("USER");
 				temp.setStatus(true);
 				session.setAttribute("userObject", user);
@@ -167,7 +167,7 @@ public class LoginController {
 					user.setChangeDate(userTMP.getChangeDate());
 					user.setRegistBy(userTMP.getRegistBy());
 					user.setRegistDate(userTMP.getRegistDate());
-					user.setIsCustomer(userTMP.getIsCustomer());
+					user.setCustomer(userTMP.isCustomer());
 					user.setUserType("USER");
 					temp.setStatus(true);
 					session.setAttribute("user", userId);
@@ -186,7 +186,7 @@ public class LoginController {
 					user.setChangeDate(userTMP.getChangeDate());
 					user.setRegistBy(userTMP.getRegistBy());
 					user.setRegistDate(userTMP.getRegistDate());
-					user.setIsCustomer(userTMP.getIsCustomer());
+					user.setCustomer(userTMP.isCustomer());
 					user.setUserType("USER");
 					temp.setStatus(true);
 					session.setAttribute("user", userId);

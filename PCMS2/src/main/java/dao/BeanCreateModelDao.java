@@ -6,6 +6,7 @@ import entities.CFMDetail;
 import entities.ColumnHiddenDetail;
 import entities.ConfigCustomerUserDetail;
 import entities.DyeingDetail;
+import entities.EmployeeDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
 import entities.InspectDetail;
@@ -15,6 +16,7 @@ import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import entities.PODetail;
 import entities.PackingDetail;
+import entities.PermitDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
 import entities.ReplacedProdOrderDetail;
@@ -25,6 +27,7 @@ import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
 import entities.SwitchProdOrderDetail;
 import entities.TempUserStatusAutoDetail;
+import entities.UserDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 import entities.LBMS.ImportDetail;
@@ -131,5 +134,11 @@ public interface BeanCreateModelDao {
 	FromErpSaleInputDetail _genFromErpSaleInputDetail(Map<String, Object> map);
 
 	FromErpSubmitDateDetail _genFromErpSubmitDateDetail(Map<String, Object> map);
+
+	EmployeeDetail _genEmployeeDetail(Map<String, Object> map);
+
+	PermitDetail _genPermitDetail(Map<String, Object> map);
+
+	UserDetail _genUsersDetail(Map<String, Object> map);
 
 }

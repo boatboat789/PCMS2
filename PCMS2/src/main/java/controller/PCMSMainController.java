@@ -80,7 +80,7 @@ public class PCMSMainController {
 		}
 		boolean isCustomer = false ;
 		if(userObject != null) {
-			isCustomer = userObject.getIsCustomer();
+			isCustomer = userObject.isCustomer();
 		}
 
 		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
@@ -94,7 +94,7 @@ public class PCMSMainController {
 		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
-		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+//		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
 		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
@@ -194,7 +194,7 @@ public class PCMSMainController {
 		UserDetail userObject = (UserDetail) session.getAttribute("userObject");
 		boolean isCustomer = false ;
 		if(userObject != null) {
-			isCustomer = userObject.getIsCustomer();
+			isCustomer = userObject.isCustomer();
 		}
 //		if(isCustomer) {
 //			ArrayList<PCMSTableDetail> list = model.searchByDetail( poList);

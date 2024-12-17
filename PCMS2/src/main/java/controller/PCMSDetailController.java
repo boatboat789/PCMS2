@@ -65,7 +65,7 @@ public class PCMSDetailController {
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
-		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+//		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
 		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
 		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));

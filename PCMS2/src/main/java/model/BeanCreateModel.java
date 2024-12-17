@@ -8,6 +8,7 @@ import entities.CFMDetail;
 import entities.ColumnHiddenDetail;
 import entities.ConfigCustomerUserDetail;
 import entities.DyeingDetail;
+import entities.EmployeeDetail;
 import entities.FinishingDetail;
 import entities.InputDateDetail;
 import entities.InspectDetail;
@@ -17,6 +18,7 @@ import entities.PCMSSecondTableDetail;
 import entities.PCMSTableDetail;
 import entities.PODetail;
 import entities.PackingDetail;
+import entities.PermitDetail;
 import entities.PresetDetail;
 import entities.ReceipeDetail;
 import entities.ReplacedProdOrderDetail;
@@ -27,6 +29,7 @@ import entities.SendTestQCDetail;
 import entities.SubmitDateDetail;
 import entities.SwitchProdOrderDetail;
 import entities.TempUserStatusAutoDetail;
+import entities.UserDetail;
 import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 import entities.LBMS.ImportDetail;
@@ -275,6 +278,23 @@ public class BeanCreateModel {
 	public FromErpSubmitDateDetail _genFromErpSubmitDateDetail(Map<String, Object> map)
 	{
 		FromErpSubmitDateDetail bean = this.dao._genFromErpSubmitDateDetail(map);
+		return bean;
+	}
+
+	public EmployeeDetail _genEmployeeDetail(Map<String, Object> map)
+	{
+		EmployeeDetail bean = this.dao._genEmployeeDetail(map);
+		return bean;
+	}
+	public PermitDetail _genPermitDetail(Map<String, Object> map)
+	{
+		PermitDetail bean = this.dao._genPermitDetail(map);
+		return bean;
+	}
+
+	public UserDetail _genUsersDetail(Map<String, Object> map)
+	{
+		UserDetail bean = this.dao._genUsersDetail(map);
 		return bean;
 	}
 }

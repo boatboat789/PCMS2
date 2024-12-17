@@ -17,11 +17,11 @@ public class UserDetail {
 	private boolean isAdmin;
 	private String permitId;
 	private String responsible;
-	private Date lastSignDate;
+	private String lastSignDate;
 	private String changeBy;
-	private Date changeDate;
+	private String changeDate;
 	private String registBy;
-	private Date registDate;
+	private String registDate;
 	private String userType;
 	private boolean isCustomer;
 	// ต้องตัวเล็กไม่งั้นเรียก parameter ไม่ได้
@@ -36,9 +36,11 @@ public class UserDetail {
 //	}
 
 	public UserDetail(int id, String userId, String password, String firstName, String lastName, String role,
-			String department, String email, String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
-			String permitId, Date lastSignDate, String responsible, String changeBy, Date changeDate, String registBy,
-			Date registDate, String UserType, boolean IsCustomer) {
+			String department, String email, 
+			String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
+			String permitId, String lastSignDate, String responsible
+			, String changeBy, String changeDate, String registBy,
+			String registDate, String UserType, boolean IsCustomer) {
 		super();
 		this.lastSignDate = lastSignDate;
 		this.userType = UserType;
@@ -206,61 +208,86 @@ public class UserDetail {
 	public void setResponsible(String responsible) {
 		this.responsible = responsible;
 	}
+ 
 
-	public Date getLastSignDate() {
+	public String getLastSignDate()
+	{
 		return lastSignDate;
 	}
 
-	public void setLastSignDate(Date lastSignDate) {
+	public void setLastSignDate(String lastSignDate)
+	{
 		this.lastSignDate = lastSignDate;
 	}
 
-	public String getChangeBy() {
+	public String getChangeBy()
+	{
 		return changeBy;
 	}
 
-	public void setChangeBy(String changeBy) {
+	public void setChangeBy(String changeBy)
+	{
 		this.changeBy = changeBy;
 	}
 
-	public Date getChangeDate() {
+	public String getChangeDate()
+	{
 		return changeDate;
 	}
 
-	public void setChangeDate(Date changeDate) {
+	public void setChangeDate(String changeDate)
+	{
 		this.changeDate = changeDate;
 	}
 
-	public String getRegistBy() {
+	public String getRegistBy()
+	{
 		return registBy;
 	}
 
-	public void setRegistBy(String registBy) {
+	public void setRegistBy(String registBy)
+	{
 		this.registBy = registBy;
 	}
 
-	public Date getRegistDate() {
+	public String getRegistDate()
+	{
 		return registDate;
 	}
 
-	public void setRegistDate(Date registDate) {
+	public void setRegistDate(String registDate)
+	{
 		this.registDate = registDate;
 	}
 
-	public String getUserType() {
+	public String getUserType()
+	{
 		return userType;
 	}
 
-	public void setUserType(String userType) {
+	public void setUserType(String userType)
+	{
 		this.userType = userType;
 	}
 
-	public boolean getIsCustomer() {
+	public boolean isCustomer()
+	{
 		return isCustomer;
 	}
 
-	public void setIsCustomer(boolean isCustomer) {
+	public void setCustomer(boolean isCustomer)
+	{
 		this.isCustomer = isCustomer;
+	}
+
+	public void setSystem(boolean isSystem)
+	{
+		this.isSystem = isSystem;
+	}
+
+	public void setAdmin(boolean isAdmin)
+	{
+		this.isAdmin = isAdmin;
 	}
 
 	@Override
