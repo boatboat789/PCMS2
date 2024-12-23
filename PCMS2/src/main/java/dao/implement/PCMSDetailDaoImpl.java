@@ -1926,6 +1926,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				; 
 //	 System.out.println(this.selectFromTempMainPrdTemp);
 //		System.out.println("Before SQL: "+new Date());
+	 System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		System.out.println("AFTER SQL: "+new Date());
 		list = new ArrayList<>();

@@ -35,6 +35,25 @@ public class PermitsDaoImpl implements PermitsDao {
 		return this.message;
 	}
 
+
+	@Override
+	public ArrayList<PermitDetail> getPermitsDetail( )
+	{
+		ArrayList<PermitDetail> list = null;
+//		String sql =
+//				""
+//						+ " SELECT \r\n"
+//						+ this.select
+//						+ " FROM [PCMS2].[dbo].[Permits] as a\r\n"
+//						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
+//						+ "       A.DataStatus = 'O'   \r\n" ;  
+//		List<Map<String, Object>> datas = this.database.queryList(sql);
+//		list = new ArrayList<>();
+//		for (Map<String, Object> map : datas) {
+//			list.add(this.bcModel._genPermitDetail(map));
+//		}
+		return list;		
+	}
 	@Override
 	public ArrayList<PermitDetail> getPermitsDetailByPermitId(String permitId)
 	{
@@ -85,8 +104,8 @@ public class PermitsDaoImpl implements PermitsDao {
 						+ "      ,[ChangeDate]\r\n"
 						+ "      ,[CreateBy]\r\n"
 						+ "      ,[CreateDate]\r\n"
-						+ "  FROM [PPMM].[dbo].[Permits] as a\r\n"
-						+ " WHERE a.[WebApp] = 'SFC' and \r\n"
+						+ "  FROM [PCMS2].[dbo].[Permits] as a\r\n"
+						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
 						+ "       A.DataStatus = 'O' and \r\n"
 						+ "		  a.[PermitId] = '"+permitId+"' \r\n";  
 		List<Map<String, Object>> datas = this.database.queryList(sql);

@@ -56,4 +56,9 @@ public class PermitsModel extends HttpServlet {
 		ArrayList<PermitDetail> list = this.dao.getPermitsDetailByPermitId(permitId) ;
 		return list;
 	}
+	public ArrayList<PermitDetail> getPermitsDetail( )
+	{
+		ArrayList<PermitDetail> list = this.dao.getPermitsDetail( ) ;
+		return list;
+	} 
 }

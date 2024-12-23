@@ -8,4 +8,6 @@ public interface PermitsDao {
 
 	ArrayList<PermitDetail> getPermitsDetailByPermitId(String permitId);
 
+	ArrayList<PermitDetail> getPermitsDetail();
+
 }
