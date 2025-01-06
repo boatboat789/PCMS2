@@ -236,8 +236,10 @@ $(document) .ready( function() {
 	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
 	else{ domain = "https://"+window.location.hostname;  } 
 	configCusList = JSON.parse('${ConfigCusList}'); 
-	if(configCusList.length > 0 ){
-		window.location.replace(domain+"/PCMS2/login");
+	if(configCusList.length > 0 ){   
+		if(!configCusList[0].isPCMSDetailPage ){
+			window.location.replace(domain+"/PCMS2/login");
+		}
 	}
 	 
 	userId = JSON.parse('${UserID}');   ;     

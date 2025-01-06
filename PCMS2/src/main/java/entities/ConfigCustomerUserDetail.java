@@ -5,13 +5,13 @@ public class ConfigCustomerUserDetail {
 	private String userId;
 	private String customerNo;
 	private String customerDivision;
-	private Boolean isPCMSDetailPage;
-	private Boolean isPCMSSumPage;
-	private Boolean isProdPathBtn;
-	private Boolean isLBMSPathBtn;
-	private Boolean isQCMSPathBtn;
-	private Boolean isInspectPathBtn;
-	private Boolean isSFCPathBtn;
+	private Boolean isPCMSDetailPage = true;
+	private Boolean isPCMSSumPage = true ;
+	private Boolean isProdPathBtn = true ;
+	private Boolean isLBMSPathBtn = true;
+	private Boolean isQCMSPathBtn = true ;
+	private Boolean isInspectPathBtn = true;
+	private Boolean isSFCPathBtn = true ;
 	public ConfigCustomerUserDetail() {
 		super();
 	}

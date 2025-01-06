@@ -713,7 +713,9 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
    		 + "		GROUP BY  a.SaleOrder ,a.SaleLine \r\n"
    		 + "	) AS D ON A.SaleOrder = D.SaleOrder AND\r\n"
    		 + "              A.SaleLine = D.SaleLine  \r\n"
-   		 + "	WHERE ( c.SumVolMain > 0 ) OR D.SaleOrder IS NOT NULL\r\n"
+   		 + "	WHERE "
+//   		 + "         ( c.SumVolMain > 0 ) OR D.SaleOrder IS NOT NULL\r\n"
+   		 + "          c.SumVolMain > 0 OR ( c.SumVolMain is null AND D.SaleOrder IS NOT NULL )"
    		 + " ) AS B ON A.SaleOrder = B.SaleOrder AND\r\n"
    		 + "           A.SaleLine = B.SaleLine \r\n" ;
 	 private String leftJoinBPartOneT =  ""
@@ -1112,6 +1114,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		whereCaseTry = whereProd;
 
 		String whereCaseTryRP = ""+ whereProd;
+		whereBMainUserStatus = whereProd;
 		int sizeWaitForTest = 0;
 		if (userStatusList.size() > 0) {
 			String tmpWhere = "";
@@ -1162,10 +1165,14 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			whereCaseTry += ") 		) \r\n";
 			tmpWhereNoLotUCAL += ") 		) \r\n";
 			where += tmpWhere;
-			whereBMainUserStatus += " A.SaleOrder <> '' "+  tmpWhere ;
+			whereBMainUserStatus += " and a.SaleOrder <> '' "+  tmpWhere  ; 
 		}
-
-		whereBMainUserStatus += whereProd;
+		whereBMainUserStatus = whereBMainUserStatus.replace("UserStatusCalRP", "UserStatus");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UserStatusCal", "UserStatus");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UCALRP.", "a.");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UCAL.", "a.");
+		whereBMainUserStatus = whereBMainUserStatus.replace("b.", "a."); 
+ 
 		whereCaseTry = whereCaseTry.replace("UserStatusCal", "UserStatus");
 		whereCaseTry = whereCaseTry.replace("UCALRP.", "a.");
 		whereCaseTry = whereCaseTry.replace("UCAL.", "a.");
@@ -1182,6 +1189,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ this.leftJoinH
 				+ whereWaitLot
 				+ " and ( SumVol = 'B' OR countProdRP > 0 ) \r\n";
+//				+ " and ( SumVol = 'B' OR ( c.SumVolMain is null AND D.SaleOrder IS NOT NULL ) ) \r\n";
 		String fromMainB = ""
 				  +	" from ( \r\n"
 				  + "	SELECT distinct \r\n"
@@ -1196,7 +1204,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				  + this.leftJoinM
 				  + "           "+this.leftJoinUCAL
 				  + this.leftJoinFSMBBTempSumBill
-				  + whereBMainUserStatus
+//				  + whereBMainUserStatus
 				  + " ) as b \r\n";
 		String sqlMain = ""
 				+ " SELECT DISTINCT \r\n "
@@ -1578,7 +1586,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
 				+ " where b.SaleOrder is null \r\n"
 				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempMain\r\n"
+				+ " SELECT * FROM #tempMain as a\r\n"
+				+ " where 1 = 1 "+whereBMainUserStatus
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempOP\r\n"
 				+ " union ALL  \r\n"

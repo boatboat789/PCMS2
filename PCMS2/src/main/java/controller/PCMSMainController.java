@@ -71,12 +71,18 @@ public class PCMSMainController {
 		String OS = System.getProperty("os.name").toLowerCase();
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
 		if(listConfigCus.size() > 0) {
-			cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
-			cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
 		}
-		else {
+		if(listConfigCus.isEmpty()) {
+			ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
+			ccuDetail.setUserId(user);
+			listConfigCus.add(ccuDetail);
+			
 			cusNameList = fsmsModel.getCustomerNameDetail();
 			cusShortNameList = fsmsModel.getCustomerShortNameDetail();
+		}
+		else {
+			cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
+			cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
 		}
 		boolean isCustomer = false ;
 		if(userObject != null) {
@@ -94,7 +100,7 @@ public class PCMSMainController {
 		mv.addObject("IsCustomer", g.toJson(isCustomer ));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
-//		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
 		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
 		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));

@@ -1,4 +1,4 @@
-package dao.implement;
+	package dao.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -215,8 +215,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
   		    + "   , b.Volumn \r\n"
   		    + "   , b.VolumnFGAmount  \r\n"
   		    + "   , 'WaitLot' as TypePrd \r\n"
-  		    + "   , 'WaitLot' AS TypePrdRemark  \r\n"
-//  		    + "   , a.CustomerType\r\n"
+  		    + "   , 'WaitLot' AS TypePrdRemark  \r\n" 
   		    + "   , CAST(null AS VARCHAR(10) ) as [DyeStatus]\r\n"
   		    + "   , a.[CustomerMaterialBase]\r\n";
 	private String selectOPV2 = ""
@@ -670,7 +669,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
    		 + "		GROUP BY a.SaleOrder ,a.SaleLine \r\n"
    		 + "	) AS D ON A.SaleOrder = D.SaleOrder AND \r\n"
    		 + "             A.SaleLine = D.SaleLine  \r\n"
-   		 + "	where c.SumVolMain > 0 OR D.SaleOrder IS NOT NULL \r\n"
+   		 + "	where "
+//   		 + "		  c.SumVolMain > 0 OR D.SaleOrder IS NOT NULL \r\n"
+   		 + "          c.SumVolMain > 0 OR ( c.SumVolMain is null AND D.SaleOrder IS NOT NULL )"
    		 + " ) AS b ON a.SaleOrder = b.SaleOrder and\r\n"
    		 + "           a.SaleLine = b.SaleLine \r\n" ;
     private String leftJoinUCAL =  ""
@@ -1707,6 +1708,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		whereWaitLot = where ;
 //		whereBMain = where;
 		whereCaseTry = whereProd;
+		whereBMainUserStatus = whereProd;
 		if (userStatusList.size() > 0) {
 			String tmpWhere = "";
 			tmpWhereNoLotUCAL = " and ( b.ProductionOrder is not null and ( \r\n";
@@ -1757,22 +1759,21 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			whereCaseTryRP += ") 		) \r\n";
 			tmpWhereNoLotUCAL += ") 		) \r\n";
 			where += tmpWhere;
-			whereBMainUserStatus += " A.SaleOrder <> '' "+  tmpWhere ;
-		}
-		whereBMainUserStatus += whereProd;
+			
+			whereBMainUserStatus += " and a.SaleOrder <> '' "+  tmpWhere  ; 
+//			whereBMainUserStatus += " b.SaleOrder <> '' "+  tmpWhere ; 
+		} 
+		whereBMainUserStatus = whereBMainUserStatus.replace("UserStatusCalRP", "UserStatus");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UserStatusCal", "UserStatus");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UCALRP.", "a.");
+		whereBMainUserStatus = whereBMainUserStatus.replace("UCAL.", "a.");
+		whereBMainUserStatus = whereBMainUserStatus.replace("b.", "a."); 
+		
 		whereCaseTry = whereCaseTry.replace("UserStatusCal", "UserStatus");
 		whereCaseTry = whereCaseTry.replace("UCALRP.", "a.");
 		whereCaseTry = whereCaseTry.replace("UCAL.", "a.");
-		whereCaseTry = whereCaseTry.replace("b.", "a.");
-		String createTempMainSale = ""
-//				+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
-//				+ "	begin\r\n"
-//				+ "		Drop Table #tempMainSale\r\n"
-//				+ "	end ; \r\n"
-//				+ " SELECT a.* , b.CustomerType,a.[Division] AS CustomerDivision \r\n"
-//				+ " INTO #tempMainSale \r\n"
-//				+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
-//				+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O'\r\n  "
+		whereCaseTry = whereCaseTry.replace("b.", "a."); 
+		String createTempMainSale = "" 
 				+ this.createTempMainSale
 				+ whereSale;
 		String sqlWaitLot =
@@ -1804,11 +1805,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				  + this.leftJoinM
 				  + "           "+this.leftJoinUCAL
 				  + this.leftJoinFSMBBTempSumBill
-				  + whereBMainUserStatus
+//				  + whereBMainUserStatus  
 				  + " ) as b \r\n";
 		String sqlMain = ""
 				    + this.createTempMainFirst
-					+ fromMainB
+					+ fromMainB 
 					+ this.createTempMainSecond
 //					+ whereCaseTry
 					;
@@ -1913,7 +1914,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
 				+ " where b.SaleOrder is null \r\n"
 				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempMain\r\n"
+				+ " SELECT * FROM #tempMain as a\r\n"
+				+ " where 1 = 1 "+whereBMainUserStatus
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempOP\r\n"
 				+ " union ALL  \r\n"
@@ -1926,7 +1928,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				; 
 //	 System.out.println(this.selectFromTempMainPrdTemp);
 //		System.out.println("Before SQL: "+new Date());
-	 System.out.println(sql);
+// 	 System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 //		System.out.println("AFTER SQL: "+new Date());
 		list = new ArrayList<>();

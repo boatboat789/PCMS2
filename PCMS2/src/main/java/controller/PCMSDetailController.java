@@ -60,12 +60,17 @@ public class PCMSDetailController {
 		String OS = System.getProperty("os.name").toLowerCase();
 		LogInModel logInModel = new LogInModel( );
 		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
+		if(listConfigCus.isEmpty()) {
+			ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
+			ccuDetail.setUserId(user);
+			listConfigCus.add(ccuDetail);
+		}
 		mv.setViewName("PCMSDetail/PCMSDetail");
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("OS", g.toJson(OS));
 		mv.addObject("ColList", g.toJson(arrayCol));
 		mv.addObject("ConfigCusListTest", listConfigCus );
-//		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
 		mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
 		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
 		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
