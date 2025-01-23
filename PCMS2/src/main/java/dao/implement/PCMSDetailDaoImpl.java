@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import dao.PCMSDetailDao;
 import entities.InputDateDetail;
 import entities.PCMSAllDetail;
@@ -31,7 +34,7 @@ import model.master.SwitchProdOrderModel;
 import model.master.TEMP_UserStatusAutoModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
-
+@Repository // Spring annotation to mark this as a DAO component
 public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -1457,6 +1460,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	+ this.leftJoinSL
     + this.leftJoinFSMBBTempSumBill
 	+ " where ( b.UserStatus <> 'ยกเลิก' and b.UserStatus <> 'ตัดเกรดZ') \r\n";
+    @Autowired
 	public PCMSDetailDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";

@@ -1,5 +1,4 @@
-package entities.erp.atech;
-
+package entities.erp.atech; 
 public class CustomerDetail {  
 	private String customerNo ; 
 	private String customerName ; 

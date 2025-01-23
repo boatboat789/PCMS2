@@ -41,6 +41,9 @@ public class PCMSDetailController {
 	private String LOCAL_DIRECTORY;
 	@SuppressWarnings("unused")
 	private String FTP_DIRECTORY;
+    @Autowired
+	public PCMSDetailController( ) { 
+	}
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView getModelAndView(HttpSession session) {
 		ModelAndView mv = new ModelAndView();

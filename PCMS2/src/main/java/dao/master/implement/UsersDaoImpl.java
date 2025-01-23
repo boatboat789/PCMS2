@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.UsersDao;
 import entities.EmployeeDetail;
 import entities.UserDetail;
@@ -13,6 +17,7 @@ import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class UsersDaoImpl implements UsersDao {
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	@SuppressWarnings("unused")
@@ -26,6 +31,7 @@ public class UsersDaoImpl implements UsersDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    @Autowired
 	public UsersDaoImpl(Database database2) {
 		this.database = database2;
 		this.message = "";

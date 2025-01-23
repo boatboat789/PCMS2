@@ -4,11 +4,15 @@ import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.DataImportSORDao;
 import dao.implement.DataImportSORDaoImpl;
 import info.SORSqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class SORModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
 	   private Database database;
@@ -18,6 +22,7 @@ public class SORModel extends HttpServlet {
 	   @SuppressWarnings("unused")
 	   private static final String columns = "";
 
+	    @Autowired
 	   public SORModel() {
 	      try {
 	         this.database = new Database(SORSqlInfo.getInstance());

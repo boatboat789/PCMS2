@@ -4,13 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
- 
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.InspectSystem.InspectNcDao;
 import entities.NCDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Component
 public class InspectNcDaoImpl implements  InspectNcDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -23,6 +27,7 @@ public class InspectNcDaoImpl implements  InspectNcDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
+    @Autowired
 	public InspectNcDaoImpl (Database database) {
 		this.database = database;
 		this.message = "";

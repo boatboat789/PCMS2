@@ -42,6 +42,7 @@ import model.PCMSDetailModel;
 import model.PCMSMainModel;
 import model.master.ColumnSettingModel;
 import model.master.FromSapMainSaleModel;
+import th.in.totemplate.core.sql.Database;
 
 @Controller
 @RequestMapping(value = { "/Main", "/" ,"" })
@@ -54,6 +55,10 @@ public class PCMSMainController {
 	private String LOCAL_DIRECTORY;
 	@SuppressWarnings("unused")
 	private String FTP_DIRECTORY;
+    @Autowired
+	public PCMSMainController( ) { 
+	}
+
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView getModelAndView(HttpSession session) {
 		ArrayList<PCMSAllDetail> cusNameList = null ;

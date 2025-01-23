@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.FromSapDyeingDao;
 import entities.DyeingDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -41,7 +46,8 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
-	public FromSapDyeingDaoImpl(Database database) {
+	@Autowired
+    public FromSapDyeingDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
 	}

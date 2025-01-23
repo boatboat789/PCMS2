@@ -4,11 +4,15 @@ import java.sql.SQLException;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.BackGroundJobDao;
 import dao.implement.BackGroundJobDaoImpl;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class BackGroundJobModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
@@ -18,6 +22,7 @@ public class BackGroundJobModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
+    @Autowired
 	public BackGroundJobModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

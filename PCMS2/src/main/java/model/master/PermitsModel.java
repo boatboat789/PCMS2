@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.PermitsDao;
 import dao.master.implement.PermitsDaoImpl;
 import entities.PermitDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class PermitsModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
@@ -33,6 +37,7 @@ public class PermitsModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private String[] uiColumns;
 
+    @Autowired
 	public PermitsModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

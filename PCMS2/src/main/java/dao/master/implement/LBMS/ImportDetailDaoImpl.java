@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.LBMS.ImportDetailDao;
 import entities.LBMS.ImportDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Component
 public class ImportDetailDaoImpl implements  ImportDetailDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -23,6 +27,7 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
+    @Autowired
 	public ImportDetailDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";

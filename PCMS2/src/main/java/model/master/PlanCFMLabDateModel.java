@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.PlanCFMLabDateDao;
 import dao.master.implement.PlanCFMLabDateDaoImpl;
 import entities.InputDateDetail;
@@ -12,6 +15,7 @@ import entities.PCMSSecondTableDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class PlanCFMLabDateModel extends HttpServlet {
 	   private static final long serialVersionUID = 1L;
 	   private Database database;
@@ -21,6 +25,7 @@ public class PlanCFMLabDateModel extends HttpServlet {
 	   @SuppressWarnings("unused")
 	   private static final String columns = "";
 
+	    @Autowired
 	   public PlanCFMLabDateModel() {
 	      try {
 	         this.database = new Database(SqlInfo.getInstance());

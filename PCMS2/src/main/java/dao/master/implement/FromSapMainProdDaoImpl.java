@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.FromSapMainProdDao;
 import entities.PCMSAllDetail;
 import entities.PCMSSecondTableDetail;
@@ -18,6 +22,7 @@ import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class FromSapMainProdDaoImpl implements  FromSapMainProdDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -29,7 +34,8 @@ public class FromSapMainProdDaoImpl implements  FromSapMainProdDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
-	public FromSapMainProdDaoImpl(Database database) {
+	@Autowired
+    public FromSapMainProdDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
 	}

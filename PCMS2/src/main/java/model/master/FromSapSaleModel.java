@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.FromSapSaleDao;
 import dao.master.implement.FromSapSaleDaoImpl;
 import entities.SaleDetail;
@@ -12,6 +15,7 @@ import entities.erp.atech.FromErpSaleDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class FromSapSaleModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
@@ -21,6 +25,7 @@ public class FromSapSaleModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
+    @Autowired
 	public FromSapSaleModel () {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

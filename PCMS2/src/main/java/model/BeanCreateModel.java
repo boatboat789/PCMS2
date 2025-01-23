@@ -2,6 +2,9 @@ package model;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.BeanCreateModelDao;
 import dao.implement.BeanCreateModelDaoImpl;
 import entities.CFMDetail;
@@ -49,9 +52,11 @@ import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
 
+@Component
 public class BeanCreateModel {
 	private BeanCreateModelDao dao;
 
+    @Autowired
 	public BeanCreateModel() {
 		this.dao = new BeanCreateModelDaoImpl();
 	}

@@ -12,6 +12,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class MyExceptionController {
 	@Autowired
 	public ServletContext context;
+    @Autowired
+	public MyExceptionController( ) { 
+	}
 	 @ExceptionHandler(NoHandlerFoundException.class)
 	public ModelAndView handleError404(HttpServletRequest request, Exception e) {
 		ModelAndView mv = new ModelAndView();

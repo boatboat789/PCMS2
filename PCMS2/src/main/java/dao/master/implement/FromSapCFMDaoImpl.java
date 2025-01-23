@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.FromSapCFMDao;
 import entities.CFMDetail;
 import entities.erp.atech.FromErpCFMDetail;
@@ -17,6 +21,7 @@ import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class FromSapCFMDaoImpl implements  FromSapCFMDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -28,6 +33,7 @@ public class FromSapCFMDaoImpl implements  FromSapCFMDao{
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
+    @Autowired
 	public FromSapCFMDaoImpl (Database database) {
 		this.database = database;
 		this.message = "";

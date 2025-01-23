@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import dao.master.erp.atech.ERPAtechDao;
 import entities.erp.atech.CustomerDetail;
 import entities.erp.atech.FromErpCFMDetail;
@@ -22,6 +24,7 @@ import entities.erp.atech.FromErpSubmitDateDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class ERPAtechDaoImpl implements ERPAtechDao  { 
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private String message;

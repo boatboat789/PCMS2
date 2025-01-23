@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import dao.DataImportSORDao;
 import entities.SORDetail;
 import model.BeanCreateModel;
 import model.master.FromSORCFMModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
-
+@Repository // Spring annotation to mark this as a DAO component
 public class DataImportSORDaoImpl implements DataImportSORDao {
 	private Database database;
 	@SuppressWarnings("unused")
@@ -19,6 +22,7 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 	private String message;
 	private BeanCreateModel bcModel = new BeanCreateModel();
 
+    @Autowired
 	public DataImportSORDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";

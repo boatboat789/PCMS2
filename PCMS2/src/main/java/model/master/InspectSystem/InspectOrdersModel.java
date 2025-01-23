@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.InspectSystem.InspectOrdersDao;
 import dao.master.implement.InspectSystem.InspectOrdersDaoImpl;
 import entities.PPMM.InspectOrdersDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class InspectOrdersModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
@@ -20,6 +24,7 @@ public class InspectOrdersModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
+    @Autowired
 	public InspectOrdersModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

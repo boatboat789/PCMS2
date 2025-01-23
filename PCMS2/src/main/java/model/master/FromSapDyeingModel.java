@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.FromSapDyeingDao;
 import dao.master.implement.FromSapDyeingDaoImpl;
 import entities.DyeingDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class FromSapDyeingModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
@@ -20,6 +24,7 @@ public class FromSapDyeingModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
+    @Autowired
 	public FromSapDyeingModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

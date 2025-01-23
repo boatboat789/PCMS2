@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.master.erp.atech.ERPAtechDao;
 import dao.master.implement.erp.atech.ERPAtechDaoImpl;
 import entities.erp.atech.CustomerDetail;
@@ -22,6 +25,7 @@ import entities.erp.atech.FromErpSubmitDateDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
+@Component
 public class ERPAtechModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
@@ -31,6 +35,7 @@ public class ERPAtechModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
+    @Autowired
 	public ERPAtechModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());

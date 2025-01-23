@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.FromSapReceipeDao;
 import entities.ReceipeDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
@@ -20,7 +25,8 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
-	public FromSapReceipeDaoImpl(Database database) {
+	@Autowired
+    public FromSapReceipeDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
 	}

@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import dao.BackGroundJobDao;
 import entities.erp.atech.CustomerDetail;
 import entities.erp.atech.FromErpCFMDetail;
@@ -32,11 +35,12 @@ import model.master.FromSapSaleModel;
 import model.master.FromSapSubmitDateModel;
 import model.master.erp.atech.ERPAtechModel;
 import th.in.totemplate.core.sql.Database;
-
+@Repository // Spring annotation to mark this as a DAO component
 public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	private Database database;
 	private String message;
 
+    @Autowired
 	public BackGroundJobDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";

@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import dao.master.FromSapFinishingDao;
 import entities.FinishingDetail;
 import model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
+@Repository // Spring annotation to mark this as a DAO component
 public class FromSapFinishingDaoImpl implements  FromSapFinishingDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -44,7 +49,9 @@ public class FromSapFinishingDaoImpl implements  FromSapFinishingDao{
 			  + "			        ,sfc.[ColorCheckStatus]\r\n"
 			  + "			        ,sfc.[ColorCheckRollNo]\r\n"
 			  + "			        ,sfc.[ColorCheckRemark]\r\n ";
-	public FromSapFinishingDaoImpl(Database database) {
+
+    @Autowired
+    public FromSapFinishingDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
 	}
