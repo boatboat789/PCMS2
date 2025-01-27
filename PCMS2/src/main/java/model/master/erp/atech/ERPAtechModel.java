@@ -19,6 +19,7 @@ import entities.erp.atech.FromErpMainProdSaleDetail;
 import entities.erp.atech.FromErpMainSaleDetail;
 import entities.erp.atech.FromErpPODetail;
 import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
 import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
@@ -150,6 +151,13 @@ public class ERPAtechModel extends HttpServlet {
 	{
 		// TODO Auto-generated method stub
 		ArrayList<FromErpSubmitDateDetail> list = this.dao.getFromErpSubmitDateDetail();
+		return list;
+	}
+	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetai()
+ 
+	{
+		// TODO Auto-generated method stub
+		ArrayList<FromErpReceipeDetail> list = this.dao.getFromErpReceipeDetail();
 		return list;
 	}
 }

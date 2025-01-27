@@ -7,9 +7,9 @@ public class FromErpSubmitDateDetail {
 	private String no ; 
 	private String submitDate ; 
 	private String remark ;
-	private String dataStatus ;
+	private String dataStatus ;	private String syncDate ;
 	public FromErpSubmitDateDetail(String productionOrder, String saleOrder, String saleLine, String no, String submitDate,
-			String remark,String dataStatus) {
+			String remark,String dataStatus, String syncDate) {
 		super();
 		this.dataStatus = dataStatus;
 		this.productionOrder = productionOrder;
@@ -17,7 +17,15 @@ public class FromErpSubmitDateDetail {
 		this.saleLine = saleLine;
 		this.no = no;
 		this.submitDate = submitDate;
-		this.remark = remark;
+		this.remark = remark;		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

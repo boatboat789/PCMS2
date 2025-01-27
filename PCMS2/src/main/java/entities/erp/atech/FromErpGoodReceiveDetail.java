@@ -11,9 +11,10 @@ public class FromErpGoodReceiveDetail {
 	private String quantityMR ; 
 	private String priceSTD ;
 	private String dataStatus; ;
+	private String syncDate ;
 	
 	public FromErpGoodReceiveDetail(String productionOrder, String saleOrder, String saleLine, String grade, String rollNumber,
-			String quantityKG, String quantityYD, String quantityMR, String priceSTD,String dataStatus) {
+			String quantityKG, String quantityYD, String quantityMR, String priceSTD,String dataStatus, String syncDate) {
 		super();
 		this.dataStatus = dataStatus;
 		this.productionOrder = productionOrder;
@@ -25,6 +26,15 @@ public class FromErpGoodReceiveDetail {
 		this.quantityYD = quantityYD;
 		this.quantityMR = quantityMR;
 		this.priceSTD = priceSTD;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

@@ -15,10 +15,10 @@ public class FromErpSaleDetail {
 	private String color ; 
 	private String no ;
 
-	private String dataStatus;
+	private String dataStatus;	private String syncDate ;
 	public FromErpSaleDetail(String productionOrder, String billDate, String billQtyPerSale, String saleOrder, String saleLine,
 			String billQtyPerStock, String remark, String customerNo, String customerName1, String customErpO, String dueDate,
-			String color, String no,String dataStatus ) {
+			String color, String no,String dataStatus, String syncDate ) {
 		super();
 		this.dataStatus = dataStatus;
 		this.productionOrder = productionOrder;
@@ -34,6 +34,17 @@ public class FromErpSaleDetail {
 		this.dueDate = dueDate;
 		this.color = color;
 		this.no = no;
+		this.syncDate = syncDate;
+	}
+
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 
 	public String getDataStatus()

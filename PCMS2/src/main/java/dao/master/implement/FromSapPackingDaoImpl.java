@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSapPackingDao;
@@ -97,11 +96,12 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				+ "    [PostingDate] = ?,\r\n"
 				+ "    [Quantity] = ?,\r\n"
 				+ "    [QuantityKG] = ?,\r\n"
-				+ "    [Grade] = ? \r\n"
-				+ "    [No] = ? \r\n"
-				+ "    [QuantityYD] = ? \r\n"
-				+ "    [DataStatus] = ? \r\n"
+				+ "    [Grade] = ?, \r\n"
+				+ "    [No] = ? ,\r\n"
+				+ "    [QuantityYD] = ?, \r\n"
+				+ "    [DataStatus] = ?, \r\n"
 				+ "    [ChangeDate]= ? \r\n"
+				+ "      ,[SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [ProductionOrder] = ? AND\r\n"
 				+ "    [RollNo] = ? ;\r\n"
@@ -116,11 +116,13 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 //				  + ",[Status]\r\n"
 				+ "      ,[QuantityKG] ,[Grade] ,[No] ,[QuantityYD],[DataStatus]\r\n"
 				+ "       ,[ChangeDate] ,[CreateDate]\r\n"
+				+ "      ,[SyncDate] \r\n"
 				+ "    ) VALUES (\r\n"
 				+ "		?, ?, ?, ?, "
 //				  + " ?, " เอกออก หยิบจาก Inspect แทน
 				+ "		?, ?, ?, ?, ?, "
 				+ "		?, ?  "// 10
+				+ ", ? "
 				+ "    ); "
 				+ ";";
 		try {
@@ -137,6 +139,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getRollNo());
@@ -152,6 +155,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 //				prepared.setString(index++, bean.get    );
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));

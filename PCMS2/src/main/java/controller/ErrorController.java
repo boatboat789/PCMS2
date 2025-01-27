@@ -21,6 +21,7 @@ public class ErrorController {
 	public ModelAndView customError(HttpServletRequest request, HttpServletResponse response, Model model)
 	{ 
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code"); 
+		@SuppressWarnings("unused")
 		Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception"); 
 		String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");  
         // Save it to session for access after login

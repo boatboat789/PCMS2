@@ -5,7 +5,8 @@ import th.in.totemplate.core.net.FtpReceive;
 import th.in.totemplate.core.sql.Database;
 
 public class FtpTaskRunner { 
-   private UserDetail user;
+   @SuppressWarnings("unused")
+private UserDetail user;
    public FtpTaskRunner(Database database, FtpReceive ftp) {
       this.user = new UserDetail("SYSTEM", ""); 
    }

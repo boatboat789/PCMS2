@@ -54,6 +54,7 @@ import entities.erp.atech.FromErpReceipeDetail;
 import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
+
 @Repository // Spring annotation to mark this as a DAO component
 public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
@@ -2255,7 +2256,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			DistChannel = (String) map.get("DistChannel");
 		}
 
-		return new CustomerDetail(CustomerNo, CustomerName, CustomerShortName, CustomerType, DistChannel);
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
+		return new CustomerDetail(CustomerNo, CustomerName, CustomerShortName, CustomerType, DistChannel, SyncDate);
 	}
 
 	@Override
@@ -2330,8 +2336,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			RollNoRemark = (String) map.get("RollNoRemark");
 		}
 
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpCFMDetail(ID, ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, CFMStatus, CFMRemark,
-				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, CFMStatus);
+				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, CFMStatus, SyncDate);
 	}
 
 	@Override
@@ -2387,8 +2398,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpGoodReceiveDetail(ProductionOrder, SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD,
-				QuantityMR, PriceSTD, DataStatus);
+				QuantityMR, PriceSTD, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -2457,8 +2473,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			DataStatus = (String) map.get("DataStatus");
 		}
 
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpMainBillBatchDetail(BillDoc, BillItem, LotShipping, ProductionOrder, SaleOrder, SaleLine, Grade,
-				RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, DataStatus);
+				RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -2651,11 +2672,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			OrderType = (String) map.get("OrderType");
 		}
 
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpMainProdDetail(ProductionOrder, SaleOrder, SaleLine, TotalQuantity, Unit, RemAfterCloseOne,
 				RemAfterCloseTwo, RemAfterCloseThree, LabStatus, UserStatus, DesignFG, ArticleFG, BookNo, Center, LotNo, Batch,
 				LabNo, RemarkOne, RemarkTwo, RemarkThree, BCAware, OrdErpuang, RefPrd, GreigeInDate, BCDate, Volumn, CFdate,
 				CFType, Shade, LotShipping, BillSendQuantity, Grade, DataStatus, PrdCreateDate, GreigeArticle, GreigeDesign,
-				GreigeMR, GreigeKG, OrderType);
+				GreigeMR, GreigeKG, OrderType, SyncDate);
 	}
 
 	@Override
@@ -2684,7 +2710,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
-		return new FromErpMainProdSaleDetail(ProductionOrder, SaleOrder, SaleLine, Volumn, DataStatus);
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
+		return new FromErpMainProdSaleDetail(ProductionOrder, SaleOrder, SaleLine, Volumn, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -2855,11 +2886,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpMainSaleDetail(SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity,
 				CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName,
 				CustomerShortName, ColorCustomer, CustomerDue, RemainQuantity, ShipDate, SaleStatus, Currency, Price, OrderAmount,
 				RemainAmount, SaleCreateDate, SaleNumber, SaleFullName, DeliveryStatus, DesignFG, ArticleFG, OrderSheetPrintDate,
-				CustomerMaterialBase, DataStatus);
+				CustomerMaterialBase, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -2909,8 +2945,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpPackingDetail(ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, Grade, No, QuantityYD,
-				DataStatus);
+				DataStatus, SyncDate);
 	}
 
 	@Override
@@ -2978,15 +3019,38 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			DataStatus = (String) map.get("DataStatus");
 		}
 
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpPODetail(ProductionOrder, RollNo, QuantityKG, QuantityMR, POCreatedate, RequiredDate, PurchaseOrder,
-				PurchaseOrderLine, null, PODefault, POLineDefault, POPostingDateDefault, DataStatus);
+				PurchaseOrderLine, null, PODefault, POLineDefault, POPostingDateDefault, DataStatus, SyncDate);
 	}
 
 	@Override
 	public FromErpReceipeDetail _genFromErpReceipeDetail(Map<String, Object> map)
 	{
+		String ProductionOrder = "";
+		if (map.get("ProductionOrder") != null) {
+			ProductionOrder = (String) map.get("ProductionOrder");
+		}
+		String LotNo = "";
+		if (map.get("LotNo") != null) {
+			LotNo = (String) map.get("LotNo");
+		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
+		String DataStatus = "";
+		if (map.get("DataStatus") != null) {
+			DataStatus = (String) map.get("DataStatus");
+		}
+
 		// TODO Auto-generated method stub
-		return null;
+		return new FromErpReceipeDetail(ProductionOrder, LotNo, SyncDate, DataStatus);
 	}
 
 	@Override
@@ -2998,9 +3062,6 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String BillDate = "";
 		if (map.get("BillDate") != null) {
-
-//			java.util.Date dateValue = (Date) map.get("BillDate");
-//			BillDate = sdf2.format(dateValue);
 			Timestamp timestamp1 = (Timestamp) map.get("BillDate");
 			BillDate = sdf2.format(timestamp1);
 		}
@@ -3044,8 +3105,6 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String DueDate = "";
 		if (map.get("DueDate") != null) {
-//			java.util.Date dateValue = (Date) map.get("DueDate");
-//			DueDate = sdf2.format(dateValue);
 			Timestamp timestamp1 = (Timestamp) map.get("DueDate");
 			DueDate = sdf2.format(timestamp1);
 		}
@@ -3062,8 +3121,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpSaleDetail(ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock, Remark,
-				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus);
+				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -3139,8 +3203,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
 		return new FromErpSaleInputDetail(ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock, Remark,
-				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus);
+				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -3178,7 +3247,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
 		}
-		return new FromErpSubmitDateDetail(ProductionOrder, SaleOrder, SaleLine, No, SubmitDate, Remark, DataStatus);
+		String SyncDate = "";
+		if (map.get("SyncDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
+			SyncDate = this.sdf4.format(timestamp1);
+		}
+		return new FromErpSubmitDateDetail(ProductionOrder, SaleOrder, SaleLine, No, SubmitDate, Remark, DataStatus, SyncDate);
 	}
 
 	@Override
@@ -3220,18 +3294,19 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("Responsible") != null) {
 			Responsible = (String) map.get("Responsible");
 		}
-		EmployeeDetail bean =
-				new EmployeeDetail(EmployeeID, PermitId,Responsible, "", FirstName, LastName, Role, "", "", Id, ArrangedBy, AuthorizedBy);
+
+		EmployeeDetail bean = new EmployeeDetail(EmployeeID, PermitId, Responsible, "", FirstName, LastName, Role, "", "", Id,
+				ArrangedBy, AuthorizedBy);
 		return bean;
 	}
 
 	@Override
 	public UserDetail _genUsersDetail(Map<String, Object> map)
 	{
-		String Id = "";
-		if (map.get("Id") != null) {
-			Id = Integer.toString((int) map.get("Id"));
-		}
+//		String Id = "";
+//		if (map.get("Id") != null) {
+//			Id = Integer.toString((int) map.get("Id"));
+//		}
 		String UserId = "";
 		if (map.get("UserId") != null) {
 			UserId = (String) map.get("UserId");
@@ -3272,7 +3347,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String ChangeBy = "";
 		if (map.get("ChangeBy") != null) {
 			ChangeBy = (String) map.get("ChangeBy");
-		}  
+		}
 		String LastSignDate = "";
 		if (map.get("LastSignDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("LastSignDate");
@@ -3282,11 +3357,11 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("RegistDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("RegistDate");
 			RegistDate = this.sdfDateTime1.format(timestamp1);
-		} 
+		}
 		String registBy = "";
 		if (map.get("registBy") != null) {
 			registBy = (String) map.get("registBy");
-		}  
+		}
 		boolean IsSystem = false;
 		if (map.get("IsSystem") != null) {
 			IsSystem = (boolean) map.get("IsSystem");
@@ -3299,16 +3374,11 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("IsCustomer") != null) {
 			IsCustomer = (boolean) map.get("IsCustomer");
 		}
-		String department = ""; 
-		String email = ""; 
+		String department = "";
+		String email = "";
 		UserDetail bean =
-				new UserDetail(
-						0, UserId,  "", FirstName, LastName, Role
-						, department, email
-						, ArrangedBy,AuthorizedBy, IsSystem, IsAdmin
-						, PermitId , LastSignDate,  Responsible   
-						, ChangeBy,ChangeDate , registBy
-						, RegistDate, "", IsCustomer); 
+				new UserDetail(0, UserId, "", FirstName, LastName, Role, department, email, ArrangedBy, AuthorizedBy, IsSystem,
+						IsAdmin, PermitId, LastSignDate, Responsible, ChangeBy, ChangeDate, registBy, RegistDate, "", IsCustomer);
 //		public UserDetail(int id, String userId, String password, String firstName, String lastName, String role,
 //				String department, String email, 
 //				String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
@@ -3317,6 +3387,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 //				Date registDate, String UserType, boolean IsCustomer) {
 		return bean;
 	}
+
 	@Override
 	public PermitDetail _genPermitDetail(Map<String, Object> map)
 	{

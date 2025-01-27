@@ -53,6 +53,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "CustomerShortName,\r\n"
 				+ "CustomerType,\r\n"
 				+ "DistChannel \r\n" 
+				+ "      ,[SyncDate]"
 				+ " from CustomerDetail"
 				
 				; 
@@ -83,6 +84,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "SaleOrder,\r\n"
 				+ "SaleLine,\r\n"
 				+ "RollNoRemark \r\n" 
+				+ "      ,[SyncDate]"
 				+ " from FromErpCFM"
 				
 				; 
@@ -151,6 +153,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "QuantityYD,\r\n"
 				+ "QuantityMR,\r\n"
 				+ "PriceSTD \r\n"
+				+ "      ,[SyncDate]"
 				+ " "
 				+ " from FromErpGoodReceive"
 				
@@ -203,6 +206,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "QuantityYD,\r\n"
 				+ "QuantityMR,\r\n"
 				+ "LotNo\r\n"
+				+ "      ,[SyncDate]"
 				+ "  " 
 				+ " from FromErpMainBillBatch"
 				
@@ -262,6 +266,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "GreigeMR,\r\n"
 				+ "GreigeKG,\r\n"
 				+ "OrderType \r\n"
+				+ "      ,[SyncDate]"
 				+ " from FromErpMainProd"
 				
 				; 
@@ -285,6 +290,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "SaleOrder,\r\n"
 				+ "SaleLine,\r\n"
 				+ "Volumn\r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpMainProdSale"
 				
@@ -338,6 +344,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "ArticleFG,\r\n"
 				+ "OrderSheetPrintDate,\r\n"
 				+ "CustomerMaterialBase \r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpMainSale"
 				
@@ -366,6 +373,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "Grade,\r\n"
 				+ "No,\r\n"
 				+ "QuantityYD\r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpPacking"
 				
@@ -397,6 +405,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "PODefault,\r\n"
 				+ "POLineDefault,\r\n"
 				+ "POPostingDateDefault\r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpPO"
 				
@@ -439,6 +448,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " SELECT distinct   \r\n"
 				+ " [ProductionOrder]\r\n"
 				+ "      ,[LotNo]"
+				+ "      ,[SyncDate]"
 				+ " from FromErpReceipe"
 				
 				; 
@@ -473,6 +483,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "DueDate,\r\n"
 				+ "Color,\r\n"
 				+ "No \r\n"
+				+ "      ,[SyncDate]"
 				+ "" 
 				+ " from FromErpSale"
 				
@@ -508,6 +519,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "DueDate,\r\n"
 				+ "Color,\r\n"
 				+ "No\r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpSaleInput"
 				
@@ -558,6 +570,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " No,\r\n"
 				+ " SubmitDate,\r\n"
 				+ " Remark\r\n"
+				+ "      ,[SyncDate]"
 				+ " " 
 				+ " from FromErpSubmitDate"
 				

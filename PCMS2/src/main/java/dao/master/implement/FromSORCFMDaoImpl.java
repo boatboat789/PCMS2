@@ -8,8 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSORCFMDao;

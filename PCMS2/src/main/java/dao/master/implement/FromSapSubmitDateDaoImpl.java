@@ -8,13 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSapSubmitDateDao;
-import entities.erp.atech.FromErpSubmitDateDetail;
-import model.BeanCreateModel;
+import entities.erp.atech.FromErpSubmitDateDetail; 
 import th.in.totemplate.core.sql.Database;
 import utilities.SqlStatementHandler;
 
@@ -24,7 +22,7 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New  
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
-	private BeanCreateModel bcModel = new BeanCreateModel();
+//	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
@@ -60,6 +58,7 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				  + "    [Remark] = ?,\r\n"  
 				  + "    [DataStatus] = ?,\r\n"
 				  + "    [ChangeDate] = ? \r\n"  
+					+ "      ,[SyncDate] =  ?\r\n" 
 				  + "WHERE \r\n"
 				  + "    [ProductionOrder] = ? AND\r\n" 
 				  + "    [SaleOrder] = ? AND\r\n"
@@ -74,9 +73,12 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				  + "    INSERT INTO [dbo].[FromSapSubmitDate] (\r\n"
 				  + "        [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[No] ,[SubmitDate]\r\n"
 				  + "      ,[Remark] ,[DataStatus] ,[ChangeDate] ,[CreateDate]\r\n"
+				  + "      ,[SyncDate] \r\n"
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
-				  + "		?, ?, ?, ?, " 
+				  + "		?, ?, ?, ? " 
+					+ "		, ? "
+
 				  + "    ); "
 				+ ";"  ;
 		try {
@@ -90,6 +92,7 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				prepared.setString(index++, bean.getRemark()    );
 				prepared.setString(index++, bean.getDataStatus()   ); 
 				prepared.setTimestamp(index++, new Timestamp(time)); 
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 
 				prepared.setString(index++, bean.getProductionOrder()    );
 				prepared.setString(index++, bean.getSaleOrder()    );
@@ -106,6 +109,7 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				prepared.setString(index++, bean.getDataStatus()   ); 
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared.setTimestamp(index++, new Timestamp(time));  
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 //				prepared.setString(index++, bean.get    );
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));

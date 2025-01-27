@@ -5,14 +5,24 @@ public class CustomerDetail {
 	private String customerShortName ; 
 	private String customerType ; 
 	private String distChannel ;
+	private String syncDate ;
 	public CustomerDetail(String customerNo, String customerName, String customerShortName, String customerType,
-			String distChannel) {
+			String distChannel, String syncDate) {
 		super();
 		this.customerNo = customerNo;
 		this.customerName = customerName;
 		this.customerShortName = customerShortName;
 		this.customerType = customerType;
 		this.distChannel = distChannel;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getCustomerNo()
 	{

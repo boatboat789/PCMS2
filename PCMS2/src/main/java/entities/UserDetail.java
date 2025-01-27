@@ -1,7 +1,5 @@
 package entities;
-
-import java.util.Date;
-
+   
 public class UserDetail {
 	private int id;
 	private String userId;

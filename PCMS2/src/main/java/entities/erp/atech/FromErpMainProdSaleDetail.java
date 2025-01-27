@@ -6,15 +6,26 @@ public class FromErpMainProdSaleDetail {
 	private String saleLine ; 
 	private String volumn ;
 	private String dataStatus ;
-	
+
+	private String syncDate ;
+
 	public FromErpMainProdSaleDetail(String productionOrder, String saleOrder, String saleLine, String volumn,
-			String dataStatus) {
+			String dataStatus, String syncDate) {
 		super();
 		this.dataStatus = dataStatus;
 		this.productionOrder = productionOrder;
 		this.saleOrder = saleOrder;
 		this.saleLine = saleLine;
 		this.volumn = volumn;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

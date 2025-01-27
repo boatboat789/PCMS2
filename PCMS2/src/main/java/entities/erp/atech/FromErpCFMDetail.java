@@ -20,11 +20,12 @@ public class FromErpCFMDetail {
 	private String rollNo ;  
 	private String rollNoRemark ;
 	private String dataStatus ;
-	
+
+	private String syncDate ;
  
 	public FromErpCFMDetail(String id, String productionOrder, String cfmNo, String cfmNumber, String cfmSendDate,
 			String cfmAnswerDate, String cfmStatus, String cfmRemark, String saleOrder, String saleLine, String nextLot,
-			String soChange, String soChangeQty, String soChangeUnit, String rollNo, String rollNoRemark, String dataStatus) {
+			String soChange, String soChangeQty, String soChangeUnit, String rollNo, String rollNoRemark, String dataStatus, String syncDate ) {
 		super();
 		this.id = id;
 		this.productionOrder = productionOrder;
@@ -43,6 +44,15 @@ public class FromErpCFMDetail {
 		this.rollNo = rollNo;
 		this.rollNoRemark = rollNoRemark;
 		this.dataStatus = dataStatus;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getNextLot()
 	{

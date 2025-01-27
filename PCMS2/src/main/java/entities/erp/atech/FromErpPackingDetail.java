@@ -10,9 +10,9 @@ public class FromErpPackingDetail {
 	private String no ; 
 	private String quantityYD ;
 	private String dataStatus;
-	 
+	private String syncDate ;
 	public FromErpPackingDetail(String productionOrder, String postingDate, String quantity, String rollNo, String quantityKG,
-			String grade, String no, String quantityYD, String dataStatus) {
+			String grade, String no, String quantityYD, String dataStatus, String syncDate) {
 		super();
 		this.productionOrder = productionOrder;
 		this.postingDate = postingDate;
@@ -23,6 +23,15 @@ public class FromErpPackingDetail {
 		this.no = no;
 		this.quantityYD = quantityYD;
 		this.dataStatus = dataStatus;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

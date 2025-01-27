@@ -14,9 +14,10 @@ public class FromErpMainBillBatchDetail {
 	private String quantityMR ; 
 	private String lotNo ;
 	private String dataStatus ;
+	private String syncDate ;
 	public FromErpMainBillBatchDetail(String billDoc, String billItem, String lotShipping, String productionOrder,
 			String saleOrder, String saleLine, String grade, String rollNumber, String quantityKG, String quantityYD,
-			String quantityMR, String lotNo,String dataStatus) {
+			String quantityMR, String lotNo,String dataStatus, String syncDate) {
 		super();
 		this.dataStatus = dataStatus;
 		this.billDoc = billDoc;
@@ -31,6 +32,15 @@ public class FromErpMainBillBatchDetail {
 		this.quantityYD = quantityYD;
 		this.quantityMR = quantityMR;
 		this.lotNo = lotNo;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

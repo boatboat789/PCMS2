@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSapFinishingDao;
@@ -103,8 +102,7 @@ public class FromSapFinishingDaoImpl implements  FromSapFinishingDao{
 					+ "			dfs.[AdminStatus] = '-'\r\n"
 					+ "  ) as sfc on sfc.[ProductionOrder] = dfs.[ProductionOrder] \r\n" 
 					+ where
-					+ " Order by dfs.Operation";
-		System.out.println(sql);
+					+ " Order by dfs.Operation"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

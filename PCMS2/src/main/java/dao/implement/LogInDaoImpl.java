@@ -84,10 +84,10 @@ public class LogInDaoImpl implements LogInDao {
       					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("ChangeDate");
       					ChangeDate = this.sdfDateTime1.format(timestamp1);
       				}
-      				String ChangeBy = "";
-      				if (resultset.getString("ChangeBy") != null) {
-      					ChangeBy = (String) resultset.getString("ChangeBy");
-      				}  
+//      				String ChangeBy = "";
+//      				if (resultset.getString("ChangeBy") != null) {
+//      					ChangeBy = (String) resultset.getString("ChangeBy");
+//      				}  
       				String LastSignDate = "";
       				LastSignDate = this.sdfDateTime1.format(Calendar.getInstance().getTime());
       				String RegistDate = "";
@@ -95,10 +95,10 @@ public class LogInDaoImpl implements LogInDao {
       					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("RegistDate");
       					RegistDate = this.sdfDateTime1.format(timestamp1);
       				} 
-      				String registBy = "";
-      				if (resultset.getString("registBy") != null) {
-      					registBy = (String) resultset.getString("registBy");
-      				}    
+//      				String registBy = "";
+//      				if (resultset.getString("registBy") != null) {
+//      					registBy = (String) resultset.getString("registBy");
+//      				}    
                 	 user = new UserDetail();
                      user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);
@@ -175,10 +175,10 @@ public class LogInDaoImpl implements LogInDao {
       					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("ChangeDate");
       					ChangeDate = this.sdfDateTime1.format(timestamp1);
       				}
-      				String ChangeBy = "";
-      				if (resultset.getString("ChangeBy") != null) {
-      					ChangeBy = (String) resultset.getString("ChangeBy");
-      				}  
+//      				String ChangeBy = "";
+//      				if (resultset.getString("ChangeBy") != null) {
+//      					ChangeBy = (String) resultset.getString("ChangeBy");
+//      				}  
       				String LastSignDate = "";
       				LastSignDate = this.sdfDateTime1.format(Calendar.getInstance().getTime());
       				String RegistDate = "";
@@ -186,10 +186,10 @@ public class LogInDaoImpl implements LogInDao {
       					Timestamp timestamp1 = (Timestamp) resultset.getTimestamp("RegistDate");
       					RegistDate = this.sdfDateTime1.format(timestamp1);
       				} 
-      				String registBy = "";
-      				if (resultset.getString("registBy") != null) {
-      					registBy = (String) resultset.getString("registBy");
-      				}    
+//      				String registBy = "";
+//      				if (resultset.getString("registBy") != null) {
+//      					registBy = (String) resultset.getString("registBy");
+//      				}    
                 	 user = new UserDetail();
                      user.setId(resultset.getInt("Id"));
                      user.setFirstName(Firstname);

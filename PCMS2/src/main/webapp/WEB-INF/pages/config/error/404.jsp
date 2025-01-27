@@ -8,7 +8,7 @@
 <head>
 	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>    
 	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
-	<title id="title_header"	>404</title>      
+	<title >404</title>      
 </head>
 <body>  
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>

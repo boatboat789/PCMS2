@@ -25,11 +25,11 @@
             </td>      
         </tr>
         <tr>
-			<div>
+			<td> 
 				<a style="text-decoration: none;
-            color: #0056b3;
-            font-weight: bold;" href="${contextpath}/logout">back to login page</a>
-			</div>
+	            color: #0056b3;
+	            font-weight: bold;" href="${contextpath}/logout">back to login page</a>
+			</td>
 		</tr>
     </table>
 </body>

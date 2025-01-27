@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import dao.master.FromSapReceipeDao;
 import dao.master.implement.FromSapReceipeDaoImpl;
 import entities.ReceipeDetail;
+import entities.erp.atech.FromErpReceipeDetail;
 import info.SqlInfo;
 import th.in.totemplate.core.sql.Database;
 
@@ -24,7 +25,7 @@ public class FromSapReceipeModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public FromSapReceipeModel() {
 		try {
 			this.database = new Database(SqlInfo.getInstance());
@@ -58,5 +59,12 @@ public class FromSapReceipeModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		ArrayList<ReceipeDetail> list = this.dao.getFromSapReceipeDetailByProductionOrder(prodOrder);
 		return list;
+	}
+
+	public void upsertFromSapReceipeDetail(ArrayList<FromErpReceipeDetail> ferdList)
+	{
+		// TODO Auto-generated method stub
+		this.dao.upsertFromSapReceipeDetail(ferdList);
+
 	}
 }

@@ -35,14 +35,14 @@ public class FromErpMainSaleDetail {
 	private String orderSheetPrintDate ; 
 	private String customerMaterialBase ;
 	private String dataStatus ;
-	
+	private String syncDate ;
 	public FromErpMainSaleDetail(String saleOrder, String saleLine, String materialNo, String dueDate, String planGreigeDate,
 			String saleUnit, String saleQuantity, String customerMaterial, String color, String customerNo, String purchaseOrder,
 			String saleOrg, String distChannel, String division, String customerName, String customerShortName,
 			String colorCustomer, String customerDue, String remainQuantity, String shipDate, String saleStatus, String currency,
 			String price, String orderAmount, String remainAmount, String saleCreateDate, String saleNumber, String saleFullName,
 			String deliveryStatus, String designFG, String articleFG, String orderSheetPrintDate, String customerMaterialBase,
-			String dataStatus) {
+			String dataStatus, String syncDate) {
 		super();
 		this.dataStatus = dataStatus;
 		this.saleOrder = saleOrder;
@@ -78,6 +78,15 @@ public class FromErpMainSaleDetail {
 		this.articleFG = articleFG;
 		this.orderSheetPrintDate = orderSheetPrintDate;
 		this.customerMaterialBase = customerMaterialBase;
+		this.syncDate = syncDate;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getDataStatus()
 	{

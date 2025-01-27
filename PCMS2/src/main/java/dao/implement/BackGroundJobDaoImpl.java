@@ -18,6 +18,7 @@ import entities.erp.atech.FromErpMainProdSaleDetail;
 import entities.erp.atech.FromErpMainSaleDetail;
 import entities.erp.atech.FromErpPODetail;
 import entities.erp.atech.FromErpPackingDetail;
+import entities.erp.atech.FromErpReceipeDetail;
 import entities.erp.atech.FromErpSaleDetail;
 import entities.erp.atech.FromErpSaleInputDetail;
 import entities.erp.atech.FromErpSubmitDateDetail;
@@ -30,6 +31,7 @@ import model.master.FromSapMainProdSaleModel;
 import model.master.FromSapMainSaleModel;
 import model.master.FromSapPOModel;
 import model.master.FromSapPackingModel;
+import model.master.FromSapReceipeModel;
 import model.master.FromSapSaleInputModel;
 import model.master.FromSapSaleModel;
 import model.master.FromSapSubmitDateModel;
@@ -126,7 +128,9 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		FromSapSaleModel fssModel = new  FromSapSaleModel(); 
 		FromSapSaleInputModel fssiModel = new  FromSapSaleInputModel();
 		FromSapSubmitDateModel fssdModel = new  FromSapSubmitDateModel();
-		 
+		FromSapReceipeModel fsrModel = new FromSapReceipeModel(); 
+		
+		
 		cusModel.upsertCustomerDetail(cusList);
 		ArrayList<FromErpMainProdDetail> frmpList =  erpaModel.getFromErpMainProdDetail();
 		fsmpModel.upsertFromSapMainProdDetail(frmpList); 
@@ -153,5 +157,8 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		fssiModel.upsertFromSapSaleInputDetail(frsiList);
 		ArrayList<FromErpSubmitDateDetail> fesdList =  erpaModel.getFromErpSubmitDateDetail(); 
 		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+
+		ArrayList<FromErpReceipeDetail> ferdList =  erpaModel.getFromErpReceipeDetai(); 
+		fsrModel.upsertFromSapReceipeDetail(ferdList);
 	}
 }

@@ -5985,17 +5985,17 @@ public class BeanCreateDaoImpl implements BeanCreateModelDao {
 			RollLength = this.df2.format(doubleVal);
 		}
 
-		String CreateeDate = "";
-		if (map.get("CreateeDate") != null) {
-			Timestamp timestamp1 = (Timestamp) map.get("CreateeDate");
-			CreateeDate = this.sdf3.format(timestamp1);
+		String CreateDate = "";
+		if (map.get("CreateDate") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("CreateDate");
+			CreateDate = this.sdf3.format(timestamp1);
 		}
 		String ChangeDate = "";
 		if (map.get("ChangeDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("ChangeDate");
 			ChangeDate = this.sdf3.format(timestamp1);
 		}
-		return new RollFromSapDetail(Id, ProductionOrder, RollLine, RollNumber, RollWeight, RollLength, ChangeDate, CreateeDate);
+		return new RollFromSapDetail(Id, ProductionOrder, RollLine, RollNumber, RollWeight, RollLength, ChangeDate, CreateDate);
 	}
 
 	@Override

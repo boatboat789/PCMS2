@@ -10,8 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSapPODao;
@@ -100,15 +99,17 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				  + "    [QuantityKG] = ?,\r\n"
 				  + "    [QuantityMR] = ?,\r\n"  
 				  + "    [POCreatedate] = ?,\r\n"
-				  + "    [RequiredDate] = ? \r\n" 
-				  + "    [PurchaseOrder] = ? \r\n" 
-				  + "    [PurchaseOrderLine] = ? \r\n" 
-				  + "    [PurchaseOrderDate] = ? \r\n" 
-				  + "    [PODefault] = ? \r\n" 
-				  + "    [POLineDefault] = ? \r\n" 
-				  + "    [POPostingDateDefault] = ? \r\n"  
-				  + "    [DataStatus] = ? \r\n" 
+				  + "    [RequiredDate] = ? ,\r\n" 
+				  + "    [PurchaseOrder] = ?, \r\n" 
+				  + "    [PurchaseOrderLine] = ?, \r\n" 
+				  + "    [PurchaseOrderDate] = ? ,\r\n" 
+				  + "    [PODefault] = ?, \r\n" 
+				  + "    [POLineDefault] = ?, \r\n" 
+				  + "    [POPostingDateDefault] = ?, \r\n"  
+				  + "    [DataStatus] = ?, \r\n" 
 				  + "    [ChangeDate]= ? \r\n" 
+
+				+ "      ,[SyncDate] =  ?\r\n" 
 				  + "WHERE \r\n"
 				  + "    [ProductionOrder] = ? AND\r\n" 
 				  + "    [RollNo] = ? ;\r\n"
@@ -122,10 +123,12 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				  + "        [ProductionOrder] ,[RollNo] ,[QuantityKG]  ,[QuantityMR] ,[POCreatedate]\r\n"
 				  + "      ,[RequiredDate] ,[PurchaseOrder] ,[PurchaseOrderLine] ,[PurchaseOrderDate] ,[PODefault]\r\n"
 				  + "      ,[POLineDefault] ,[POPostingDateDefault] ,[DataStatus] ,[ChangeDate] ,[CreateDate]\r\n"
+				  + "      ,[SyncDate] \r\n"
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ?, ?, "
-				  + "		?, ?, ?, ?, ?, " 
+				  + "		?, ?, ?, ?, ? " 
+					+ ", ? " 
 				  + "    ); "
 				+ ";"  ;
 		try {
@@ -147,6 +150,7 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPoPostingDateDefault() , index++);  
 				prepared.setString(index++, bean.getDataStatus()    ); 
 				prepared.setTimestamp(index++, new Timestamp(time));  
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 				prepared.setString(index++, bean.getProductionOrder()    );
 				prepared.setString(index++, bean.getRollNo()    );
 				
@@ -165,6 +169,7 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				prepared.setString(index++, bean.getDataStatus()    ); 
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared.setTimestamp(index++, new Timestamp(time));  
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 //				prepared.setString(index++, bean.get    );
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));

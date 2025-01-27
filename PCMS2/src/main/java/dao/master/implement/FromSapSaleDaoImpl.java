@@ -10,8 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import dao.master.FromSapSaleDao;
@@ -102,6 +101,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				  + "    [Color] = ?,\r\n"   
 				  + "    [DataStatus] = ?,\r\n"
 				  + "    [ChangeDate] = ? \r\n"  
+					+ "      ,[SyncDate] =  ?\r\n" 
 				  + "WHERE \r\n"
 				  + "    [ProductionOrder] = ? AND\r\n"  
 				  + "    [No] = ? ;\r\n"
@@ -116,11 +116,14 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				  + "      ,[BillQtyPerStock] ,[Remark] ,[CustomerNo] ,[CustomerName1] ,[CustomerPO]\r\n"
 				  + "      ,[DueDate] ,[Color] ,[No] ,[DataStatus] ,[ChangeDate]\r\n"
 				  + "      ,[CreateDate]\r\n"
+				  + "      ,[SyncDate] \r\n"
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?  " 
+					+ "		, ? "
+
 				  + "    ); "
 				+ ";"  ;
 		try {
@@ -142,6 +145,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				prepared.setString(index++, bean.getColor()    );
 				prepared.setString(index++, bean.getDataStatus()   ); 
 				prepared.setTimestamp(index++, new Timestamp(time));
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 				
 				prepared.setString(index++, bean.getProductionOrder()    );
 				prepared.setString(index++, bean.getNo()    ); 
@@ -162,6 +166,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				prepared.setString(index++, bean.getDataStatus()   ); 
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared.setTimestamp(index++, new Timestamp(time));   
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 //				prepared.setString(index++, bean.get    );
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));

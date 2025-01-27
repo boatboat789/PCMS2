@@ -40,14 +40,17 @@ public class FromErpMainProdDetail {
 	private String greigeMR ; 
 	private String greigeKG ; 
 	private String orderType ;
+	private String syncDate ;
+
 	public FromErpMainProdDetail(String productionOrder, String saleOrder, String saleLine, String totalQuantity, String unit,
 			String remAfterCloseOne, String remAfterCloseTwo, String remAfterCloseThree, String labStatus, String userStatus,
 			String designFG, String articleFG, String bookNo, String center, String lotNo, String batch, String labNo,
 			String remarkOne, String remarkTwo, String remarkThree, String bcAware, String orderPuang, String refPrd,
 			String greigeInDate, String bcDate, String volumn, String cfDate, String cfType, String shade, String lotShipping,
 			String billSendQuantity, String grade, String dataStatus, String prdCreateDate, String greigeArticle,
-			String greigeDesign, String greigeMR, String greigeKG, String orderType) {
+			String greigeDesign, String greigeMR, String greigeKG, String orderType, String syncDate) {
 		super();
+		this.syncDate = syncDate;
 		this.productionOrder = productionOrder;
 		this.saleOrder = saleOrder;
 		this.saleLine = saleLine;
@@ -87,6 +90,14 @@ public class FromErpMainProdDetail {
 		this.greigeMR = greigeMR;
 		this.greigeKG = greigeKG;
 		this.orderType = orderType;
+	}
+	public String getSyncDate()
+	{
+		return syncDate;
+	}
+	public void setSyncDate(String syncDate)
+	{
+		this.syncDate = syncDate;
 	}
 	public String getProductionOrder()
 	{
