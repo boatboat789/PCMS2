@@ -115,8 +115,7 @@ public class StockDateManagementDaoImpl implements StockDateManagementDao {
 			String oldStockRemark = beanTmpOld.getStockRemark();
 			String oldDayOfMonth = beanTmpOld.getDayOfMonth();
 			String oldStockReceive = beanTmpOld.getStockReceive();
-
-//			System.out.println(beanTmpOld.getCustomerNo()+" "+mapDateAndDataStatus.get(beanTmpOld.getCustomerNo()));
+ 
 			// Remark
 			if (beanTmpNew != null) {
 				String newdStockRemark = beanTmpNew.getStockRemark();

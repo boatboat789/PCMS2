@@ -90,7 +90,8 @@ var poTable ;
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
-var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
+var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;
+// var sendTestQCTable;
 var columnsHeader  = [];
 var colList ;
 var userStatusList ;  	
@@ -759,31 +760,31 @@ $(document) .ready( function() {
 				} ,                         
 		],  order: [[ 0, "desc" ]]     
  	 });   
-    sendTestQCTable = $('#sendTestQCTable').DataTable({   
-    	scrollY:        '190px',    
-    	scrollX: true,      
-    	paging: false,     
-//  	 	scrollCollapse: true,                  
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
-		lengthChange: false,         	  
- 	   	columns : 
- 		[           
-		    {"data" : "sendDate"} ,         //0
-		    {"data" : "rollNo"},  
-		    {"data" : "status"},  
-		    {"data" : "checkColorDate"},  
-		    {"data" : "deltaE"},  
-		    {"data" : "color"},  
-		    {"data" : "remark"},            //6
-		],  	          
-		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6 ],                
-			  	  className : 'data-custom-padding0505',    
-// 		  	 	  type: 'string'      
-				} ,           
-		],     order: [[ 0, "desc" ]]        
- 	 });  
+//     sendTestQCTable = $('#sendTestQCTable').DataTable({   
+//     	scrollY:        '190px',    
+//     	scrollX: true,      
+//     	paging: false,     
+// //  	 	scrollCollapse: true,                  
+// //  	   	orderCellsTop : true,
+// // 		orderClasses : false, 
+// 		lengthChange: false,         	  
+//  	   	columns : 
+//  		[           
+// 		    {"data" : "sendDate"} ,         //0
+// 		    {"data" : "rollNo"},  
+// 		    {"data" : "status"},  
+// 		    {"data" : "checkColorDate"},  
+// 		    {"data" : "deltaE"},  
+// 		    {"data" : "color"},  
+// 		    {"data" : "remark"},            //6
+// 		],  	          
+// 		columnDefs :  [	   	
+// 			{ targets : [ 0,1,2,3,4,5,6 ],                
+// 			  	  className : 'data-custom-padding0505',    
+// // 		  	 	  type: 'string'      
+// 				} ,           
+// 		],     order: [[ 0, "desc" ]]        
+//  	 });  
     workInLabTable = $('#workInLabTable').DataTable({   
     	scrollY:       '175px',    
     	scrollX: true,               
@@ -1042,7 +1043,7 @@ $(document) .ready( function() {
 	$("#fnTable_filter").hide();  
 	$("#inspectTable_filter").hide();  
 	$("#packingTable_filter").hide();  
-	$("#sendTestQCTable_filter").hide(); 
+// 	$("#sendTestQCTable_filter").hide(); 
 	$("#poTable_filter").hide();	
 	
 	$("#workInLabTable_filter").hide();  
@@ -1069,7 +1070,7 @@ $(document) .ready( function() {
 	$("#fnTable_info").hide();   
 	$("#inspectTable_info").hide();   
 	$("#packingTable_info").hide();   
-	$("#sendTestQCTable_info").hide();      
+// 	$("#sendTestQCTable_info").hide();      
 	$("#poTable_info").hide();  
 	
 	$('#multi_userStatus').selectpicker();     
@@ -1144,7 +1145,7 @@ $(document) .ready( function() {
     	fnTable.columns.adjust(); 
     	inspectTable.columns.adjust(); 
     	packingTable.columns.adjust(); 
-    	sendTestQCTable.columns.adjust(); 
+//     	sendTestQCTable.columns.adjust(); 
     	
     	workInLabTable.columns.adjust(); 
 //     	waitTestTable.columns.adjust(); 
@@ -1161,7 +1162,7 @@ $(document) .ready( function() {
 		fnTable.columns.adjust(); 
 		inspectTable.columns.adjust(); 
 		packingTable.columns.adjust(); 
-		sendTestQCTable.columns.adjust(); 
+// 		sendTestQCTable.columns.adjust(); 
     	workInLabTable.columns.adjust(); 
 //     	waitTestTable.columns.adjust(); 
     	cfmTable.columns.adjust(); 
@@ -1500,12 +1501,12 @@ function setModalDetail(data){
 	else{ dyeingTable.rows.add(innnerText.dyeingDetailList); }  
 	dyeingTable.draw();                 
 	
-	sendTestQCTable.clear();    	   
-	if(innnerText.sendTestQCDetailList.length == 0){       }     
-	else{ sendTestQCTable.rows.add(innnerText.sendTestQCDetailList); }  
-	sendTestQCTable.draw();   
+// 	sendTestQCTable.clear();    	   
+// 	if(innnerText.sendTestQCDetailList.length == 0){       }     
+// 	else{ sendTestQCTable.rows.add(innnerText.sendTestQCDetailList); }  
+// 	sendTestQCTable.draw();   
 	
-	fnTable.clear();    	   
+	fnTable.clear();     
 	if(innnerText.finishingDetailList.length == 0){       }     
 	else{ fnTable.rows.add(innnerText.finishingDetailList); }  
 	fnTable.draw();   

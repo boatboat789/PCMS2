@@ -1516,9 +1516,7 @@ public class MonthlyCapWithDueDateReportDaoImpl implements MonthlyCapWithDueDate
 				+ "IF OBJECT_ID('tempdb..#TempMainData') IS NOT NULL \r\n"
 				+ "	DROP TABLE #TempMainData;  \r\n"
 				+ " select * from #TempMainMonthly as a\r\n"
-				+ " ORDER BY a.GroupNo , a.SubGroup ";
-//		System.out.println(sql);
-		System.out.println(sql);
+				+ " ORDER BY a.GroupNo , a.SubGroup "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1586,8 +1584,7 @@ public class MonthlyCapWithDueDateReportDaoImpl implements MonthlyCapWithDueDate
 				+ "  FROM #TempMainMonthly   as a\r\n"
 				+ "  ) AS MAIN  \r\n"
 				+ "\r\n"
-				+ "\r\n";
-//		System.out.println(sql);
+				+ "\r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

@@ -2876,8 +2876,7 @@ public class BeanCreateDaoImpl implements BeanCreateModelDao {
 		if (map.get("ThirdDMDate") != null) {
 			java.util.Date dateStr = (Date) map.get("ThirdDMDate");
 			thirdDMDate = sdf2.format(dateStr);
-		}
-//			System.out.println(thirdDMDate);
+		}  
 		String thirdEXDate = "";
 		if (map.get("ThirdEXDate") != null) {
 			java.util.Date dateStr = (Date) map.get("ThirdEXDate");
@@ -3629,8 +3628,7 @@ public class BeanCreateDaoImpl implements BeanCreateModelDao {
 		int IntQtyGreigeMR = 0;
 		if (map.get("QtyGreigeMR") != null) {
 			int value = (int) map.get("QtyGreigeMR");
-			IntQtyGreigeMR = value;
-//			System.out.println(IntQtyGreigeMR);
+			IntQtyGreigeMR = value; 
 			QtyGreigeMR = Integer.toString(IntQtyGreigeMR);
 		}
 
@@ -5075,8 +5073,7 @@ public class BeanCreateDaoImpl implements BeanCreateModelDao {
 		boolean isApproved = false;
 		if (map.get("IsApproved") != null) {
 			isApproved = (boolean) map.get("IsApproved");
-		}
-//		System.out.println(isApproved+" "+ map.get("isfirst"));
+		} 
 		String ChangeBy = "";
 		if (map.get("ChangeBy") != null) {
 			ChangeBy = (String) map.get("ChangeBy");

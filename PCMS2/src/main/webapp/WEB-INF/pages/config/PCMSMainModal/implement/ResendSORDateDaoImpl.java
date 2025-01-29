@@ -253,8 +253,7 @@ public class ResendSORDateDaoImpl implements ResendSORDateDao {
 						+ this.innerJoinSPDMainRPAP
 						+ this.leftJoinDFS
 						+ where
-						+ " Order By SPD.[PO] ,SPD.[POLine] ";
-//		System.out.println(sql);
+						+ " Order By SPD.[PO] ,SPD.[POLine] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -286,8 +285,7 @@ public class ResendSORDateDaoImpl implements ResendSORDateDao {
 				+ " INNER JOIN [PPMM].[dbo].[ApprovedPlanDate] AS APD ON APD.[POId] = A.[POId] and \r\n"
 				+ "													     APD.[DataStatus] = 'O' and\r\n"
 				+ "                                                      APD.[SorDueDate] is not null\r\n"
-				+ " Order By A.[PO]  ";
-//		System.out.println(sql);
+				+ " Order By A.[PO]  "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -355,8 +353,7 @@ public class ResendSORDateDaoImpl implements ResendSORDateDao {
 //		String systemStauts = "Update Success.";
 		ArrayList<ChangeSettingLogDetail> listCSL = new ArrayList<>();
 		HashMap<String, String> mapMSC = new HashMap<>();
-		// CheckProdOrder
-//		System.out.println(listOld.size());
+		// CheckProdOrder 
 		if (listOldPOLot.size() > 0) {
 			// 1. CHECK LOT ALREADY CREATE IN SAP
 			ArrayList<MasterSettingChangeDetail> listMSC = mscModel.getMasterSettingChangeDetail(changeTable);
@@ -403,10 +400,7 @@ public class ResendSORDateDaoImpl implements ResendSORDateDao {
 				beanTmpCurrent.setTopping(false);
 				beanTmpCurrent.setRemark("");
 				beanTmpCurrent.setChangeBy(changeBy);
-				listRunningUsed.add(beanTmpCurrent);
-
-//				System.out.println( " runningNewProdOrder "+runningNewProdOrder);
-//				System.out.println(curProdOrder+" "+newProdOrderFull);
+				listRunningUsed.add(beanTmpCurrent); 
 				cslModel.handlerChangeProdDetailForNewDetailList(listRunning, remarkAction);
 				porModel.updateProdOrderRunningWithProductionOrder(listRunningUsed);
 				bgjModel.execReplacedProdOrderOldWithNew(curProdOrder, newProdOrderFull);

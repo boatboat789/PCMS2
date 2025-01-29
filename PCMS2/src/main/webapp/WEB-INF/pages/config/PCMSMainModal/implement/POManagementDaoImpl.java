@@ -807,8 +807,7 @@ public class POManagementDaoImpl implements POManagementDao {
 				+ this.leftJoinIADWithSPD
 				+ this.leftJoinSPDMainCD
 				+ where
-				+ " Order By SPD.[PO] ,SPD.[POLine] ";
-//		System.out.println(sql);
+				+ " Order By SPD.[PO] ,SPD.[POLine] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -856,8 +855,7 @@ public class POManagementDaoImpl implements POManagementDao {
 				+ this.leftJoinIAD
 				+ this.leftJoinTPL
 				+ this.leftJoinDFS
-				+ " Order By a.[PO] ,a.[POLine],a.ProductionOrder ";
-//		System.out.println(sql);
+				+ " Order By a.[PO] ,a.[POLine],a.ProductionOrder "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -884,8 +882,7 @@ public class POManagementDaoImpl implements POManagementDao {
 				+ this.leftJoinIAD
 				+ this.leftJoinTPL
 				+ this.leftJoinDFS
-				+ " Order By a.[PO] ,a.[POLine],a.ProductionOrder ";
-//		System.out.println(sql);
+				+ " Order By a.[PO] ,a.[POLine],a.ProductionOrder "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -907,8 +904,7 @@ public class POManagementDaoImpl implements POManagementDao {
 				+ "			( SPD.[DataStatus] = 'O' OR SPD.[DataStatus] is null) or \r\n"
 				+ "			( SPDPUANG.[DataStatus] = 'O' )\r\n"
 				+ "		) \r\n"
-				+ "   Order By [PO]  ";
-//		System.out.println(sql);
+				+ "   Order By [PO]  "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1011,8 +1007,7 @@ public class POManagementDaoImpl implements POManagementDao {
 					String newGroupBegin = beanTmpNew.getNewGroupBegin();
 					String newProductionOrderQty = beanTmpNew.getProductionOrderQty();
 					String newChangeBy = beanTmpNew.getChangeBy();
-					String newRemark = beanTmpNew.getRemark();
-					// System.out.println(oldChangeBy+" "+newChangeBy);
+					String newRemark = beanTmpNew.getRemark(); 
 					listCSL = HandlerListLog.handlerListLog(listCSL, oldRemark, newRemark, mapMSC.get(Config.sqlFieldRemark),
 							Integer.toString(tempProdId), newChangeBy, Config.sqlFieldRemark,
 							remarkAction + " ( " + newRemark + " ) ");
@@ -1208,8 +1203,7 @@ public class POManagementDaoImpl implements POManagementDao {
 		ArrayList<POManagementDetail> listOld = this.getPOManagementLotDetailByPOId(poList);
 		ArrayList<ChangeSettingLogDetail> listCSL = new ArrayList<>();
 		HashMap<String, String> mapMSC = new HashMap<>();
-		// CheckProdOrder
-//		System.out.println(listOld.size());
+		// CheckProdOrder 
 		if (listOld.size() > 0) {
 			// PROCESS REVERSE
 

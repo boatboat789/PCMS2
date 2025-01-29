@@ -2234,8 +2234,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 			bean.setDataStatus(Config.C_OPEN_STATUS);
 		}
 		beanTmp.setPlanStartDate(planStartDate);
-		beanTmp.setListPOId(listPOId);
-//		System.out.println("START 1 "+new Timestamp(System.currentTimeMillis()));
+		beanTmp.setListPOId(listPOId); 
 		ArrayList<InputApprovedDetail> listPO = this.getApprovedDetailByGroupNoNDate(beanTmp, "Normal"); 
 		if ( ! listPO.isEmpty()) {
 			for (int i = 0; i < listPO.size(); i ++ ) {
@@ -2257,8 +2256,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				String sorDueDate = bean.getSorDueDate();
 				int countSORDueDate = bean.getCountSORDueDateLast();
 				if (mapCountDue.get(sorDueDate) != null) {
-					int countApporvedDate = mapCountDue.get(sorDueDate);
-//					System.out.println(mapCountDue.get(sorDueDate)+" "+sorDueDate);
+					int countApporvedDate = mapCountDue.get(sorDueDate); 
 					if (Config.C_MAXPOPERDAY >= countSORDueDate+countApporvedDate) {
 						// OK
 					} else {
@@ -2875,8 +2873,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 					+ " LEFT JOIN #tempAPFacDyeDate AS TAF ON A.POId = TAF.POId\r\n"
 					+ " where a.ApprovedDate is null AND a.SORCFMDate IS NOT NULL\r\n"
 					+ whereLast
-					+ " ORDER BY a.POPuangId, a.PO,a.POLine\r\n";
-//			System.out.println(sql);
+					+ " ORDER BY a.POPuangId, a.PO,a.POLine\r\n"; 
 		}
 		// COUNT TOTAL SORDUE DATE FOR CHECK 50
 		else {
@@ -2924,8 +2921,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 					+ " 	group by a.POId,a.SORDueDate \r\n "
 					+ " ) as b on a.POId = b.POId and a.SorDueDate = b.SorDueDate and a.ProductionOrder = b.maxProductionOrder\r\n"
 					+ " group by SORDueDateLast\r\n";
-		}
-//		System.out.println(sql);
+		} 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -3049,8 +3045,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "			a.[SubGroup] = '"
 				+ subGroupDrop
 				+ "'   \r\n"
-				+ "  GROUP BY a.GroupNo ,a.SubGroup,a.[LotPerDay] \r\n";
-//		System.out.println(sql);
+				+ "  GROUP BY a.GroupNo ,a.SubGroup,a.[LotPerDay] \r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -3343,12 +3338,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 		ArrayList<InputTempProdDetail> listTempSearch = this.getTempProdDetail(listDummy); // GET PLANNING LOT
 		if (bl_checkTimeRunning) {
 			System.out.println(" 3 : " + new Timestamp(System.currentTimeMillis()));
-		}
-//	   listTempSearch = this.getPODetailForTMPLotPlanning();  //GET TEMP LOT
-//	   if(bl_checkTimeRunning) { System.out.println(" 4 : "+new Timestamp(System.currentTimeMillis()));}
-//	   ArrayList<InputTempProdDetail> listReDyeTmp = this.getPlanLotRedyeDetailForTMPLotPlanning(); // GET REDYE TEMP LOT
-//	   if(bl_checkTimeRunning) { System.out.println(" 5 : "+new Timestamp(System.currentTimeMillis()));}
-//	   System.out.println(listTempSearch.size());
+		} 
 		for (InputTempProdDetail x : listTempSearch) {
 			String lotType = x.getLotType();
 			String planSD = x.getPlanSystemDate();
@@ -3413,14 +3403,12 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 			indexGroupSubRunning = indexGroupSubRunning+lotPerDay;
 			groupNo = bean.getGroupNo();
 			subGroup = bean.getSubGroup();
-			removeIndex = 0;
-//			System.out.println(groupNo +" "+subGroup+" "+lotPerDay);
+			removeIndex = 0; 
 			// SET PRD ORDER TO POSITION
 			level1: for (int j = 0; j < listPOOnPlan.size(); j ++ ) {
 				beanTmpPrd = listPOOnPlan.get(j);
 				groupNoPrdList = beanTmpPrd.getGroupNo();
-				subGroupPrdList = beanTmpPrd.getSubGroup();
-//				System.out.println(beanTmpPrd.getProductionOrder()+" "+beanTmpPrd.getPlanSystemDate()+"  "+groupNoPrdList +" "+ groupNo+" "+subGroup+" "+subGroupPrdList);
+				subGroupPrdList = beanTmpPrd.getSubGroup(); 
 				if (groupNoPrdList.equals(groupNo) && subGroupPrdList.equals(subGroup)) {
 					planSystemDate = beanTmpPrd.getPlanSystemDate();
 					if ( ! tmpLastPlanSystemDate.equals(planSystemDate)) {
@@ -4303,8 +4291,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 			}
 		}
 		whereGroup += " ) \r\n";
-		String declarePlan = " ";
-//		System.out.println(" caseWork : "+caseWork);
+		String declarePlan = " " 
 		if (caseWork.equals("PlanStart")) {
 			declarePlan = ""
 					+ " declare @BeginDate date  = convert(date, '"
@@ -4392,8 +4379,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "       ( c.[DataStatus] <> 'X'  or c.[DataStatus] is null ) and   \r\n"
 				+ whereRD
 				+ " ) as a \r\n"
-				+ orderBy; 
-//		System.out.println(sql);
+				+ orderBy;  
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -4534,8 +4520,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 					+ " UNION all\r\n"
 					+ " select * from #tempSLSecond\r\n"
 					+ " order by Filter,rn"; 
-		} 
-//		System.out.println(sql);
+		}  
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -4618,8 +4603,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "	      C.PlanSystemDate IS not NULL AND \r\n"
 				+ whereRD
 				+ " ) as a \r\n"
-				+ orderBy;
-//		System.out.println(sql);
+				+ orderBy; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -4730,10 +4714,8 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 			// get data from table for recheck templot and get all lot.
 			// for case order puang too
 			// STILL TEMP LOT
-			// boat here
-//			System.out.println("START 8.1 "+new Timestamp(System.currentTimeMillis()));
-			ArrayList<PlanningReportDetail> listProd = rpModel.getProductionOrderByPOId(bean.getPoId());
-//			System.out.println("START 8.2 "+new Timestamp(System.currentTimeMillis()));
+			// boat here 
+			ArrayList<PlanningReportDetail> listProd = rpModel.getProductionOrderByPOId(bean.getPoId()); 
 			if ( ! listProd.isEmpty()) {
 				PlanningReportDetail beanTmp = listProd.get(0);
 				prodOrderCheck = beanTmp.getProductionOrder();
@@ -5060,8 +5042,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				oldSubGroup = beanLot.getSubGroup();
 				oldPlanSystemDate = beanLot.getPlanSystemDate();
 				oldDataStatus = beanLot.getDataStatus();
-//				System.out.println(prodOrder +" "+ oldGroupNo +" "+oldGroupNo + " "+oldSubGroup+" "+oldPlanSystemDate+" "+oldDataStatus);
-				if ( ! dyeSAPAfterFLDateStr.equals(Config.C_BLANK)) {
+ 				if ( ! dyeSAPAfterFLDateStr.equals(Config.C_BLANK)) {
 					dyeSAPAfterFLDate = this.sdf2.parse(dyeSAPAfterFLDateStr);
 				}
 				if ((poId > 0 || TempPOAddId > 0) && ! groupBegin.equals(Config.C_BLANK) // &&
@@ -5436,7 +5417,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 						}
 					}
 				} else if (poId > 0 && isFirstLot.equals(this.C_Y) && ! groupBegin.equals(Config.C_BLANK)) { 
-//					System.out.println( "SORPO FIRSTLOT");
+ 
 					cal = Calendar.getInstance();
 					if (statusAfterDate == null) {
 						tmpDate = dyeAfterGreigeInBeginDate;
@@ -5518,8 +5499,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 						subGroup = tmpArray[1];
 						mapCountLotPerDay.put(keyMainSupWorkDate, countLotPerDay);
 						if ( ! poIdInstead.equals(Config.C_BLANK)) {
-							String[] array = poIdInstead.split(",");
-//							System.out.println(array.length);
+							String[] array = poIdInstead.split(","); 
 							for (String element : array) {
 								int poIdAR = Integer.parseInt(element);
 								mapFirstLotPlanningDate.put(poIdAR, tmpDateStr + "|" + tmpKeyMainSup);
@@ -6488,38 +6468,20 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
-		if (bl_isUpdate) {
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" X : " + new Timestamp(System.currentTimeMillis()));
-//			}
+		if (bl_isUpdate) { 
 			tplModel.upsertTEMPPlanningLotWithTempPlanningId(planningTempPlanningIdList);
 			// ไม่ควรเข้า if นี้อีกแล้ว เพราะทำดักให้เข้า temp planninglot ไปตั้งแต่แรกสร้าง
-			// lot
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" 6 : " + new Timestamp(System.currentTimeMillis()) + " " + planningLotList.size());
-//			}
+			// lot 
 			if ( ! planningLotList.isEmpty()) {
 				tplModel.upsertTEMPPlanningLotWithTempProdId(planningLotList, Config.C_OPEN_STATUS);
-			}
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" 7 : " + new Timestamp(System.currentTimeMillis()) + " " + planningRedyeList.size());
-//			}
+			} 
 			if ( ! planningRedyeList.isEmpty()) {
 				tplModel.upsertTEMPPlanningLotWithRedye(planningRedyeList);
-			}
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" 8 : " + new Timestamp(System.currentTimeMillis()) + " " + planningPOAddedList.size());
-//			}
+			} 
 			if ( ! planningPOAddedList.isEmpty()) {
 				tplModel.upsertTEMPPlanningLotWithPOAdded(planningPOAddedList);
-			}
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" 9 : " + new Timestamp(System.currentTimeMillis()));
-//			} 
-			bgjModel.execUpsertLeadTime();
-//			if (bl_checkTimeRunning) {
-//				System.out.println(" 10 : " + new Timestamp(System.currentTimeMillis()));
-//			} 
+			} 
+			bgjModel.execUpsertLeadTime(); 
 		}
 	}
 
@@ -6752,8 +6714,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 					tplModel.upsertTempPlanningLotWithRedyeId(poList);
 				} else if (lotType.equals(this.C_POADD) || lotType.equals(this.C_POADDTMP)) {
 					tplModel.upsertTEMPPlanningLotWithPOAddId(poList);
-				} else {
-//					System.out.println(" curGroupNo : "+curGroupNo);
+				} else { 
 					// PO drag from TEMP LOT => GROUP
 					if (curGroupNo.equals(Config.C_BLANK)) {
 						tplModel.updateTempPlanningLotWithTempProdId(poList, Config.C_OPEN_STATUS);

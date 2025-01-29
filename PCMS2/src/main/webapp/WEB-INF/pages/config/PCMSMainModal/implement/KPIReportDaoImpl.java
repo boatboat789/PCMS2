@@ -870,8 +870,7 @@ public class KPIReportDaoImpl implements KPIReportDao {
 				+ "		     )   \r\n"
 				+ whereMain
 				+ " ) AS A\r\n"
-				+ " ORDER BY SaleOrder, SaleLine ,TypePrd , ProductionOrder ,CFMNoMini\r\n";  
-//		System.out.println(sql);
+				+ " ORDER BY SaleOrder, SaleLine ,TypePrd , ProductionOrder ,CFMNoMini\r\n";   
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

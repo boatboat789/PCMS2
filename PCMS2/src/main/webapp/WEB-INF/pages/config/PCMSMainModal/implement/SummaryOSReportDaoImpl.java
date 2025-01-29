@@ -314,8 +314,7 @@ public class SummaryOSReportDaoImpl implements SummaryOSReportDao {
 				+ "  ) AS ThirdSUMPOADD ON A.[GroupNo] = ThirdSUMPOADD.[GroupNo] AND B.[SubGroup] = ThirdSUMPOADD.[SubGroup]\r\n"
 				+ " where b.[LotPerDay] > 0 \r\n"
 				+ "	  \r\n"
-				+ "  ORDER BY A.GroupNo , B.SubGroup ";
-//		System.out.println(sql);	
+				+ "  ORDER BY A.GroupNo , B.SubGroup "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

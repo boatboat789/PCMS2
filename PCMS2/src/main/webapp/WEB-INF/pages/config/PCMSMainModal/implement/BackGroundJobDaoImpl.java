@@ -162,12 +162,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			mapLotPerDay.put(keyMainSup, lotPerDay);
 			tmpWorkDate = mapWorkIdxStr.get(keyMainSup + Config.C_COLON + "1");
 			poTDYNTMRList = ppModel.getTempPONPlanLotRedyeDetailForPushTMR("TDYNTMR", bean, tmpWorkDate);
-//			System.out.println(" GROUP NO: "+bean.getGroupNo()+" | "+bean.getSubGroup()+" tmpWorkDate : "+tmpWorkDate );
-			for (int j = 0; j < poTDYNTMRList.size(); j ++ ) {
+ 			for (int j = 0; j < poTDYNTMRList.size(); j ++ ) {
 				InputTempProdDetail beanTmpLot = poTDYNTMRList.get(j);
 				String planUserDateTmpStr = beanTmpLot.getPlanUserDate();
-//				System.out.println(" PRD ORDER : "+beanTmpLot.getProductionOrder()+" | counterCheck "+counterCheck+" lotPerDay : "+lotPerDay );
-				if (counterCheck < lotPerDay) {
+ 				if (counterCheck < lotPerDay) {
 					beanTmpLot.setPlanSystemDate(tmpWorkDate);
 					beanTmpLot.setPlanUserDate(tmpWorkDate);
 //					caseWork = "1      ";
@@ -183,14 +181,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					beanTmpLot.setPlanUserChangeDate(Config.C_BLANK);
 					beanTmpLot.setPlanBy(Config.C_BLANK); 
 					tmpCancelTMRList.add(beanTmpLot);
-				}
-//				System.out.println( " PRD ORDER : "+beanTmpLot.getProductionOrder()
-//				+" | "+beanTmpLot.getTempPlanningId()
-//				+" | "+beanTmpLot.getPlanSystemDate()
-//				+" | "+beanTmpLot.getGroupNo()
-//				+" | "+beanTmpLot.getSubGroup()
-//				+" | counterCheck "+counterCheck
-//				+" lotPerDay : "+lotPerDay );
+				} 
 			}
 			if (tmpWorkTMRList.size() > 0) {
 				tplModel.updateTEMPPlanningLotWithUserDateById(tmpWorkTMRList);
@@ -606,8 +597,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				+ " where ( SumProdOrderQtyBL > [RemainBLQty] ) OR\r\n"
 				+ "	      ( SumProdOrderQtyNonBL > [RemainNonBLQty])\r\n"
 				+ " order by a.ForecastId,ColorType,TempProdId\r\n"
-				+ "";
-//		System.out.println(sql);
+				+ ""; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -823,8 +813,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				String newSaleOrg = beanTmpNew.getSaleOrg();
 				String newModelCode = beanTmpNew.getModelCode();
 				boolean newIsDelete = beanTmpNew.isDelete();
-				boolean newIsUpdate = beanTmpNew.isUpdate();
-//				System.out.println(oldPO+" "+newPO);
+				boolean newIsUpdate = beanTmpNew.isUpdate(); 
 				if (newIsDelete) {
 				} else if (isCancelPOChange) {
 					recreatePOChangeList.add(beanTmpNew);
@@ -935,8 +924,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					pd.setRemark("PO Qty change need cancel PO For Create again ");
 					pd.setPoPuangId(beanForPOId.getPoPuangId());
 					pd.setChangeBy(Config.C_SOMS);
-					listForPOMM.add(pd);
-					// System.out.println(beanCancel.getId()+" "+ beanCancel.getPo());
+					listForPOMM.add(pd); 
 					// HANDLER UPDATE
 					String iconStatus = spdModel.updateSORPODetailWithSOASDetail(beanSPD);
 					if (iconStatus.equals("I") && bl_poQtyChange) {
@@ -1025,13 +1013,9 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	}
 
 	@Override
-	public void handlerForecastSumProdMoreThanRemain() {
-//		System.out.println(" 0.1 : "+new Timestamp(System.currentTimeMillis()));
-		ArrayList<InputTempProdDetail> list = this.getForecastSumProdMoreThanRemain();
-//		System.out.println(" 0.11 : "+new Timestamp(System.currentTimeMillis()));
-		ArrayList<InputTempProdDetail> beanAllList = new ArrayList<>();
-//		ArrayList<InputTempProdDetail> beanList = new ArrayList<>();
-//		ArrayList<InputTempProdDetail> beanChangeQtyList = new ArrayList<>();
+	public void handlerForecastSumProdMoreThanRemain() { 
+		ArrayList<InputTempProdDetail> list = this.getForecastSumProdMoreThanRemain(); 
+		ArrayList<InputTempProdDetail> beanAllList = new ArrayList<>(); 
 		int tmpForecastId = 0;
 		String tmpColorType = "";
 		double tmpRemainBL = 0;
@@ -1083,8 +1067,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				bean.setDataStatus(Config.C_CLOSE_STATUS);
 				beanAllList.add(bean);
 			} else if (tmpColorType.equals("Black")) {
-//				System.out.println(tmpForecastId+" | TEMPProdID "+bean.getTempProdId()+" "+tmpColorType+" "+tmpSumProdQtyBL+" > "+tmpRemainBL);
-				if (tmpSumProdQtyBL < tmpRemainBL) {
+ 				if (tmpSumProdQtyBL < tmpRemainBL) {
 					isHandlerYet = true;
 					if (tmpSumProdQtyBL+300 <= tmpRemainBL) {
 						bean.setDataStatus(Config.C_OPEN_STATUS);
@@ -1097,8 +1080,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					bean.setDbProdQty(db_prodQty);
 					bean.setDataStatus(Config.C_OPEN_STATUS);
 					beanAllList.add(bean);
-//					System.out.println(tmpForecastId+" | AFTER "+bean.getTempProdId()+" "+tmpColorType+" "+tmpSumProdQtyBL+" > "+tmpRemainBL);
-
+ 
 				} else if (isHandlerYet) { 
 					bean.setDbProdQty(0);
 					bean.setDataStatus(Config.C_CLOSE_STATUS);
@@ -1106,8 +1088,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				} else { 
 				}
 			} else {
-//				System.out.println(tmpForecastId+" | TEMPProdID "+bean.getTempProdId()+" "+tmpColorType+" "+tmpSumProdQtyBL+" "+tmpRemainBL);
-				if (tmpSumProdQtyNonBL < tmpRemainNonBL) {
+ 				if (tmpSumProdQtyNonBL < tmpRemainNonBL) {
 					isHandlerYet = true;
 					if (tmpSumProdQtyNonBL+300 <= tmpRemainNonBL) {
 						bean.setDataStatus(Config.C_OPEN_STATUS);
@@ -1116,17 +1097,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					} else {
 						tmpSumProdQtyNonBL = tmpSumProdQtyNonBL+(tmpRemainNonBL-tmpSumProdQtyNonBL);
 						db_prodQty = tmpSumProdQtyNonBL;
-					}
-//					if(tmpSumProdQtyNonBL - 300 >  tmpRemainNonBL) {
-//						bean.setDataStatus(Config.C_OPEN_STATUS);
-//						tmpSumProdQtyNonBL = tmpSumProdQtyNonBL - 300;
-//						db_prodQty = 300;
-//					}
-//					else{
-//						bean.setDataStatus(Config.C_OPEN_STATUS);
-//						tmpSumProdQtyNonBL = tmpSumProdQtyNonBL - tmpRemainNonBL;
-//						db_prodQty = tmpSumProdQtyNonBL;
-//					}
+					} 
 					bean.setDbProdQty(db_prodQty);
 //					bean.setDataStatus(Config.C_OPEN_STATUS);
 					beanAllList.add(bean);
@@ -1139,13 +1110,9 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				}
 			}
 		}
-		// FOR FASTNESS
-////		this.updateDataStatusWithTempProdIdForTempPlanningLotAndSORTempProd(beanChangeQtyList, "O");
-////		this.updateDataStatusWithTempProdIdForTempPlanningLotAndSORTempProd(beanList, "X");
-//		this.updateDataStatusWithTempProdIdForTempPlanningLotAndSORTempProd(beanAllList );
+		// FOR FASTNESS 
 		MTempPlanningLotSORTempProdModel mtplstpModel = new MTempPlanningLotSORTempProdModel(this.conType);
-		mtplstpModel.updateDataStatusWithTempProdIdForTempPlanningLotAndSORTempProd(list);
-//		System.out.println(" 3 : "+new Timestamp(System.currentTimeMillis()));
+		mtplstpModel.updateDataStatusWithTempProdIdForTempPlanningLotAndSORTempProd(list); 
 	}
 
 	@Override
@@ -1221,8 +1188,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 //		String systemStauts = "Update Success.";
 		ArrayList<ChangeSettingLogDetail> listCSL = new ArrayList<>();
 		HashMap<String, String> mapMSC = new HashMap<>();
-		// CheckProdOrder
-//		System.out.println(listOld.size());
+		// CheckProdOrder 
 		if (listOldPOLot.size() > 0) {
 			// 1. CHECK LOT ALREADY CREATE IN SAP
 			ArrayList<MasterSettingChangeDetail> listMSC = mscModel.getMasterSettingChangeDetail(changeTable);
@@ -1271,9 +1237,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				listRunningUsed.add(beanTmpCurrent);
 				cslModel.handlerChangeProdDetailForNewDetailList(listRunning, remarkAction);
 				porModel.updateProdOrderRunningWithProductionOrder(listRunningUsed);
-
-//				System.out.println( " runningNewProdOrder "+runningNewProdOrder);
-//				System.out.println(curProdOrder+" "+newProdOrderFull);
+ 
 				bgjModel.execReplacedProdOrderOldWithNew(curProdOrder, newProdOrderFull);
 
 				// LOG CHANGE
@@ -1460,10 +1424,8 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 						ArrayList<POManagementDetail> listLotIsInSap = new ArrayList<>();
 						POManagementDetail beanPOM = new POManagementDetail();
 						beanPOM.setPoId(beanCancel.getId());
-						listLotIsInSap.add(beanPOM);
-//						listLotIsInSap = pomModel.getPOManagementLotDetailByPOId(listLotIsInSap);
-						boolean bl_isLotInSap = beanCancel.isLotInSap();
-//						System.out.println("bl_isInSap "+bl_isLotInSap);
+						listLotIsInSap.add(beanPOM); 
+						boolean bl_isLotInSap = beanCancel.isLotInSap(); 
 						if ( ! bl_isLotInSap) {
 							ArrayList<POManagementDetail> poListTemp = new ArrayList<>();
 							ArrayList<InputPODetail> poCreateList = new ArrayList<>();
@@ -1527,8 +1489,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 								bl_isInSap = true;
 								break;
 							}
-						}
-//						System.out.println("bl_isInSap "+bl_isInSap);
+						} 
 						if ( ! bl_isInSap) {
 							POManagementDetail pd = new POManagementDetail();
 							ArrayList<POManagementDetail> listForPOMM = new ArrayList<>();
@@ -1538,8 +1499,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 							pd.setRemark("SOMS cancel PO");
 							pd.setPoPuangId(beanCancel.getPoPuangId());
 							pd.setChangeBy(Config.C_SOMS);
-							listForPOMM.add(pd);
-//							System.out.println(beanCancel.getId()+" "+ beanCancel.getPo());
+							listForPOMM.add(pd); 
 							pomModel.cancelPOLine(listForPOMM, Config.C_CLOSE_STATUS,true);
 						}
 					}
@@ -1549,11 +1509,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 				else {
 					caseUpdate = Config.C_CASE_POLINE;
 					// DO NOTTHING
-				}
-//				if(po.equals("330195")) {
-//					System.out.println(caseUpdateTemp+" "+beanSPD.getPo()+" "+beanSPD.getLabRef()+" "+beanSPD.getCustomerNo() );
-//					System.out.println(poTemp+" "+matNoTemp+" "+poQtyStr+" "+soldToTemp);
-//				}
+				} 
 				// DOLAST TIME
 				if (i == listChange.size()-1) {
 					if (caseUpdate.equals(Config.C_CASE_POHEAD)) {
@@ -1573,8 +1529,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 					beanSPD = new InputPODetail();
 					// AFTER DONE
 					caseUpdate = Config.C_BLANK;
-				}
-//					 System.out.println(caseUpdate);
+				} 
 				poTemp = po;
 				matNoTemp = matNo;
 				soldToTemp = soldTo;

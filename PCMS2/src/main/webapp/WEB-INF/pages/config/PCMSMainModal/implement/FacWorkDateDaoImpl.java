@@ -112,8 +112,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 		for (InputFacHolidayDetail beanTmpOld : listCompare) {
 			InputFacHolidayDetail beanTmpNew = mapDateAndDataStatus.get(beanTmpOld.getStartDate());
 			newVal = beanTmpNew.getDataStatus();
-			oldVal = beanTmpOld.getDataStatus();
-//			System.out.println("oldVal "+oldVal+" "+newVal);
+			oldVal = beanTmpOld.getDataStatus(); 
 			// Date
 			if (beanTmpNew != null) {
 				if ( ! oldVal.equals(newVal)) {
@@ -181,8 +180,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 				+ "	FROM [PPMM].[dbo].[InputDateRunning] as a\r\n"
 				+ "	left join [PPMM].[dbo].[InputFacHoliday] as b on a.[Date] = b.[StartDate]\r\n"
 				+ "	where ( a.[DateName] = 'Sunday' and a.[Date] >= @BeginDate ) or \r\n"
-				+ "       ( b.[DataStatus] = 'O' and   [StartDate] >= CONVERT(DATE,GETDATE() ))  ";
-//		System.out.println(sql);
+				+ "       ( b.[DataStatus] = 'O' and   [StartDate] >= CONVERT(DATE,GETDATE() ))  "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -219,8 +217,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 				+ "	FROM [PPMM].[dbo].[InputDateRunning] as a\r\n"
 				+ "	left join [PPMM].[dbo].[InputFacHoliday] as b on a.[Date] = b.[StartDate]\r\n"
 				+ "	where ( a.[DateName] = 'Sunday' and a.[Date] >= @BeginDate and  a.[Date] <= @LastDate ) or \r\n"
-				+ "       ( b.[DataStatus] = 'O' and ( b.[StartDate] >= @BeginDate and b.[StartDate] <= @LastDate ) ) \r\n ";
-//		System.out.println(sql);
+				+ "       ( b.[DataStatus] = 'O' and ( b.[StartDate] >= @BeginDate and b.[StartDate] <= @LastDate ) ) \r\n "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -482,8 +479,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 		ArrayList<InputFacWorkDateDetail> listDifData = new ArrayList<>();
 		InputFacWorkDateDetail bean = null;
 		int j = 0;
-		int totalDay = 0;
-//		System.out.println(sql);
+		int totalDay = 0; 
 		for (int i = 0; i < poList.size(); i ++ ) {
 			bean = poList.get(i);
 			groupNo = bean.getGroupNo();
@@ -494,8 +490,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 			for (j = 1; j <= totalDay; j ++ ) {
 				String pad = df.format(j);
 				startDate = pad + "/" + colMonthYear;
-				dataStatus = ifwdModel.getDataStatusByDate(bean, j);
-//				System.out.println(dataStatus);
+				dataStatus = ifwdModel.getDataStatusByDate(bean, j); 
 				InputFacWorkDateDetail beanFWD = new InputFacWorkDateDetail();
 				beanFWD.setDateClickedStr(startDate);
 				beanFWD.setGroupNo(groupNo);
@@ -660,8 +655,7 @@ public class FacWorkDateDaoImpl implements FacWorkDateDao {
 //				listDifData.add(beanTmpNew);
 			} else {
 				String newLotPerDay = beanTmpNew.getLotPerDay();
-//				System.out.println(" oldLotPerDayInWork "+oldLotPerDayInWork +" | newLotPerDay "+newLotPerDay);
-				if ( ! oldLotPerDayInWork.equals("") && // NO WORK ( NO DATA ) = '' WHEN SELECT
+ 				if ( ! oldLotPerDayInWork.equals("") && // NO WORK ( NO DATA ) = '' WHEN SELECT
 						! newLotPerDay.equals("") && // NO WORK ( NO DATA ) = '' WHEN SELECT
 						! oldLotPerDayInWork.equals(newLotPerDay)) {
 					listDifData.add(beanTmpNew);

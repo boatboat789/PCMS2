@@ -2423,11 +2423,9 @@ public class ReportDaoImpl implements ReportDao {
 		rBean.setCustomerMat("");
 		tmpList.add(rBean);
 
-		ArrayList<RecreateRedyeReportDetail> checkList = this.getRecreateRedyeReportDetail(tmpList);
-//		System.out.println(" checkList : "+checkList.size());
+		ArrayList<RecreateRedyeReportDetail> checkList = this.getRecreateRedyeReportDetail(tmpList); 
 		if ( ! checkList.isEmpty()) {
-			String prodBook = checkList.get(0).getProdOrderBook();
-//			System.out.println(" prodBook : "+prodBook);
+			String prodBook = checkList.get(0).getProdOrderBook(); 
 			if ( ! prodBook.equals("")) {
 
 			} else {
@@ -2440,9 +2438,7 @@ public class ReportDaoImpl implements ReportDao {
 				Date nextMonth = cal.getTime();
 				String nextMonthStr = sdf2.format(nextMonth);
 				String[] array = nextMonthStr.split(Config.C_SLASH);
-				String year = array[2];
-//				System.out.println(" nextMonthStr : "+nextMonthStr);
-//				System.out.println(" year : "+year);
+				String year = array[2]; 
 				String secondPos = year.substring(3);
 				String month = array[1];
 //				month =   String.format("%02d",month );
@@ -2753,8 +2749,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ " LEFT JOIN  #tempBaseCustomerSecondMonth AS SUB_B ON SUB_B.POType = A.POType AND SUB_B.CustomerNo = A.CustomerNo  \r\n"
 				+ " ) as a \r\n"
 				+ " ORDER BY POType,CustomerName\r\n"
-				+ " \r\n";
-//	    System.out.println(sql);
+				+ " \r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2772,9 +2767,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ "         VolumeFG is not null AND\r\n "
 				+ "         LEFT(a.ProductionOrder, 1) LIKE '[0-9]' \r\n" 
 //				+ "         ISNUMERIC(LEFT(ProductionOrder, 1)) = 1 \r\n"
-				+ "  Order By  a.POIdPuangMain ,POType,CustomerDue, a.POId,a.ProductionOrder   ";
-//		System.out.println(sql);
-//		System.out.println(sql);
+				+ "  Order By  a.POIdPuangMain ,POType,CustomerDue, a.POId,a.ProductionOrder   "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2911,8 +2904,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ this.leftJoinTotalRedyeFirst
 				+ this.leftJoinTotalForecastFFirst
 				+ "  where a.DataStatus = 'O' AND B.[DataStatus] = 'O'\r\n"
-				+ "  ORDER BY A.GroupNo , B.SubGroup ";
-//		System.out.println(sql);
+				+ "  ORDER BY A.GroupNo , B.SubGroup "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -3211,8 +3203,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ "			) AS SUB_A\r\n"
 				+ "		) AS TotalStart \r\n"
 				+ " from #tempMainData as a\r\n"
-				+ " Order By  a.POIdPuangMain,a.POPuangMain,a.POLinePuangMain,POType,CustomerDue, a.PO , a.POLine ,a.ProductionOrder  ";
-// System.out.println(sql);
+				+ " Order By  a.POIdPuangMain,a.POPuangMain,a.POLinePuangMain,POType,CustomerDue, a.PO , a.POLine ,a.ProductionOrder  "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -3334,8 +3325,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ "			) AS A\r\n"
 				+ "		) AS TotalPO \r\n"
 				+ " from #tempFromPOData as a\r\n"
-				+ "  Order By a.CustomerDue , a.PO , a.POLine ,A.FirstLot,a.ProductionOrder ";
-//		System.out.println(sql);
+				+ "  Order By a.CustomerDue , a.PO , a.POLine ,A.FirstLot,a.ProductionOrder "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -4176,8 +4166,7 @@ public class ReportDaoImpl implements ReportDao {
 			String prodOrder = bean.getProductionOrder(); 
 			String POIdPuangMain = bean.getPoIdPuangMain(); 
 			String orderQty = bean.getOrderQty();
-			String volume = bean.getVolumeFG();
-//			System.out.println(poId+" "+poType+" "+prodOrder);
+			String volume = bean.getVolumeFG(); 
 			// RESET VALUE
 			if (i != poList.size()-1) {
 				beanTmp = poList.get(i+1);
@@ -4210,13 +4199,8 @@ public class ReportDaoImpl implements ReportDao {
 				bean.setVolumeFG(volume);
 				list.add(bean);
 			} else if (poType.equals("POMain Puang") || poType.equals("POSub Puang")) {
-//				System.out.println(POIdPuangMain+" "+prodOrder +"  "+ prodOrderPuang +" "+orderQty+" "+volume);
-				double db_orderQty = Double.parseDouble(orderQty.replaceAll(",", ""));
-				double db_volume = Double.parseDouble(volume.replaceAll(",", "")); 
-//				System.out.println(POIdPuangMain);
-//				if(POIdPuangMain.equals("289")) {
-//					System.out.println(prodOrder+" volumePO "+volume+ "  |   "+" db_orderQty "+db_orderQty+ "  |   "+" "+volume );
-//				}
+ 				double db_orderQty = Double.parseDouble(orderQty.replaceAll(",", ""));
+				double db_volume = Double.parseDouble(volume.replaceAll(",", ""));  
 				if (poType.equals("POMain Puang")) {
 					listTempPOPuang.add(bean);
 					mapProdWithVolume.put(prodOrder, db_volume);

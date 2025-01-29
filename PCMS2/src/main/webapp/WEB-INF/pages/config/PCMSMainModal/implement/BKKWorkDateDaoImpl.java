@@ -136,8 +136,7 @@ public class BKKWorkDateDaoImpl implements BKKWorkDateDao {
 				+ "	FROM [PPMM].[dbo].[InputDateRunning] as a\r\n"
 				+ "	left join [PPMM].[dbo].[InputBKKHoliday]  as b on a.[Date] = b.[StartDate] AND b.[DataStatus] = 'O'\r\n"
 				+ "	where ( ( a.[DateName] = 'Saturday' or  a.[DateName] = 'Sunday') and a.[Date] >= @BeginDate ) or \r\n"
-				+ "       ( [StartDate] >= CONVERT(DATE,GETDATE() ))  ";
-//		System.out.println(sql);
+				+ "       ( [StartDate] >= CONVERT(DATE,GETDATE() ))  "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -173,8 +172,7 @@ public class BKKWorkDateDaoImpl implements BKKWorkDateDao {
 				+ "	FROM [PPMM].[dbo].[InputDateRunning] as a\r\n"
 				+ "	left join [PPMM].[dbo].[InputBKKHoliday]  as b on a.[Date] = b.[StartDate] AND b.[DataStatus] = 'O'\r\n"
 				+ "	where ( ( a.[DateName] = 'Saturday' or  a.[DateName] = 'Sunday') and a.[Date] >= @BeginDate and  a.[Date] <= @LastDate ) or \r\n"
-				+ "       ( ( b.[StartDate] >= @BeginDate and b.[StartDate] <= @LastDate ) ) \r\n ";
-//		System.out.println(sql);
+				+ "       ( ( b.[StartDate] >= @BeginDate and b.[StartDate] <= @LastDate ) ) \r\n "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

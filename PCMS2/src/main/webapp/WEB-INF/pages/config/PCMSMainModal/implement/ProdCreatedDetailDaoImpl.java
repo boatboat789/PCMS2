@@ -1263,11 +1263,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 			// ------------- minus ------------
 			running = running+1;
 			counterBatch += 1;
-		}
-//		for(int i = 0 ;i<listTemp.size();i++) {
-//			System.out.println(listTemp.get(i).getPo()+ " "+listTemp.get(i).getProductionOrder()
-//					+" "+listTemp.get(i).getDbProductionOrderQty());
-//		}
+		} 
 		iconStatus = stpModel.insertSORTEMPProdWithForecastTempLot(listTemp, this.C_PENDING);
 		iconStatus = tfrModel.upsertForecastRunningDetail(lv_yyyy, running);
 		bgjModel.execUpsertForecastGroupOptions();
@@ -1624,8 +1620,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 						+ "		where [isMinGroup] = 1\r\n"
 						+ whereSpeGroupMinPrior
 						+ orderByGroupFiveSix;
-			}
-//			System.out.println(sql);
+			} 
 			List<Map<String, Object>> datas = this.database.queryList(sql);
 			for (Map<String, Object> map : datas) {
 				list.add(this.bcModel._genGroupDetail(map));
@@ -1874,8 +1869,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 				+ " where ( [CountProd] = 0 or [CountProd] is null ) and \r\n"
 				+ "		   a.POPuangId is null and  \r\n"
 				+ "        a.PO not like '%saleman%'\r\n"
-				+ " order by [CountProd] ,[CustomerDue] ";
-//		System.out.println(sql);
+				+ " order by [CountProd] ,[CustomerDue] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1958,8 +1952,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 				+ " where a.[Id] = "
 				+ poId
 				+ " \r\n "
-				+ " order by [CountProd] ,[CustomerDue] ";
-//		System.out.println(sql);
+				+ " order by [CountProd] ,[CustomerDue] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2171,8 +2164,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 					+ "			where OrderQtyCalLast < @POBaseQty) as POLowerQty , \r\n"
 					+ "	   ( select count(No) \r\n"
 					+ "			from #tempPOData \r\n"
-					+ "			where OrderQtyCalLast >= @POBaseQty) as POUpperQty  \r\n";
-//			System.out.println(sql);
+					+ "			where OrderQtyCalLast >= @POBaseQty) as POUpperQty  \r\n"; 
 		}
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -2215,8 +2207,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 				+ "		   a.POPuangId is null and  \r\n"
 				+ "        a.PO not like '%saleman%'\r\n"
 				+ where
-				+ " order by [CountProd] ,[CustomerDue] ";
-//		System.out.println(sql);
+				+ " order by [CountProd] ,[CustomerDue] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2303,10 +2294,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 			db_poUpperQty = 0;
 		}
 		ArrayList<InputArticleDetail> listCA = adModel.getArticleDetailByArticle(article);
-//				System.out.println(" db_upperPOMaxQty : "+ db_upperPOMaxQty+ " | db_upperPOMinQty : "+db_upperPOMinQty);
-//				System.out.println(" db_lowerPOMaxQty : "+ db_lowerPOMaxQty+ " | db_lowerPOMinQty : "+db_lowerPOMinQty );
-//				System.out.println("	 db_poSumLowerQty : "+ db_poSumLowerQty+ " | db_poLowerQty : "+db_poLowerQty+ " | db_poUpperQty : "+db_poUpperQty );
-		// ปัดให้เป็นจำนวนเต็มหาร 50 ลงตัว
+  		// ปัดให้เป็นจำนวนเต็มหาร 50 ลงตัว
 		// ไม่มีทางเข้าเคสนี้เพราะดักตั้งแต่ด้านนอก
 		boolean isGreigeQtyWork = true;
 		if (listCA.size() == 0) {
@@ -2336,14 +2324,9 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 			} else {
 				db_poSumLowerQtyAfterMod = this.roundUpDoubleByMod(db_poSumLowerQty, this.INT_POQTYMOD);
 			}
-		}
-//		db_poSumLowerQtyAfterMod = this.roundUpDoubleByMod(db_poSumLowerQty,this.INT_POQTYMOD);
-		db_poAllQty = db_poLowerQty+db_poUpperQty;
-//		System.out.println(db_poLowerQty+" "+db_poAllQty);
-//		System.out.println(db_poLowerQty+" > 1");
-//		System.out.println(db_poLowerQty+" == 1 || "+db_poUpperQty+" >= 1 ");
-		// ไม่ใช่ Orderpuang
-
+		} 
+		db_poAllQty = db_poLowerQty+db_poUpperQty; 
+		// ไม่ใช่ Orderpuang 
 		if ( ! isGreigeQtyWork) {
 			iconStatus = Config.C_ERR_ICON_STATUS;
 			systemStatus =
@@ -2351,16 +2334,12 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 
 		} else if (db_poLowerQty == 0 || db_poAllQty == 1) {
 			iconStatus = Config.C_ERR_ICON_STATUS;
-			systemStatus = "This PO is not OrderPuang.";
-//			System.out.println("hh1");
+			systemStatus = "This PO is not OrderPuang."; 
 		} else {
 			int casePOData = 0;
 			if ((db_poLowerQty > 1) || (db_poLowerQty == 1 || db_poUpperQty >= 1)) {
 				casePOData = this.findOrderPuangCase(db_poSumLowerQtyAfterMod, db_lowerPOMinQty, db_lowerPOMaxQty,
-						db_upperPOMinQty, db_upperPOMaxQty, db_poUpperQty, bl_isSpecial);
-//				System.out.println(" casePOData : "+casePOData);
-//				System.out.println(" db_poSumLowerQty : "+db_poSumLowerQty);
-//				System.out.println(" listPODataUpper.get(0).getDb_orderQtyCalLast() : "+listPODataUpper.get(0).getDb_orderQtyCalLast());
+						db_upperPOMinQty, db_upperPOMaxQty, db_poUpperQty, bl_isSpecial); 
 				if (casePOData < 40) {
 					// รวมกับตัวในกลุ่ม Group UPPER ที่ค่าน้อยสุด
 					listPODataShow = listPODataLower;
@@ -2401,8 +2380,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 				beanRes.setListPOResult(listPODataResult);
 			} else {
 				iconStatus = Config.C_ERR_ICON_STATUS;
-				systemStatus = "This PO is not OrderPuang.";
-//				System.out.println("hh2");
+				systemStatus = "This PO is not OrderPuang."; 
 			}
 		}
 		beanRes.setIconStatus(iconStatus);
@@ -2526,8 +2504,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 				+ "	    where errorCounter = 0 and isRecheck = 1 ) as totalOrderQtyMod\r\n  "
 				+ ", ( select count(a.[No]) \r\n"
 				+ "	   from #tempTotal as a\r\n"
-				+ "	   where a.isGroupRecheck = 1 ) as totalGroupRecheck \r\n ";
-//		System.out.println(sql);
+				+ "	   where a.isGroupRecheck = 1 ) as totalGroupRecheck \r\n "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2607,8 +2584,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 			if (dbProdQty > 0) {
 				listTempLast.add(beanTemp);
 			}
-//			System.out.println(beanTemp.getPo()+" "+beanTemp.getPoLine()+" "+ beanTemp.getProductionOrder()+" "+ beanTemp.getFirstLot()+" "+ beanTemp.getDbProdQty()+" "+ beanTemp.getGroupBegin());
-		} // FOR TEST
+ 		} // FOR TEST
 		if (isUpdate) {
 			int[] countExe = stpModel.insertSORTempProd(listTempLast, this.C_PENDING); // boathere
 			if (countExe != null) {
@@ -2787,10 +2763,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 					groupType = beanFG.getGroupType();
 					groupNo = beanFG.getGroupNo();
 					subGroup = beanFG.getSubGroup();
-					groupBegin = groupNo + ":" + subGroup;
-//					System.out.println(groupBegin +" "+db_lotMax+" "+db_lotMin);
-//					System.out.println( " db_lotQty "+db_lotQty  );
-//					System.out.println( " db_curLotMax "+db_curLotMax  );
+					groupBegin = groupNo + ":" + subGroup; 
 					if (bl_break) { }
 					// last lot need go to single bcoz it born from single machine
 					else if (listLotMax.size() == 1 && groupType.equals("Double")) { } 
@@ -2861,18 +2834,12 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 						}
 					}
 					// MIN AND MAX
-					else {
-//						System.out.println( " hi "  );
-//						System.out.println( " db_lotQtyTemp "+db_lotQtyTemp  );
-//						System.out.println( " db_curLotMax "+db_curLotMax  );
+					else { 
 						if (db_lotQty < db_curLotMax) {
 							db_lotQtyTemp = db_lotQty;
 							int_counterTemp = 0;
 							while (db_lotQtyTemp < db_curLotMax) {
-								if (int_counterTemp+1 < listLotMax.size()) {
-//									System.out.println( " BEFOR db_lotQtyTemp "+db_lotQtyTemp  );
-//									System.out.println( " listLotMax.get(int_counterTemp+1) "+listLotMax.get(int_counterTemp+1)  );
-//									System.out.println( " db_curLotMax "+db_curLotMax  );
+								if (int_counterTemp+1 < listLotMax.size()) { 
 									if (db_lotQtyTemp+listLotMax.get(int_counterTemp+1) <= db_curLotMax) {
 										int_counterTemp = int_counterTemp+1;
 										db_lotQtyTemp = db_lotQtyTemp+listLotMax.get(int_counterTemp);
@@ -2883,8 +2850,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 								} else {
 									break;
 								}
-							}
-//							System.out.println( " LAST db_lotQty "+db_lotQty  );
+							} 
 							db_lotQty = db_lotQtyTemp;
 							// AFTER PLUS USE THIS
 							if (db_lotMin <= db_lotQty && db_lotQty <= db_curLotMax) {
@@ -3038,9 +3004,7 @@ public class ProdCreatedDetailDaoImpl implements ProdCreatedDetailDao {
 		double xPercentMod = x % mod;
 		double halveMod = mod / 2;
 		// 0 < x < 1
-		double checkXLess = x % 50;
-//		System.out.println(" xPercentMod : "+xPercentMod+" xPercentMod : "+halveX);
-
+		double checkXLess = x % 50; 
 		// 0 < 0.7 < 1 | 100.7 -0.7 = 100
 		if (0 < checkXLess && checkXLess < 1) {
 			return x-checkXLess;
