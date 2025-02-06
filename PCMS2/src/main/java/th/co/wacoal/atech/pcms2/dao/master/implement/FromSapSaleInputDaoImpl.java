@@ -96,7 +96,7 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				  + "    [CustomerPO] = ?,\r\n"  
 				  + "    [DueDate] = ?,\r\n"  
 				  + "    [Color] = ?,\r\n"   
-				  + "    [DataStatus] = ?,\r\n"
+//				  + "    [DataStatus] = ?,\r\n"
 				  + "    [ChangeDate] = ? \r\n"  
 					+ "      ,[SyncDate] =  ?\r\n" 
 				  + "WHERE \r\n"
@@ -111,13 +111,13 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				  + "    INSERT INTO [dbo].[FromSapSaleInput] (\r\n"
 				  + "        [ProductionOrder] ,[BillDate] ,[BillQtyPerSale] ,[SaleOrder] ,[SaleLine]\r\n"
 				  + "      ,[BillQtyPerStock] ,[Remark] ,[CustomerNo] ,[CustomerName1] ,[CustomerPO]\r\n"
-				  + "      ,[DueDate] ,[Color] ,[No] ,[DataStatus] ,[ChangeDate]\r\n"
+				  + "      ,[DueDate] ,[Color] ,[No]  ,[ChangeDate]\r\n"
 				  + "      ,[CreateDate]\r\n"
 				  + "      ,[SyncDate] \r\n"
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ?, ?, "
-				  + "		?, ?, ?, ?, ?, "
+				  + "		?, ?, ?, ?, "
 				  + "		?  " 
 					+ "		, ? "
 				  + "    ); "
@@ -138,8 +138,7 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				prepared.setString(index++, bean.getCustomerName1()    );
 				prepared.setString(index++, bean.getCustomErpO()    );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
-				prepared.setString(index++, bean.getColor()    );
-				prepared.setString(index++, bean.getDataStatus()   ); 
+				prepared.setString(index++, bean.getColor()    ); 
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 				
@@ -158,8 +157,7 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				prepared.setString(index++, bean.getCustomErpO()    );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
 				prepared.setString(index++, bean.getColor()    );
-				prepared.setString(index++, bean.getNo()    ); 
-				prepared.setString(index++, bean.getDataStatus()   ); 
+				prepared.setString(index++, bean.getNo()    );  
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared.setTimestamp(index++, new Timestamp(time));   
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
