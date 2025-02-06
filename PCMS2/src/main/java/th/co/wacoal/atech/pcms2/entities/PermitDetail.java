@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PermitDetail {
 	private int id;
 	private String permitId;

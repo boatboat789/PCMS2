@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.BackGroundJobDao;
 import th.co.wacoal.atech.pcms2.dao.implement.BackGroundJobDaoImpl;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -25,7 +25,7 @@ public class BackGroundJobModel extends HttpServlet {
     @Autowired
 	public BackGroundJobModel() {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new BackGroundJobDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

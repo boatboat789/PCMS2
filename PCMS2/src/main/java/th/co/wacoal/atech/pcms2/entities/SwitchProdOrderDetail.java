@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class SwitchProdOrderDetail {
 	private String saleOrder;
 	private String saleLine;

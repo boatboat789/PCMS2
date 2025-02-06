@@ -92,27 +92,26 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				+ " "
 				+ "UPDATE [dbo].[FromSapCFM]\r\n"
 				+ "SET \r\n"
-				+ "    [CFMNumber] = ?,\r\n"
-				+ "    [CFMSendDate] = ?,\r\n"
-				+ "    [CFMAnswerDate] = ?,\r\n"
-				+ "    [CFMStatus] = ? ,\r\n"
-				+ "    [CFMRemark] = ? ,\r\n"
-				+ "    [SaleOrder] = ? ,\r\n"
-				+ "    [SaleLine] = ? ,\r\n"
-				+ "    [SOChange] = ? ,\r\n"
-				+ "    [NextLot] = ? ,\r\n"
-				+ "    [SOChange] = ? ,\r\n"
-				+ "    [SOChangeQty] = ? ,\r\n"
-				+ "    [SOChangeUnit] = ? ,\r\n"
-				+ "    [RollNo] = ? ,\r\n"
-				+ "    [RollNoRemark] = ? ,\r\n"
-				+ "    [DataStatus] = ? ,\r\n"
-				+ "    [ChangeDate]= ? \r\n"
-				+ "      ,[SyncDate] =  ?\r\n"
-
-				+ "WHERE \r\n"
-				+ "    [ProductionOrder] = ? AND\r\n"
-				+ "    [CFMNo] = ? ;\r\n"
+					+ "    [CFMNumber] = ?,\r\n"
+					+ "    [CFMSendDate] = ?,\r\n"
+					+ "    [CFMAnswerDate] = ?,\r\n"
+					+ "    [CFMStatus] = ? ,\r\n"
+					+ "    [CFMRemark] = ? ,\r\n"
+					+ "    [SaleOrder] = ? ,\r\n"
+					+ "    [SaleLine] = ? ,\r\n" 
+					+ "    [NextLot] = ? ,\r\n"
+					+ "    [SOChange] = ? ,\r\n"
+					+ "    [SOChangeQty] = ? ,\r\n"
+					+ "    [SOChangeUnit] = ? ,\r\n"
+					+ "    [RollNo] = ? ,\r\n"
+					+ "    [RollNoRemark] = ? ,\r\n"
+	//				+ "    [DataStatus] = ? ,\r\n"
+					+ "    [ChangeDate]= ? ,\r\n"
+					+ "    [SyncDate] =  ?\r\n"
+	
+					+ "WHERE \r\n"
+					+ "    [ProductionOrder] = ? AND\r\n"
+					+ "    [CFMNo] = ? ;\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
@@ -123,12 +122,12 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				+ "        [ProductionOrder] ,[CFMNo] ,[CFMNumber] ,[CFMSendDate] ,[CFMAnswerDate]\r\n"
 				+ "      ,[CFMStatus] ,[CFMRemark] ,[SaleOrder] ,[SaleLine] ,[NextLot]\r\n"
 				+ "      ,[SOChange] ,[SOChangeQty] ,[SOChangeUnit] ,[RollNo] ,[RollNoRemark]"
-				+ "      ,[DataStatus] ,[ChangeDate] ,[CreateDate],[SyncDate]\r\n"
+				+ "      ,[ChangeDate] ,[CreateDate],[SyncDate]\r\n"
 				+ "    ) VALUES (\r\n"
 				+ "		?, ?, ?, ?, ?, "
 				+ "		?, ?, ?, ?, ?, "
 				+ "		?, ?, ?, ?, ?, "
-				+ "		?, ?, ?, ? "// 10
+				+ "		?, ?, ? "// 10
 				+ "    ); "
 				+ ";";
 		try {
@@ -146,8 +145,8 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getNextLot());
-				prepared.setString(index ++ , bean.getSoChange());
-				prepared.setString(index ++ , bean.getSoChangeQty());
+				prepared.setString(index ++ , bean.getSoChange()); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty() , index++); 
 				prepared.setString(index ++ , bean.getSoChangeUnit());
 				prepared.setString(index ++ , bean.getRollNo());
 				prepared.setString(index ++ , bean.getRollNoRemark());
@@ -161,23 +160,22 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getCfmNumber());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate(), index ++ );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate(), index ++ );
+				
 				prepared.setString(index ++ , bean.getCfmStatus());
 				prepared.setString(index ++ , bean.getCfmRemark());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getNextLot());
-				prepared.setString(index ++ , bean.getSoChange());
-				prepared.setString(index ++ , bean.getSoChangeQty());
+				
+				prepared.setString(index ++ , bean.getSoChange()); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty() , index++); 
 				prepared.setString(index ++ , bean.getSoChangeUnit());
 				prepared.setString(index ++ , bean.getRollNo());
 				prepared.setString(index ++ , bean.getRollNoRemark());
+				
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
-//				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
-//				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ ); 
 				prepared.addBatch();
 			}
 			prepared.executeBatch();

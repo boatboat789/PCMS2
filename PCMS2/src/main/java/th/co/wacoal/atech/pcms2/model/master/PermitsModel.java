@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import th.co.wacoal.atech.pcms2.dao.master.PermitsDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.PermitsDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -40,7 +40,7 @@ public class PermitsModel extends HttpServlet {
     @Autowired
 	public PermitsModel() {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new PermitsDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

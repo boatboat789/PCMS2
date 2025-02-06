@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class TempUserStatusAutoDetail {
 	private String productionOrder;
 	private String saleOrder;

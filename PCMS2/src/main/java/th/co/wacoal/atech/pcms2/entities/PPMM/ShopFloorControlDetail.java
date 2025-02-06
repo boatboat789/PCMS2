@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities.PPMM;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ShopFloorControlDetail {
 	private String productionOrder;
 	private String lotNo;

@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
-   
+
+import javax.persistence.Entity;
+
+@Entity
 public class UserDetail {
 	private int id;
 	private String userId;

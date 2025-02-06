@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import th.co.wacoal.atech.pcms2.dao.master.InspectSystem.InspectOrdersDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.InspectSystem.InspectOrdersDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PPMM.InspectOrdersDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -27,7 +27,7 @@ public class InspectOrdersModel extends HttpServlet {
     @Autowired
 	public InspectOrdersModel() {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new InspectOrdersDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

@@ -2,9 +2,12 @@ package th.co.wacoal.atech.pcms2.entities;
 
 import java.util.ArrayList;
 
+import javax.persistence.Entity;
+
 import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 
+@Entity
 public class PCMSAllDetail {
 	private String productionOrder;
 	  private String lotNo;

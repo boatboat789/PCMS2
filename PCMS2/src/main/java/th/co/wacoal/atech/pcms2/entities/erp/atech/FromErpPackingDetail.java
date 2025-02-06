@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities.erp.atech;
 
+import javax.persistence.Entity;
+
+@Entity
 public class FromErpPackingDetail {
 	private String productionOrder ; 
 	private String postingDate ; 

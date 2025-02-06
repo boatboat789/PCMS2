@@ -11,7 +11,7 @@
 //import dao.master.FromSapFinishingDao;
 //import dao.master.implement.FromSapFinishingDaoImpl;
 //import entities.FinishingDetail;
-//import info.SqlInfo;
+//import info.SqlPCMSInfo;
 //import th.in.totemplate.core.sql.Database;
 //
 //@Component
@@ -27,7 +27,7 @@
 //    @Autowired
 //	public FromSapFinishingModel() {
 //		try {
-//			this.database = new Database(SqlInfo.getInstance());
+//			this.database = new Database(SqlPCMSInfo.getInstance());
 //			this.dao = new FromSapFinishingDaoImpl(this.database);
 //			this.uiColumns = arrayColumn();
 //		} catch (SQLException | ClassNotFoundException var2) {

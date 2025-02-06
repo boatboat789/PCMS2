@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import th.co.wacoal.atech.pcms2.dao.master.SearchSettingDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.SearchSettingDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -27,7 +27,7 @@ public class SearchSettingModel extends HttpServlet {
 	    @Autowired
 	   public SearchSettingModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance());
+	         this.database = new Database(SqlPCMSInfo.getInstance());
 	         this.dao = new SearchSettingDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {

@@ -5,12 +5,15 @@
  */
 package th.co.wacoal.atech.pcms2.info;
 
+import org.springframework.stereotype.Repository;
+
 import th.in.totemplate.core.net.FtpInfo;
 
 /**
  *
  * @author nuttapong.sri
  */
+@Repository
 public class FtpSapInfo implements FtpInfo {
     ////////////////////////////////////////////////////////////////////////////
     private static final String _server   = "10.11.9.32";

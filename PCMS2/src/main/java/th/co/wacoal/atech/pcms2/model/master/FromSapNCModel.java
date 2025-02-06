@@ -8,7 +8,7 @@
 //import dao.master.FromSapNCDao;
 //import dao.master.implement.FromSapNCDaoImpl;
 //import entities.NCDetail;
-//import info.SqlInfo;
+//import info.SqlPCMSInfo;
 //import th.in.totemplate.core.sql.Database;
 //
 //public class FromSapNCModel extends HttpServlet {
@@ -22,7 +22,7 @@
 //
 //	public FromSapNCModel() {
 //		try {
-//			this.database = new Database(SqlInfo.getInstance());
+//			this.database = new Database(SqlPCMSInfo.getInstance());
 //			this.dao = new FromSapNCDaoImpl(this.database);
 //			this.uiColumns = arrayColumn();
 //		} catch (SQLException | ClassNotFoundException var2) {

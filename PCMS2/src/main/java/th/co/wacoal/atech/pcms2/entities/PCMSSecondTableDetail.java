@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PCMSSecondTableDetail {
 	private String division;
 	private String saleOrder;

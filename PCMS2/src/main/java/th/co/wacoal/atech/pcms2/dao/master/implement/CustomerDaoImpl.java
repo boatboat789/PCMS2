@@ -58,12 +58,14 @@ public class CustomerDaoImpl implements CustomerDao {
 				+ " "
 				+ "UPDATE [dbo].[CustomerDetail]\r\n"
 				+ "SET \r\n"
+				+ "    [CustomerNoWOZero] =  ? ,"
 				+ "    [CustomerName] = ?,\r\n"
 				+ "    [CustomerShortName] = ?,\r\n"
 				+ "    [CustomerType] = ?,\r\n"
 				+ "    [DistChannel] = ?,\r\n"
-				+ "    [ChangeDate]= ? \r\n"
-				+ "    ,[SyncDate]= ? \r\n"
+				+ "    [IsSabina] = ? , "
+				+ "    [ChangeDate]= ? ,\r\n"
+				+ "    [SyncDate]= ? \r\n"
 				+ "WHERE \r\n"
 				+ "    [CustomerNo] = ?;\r\n"
 				+ "-- Check if rows were updated\r\n"
@@ -73,10 +75,14 @@ public class CustomerDaoImpl implements CustomerDao {
 				+ "ELSE \r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[CustomerDetail] (\r\n"
-				+ "        [CustomerNo] ,[CustomerName] ,[CustomerShortName] ,[CustomerType],[DistChannel] \r\n"
+				+ "        [CustomerNo]"
+				+ "       ,[CustomerNoWOZero] ,[CustomerName] ,[CustomerShortName] ,[CustomerType],[DistChannel]"
+				+ "       ,[IsSabina]  \r\n"
 				+ "       ,[ChangeDate] ,[CreateDate],[SyncDate]\r\n"
 				+ "    ) VALUES (\r\n"
-				+ "		?, ?, ?, ?, ?, "
+				+ "		?,"
+				+ "     ?, ?, ?, ?, ?, "
+				+ "     ?, "
 				+ "		?, ?, ? "// 10
 				+ "    ); "
 				+ ";";
@@ -85,20 +91,24 @@ public class CustomerDaoImpl implements CustomerDao {
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (CustomerDetail bean : paList) {
-				index = 1;
+				index = 1; ;
+				prepared.setString(index ++ , bean.getCustomerNoWOZero());
 				prepared.setString(index ++ , bean.getCustomerName());
 				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getCustomerType());
 				prepared.setString(index ++ , bean.getDistChannel());
+				prepared.setBoolean(index ++ , bean.isSabina());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.setString(index ++ , bean.getCustomerNo());
-
+				
 				prepared.setString(index ++ , bean.getCustomerNo());
+				prepared.setString(index ++ , bean.getCustomerNoWOZero());
 				prepared.setString(index ++ , bean.getCustomerName());
 				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getCustomerType());
 				prepared.setString(index ++ , bean.getDistChannel());
+				prepared.setBoolean(index ++ , bean.isSabina());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
@@ -116,6 +126,8 @@ public class CustomerDaoImpl implements CustomerDao {
 			// this.database.close();
 		}
 		return iconStatus;
-	}
-
+	} 
+	   public static String addLeadingZeros(String str, int desiredLength) {
+	        return String.format("%0" + desiredLength + "s", str);
+	    }
 }

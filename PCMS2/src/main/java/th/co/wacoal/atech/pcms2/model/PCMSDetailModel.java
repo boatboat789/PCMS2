@@ -14,7 +14,7 @@ import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -30,7 +30,7 @@ public class PCMSDetailModel extends HttpServlet {
     @Autowired
 	public PCMSDetailModel() {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new PCMSDetailDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

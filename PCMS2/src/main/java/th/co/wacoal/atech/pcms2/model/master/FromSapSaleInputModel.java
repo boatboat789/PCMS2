@@ -12,7 +12,7 @@ import th.co.wacoal.atech.pcms2.dao.master.FromSapSaleInputDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapSaleInputDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.SaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -28,7 +28,7 @@ public class FromSapSaleInputModel extends HttpServlet {
     @Autowired
 	public FromSapSaleInputModel () {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new FromSapSaleInputDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

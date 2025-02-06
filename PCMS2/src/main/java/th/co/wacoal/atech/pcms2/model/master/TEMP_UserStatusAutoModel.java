@@ -12,7 +12,7 @@ import th.co.wacoal.atech.pcms2.dao.master.TEMP_UserStatusAutoDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.TEMP_UserStatusAutoDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -28,7 +28,7 @@ public class TEMP_UserStatusAutoModel extends HttpServlet {
 	    @Autowired
 	   public TEMP_UserStatusAutoModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance());
+	         this.database = new Database(SqlPCMSInfo.getInstance());
 	         this.dao = new TEMP_UserStatusAutoDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {

@@ -1,5 +1,7 @@
 package th.co.wacoal.atech.pcms2.info;
 
+import org.springframework.stereotype.Repository;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,6 +15,7 @@ import th.in.totemplate.core.authen.AuthenInfo;
  *
  * @author nuttapong.sri
  */
+@Repository
 public class AdInfo implements AuthenInfo {
 	 private static final String _domain   = "atech.co.th";
     @SuppressWarnings("unused")

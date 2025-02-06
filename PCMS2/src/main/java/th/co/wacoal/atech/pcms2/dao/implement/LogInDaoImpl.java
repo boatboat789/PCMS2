@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
 import th.co.wacoal.atech.pcms2.dao.LogInDao;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 @Repository // Spring annotation to mark this as a DAO component
@@ -55,7 +55,7 @@ public class LogInDaoImpl implements LogInDao {
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ?  ";
 
-             Database          database   = new Database(SqlInfo.getInstance());
+             Database          database   = new Database(SqlPCMSInfo.getInstance());
              Connection        connection = database.getConnection();
              PreparedStatement prepared   = connection.prepareStatement(sql);
              try {
@@ -145,7 +145,7 @@ public class LogInDaoImpl implements LogInDao {
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ? and Password = ? ";
 
-             Database          database   = new Database(SqlInfo.getInstance());
+             Database          database   = new Database(SqlPCMSInfo.getInstance());
              Connection        connection = database.getConnection();
              PreparedStatement prepared   = connection.prepareStatement(sql);
              try {

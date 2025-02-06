@@ -12,7 +12,7 @@ import th.co.wacoal.atech.pcms2.dao.master.PlanCFMDateDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.PlanCFMDateDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -28,7 +28,7 @@ public class PlanCFMDateModel extends HttpServlet {
 	    @Autowired
 	   public PlanCFMDateModel() {
 	      try {
-	         this.database = new Database(SqlInfo.getInstance());
+	         this.database = new Database(SqlPCMSInfo.getInstance());
 	         this.dao = new PlanCFMDateDaoImpl(this.database );
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {

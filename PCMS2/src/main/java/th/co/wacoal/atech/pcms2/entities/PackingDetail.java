@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PackingDetail { // ค่าผิดอยู่ช็คให่ม
 	private String productionOrder;
 	private String postingDate;

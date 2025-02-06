@@ -2,6 +2,9 @@ package th.co.wacoal.atech.pcms2.entities;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PCMSTableDetail {
 	private String saleOrder;
 	private String saleLine;

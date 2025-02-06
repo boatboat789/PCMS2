@@ -1,11 +1,17 @@
-package th.co.wacoal.atech.pcms2.entities.erp.atech; 
+package th.co.wacoal.atech.pcms2.entities.erp.atech;
+
+import javax.persistence.Entity;
+
+@Entity
 public class CustomerDetail {  
 	private String customerNo ; 
+	private String customerNoWOZero ; 
 	private String customerName ; 
 	private String customerShortName ; 
 	private String customerType ; 
 	private String distChannel ;
 	private String syncDate ;
+	private boolean isSabina;
 	public CustomerDetail(String customerNo, String customerName, String customerShortName, String customerType,
 			String distChannel, String syncDate) {
 		super();
@@ -15,6 +21,22 @@ public class CustomerDetail {
 		this.customerType = customerType;
 		this.distChannel = distChannel;
 		this.syncDate = syncDate;
+	}
+	public boolean isSabina()
+	{
+		return isSabina;
+	}
+	public void setSabina(boolean isSabina)
+	{
+		this.isSabina = isSabina;
+	}
+	public String getCustomerNoWOZero()
+	{
+		return customerNoWOZero;
+	}
+	public void setCustomerNoWOZero(String customerNoWOZero)
+	{
+		this.customerNoWOZero = customerNoWOZero;
 	}
 	public String getSyncDate()
 	{

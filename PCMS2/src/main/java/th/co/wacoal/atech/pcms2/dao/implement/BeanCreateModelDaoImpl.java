@@ -59,6 +59,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdfDateTime1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	public SimpleDateFormat sdfFullDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	public SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm:ss");
 	DecimalFormat df = new DecimalFormat("0.00");
@@ -2239,6 +2240,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("CustomerNo") != null) {
 			CustomerNo = (String) map.get("CustomerNo");
 		}
+		String CustomerNoWOZero = "";
+		if (map.get("CustomerNoWOZero") != null) {
+			CustomerNoWOZero = (String) map.get("CustomerNoWOZero");
+		}
 		String CustomerName = "";
 		if (map.get("CustomerName") != null) {
 			CustomerName = (String) map.get("CustomerName");
@@ -2254,14 +2259,20 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String DistChannel = "";
 		if (map.get("DistChannel") != null) {
 			DistChannel = (String) map.get("DistChannel");
-		}
-
+		} 
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
+		} 
+		boolean IsSabina = false;
+		if (map.get("IsSabina") != null) {
+			IsSabina = (boolean) map.get("IsSabina");
 		}
-		return new CustomerDetail(CustomerNo, CustomerName, CustomerShortName, CustomerType, DistChannel, SyncDate);
+		CustomerDetail bean = new CustomerDetail(CustomerNo, CustomerName, CustomerShortName, CustomerType, DistChannel, SyncDate);
+		bean.setCustomerNoWOZero(CustomerNoWOZero);
+		bean.setSabina(IsSabina);
+				return bean;
 	}
 
 	@Override
@@ -2339,7 +2350,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpCFMDetail(ID, ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, CFMStatus, CFMRemark,
 				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, CFMStatus, SyncDate);
@@ -2401,7 +2412,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpGoodReceiveDetail(ProductionOrder, SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD,
 				QuantityMR, PriceSTD, DataStatus, SyncDate);
@@ -2476,7 +2487,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpMainBillBatchDetail(BillDoc, BillItem, LotShipping, ProductionOrder, SaleOrder, SaleLine, Grade,
 				RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, DataStatus, SyncDate);
@@ -2675,7 +2686,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpMainProdDetail(ProductionOrder, SaleOrder, SaleLine, TotalQuantity, Unit, RemAfterCloseOne,
 				RemAfterCloseTwo, RemAfterCloseThree, LabStatus, UserStatus, DesignFG, ArticleFG, BookNo, Center, LotNo, Batch,
@@ -2713,7 +2724,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpMainProdSaleDetail(ProductionOrder, SaleOrder, SaleLine, Volumn, DataStatus, SyncDate);
 	}
@@ -2889,7 +2900,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpMainSaleDetail(SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity,
 				CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName,
@@ -2906,9 +2917,9 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			ProductionOrder = (String) map.get("ProductionOrder");
 		}
 		String PostingDate = "";
-		if (map.get("PostingDate") != null) {
-			java.util.Date dateValue = (Date) map.get("PostingDate");
-			PostingDate = sdf2.format(dateValue);
+		if (map.get("PostingDate") != null) { 
+			Timestamp timestamp1 = (Timestamp) map.get("PostingDate");
+			PostingDate = sdf2.format(timestamp1);
 		}
 		String Quantity = "";
 		if (map.get("Quantity") != null) {
@@ -2948,7 +2959,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpPackingDetail(ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, Grade, No, QuantityYD,
 				DataStatus, SyncDate);
@@ -3022,7 +3033,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpPODetail(ProductionOrder, RollNo, QuantityKG, QuantityMR, POCreatedate, RequiredDate, PurchaseOrder,
 				PurchaseOrderLine, null, PODefault, POLineDefault, POPostingDateDefault, DataStatus, SyncDate);
@@ -3042,7 +3053,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		String DataStatus = "";
 		if (map.get("DataStatus") != null) {
@@ -3124,7 +3135,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpSaleDetail(ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock, Remark,
 				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
@@ -3206,7 +3217,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpSaleInputDetail(ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock, Remark,
 				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
@@ -3250,7 +3261,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String SyncDate = "";
 		if (map.get("SyncDate") != null) {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
-			SyncDate = this.sdf4.format(timestamp1);
+			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
 		return new FromErpSubmitDateDetail(ProductionOrder, SaleOrder, SaleLine, No, SubmitDate, Remark, DataStatus, SyncDate);
 	}

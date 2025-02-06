@@ -57,13 +57,12 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "SET \r\n"
 				+ "    [SaleOrder] = ?,\r\n"
 				+ "    [SaleLine] = ?,\r\n"
-				+ "    [Grade] = ?,\r\n"
-				+ "    [RollNumber] = ?,\r\n"
+				+ "    [Grade] = ?,\r\n" 
 				+ "    [QuantityKG] = ?,\r\n"
 				+ "    [QuantityYD] = ?,\r\n"
 				+ "    [QuantityMR] = ?,\r\n"
 				+ "    [PriceSTD] = ?,\r\n"
-				+ "    [DataStatus] = ?,\r\n"
+//				+ "    [DataStatus] = ?,\r\n"
 				+ "    [ChangeDate] = ? \r\n"
 				+ "      ,[SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
@@ -82,18 +81,20 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "      ,[SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
 				+ "      ,[Grade]\r\n"
-				+ "      ,[RollNumber]\r\n"
+				+ "      ,[RollNumber]\r\n" 
 				+ "      ,[QuantityKG]\r\n"
 				+ "      ,[QuantityYD]\r\n"
 				+ "      ,[QuantityMR]\r\n"
 				+ "      ,[PriceSTD]\r\n"
-				+ "      ,[DataStatus]\r\n"
+//				+ "      ,[DataStatus]\r\n"
+				
 				+ "      ,[ChangeDate]\r\n"
 				+ "      ,[CreateDate]\r\n"
 				+ "      ,[SyncDate] \r\n"
 				+ "    ) VALUES (\r\n"
 				+ "?, ?, ?, ?, ?, "
-				+ "?, ?, ?, ?, ?, "// 10
+				+ "?, ?, ?, ?, "
+//				+ "?, "// 10
 				+ "?, "
 				+ "?,"
 				+ "? "
@@ -114,7 +115,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
@@ -131,7 +132,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));

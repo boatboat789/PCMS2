@@ -11,7 +11,7 @@
 //import dao.master.FromSapSendTestQCDao;
 //import dao.master.implement.FromSapSendTestQCDaoImpl;
 //import entities.SendTestQCDetail;
-//import info.SqlInfo;
+//import info.SqlPCMSInfo;
 //import th.in.totemplate.core.sql.Database;
 //
 //@Component
@@ -27,7 +27,7 @@
 //    @Autowired
 //	public FromSapSendTestQCModel () {
 //		try {
-//			this.database = new Database(SqlInfo.getInstance());
+//			this.database = new Database(SqlPCMSInfo.getInstance());
 //			this.dao = new FromSapSendTestQCDaoImpl(this.database);
 //			this.uiColumns = arrayColumn();
 //		} catch (SQLException | ClassNotFoundException var2) {

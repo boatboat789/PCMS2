@@ -2,6 +2,9 @@ package th.co.wacoal.atech.pcms2.entities;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ColumnHiddenDetail {
 	private String userId;
 	private String colVisibleDetail;

@@ -12,7 +12,7 @@ import th.co.wacoal.atech.pcms2.dao.master.FromSapPODao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapPODaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -28,7 +28,7 @@ public class FromSapPOModel extends HttpServlet {
     @Autowired
 	public FromSapPOModel() {
 		try {
-			this.database = new Database(SqlInfo.getInstance());
+			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new FromSapPODaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {

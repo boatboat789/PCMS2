@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class SaleInputDetail {
 	  private String billDate;
 	  private String billQtyPerSale;

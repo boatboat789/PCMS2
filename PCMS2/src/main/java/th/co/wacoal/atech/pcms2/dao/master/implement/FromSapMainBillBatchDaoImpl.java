@@ -63,7 +63,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "    [LotNo] = ?,\r\n"
 				+ "    [DataStatus] = ?,\r\n"
 				+ "    [ChangeDate] = ? \r\n"
-				+ "      ,[SyncDate] =  ?\r\n"
+				+ "   , [SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [BillDoc] = ? and\r\n"
 				+ "    [BillItem] = ? and\r\n"

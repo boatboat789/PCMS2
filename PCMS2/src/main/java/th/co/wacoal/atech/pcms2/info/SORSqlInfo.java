@@ -5,8 +5,11 @@
 */
 package th.co.wacoal.atech.pcms2.info;
 
+import org.springframework.stereotype.Repository;
+
 import th.in.totemplate.core.sql.DatabaseInfo;
 
+@Repository
 public class SORSqlInfo implements DatabaseInfo {
 	////////////////////j/////////////////////////////////////////////////////////
 	private static final String _driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";

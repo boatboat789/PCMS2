@@ -12,7 +12,7 @@ import th.co.wacoal.atech.pcms2.dao.LogInDao;
 import th.co.wacoal.atech.pcms2.dao.implement.LogInDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.info.SqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -28,7 +28,7 @@ public class LogInModel extends HttpServlet {
    @Autowired
    public LogInModel() {
       try {
-         this.database = new Database(SqlInfo.getInstance());
+         this.database = new Database(SqlPCMSInfo.getInstance());
          this.dao = new LogInDaoImpl(this.database);
          this.uiColumns = arrayColumn();
       } catch (SQLException | ClassNotFoundException var2) {

@@ -128,15 +128,15 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "    [LotShipping] = ?,\r\n"
 				+ "    [BillSendQuantity] = ?,\r\n"
 				+ "    [Grade] = ?,\r\n"
-				+ "    [DataStatus] = ?,\r\n"
+//				+ "    [DataStatus] = ?,\r\n"
 				+ "    [PrdCreateDate] = ?,\r\n"
 				+ "    [GreigeArticle] = ?,\r\n"
 				+ "    [GreigeDesign] = ?,\r\n"
 				+ "    [GreigeMR] = ?,\r\n"
 				+ "    [GreigeKG] = ?,\r\n"
 				+ "    [ChangeDate] = ?,\r\n"
-				+ "    [OrderType] = ?\r\n"
-				+ "      ,[SyncDate] =  ?\r\n"
+				+ "    [OrderType] = ?,\r\n"  
+				+ "    [SyncDate] =  ?\r\n"
 
 				+ "WHERE \r\n"
 				+ "    [ProductionOrder] = ?;\r\n"
@@ -152,50 +152,42 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "        [SaleOrder],\r\n"
 				+ "        [SaleLine],\r\n"
 				+ "        [TotalQuantity],\r\n"
-				+ "        [Unit],\r\n"
-
+				+ "        [Unit],\r\n" 
 				+ "        [RemAfterCloseOne],\r\n"
 				+ "        [RemAfterCloseTwo],\r\n"
 				+ "        [RemAfterCloseThree],\r\n"
 				+ "        [LabStatus],\r\n"
-				+ "        [UserStatus],\r\n" // 10
-
+				+ "        [UserStatus],\r\n" // 10 
 				+ "        [DesignFG],\r\n"
 				+ "        [ArticleFG],\r\n"
 				+ "        [BookNo],\r\n"
 				+ "        [Center],\r\n"
-				+ "        [LotNo],\r\n"
-
+				+ "        [LotNo],\r\n" 
 				+ "        [Batch],\r\n"
 				+ "        [LabNo],\r\n"
 				+ "        [RemarkOne],\r\n"
 				+ "        [RemarkTwo],\r\n"
-				+ "        [RemarkThree],\r\n" // 20
-
+				+ "        [RemarkThree],\r\n" // 20 
 				+ "        [BCAware],\r\n"
 				+ "        [OrderPuang],\r\n"
 				+ "        [RefPrd],\r\n"
 				+ "        [GreigeInDate],\r\n"
-				+ "        [BCDate],\r\n"
-
+				+ "        [BCDate],\r\n" 
 				+ "        [Volumn],\r\n"
 				+ "        [CFdate],\r\n"
 				+ "        [CFType],\r\n"
 				+ "        [Shade],\r\n"
-				+ "        [LotShipping],\r\n"// 30
-
+				+ "        [LotShipping],\r\n"// 30 
 				+ "        [BillSendQuantity],\r\n"
 				+ "        [Grade],\r\n"
-				+ "        [DataStatus],\r\n"
+//				+ "        [DataStatus],\r\n"
 				+ "        [PrdCreateDate],\r\n"
-				+ "        [GreigeArticle],\r\n"
-
+				+ "        [GreigeArticle],\r\n" 
 				+ "        [GreigeDesign],\r\n"
 				+ "        [GreigeMR],\r\n"
 				+ "        [GreigeKG],\r\n"
 				+ "        [ChangeDate],\r\n"
-				+ "        [CreateDate],\r\n"// 40
-
+				+ "        [CreateDate],\r\n"// 40 
 				+ "        [OrderType]\r\n"
 				+ "      ,[SyncDate] \r\n"
 				+ "    ) VALUES (\r\n"
@@ -204,7 +196,8 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, ?, "// 20
 				+ "?, ?, ?, ?, ?, "
-				+ "?, ?, ?, ?, ?, "// 30
+				+ "?, ?, ?, ?,"
+//				+ "?, "// 30
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, ?, "// 40
 				+ "?\r\n"
@@ -246,8 +239,9 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfType(), index ++ );
 				prepared.setString(index ++ , bean.getShade());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillSendQuantity(), index++); 
 				prepared.setString(index ++ , bean.getGrade());
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPrdCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getGreigeArticle());
 				prepared.setString(index ++ , bean.getGreigeDesign());
@@ -255,8 +249,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getGreigeKG(), index ++ );
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setString(index ++ , bean.getOrderType());
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
-
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ ); 
 				prepared.setString(index ++ , bean.getProductionOrder());
 
 				prepared.setString(index ++ , bean.getProductionOrder());
@@ -289,8 +282,9 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfType(), index ++ );
 				prepared.setString(index ++ , bean.getShade());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillSendQuantity(), index++); 
 				prepared.setString(index ++ , bean.getGrade());
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPrdCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getGreigeArticle());
 				prepared.setString(index ++ , bean.getGreigeDesign());

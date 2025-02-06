@@ -195,6 +195,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    [SaleUnit] = ?,\r\n"
 				+ "    [SaleQuantity] = ?,\r\n"
 				+ "    [CustomerMaterial] = ?,\r\n"
+				+ "    [Color] = ?,\r\n"
 				+ "    [CustomerNo] = ?,\r\n"
 				+ "    [PurchaseOrder] = ?,\r\n"
 				+ "    [SaleOrg] = ?,\r\n"
@@ -202,6 +203,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    [Division] = ?,\r\n"
 				+ "    [CustomerName] = ?,\r\n"
 				+ "    [CustomerShortName] = ?,\r\n"
+				+ "    [ColorCustomer] = ?,\r\n"
 				+ "    [CustomerDue] = ?,\r\n"
 				+ "    [RemainQuantity] = ?,\r\n"
 				+ "    [ShipDate] = ?,\r\n"
@@ -219,11 +221,11 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    [OrderSheetPrintDate] = ?,\r\n"
 				+ "    [CustomerMaterialBase] = ?,\r\n"
 				+ "    [ChangeDate] = ?,\r\n"
-				+ "    [DataStatus] = ? \r\n"
-				+ "      ,[SyncDate] =  ?\r\n"
+//				+ "    [DataStatus] = ? \r\n" 
+				+ "    [SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [SaleOrder] = ? and"
-				+ "    [SaleLine] = ? and"
+				+ "    [SaleLine] = ?  "
 				+ "    ;\r\n"
 				+ "\r\n"
 				+ "-- Check if rows were updated\r\n"
@@ -240,7 +242,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "      ,[SaleStatus] ,[Currency] ,[Price] ,[OrderAmount] ,[RemainAmount]\r\n"
 				+ "      ,[SaleCreateDate] ,[SaleNumber] ,[SaleFullName] ,[DeliveryStatus] ,[DesignFG]\r\n"
 				+ "      ,[ArticleFG] ,[OrderSheetPrintDate] ,[CustomerMaterialBase] ,[ChangeDate] ,[CreateDate]\r\n"
-				+ "      ,[DataStatus]\r\n"
+//				+ "      ,[DataStatus]\r\n"
 				+ "      ,[SyncDate] \r\n"
 				+ "    ) VALUES (\r\n"
 				+ "?, ?, ?, ?, ?, "
@@ -250,8 +252,8 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, ?, "// 10
 				+ "?, ?, ?, ?, ?, "
-				+ "? \r\n"
-				+ ", ? "
+//				+ "? \r\n"
+				+ "? "
 				+ "    ); "
 				+ ";";
 		try {
@@ -266,7 +268,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleUnit());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
-				prepared.setString(index ++ , bean.getCustomerMaterial());
+				prepared.setString(index ++ , bean.getCustomerMaterial()); 
 				prepared.setString(index ++ , bean.getColor());
 				prepared.setString(index ++ , bean.getCustomerNo());
 				prepared.setString(index ++ , bean.getPurchaseOrder());
@@ -274,7 +276,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getDistChannel());
 				prepared.setString(index ++ , bean.getDivision());
 				prepared.setString(index ++ , bean.getCustomerName());
-				prepared.setString(index ++ , bean.getCustomerShortName());
+				prepared.setString(index ++ , bean.getCustomerShortName()); 
 				prepared.setString(index ++ , bean.getColorCustomer());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
@@ -293,7 +295,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getOrderSheetPrintDate());
 				prepared.setString(index ++ , bean.getCustomerMaterialBase());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.setString(index ++ , bean.getSaleOrder());
@@ -334,7 +336,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerMaterialBase());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.addBatch();

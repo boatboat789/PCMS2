@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ConfigCustomerUserDetail {
 	private int id;
 	private String userId;

@@ -94,19 +94,17 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 		String sql =
 				  "-- Update if the record exists\r\n"
 				  + " "
-				  + "UPDATE [dbo].[FromSapCFM]\r\n"
+				  + "UPDATE [dbo].[FromSapPO]\r\n"
 				  + "SET \r\n"   
 				  + "    [QuantityKG] = ?,\r\n"
 				  + "    [QuantityMR] = ?,\r\n"  
 				  + "    [POCreatedate] = ?,\r\n"
 				  + "    [RequiredDate] = ? ,\r\n" 
 				  + "    [PurchaseOrder] = ?, \r\n" 
-				  + "    [PurchaseOrderLine] = ?, \r\n" 
-				  + "    [PurchaseOrderDate] = ? ,\r\n" 
+				  + "    [PurchaseOrderLine] = ?, \r\n"  
 				  + "    [PODefault] = ?, \r\n" 
 				  + "    [POLineDefault] = ?, \r\n" 
-				  + "    [POPostingDateDefault] = ?, \r\n"  
-				  + "    [DataStatus] = ?, \r\n" 
+				  + "    [POPostingDateDefault] = ?, \r\n"   
 				  + "    [ChangeDate]= ? \r\n" 
 
 				+ "      ,[SyncDate] =  ?\r\n" 
@@ -119,16 +117,15 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				  + "    PRINT @rc;\r\n"
 				  + "ELSE \r\n"
 				  + "    -- Insert if no rows were updated\r\n"
-				  + "    INSERT INTO [dbo].[FromSapCFM] (\r\n"
+				  + "    INSERT INTO [dbo].[FromSapPO] (\r\n"
 				  + "        [ProductionOrder] ,[RollNo] ,[QuantityKG]  ,[QuantityMR] ,[POCreatedate]\r\n"
-				  + "      ,[RequiredDate] ,[PurchaseOrder] ,[PurchaseOrderLine] ,[PurchaseOrderDate] ,[PODefault]\r\n"
-				  + "      ,[POLineDefault] ,[POPostingDateDefault] ,[DataStatus] ,[ChangeDate] ,[CreateDate]\r\n"
-				  + "      ,[SyncDate] \r\n"
+				  + "      ,[RequiredDate] ,[PurchaseOrder] ,[PurchaseOrderLine]  ,[PODefault]\r\n"
+				  + "      ,[POLineDefault] ,[POPostingDateDefault] ,[ChangeDate] ,[CreateDate] ,[SyncDate]\r\n"
+				  + "      \r\n"
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
-				  + "		?, ?, ?, ?, ?, "
-				  + "		?, ?, ?, ?, ? " 
-					+ ", ? " 
+				  + "		?, ?, ?, ? , "
+				  + "		?, ?, ?, ?, ? "  
 				  + "    ); "
 				+ ";"  ;
 		try {
@@ -141,14 +138,12 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG() , index++); 
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR() , index++);  
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getpoCreatedate() , index++); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRequiredDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getRequiredDate() , index++); 
 				prepared.setString(index++, bean.getPurchaseOrder()    );
-				prepared.setString(index++, bean.getPurchaseOrderLine()    );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPurchaseOrderDate() , index++); 
+				prepared.setString(index++, bean.getPurchaseOrderLine()    );  
 				prepared.setString(index++, bean.getPoDefault()    );
 				prepared.setString(index++, bean.getPoLineDefault()    ); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPoPostingDateDefault() , index++);  
-				prepared.setString(index++, bean.getDataStatus()    ); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getPoPostingDateDefault() , index++);   
 				prepared.setTimestamp(index++, new Timestamp(time));  
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
 				prepared.setString(index++, bean.getProductionOrder()    );
@@ -159,14 +154,12 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG() , index++); 
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR() , index++);  
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getpoCreatedate() , index++); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRequiredDate() , index++); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getRequiredDate() , index++); 
 				prepared.setString(index++, bean.getPurchaseOrder()    );
-				prepared.setString(index++, bean.getPurchaseOrderLine()    );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPurchaseOrderDate() , index++); 
+				prepared.setString(index++, bean.getPurchaseOrderLine()    ); 
 				prepared.setString(index++, bean.getPoDefault()    );
 				prepared.setString(index++, bean.getPoLineDefault()    ); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPoPostingDateDefault() , index++);  
-				prepared.setString(index++, bean.getDataStatus()    ); 
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getPoPostingDateDefault() , index++);   
 				prepared.setTimestamp(index++, new Timestamp(time));
 				prepared.setTimestamp(index++, new Timestamp(time));  
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);

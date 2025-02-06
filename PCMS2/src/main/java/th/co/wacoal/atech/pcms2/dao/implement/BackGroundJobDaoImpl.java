@@ -1,9 +1,11 @@
-	package th.co.wacoal.atech.pcms2.dao.implement;
+package th.co.wacoal.atech.pcms2.dao.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -37,22 +39,26 @@ import th.co.wacoal.atech.pcms2.model.master.FromSapSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSubmitDateModel;
 import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 import th.in.totemplate.core.sql.Database;
+
 @Repository // Spring annotation to mark this as a DAO component
 public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	private Database database;
 	private String message;
 
-    @Autowired
+	@Autowired
 	public BackGroundJobDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return this.message;
 	}
+
 	@Override
-	public void execUpsertToMainProd() {
+	public void execUpsertToMainProd()
+	{
 		// TODO Auto-generated method stub
 		Connection connection;
 		connection = this.database.getConnection();
@@ -63,10 +69,12 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} 
+		}
 	}
+
 	@Override
-	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder) {
+	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder)
+	{
 		Connection connection;
 		connection = this.database.getConnection();
 		String sql = "EXEC [spd_UpsertToTEMP_UserStatusOnWebWithProdOrder] ? ";
@@ -77,10 +85,12 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} 
+		}
 	}
+
 	@Override
-	public void execUpsertToTEMPProdWorkDate() {
+	public void execUpsertToTEMPProdWorkDate()
+	{
 		// TODO Auto-generated method stub
 		Connection connection;
 		connection = this.database.getConnection();
@@ -91,11 +101,12 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}  
+		}
 	}
 
 	@Override
-	public void execUpsertToTEMPUserStatusOnWeb() {
+	public void execUpsertToTEMPUserStatusOnWeb()
+	{
 		// TODO Auto-generated method stub
 		Connection connection;
 		connection = this.database.getConnection();
@@ -106,59 +117,87 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
-		}  
+		}
 	}
 
+	public void execHandlerCustomerDetail()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_HandlerCustomerDetail] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
 	@Override
 	public void handlerERPAtechToWebApp()
 	{
-		
+
 		ERPAtechModel erpaModel = new ERPAtechModel();
-		
+
 		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
-		CustomerModel cusModel =  new CustomerModel();
+		CustomerModel cusModel = new CustomerModel();
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
-		ArrayList<CustomerDetail> cusList =   erpaModel.getCustomerDetail();
-		FromSapMainBillBatchModel fsmbbModel = new  FromSapMainBillBatchModel();
-		FromSapMainProdSaleModel fsmpsModel = new  FromSapMainProdSaleModel();
-		FromSapMainSaleModel fsmsModel = new  FromSapMainSaleModel();
-		FromSapPackingModel fspModel = new  FromSapPackingModel();
-		FromSapPOModel fspoModel = new  FromSapPOModel();
-		FromSapSaleModel fssModel = new  FromSapSaleModel(); 
-		FromSapSaleInputModel fssiModel = new  FromSapSaleInputModel();
-		FromSapSubmitDateModel fssdModel = new  FromSapSubmitDateModel();
-		FromSapReceipeModel fsrModel = new FromSapReceipeModel(); 
-		
-		
-		cusModel.upsertCustomerDetail(cusList);
-		ArrayList<FromErpMainProdDetail> frmpList =  erpaModel.getFromErpMainProdDetail();
-		fsmpModel.upsertFromSapMainProdDetail(frmpList); 
-		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
-		fscfmModel.upsertFromSapCFMDetail(frcfmList); 
-		ArrayList<FromErpGoodReceiveDetail> frgrList =  erpaModel.getFromErpGoodReceiveDetail();
-		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList); 
-		ArrayList<FromErpMainBillBatchDetail> frmbbList =  erpaModel.getFromErpMainBillBatchDetail();
-		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList); 
-		ArrayList<FromErpMainProdSaleDetail> frmpsList =  erpaModel.getFromErpMainProdSaleDetail();
-		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList); 
-		
-		ArrayList<FromErpMainSaleDetail> frmsList =  erpaModel.getFromErpMainSaleDetail();
-		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
-		
-		
-		ArrayList<FromErpPackingDetail> frpList =  erpaModel.getFromErpPackingDetail();
-		fspModel.upsertFromSapPackingDetail(frpList);
-		ArrayList<FromErpPODetail> frpoList =  erpaModel.getFromErpPODetail();  
-		fspoModel.upsertFromSapPODetail(frpoList);
-		ArrayList<FromErpSaleDetail> frsList =  erpaModel.getFromErpSaleDetail();
-		fssModel.upsertFromSapSaleDetail(frsList) ;
-		ArrayList<FromErpSaleInputDetail> frsiList =  erpaModel.getFromErpSaleInputDetail();
-		fssiModel.upsertFromSapSaleInputDetail(frsiList);
-		ArrayList<FromErpSubmitDateDetail> fesdList =  erpaModel.getFromErpSubmitDateDetail(); 
-		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
+		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
+		FromSapPackingModel fspModel = new FromSapPackingModel();
+		FromSapPOModel fspoModel = new FromSapPOModel();
+		FromSapSaleModel fssModel = new FromSapSaleModel();
+		FromSapSaleInputModel fssiModel = new FromSapSaleInputModel();
+		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
+		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
+		System.out.println("Select: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
 
-		ArrayList<FromErpReceipeDetail> ferdList =  erpaModel.getFromErpReceipeDetai(); 
-		fsrModel.upsertFromSapReceipeDetail(ferdList);
+//		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
+//		cusModel.upsertCustomerDetail(cusList);
+//		this.execHandlerCustomerDetail();
+//		
+//		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
+//		fsmpModel.upsertFromSapMainProdDetail(frmpList);
+//		
+//		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
+//		fscfmModel.upsertFromSapCFMDetail(frcfmList);
+//		
+//		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
+//		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
+//		
+//		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail();
+//		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
+//		
+//		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
+//		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
+//
+//		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
+//		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
+//
+//		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
+//		fspModel.upsertFromSapPackingDetail(frpList);
+//		
+//		ArrayList<FromErpPODetail> frpoList = erpaModel.getFromErpPODetail();
+//		fspoModel.upsertFromSapPODetail(frpoList);
+//		
+//		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
+//		fssModel.upsertFromSapSaleDetail(frsList);
+//		
+//		ArrayList<FromErpSaleInputDetail> frsiList = erpaModel.getFromErpSaleInputDetail();
+//		fssiModel.upsertFromSapSaleInputDetail(frsiList);
+//		
+//		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
+//		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+//
+//		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
+//		fsrModel.upsertFromSapReceipeDetail(ferdList);
+//		
+//		this.execUpsertToTEMPProdWorkDate();
+//		this.execUpsertToTEMPUserStatusOnWeb();
+		System.out.println("After upsert: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
+
 	}
 }

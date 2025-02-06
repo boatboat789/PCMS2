@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities.LBMS;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ImportDetail {  
 	private String productionOrder; 
 	private String labNo; 
