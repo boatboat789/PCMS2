@@ -2785,8 +2785,7 @@ function addSelectOption(data){
 // 	return result  ;​
 // }   
 function getInputDate(arrTmp,colIdx){      
-	var path ="";  
-// 	console.log(colIdx)    
+	var path ="";    
 // 	if(colIdx == 23){
 	if(colIdx == 'cfmPlanLabDateParent'){	
 		path = "Detail/getCFMPlanLabDateDetail";

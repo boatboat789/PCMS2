@@ -839,7 +839,7 @@ $(document) .ready( function() {
 //  	 }); 
      
     cfmTable = $('#cfmTable').DataTable({   
-    	scrollY:        '175px',    
+    	scrollY:        '300px',    
     	scrollX: true,      
     	paging: false,      
 // 		orderClasses : false, 
@@ -861,7 +861,7 @@ $(document) .ready( function() {
 		    {"data" : "cfmAnswerDate"},
 		    {"data" : "cfmStatus"},
 		    {"data" : "cfmRemark"},     //13
-		    {"data" : "nextLot"},
+		    {"data" : "nextLot"},  
 		    {"data" : "soChange"},
 		    {"data" : "soChangeQty"},
 		    {"data" : "soChangeUnit"},  //17    

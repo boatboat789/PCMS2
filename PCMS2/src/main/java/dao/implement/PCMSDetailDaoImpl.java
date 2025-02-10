@@ -57,13 +57,28 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			  + "	FROM [PCMS].[dbo].[PlanDeliveryDate]  \r\n"
 			  + "	group by [ProductionOrder]  ,[SaleOrder] ,[SaleLine]\r\n"
 			  + " ) as b on a.Id = b.maxId  \r\n"  ;
- 
+	private String createTempSumGR =
+			  " If(OBJECT_ID('tempdb..#tempSumGR') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempSumGR\r\n"
+			+ "	end ;\r\n"
+			+ " SELECT "
+			+ "		[ProductionOrder] ,[Grade] ,[PriceSTD]\r\n"
+			+ "				    ,sum([QuantityMR]) as GRSumMR\r\n"
+			+ "				    ,sum([QuantityKG]) as GRSumKG\r\n"
+			+ "				    ,sum([QuantityYD]) as GRSumYD\r\n "
+			+ "           into #tempSumGR \r\n"
+			+ "			  FROM [PCMS].[dbo].[FromSapGoodReceive]\r\n"
+			+ "			  where datastatus = 'O'\r\n"
+			+ "			  GROUP BY ProductionOrder,Grade ,[PriceSTD] \r\n"
+			+ " CREATE CLUSTERED INDEX IDX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n"  ;
+
 	private String createTempSumBill =
 			  " If(OBJECT_ID('tempdb..#tempSumBill') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempSumBill\r\n"
 			+ "	end ;\r\n"
-			+ " SELECT distinct \r\n"
+			+ " SELECT \r\n"
 			+ " 	[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[Grade]  ,"
 			+ " 	SUM([QuantityKG]) AS [BillSendWeightQuantity], \r\n"
 			+ " 	SUM([QuantityYD]) AS [BillSendYDQuantity] ,\r\n"
@@ -71,7 +86,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ " into #tempSumBill \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainBillBatch]\r\n"
 			+ " where DataStatus = 'O'\r\n"
-			+ " GROUP BY [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[Grade] \r\n"  ;
+			+ " GROUP BY [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[Grade] \r\n" 
+			+ "CREATE CLUSTERED INDEX IDX_tempSumBill ON #tempSumBill(ProductionOrder, SaleOrder, SaleLine, Grade);"  ;
 	private String createTempMainSale = ""
 			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
 			+ "	begin\r\n"
@@ -576,14 +592,14 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
    		 + " INNER JOIN (\r\n"
    		 + "	SELECT DISTINCT a.saleorder , a.saleline, c.SumVolMain ,b.SumVolUsed\r\n"
    		 + "		,CASE  \r\n"
-   		 + " 			WHEN ISNULL(c.SumVolMain, 0 ) >  b.SumVolUsed THEN 'A'\r\n"
-   		 + "			WHEN ISNULL(c.SumVolMain, 0 ) <=  b.SumVolUsed THEN 'B' \r\n"
+   		 + " 			WHEN COALESCE(c.SumVolMain, 0 ) >  b.SumVolUsed THEN 'A'\r\n"
+   		 + "			WHEN COALESCE(c.SumVolMain, 0 ) <=  b.SumVolUsed THEN 'B' \r\n"
    		 + "			ELSE  'C'\r\n"
    		 + "	 		END AS SumVol \r\n"
    		 + "		,'รอจัด Lot' as ProductionOrder\r\n"
    		 + "		,CASE  \r\n"
-   		 + " 			WHEN ISNULL( SumVolOP, 0 ) >  0 THEN 'พ่วงแล้วรอสวม'\r\n"
-   		 + "			WHEN ISNULL( SumVolRP, 0 ) >  0 THEN 'รอสวมเคยมี Lot'\r\n"
+   		 + " 			WHEN COALESCE( SumVolOP, 0 ) >  0 THEN 'พ่วงแล้วรอสวม'\r\n"
+   		 + "			WHEN COALESCE( SumVolRP, 0 ) >  0 THEN 'รอสวมเคยมี Lot'\r\n"
    		 + "			ELSE  'รอจัด Lot'\r\n"
    		 + "	 		END AS LotNo  \r\n"
    		 + "		,SumVolOP\r\n"
@@ -632,7 +648,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		 + "		, cast(null as date) as PlanGreigeDate \r\n"
    		 + "	from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
    		 + "	left join (\r\n"
-   		 + "        SELECT DISTINCT a.SaleOrder , A.SaleLine ,ISNULL(SumVolOP, 0 ) + ISNULL(SumVolRP, 0 ) as SumVolUsed --,ISNULL(SumVolRP, 0 )\r\n"
+   		 + "        SELECT DISTINCT a.SaleOrder , A.SaleLine ,COALESCE(SumVolOP, 0 ) + COALESCE(SumVolRP, 0 ) as SumVolUsed --,COALESCE(SumVolRP, 0 )\r\n"
    		 + "			           ,SumVolOP,SumVolRP\r\n"
    		 + "		FROM [PCMS].[dbo].[FromSapMainProd]  AS A\r\n"
    		 + "		LEFT JOIN (  \r\n"
@@ -842,20 +858,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
     public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	private String createTempSumGR =
-			  " If(OBJECT_ID('tempdb..#tempSumGR') Is Not Null)\r\n"
-			+ "	begin\r\n"
-			+ "		Drop Table #tempSumGR\r\n"
-			+ "	end ;\r\n"
-			+ " SELECT distinct [ProductionOrder] ,[Grade] ,[PriceSTD]\r\n"
-			+ "				    ,sum([QuantityMR]) as GRSumMR\r\n"
-			+ "				    ,sum([QuantityKG]) as GRSumKG\r\n"
-			+ "				    ,sum([QuantityYD]) as GRSumYD\r\n "
-			+ "           into #tempSumGR \r\n"
-			+ "			  FROM [PCMS].[dbo].[FromSapGoodReceive]\r\n"
-			+ "			  where datastatus = 'O'\r\n"
-			+ "			  GROUP BY ProductionOrder,Grade ,[PriceSTD] \r\n"  ;
-	private String leftJoinE = ""
+		private String leftJoinE = ""
 					+ "  left join ( \r\n"
 				  	+ "			SELECT distinct\r\n"
 				  	+ "				a.[ProductionOrder] \r\n"

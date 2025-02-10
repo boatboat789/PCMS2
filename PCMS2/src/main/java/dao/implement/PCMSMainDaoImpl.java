@@ -21,7 +21,6 @@ import entities.ReceipeDetail;
 import entities.SaleDetail;
 import entities.SaleInputDetail;
 import entities.SendTestQCDetail;
-import entities.WaitTestDetail;
 import entities.WorkInLabDetail;
 import model.BeanCreateModel;
 import model.master.FromSapCFMModel;
@@ -37,7 +36,6 @@ import model.master.FromSapReceipeModel;
 import model.master.FromSapSaleInputModel;
 import model.master.FromSapSaleModel;
 import model.master.FromSapSendTestQCModel;
-import model.master.FromSapWaitTestModel;
 import model.master.FromSapWorkInLabModel;
 import model.master.SearchSettingModel;
 import model.master.InspectSystem.InspectNcModel;
@@ -450,9 +448,9 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		    + ",b.[SaleOrder]\r\n"
 		    + ",CASE Patindex('%[^0 ]%', b.[SaleLine] + ' ‘')\r\n"
 		    + "    WHEN 0 THEN ''\r\n"
-		    + "    ELSE Substring(b.[SaleLine], Patindex('%[^0 ]%',\r\n"
-		    + "                                b.[SaleLine] + ' '),\r\n"
-		    + "                Len(b.[SaleLine]))\r\n"
+		    + "    ELSE Substring(b.[SaleLine], "
+		    + "					  Patindex('%[^0 ]%', b.[SaleLine] + ' '),\r\n"
+		    + "                   Len(b.[SaleLine]))\r\n"
 		    + "    END           AS [SaleLine]\r\n"
 		    + ",b.PurchaseOrder\r\n"
 		    + ",b.ArticleFG\r\n"
@@ -503,20 +501,21 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "	begin\r\n"
 			+ "		Drop Table #tempSumGR\r\n"
 			+ "	end ;\r\n"
-			+ " SELECT distinct [ProductionOrder] ,[Grade] ,[PriceSTD]\r\n"
+			+ " SELECT   [ProductionOrder] ,[Grade] ,[PriceSTD]\r\n"
 			+ "				     ,sum([QuantityMR]) as GRSumMR\r\n"
 			+ "				     ,sum([QuantityKG]) as GRSumKG\r\n"
 			+ "				     ,sum([QuantityYD]) as GRSumYD\r\n "
 			+ " into #tempSumGR \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapGoodReceive]\r\n"
 			+ "	where datastatus = 'O'\r\n"
-			+ "	GROUP BY ProductionOrder,Grade ,[PriceSTD] \r\n"  ;
+			+ "	GROUP BY ProductionOrder,Grade ,[PriceSTD] \r\n" 
+			+ " CREATE CLUSTERED INDEX IDX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n" ;
 	private String createTempSumBill =
 			  " If(OBJECT_ID('tempdb..#tempSumBill') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempSumBill\r\n"
 			+ "	end ;\r\n"
-			+ " SELECT distinct \r\n"
+			+ " SELECT   \r\n"
 			+ " 	 [ProductionOrder] \r\n"
 			+ "    , [SaleOrder] \r\n"
 			+ "    , [SaleLine]\r\n"
@@ -527,7 +526,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ " into #tempSumBill \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainBillBatch]\r\n"
 			+ " where DataStatus = 'O'\r\n"
-			+ " GROUP BY [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[Grade] \r\n"  ;
+			+ " GROUP BY [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[Grade] \r\n"  
+			+ "CREATE CLUSTERED INDEX IDX_tempSumBill ON #tempSumBill(ProductionOrder, SaleOrder, SaleLine, Grade);" ;
 
 	private String selectFromTempMainPrdTemp = ""
 		+ "				SELECT distinct \r\n"
@@ -614,14 +614,14 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
    		 + "        , c.SumVolMain\r\n"
    		 + "        , b.SumVolUsed\r\n"
    		 + "		, CASE  \r\n"
-   		 + " 			WHEN ISNULL(c.SumVolMain, 0 ) >  b.SumVolUsed THEN 'A'\r\n"
-   		 + "			WHEN ISNULL(c.SumVolMain, 0 ) <=  b.SumVolUsed THEN 'B' \r\n"
+   		 + " 			WHEN COALESCE(c.SumVolMain, 0 ) >  b.SumVolUsed THEN 'A'\r\n"
+   		 + "			WHEN COALESCE(c.SumVolMain, 0 ) <=  b.SumVolUsed THEN 'B' \r\n"
    		 + "			ELSE  'C'\r\n"
    		 + "	 		END AS SumVol \r\n"
    		 + "		, 'รอจัด Lot' as ProductionOrder\r\n"
    		 + "		, CASE  \r\n"
-   		 + "			WHEN ISNULL( SumVolOP, 0 ) >  0 THEN 'พ่วงแล้วรอสวม'\r\n"
-   		 + "			WHEN ISNULL( SumVolRP, 0 ) >  0 THEN 'รอสวมเคยมี Lot'\r\n"
+   		 + "			WHEN COALESCE( SumVolOP, 0 ) >  0 THEN 'พ่วงแล้วรอสวม'\r\n"
+   		 + "			WHEN COALESCE( SumVolRP, 0 ) >  0 THEN 'รอสวมเคยมี Lot'\r\n"
    		 + "			ELSE  'รอจัด Lot'\r\n"
    		 + "	 		END AS LotNo  \r\n"
    		 + "		, SumVolOP\r\n"
@@ -679,7 +679,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
    		 + "        SELECT DISTINCT \r\n"
    		 + "             A.SaleOrder\r\n"
    		 + "           , A.SaleLine\r\n"
-   		 + "           , ISNULL(SumVolOP, 0 ) + ISNULL(SumVolRP, 0 ) as SumVolUsed --,ISNULL(SumVolRP, 0 )\r\n"
+   		 + "           , COALESCE(SumVolOP, 0 ) + COALESCE(SumVolRP, 0 ) as SumVolUsed --,COALESCE(SumVolRP, 0 )\r\n"
    		 + "	       , SumVolOP\r\n"
    		 + "           , SumVolRP\r\n"
    		 + "		FROM[PCMS].[dbo].[FromSapMainProd]  AS A\r\n"
