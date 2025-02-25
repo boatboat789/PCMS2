@@ -164,8 +164,8 @@ public class ResendSORDateDaoImpl implements ResendSORDateDao {
 			""
 					+ "	left join ( select distinct SUBSTRING([ProductionOrder] ,0,7) AS ProductionOrderForCheck FROM [PPMM].[dbo].[DataFromSap] ) AS DFS ON  PNPI.ProductionOrder =  DFS.[ProductionOrderForCheck]\r\n";
 
-	public ResendSORDateDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public ResendSORDateDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.message = "";
 		this.conType = conType;
 	}

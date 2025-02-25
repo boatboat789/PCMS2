@@ -23,8 +23,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
-import th.co.wacoal.atech.pcms2.info.SqlAtechERPInfo;
-import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo; 
+import th.co.wacoal.atech.pcms2.info.SqlAtechERPInfo; 
 import th.in.totemplate.core.sql.Database;
 
 @Component

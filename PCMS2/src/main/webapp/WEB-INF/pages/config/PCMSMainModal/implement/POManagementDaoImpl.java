@@ -166,8 +166,8 @@ public class POManagementDaoImpl implements POManagementDao {
 	private String leftJoinDFS = ""
 			+ "	left join ( select distinct SUBSTRING([ProductionOrder] ,0,7) AS ProductionOrderForCheck FROM [PPMM].[dbo].[DataFromSap] ) AS DFS ON  A.ProductionOrderForCheck =  DFS.[ProductionOrderForCheck]\r\n";
 
-	public POManagementDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public POManagementDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.message = "";
 		this.conType = conType;
 	}

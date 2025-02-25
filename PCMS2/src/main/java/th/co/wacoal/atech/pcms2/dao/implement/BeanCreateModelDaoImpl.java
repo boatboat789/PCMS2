@@ -2296,13 +2296,13 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		}
 		String CFMSendDate = "";
 		if (map.get("CFMSendDate") != null) {
-			java.util.Date dateValue = (Date) map.get("CFMSendDate");
-			CFMSendDate = sdf2.format(dateValue);
+			Timestamp timestamp1 = (Timestamp) map.get("CFMSendDate");
+			CFMSendDate = this.sdfFullDatetime.format(timestamp1); 
 		}
 		String CFMAnswerDate = "";
-		if (map.get("CFMAnswerDate") != null) {
-			java.util.Date dateValue = (Date) map.get("CFMAnswerDate");
-			CFMAnswerDate = sdf2.format(dateValue);
+		if (map.get("CFMAnswerDate") != null) { 
+			Timestamp timestamp1 = (Timestamp) map.get("CFMAnswerDate");
+			CFMAnswerDate = this.sdfFullDatetime.format(timestamp1); 
 		}
 		String CFMStatus = "";
 		if (map.get("CFMStatus") != null) {
@@ -2732,6 +2732,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	@Override
 	public FromErpMainSaleDetail _genFromErpMainSaleDetail(Map<String, Object> map)
 	{
+		String ProductionOrder = "";
+		if (map.get("ProductionOrder") != null) {
+			ProductionOrder = (String) map.get("ProductionOrder");
+		}
 		String SaleOrder = "";
 		if (map.get("SaleOrder") != null) {
 			SaleOrder = (String) map.get("SaleOrder");
@@ -2902,7 +2906,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
 			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
-		return new FromErpMainSaleDetail(SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity,
+		return new FromErpMainSaleDetail(ProductionOrder,SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity,
 				CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName,
 				CustomerShortName, ColorCustomer, CustomerDue, RemainQuantity, ShipDate, SaleStatus, Currency, Price, OrderAmount,
 				RemainAmount, SaleCreateDate, SaleNumber, SaleFullName, DeliveryStatus, DesignFG, ArticleFG, OrderSheetPrintDate,

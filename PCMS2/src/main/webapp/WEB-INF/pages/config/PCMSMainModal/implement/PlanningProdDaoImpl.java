@@ -3753,8 +3753,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "	SELECT * \r\n"
 				+ " FROM ( \r\n"
 				+ " SELECT distinct \r\n"
-				+ this.selectPO
-//				+ "	   ,ISNUMERIC(LEFT(a.ProductionOrder, 1)) as isNumber\r\n"
+				+ this.selectPO 
 				+ "    ,CASE \r\n"
 				+ "        WHEN LEFT(a.ProductionOrder, 1) LIKE '[0-9]' THEN 1\r\n"
 				+ "        ELSE 0\r\n"
@@ -3826,8 +3825,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "    ,CASE \r\n"
 				+ "        WHEN LEFT(a.ProductionOrder, 1) LIKE '[0-9]' THEN 1\r\n"
 				+ "        ELSE 0 \r\n"
-				+ "    END AS isNumber\r\n"
-//				+ "	   ,ISNUMERIC(LEFT(a.ProductionOrder, 1)) as isNumber\r\n"
+				+ "    END AS isNumber\r\n" 
 				+ "	   ,ProductionOrderType\r\n"
 				+ this.fromPOA 
 				+ this.innerJoinbRPAP
@@ -3880,8 +3878,7 @@ public class PlanningProdDaoImpl implements PlanningProdDao {
 				+ "    ,CASE \r\n"
 				+ "        WHEN LEFT(a.ProductionOrder, 1) LIKE '[0-9]' THEN 1\r\n"
 				+ "        ELSE 0 \r\n"
-				+ "    END AS isNumber\r\n"
-//				+ "	   ,ISNUMERIC(LEFT(a.ProductionOrder, 1)) as isNumber\r\n"
+				+ "    END AS isNumber\r\n" 
 				+ "	   ,ProductionOrderType\r\n"
 				+ this.fromPOA 
 				+ this.innerJoinbRPAP

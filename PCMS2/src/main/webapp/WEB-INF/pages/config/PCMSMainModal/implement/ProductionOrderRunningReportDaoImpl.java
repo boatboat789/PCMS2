@@ -36,8 +36,8 @@ public class ProductionOrderRunningReportDaoImpl implements ProductionOrderRunni
 
 	private String conType;
 
-	public ProductionOrderRunningReportDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public ProductionOrderRunningReportDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.message = "";
 		this.conType = conType;
 	}

@@ -255,8 +255,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine,\r\n"
 				+ " TRY_CAST(TotalQuantity AS decimal(13, 3)) as TotalQuantity,\r\n"
 				+ " CASE \r\n"
-				+ "	  WHEN CAST( Unit AS NVARCHAR(20)) = 'M' THEN 'MR'\r\n"
-				+ "	  ELSE CAST( Unit AS NVARCHAR(20))\r\n"
+				+ "	  WHEN TRY_CAST( Unit AS NVARCHAR(20)) = 'M' THEN 'MR'\r\n"
+				+ "	  ELSE TRY_CAST( Unit AS NVARCHAR(20))\r\n"
 				+ " END as Unit," 
 //				+ " TRY_CAST(Unit AS NVARCHAR(20)) as Unit,\r\n"
 //				+ " TRY_CAST([RemAfterCloseOne] AS NVARCHAR(200)) as [RemAfterCloseOne],\r\n"
@@ -313,8 +313,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "             BCDate = '' THEN null \r\n"
 				+ "        ELSE BCDate  \r\n"
 				+ "    END AS BCDate, \r\n"  
-//				+ " TRY_CAST(Volumn AS decimal(13, 3)) as Volumn,\r\n" 
-				+ " null as Volumn,\r\n" 
+				+ " TRY_CAST(Volumn AS decimal(13, 3)) as Volumn,\r\n" 
+//				+ " null as Volumn,\r\n" 
 				+ "  CASE \r\n"
 				+ "        WHEN CFdate = '1900-01-01 00:00:00.000' THEN null\r\n"
 				+ "        WHEN CFdate is null or "
@@ -353,8 +353,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " [SyncDate]"
 				+ " from [FromErpMainProd] "
 				
-				; 
-//		System.out.println(sql);
+				;  
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -610,7 +609,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		String sql =
 				" "
 				+ " SELECT distinct   \r\n"
-//				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n" 
+				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n" 
 				+ "  CASE \r\n"
 				+ "        WHEN BillDate = '1900-01-01 00:00:00.000' THEN null\r\n"
 				+ "        WHEN BillDate is null or  "
@@ -656,7 +655,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		String sql =
 				" "
 				+ " SELECT distinct   \r\n"
-//				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n" 
+				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n" 
 				+ "  CASE \r\n"
 				+ "        WHEN BillDate = '1900-01-01 00:00:00.000' THEN null\r\n"
 				+ "        WHEN BillDate is null or  "
@@ -791,6 +790,6 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		}
 //		return list;
 //	}
-
+	
  
 }

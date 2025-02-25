@@ -102,7 +102,9 @@ var cusShortNameList ;
 var isCustomer = 0 ;  	
 var workInLabTable ;
 // var waitTestTable;
-var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
+var cfmTable;var saleTable;
+// var saleInputTable;
+var submitDateTable;
 var ncTable;var receipeTable;
 var collapsedGroups = {};        
 // var domain = "http://"+window.location.hostname+":8080";
@@ -892,27 +894,27 @@ $(document) .ready( function() {
 				} ,           
 		],     order: [[ 0, "desc" ]]        
  	 });   
-	  saleInputTable = $('#saleInputTable').DataTable({   
-	    	scrollY:        '175px',    
-	    	scrollX: true,      
-	    	paging: false,      
-//	 		orderClasses : false, 
-			lengthChange: false,         	  
-	 	   	columns :  
-	 		[           
-			    {"data" : "billDate"} ,         //0
-			    {"data" : "billQtyPerSale"},  
-			    {"data" : "saleOrder"},  
-			    {"data" : "saleLine"},  
-			    {"data" : "billQtyPerStock"}, 
-			],  	          
-			columnDefs :  [	   	
-				{ targets : [ 0,1,2,3,4 ],                
-				  	  className : 'data-custom-padding0505',    
-//	 		  	 	  type: 'string'      
-					} ,           
-			],     order: [[ 0, "desc" ]]        
-	 	 });      
+// 	  saleInputTable = $('#saleInputTable').DataTable({   
+// 	    	scrollY:        '175px',    
+// 	    	scrollX: true,      
+// 	    	paging: false,      
+// //	 		orderClasses : false, 
+// 			lengthChange: false,         	  
+// 	 	   	columns :  
+// 	 		[           
+// 			    {"data" : "billDate"} ,         //0
+// 			    {"data" : "billQtyPerSale"},  
+// 			    {"data" : "saleOrder"},  
+// 			    {"data" : "saleLine"},  
+// 			    {"data" : "billQtyPerStock"}, 
+// 			],  	          
+// 			columnDefs :  [	   	
+// 				{ targets : [ 0,1,2,3,4 ],                
+// 				  	  className : 'data-custom-padding0505',    
+// //	 		  	 	  type: 'string'      
+// 					} ,           
+// 			],     order: [[ 0, "desc" ]]        
+// 	 	 });      
 	    submitDateTable = $('#submitDateTable').DataTable({   
 	    	scrollY:        '175px',    
 	    	scrollX: true,      
@@ -1050,7 +1052,7 @@ $(document) .ready( function() {
 // 	$("#waitTestTable_filter").hide();  
 	$("#cfmTable_filter").hide();  
 	$("#saleTable_filter").hide();  
-	$("#saleInputTable_filter").hide();  
+// 	$("#saleInputTable_filter").hidฉe();  
 	$("#submitDateTable_filter").hide();  
 	$("#ncTable_filter").hide();  
 	$("#receipeTable_filter").hide();  
@@ -1059,7 +1061,7 @@ $(document) .ready( function() {
 // 	$("#waitTestTable_info").hide();
 	$("#cfmTable_info").hide();
 	$("#saleTable_info").hide();
-	$("#saleInputTable_info").hide();
+// 	$("#saleInputTable_info").hide();
 	$("#submitDateTable_info").hide();
 	$("#ncTable_info").hide();
 	$("#receipeTable_info").hide(); 
@@ -1151,7 +1153,7 @@ $(document) .ready( function() {
 //     	waitTestTable.columns.adjust(); 
     	cfmTable.columns.adjust(); 
     	saleTable.columns.adjust(); 
-    	saleInputTable.columns.adjust(); 
+//     	saleInputTable.columns.adjust(); 
     	submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); 
     	receipeTable.columns.adjust(); 
@@ -1167,7 +1169,7 @@ $(document) .ready( function() {
 //     	waitTestTable.columns.adjust(); 
     	cfmTable.columns.adjust(); 
     	saleTable.columns.adjust(); 
-    	saleInputTable.columns.adjust(); 
+//     	saleInputTable.columns.adjust(); 
     	submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); 
     	receipeTable.columns.adjust(); 

@@ -30,8 +30,8 @@ public class PermitsDaoImpl implements PermitsDao {
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	@Autowired
-    public PermitsDaoImpl(Database database2) {
-		this.database = database2;
+    public PermitsDaoImpl(Database database ) {
+		this.database = database ;
 		this.message = "";
 	}
 

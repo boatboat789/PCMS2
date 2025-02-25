@@ -34,14 +34,14 @@ public class TaskConfig {
 //	public void test() {  
 //		System.out.println("hi");
 //	} 
-	@Scheduled(fixedRate = 50000000)
-//	@Scheduled(cron = "30 2/10 * * * *") 
+//	@Scheduled(fixedRate = 50000000)
+	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundTwo()
 	{
 		this.bgjModel.handlerERPAtechToWebApp();
 	}
 
-//	@Scheduled(cron = "0 0 1 * * *") 
+	@Scheduled(cron = "0 0 1 * * *") 
 	public void bgJobHandlerDataFromOrgatex()
 	{
 		this.sorModel.upSertSORToPCMS();

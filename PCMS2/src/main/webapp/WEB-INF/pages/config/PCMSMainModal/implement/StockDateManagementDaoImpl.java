@@ -29,8 +29,8 @@ public class StockDateManagementDaoImpl implements StockDateManagementDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	private String conType;
 
-	public StockDateManagementDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public StockDateManagementDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.message = "";
 		this.conType = conType;
 	}

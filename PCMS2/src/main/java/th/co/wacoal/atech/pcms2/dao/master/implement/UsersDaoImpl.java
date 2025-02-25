@@ -30,8 +30,8 @@ public class UsersDaoImpl implements UsersDao {
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     @Autowired
-	public UsersDaoImpl(Database database2) {
-		this.database = database2;
+	public UsersDaoImpl(Database database ) {
+		this.database = database ;
 		this.message = "";
 	}
 

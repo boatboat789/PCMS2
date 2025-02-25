@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 
 @Entity
 public class FromErpMainSaleDetail {
+	private String productionOrder ; 
 	private String saleOrder ; 
 	private String saleLine ; 
 	private String materialNo ; 
@@ -39,7 +40,7 @@ public class FromErpMainSaleDetail {
 	private String customerMaterialBase ;
 	private String dataStatus ;
 	private String syncDate ;
-	public FromErpMainSaleDetail(String saleOrder, String saleLine, String materialNo, String dueDate, String planGreigeDate,
+	public FromErpMainSaleDetail(String productionOrder,String saleOrder, String saleLine, String materialNo, String dueDate, String planGreigeDate,
 			String saleUnit, String saleQuantity, String customerMaterial, String color, String customerNo, String purchaseOrder,
 			String saleOrg, String distChannel, String division, String customerName, String customerShortName,
 			String colorCustomer, String customerDue, String remainQuantity, String shipDate, String saleStatus, String currency,
@@ -47,6 +48,7 @@ public class FromErpMainSaleDetail {
 			String deliveryStatus, String designFG, String articleFG, String orderSheetPrintDate, String customerMaterialBase,
 			String dataStatus, String syncDate) {
 		super();
+		this.productionOrder = productionOrder;
 		this.dataStatus = dataStatus;
 		this.saleOrder = saleOrder;
 		this.saleLine = saleLine;
@@ -82,6 +84,14 @@ public class FromErpMainSaleDetail {
 		this.orderSheetPrintDate = orderSheetPrintDate;
 		this.customerMaterialBase = customerMaterialBase;
 		this.syncDate = syncDate;
+	}
+	public String getProductionOrder()
+	{
+		return productionOrder;
+	}
+	public void setProductionOrder(String productionOrder)
+	{
+		this.productionOrder = productionOrder;
 	}
 	public String getSyncDate()
 	{

@@ -77,6 +77,7 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 				  + where  
 				  + " Order by imd.[ProductionOrder],imd.SendLabDate\r\n"
 				  + ""; 
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

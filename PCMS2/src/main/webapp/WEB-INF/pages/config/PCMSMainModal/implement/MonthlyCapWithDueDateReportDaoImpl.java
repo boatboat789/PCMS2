@@ -1421,8 +1421,8 @@ public class MonthlyCapWithDueDateReportDaoImpl implements MonthlyCapWithDueDate
 			+ "	  ) as a\r\n"
 			+ " ) AS A\r\n";
 
-	public MonthlyCapWithDueDateReportDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public MonthlyCapWithDueDateReportDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.message = "";
 		this.conType = conType;
 	}

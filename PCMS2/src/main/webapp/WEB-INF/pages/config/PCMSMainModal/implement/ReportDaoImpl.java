@@ -2401,8 +2401,8 @@ public class ReportDaoImpl implements ReportDao {
 			+ " ) AS B ON A.CustomerNo = b.CustomerNo\r\n"
 			+ " where DataStatus = 'O'\r\n";
 
-	public ReportDaoImpl(Database database2, String conType) {
-		this.database = database2;
+	public ReportDaoImpl(Database database , String conType) {
+		this.database = database ;
 		this.conType = conType;
 		this.message = "";
 	}
@@ -2765,8 +2765,7 @@ public class ReportDaoImpl implements ReportDao {
 				+ this.selectVolume
 				+ "  where ( POType LIKE '%PO%' AND POType <> 'POADD' ) AND \r\n"
 				+ "         VolumeFG is not null AND\r\n "
-				+ "         LEFT(a.ProductionOrder, 1) LIKE '[0-9]' \r\n" 
-//				+ "         ISNUMERIC(LEFT(ProductionOrder, 1)) = 1 \r\n"
+				+ "         LEFT(a.ProductionOrder, 1) LIKE '[0-9]' \r\n"  
 				+ "  Order By  a.POIdPuangMain ,POType,CustomerDue, a.POId,a.ProductionOrder   "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

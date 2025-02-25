@@ -231,7 +231,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
-				+ "    PRINT @rc;\r\n"
+				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapMainSale] (\r\n"
