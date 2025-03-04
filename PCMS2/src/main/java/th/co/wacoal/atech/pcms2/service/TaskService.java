@@ -1,4 +1,4 @@
-package th.co.wacoal.atech.pcms2.config;
+package th.co.wacoal.atech.pcms2.service;
 
 import javax.servlet.ServletContext;
 
@@ -12,18 +12,18 @@ import th.co.wacoal.atech.pcms2.model.SORModel;
 
 @Configuration
 @EnableScheduling
-public class TaskConfig {
+public class TaskService {
 	@SuppressWarnings("unused")
 	private String LOCAL_DIRECTORY;
 	@SuppressWarnings("unused")
 	private String FTP_DIRECTORY;
-	@SuppressWarnings("unused")
+	@SuppressWarnings("unused") 
 	private ServletContext context;
 	private SORModel sorModel;
 	private BackGroundJobModel bgjModel;
 
 	@Autowired
-	public TaskConfig(SORModel sorModel
+	public TaskService(SORModel sorModel
 			, BackGroundJobModel bgjModel
 			) {
 		this.sorModel = sorModel;
@@ -33,7 +33,13 @@ public class TaskConfig {
 //	@Scheduled(cron = "*/5 * * * * *")
 //	public void test() {  
 //		System.out.println("hi");
-//	} 
+//	}
+//	@Scheduled(fixedRate = 50000000)
+////	@Scheduled(cron = "30 8/10 * * * *")
+//	public void sortBackGroundTwos()
+//	{
+//		System.out.println("hi");
+//	}
 //	@Scheduled(fixedRate = 50000000)
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundTwo()

@@ -100,10 +100,15 @@ public class LoginController {
 					redirect = "redirect:" + homePath;
 				} else {
 					if (originalURI.equals("")) {
-						redirect = "redirect:" + homePath;
-					} else {
-						redirect = "redirect:" + originalURI;
-					}
+						redirect = "redirect:" + homePath; 
+					} 
+
+					else if(originalURI.contains("login")) {
+						redirect = "redirect:" + homePath; 
+					} 
+					else {
+						redirect = "redirect:" + originalURI; 
+					} 
 				}
 				return redirect;
 			} else {
@@ -203,10 +208,15 @@ public class LoginController {
 					redirect = "redirect:" + homePath;
 				} else {
 					if (originalURI.equals("")) {
-						redirect = "redirect:" + homePath;
-					} else {
-						redirect = "redirect:" + originalURI;
-					}
+						redirect = "redirect:" + homePath; 
+					} 
+
+					else if(originalURI.contains("login")) {
+						redirect = "redirect:" + homePath; 
+					} 
+					else {
+						redirect = "redirect:" + originalURI; 
+					} 
 				}
 			} else {
 				bean = listConfigCus.get(0); 
