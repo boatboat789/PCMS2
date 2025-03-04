@@ -379,12 +379,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("DyeStatus") != null) {
 			DyeStatus = (String) map.get("DyeStatus");
 		}
+		String CustomerType   = "";
+		if (map.get("CustomerType") != null) {
+			CustomerType = (String) map.get("CustomerType");
+		}
 		return new PCMSTableDetail(SaleOrder, SaleLine, DesignFG, ArticleFG, DistChannel, Color, ColorCustomer, SaleQuantity,
 				BillQuantity, SaleUnit, ProductionOrder, TotalQuantity, GreigeInDate, UserStatus, LabStatus, DueDate, Prepare,
 				Preset, DyePlan, DyeActual, Dryer, Finishing, Inspectation, CFMPlanDate, CFMDateActual, DeliveryDate, LotShipping,
 				LabNo, CustomerShortName, SaleNumber, SaleFullName, SaleCreateDate, PrdCreateDate, MaterialNo, DeliveryStatus,
 				SaleStatus, LotNo, ShipDate, Relax, CustomerName, Division, DyeStatus, TypePrd, TypePrdRemark, SendCFMCusDate,
-				PurchaseOrder, CustomerDivision, PlanGreigeDate, cfmDetailAll, RollNoRemarkAll);
+				PurchaseOrder, CustomerType,CustomerDivision, PlanGreigeDate, cfmDetailAll, RollNoRemarkAll);
 	}
 
 	public String createDDMM(String dateStr)
@@ -1721,10 +1725,10 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			java.util.Date dateValue = (Date) map.get("CFMDateActual");
 			CFMDateActual = sdf2.format(dateValue);
 		}
-//		String CustomerType   = "";
-//		if (map.get("CustomerType") != null) {
-//			CustomerType = (String) map.get("CustomerType");
-//		}
+		String CustomerType   = "";
+		if (map.get("CustomerType") != null) {
+			CustomerType = (String) map.get("CustomerType");
+		}
 		String CustomerDivision = "";
 		if (map.get("CustomerDivision") != null) {
 			CustomerDivision = (String) map.get("CustomerDivision");
@@ -1747,7 +1751,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				ReplacedRemark, StockRemark, GRQuantity, VolumnFGAmount, DyePlan, DyeActual, PCRemark, SwitchRemark, TypePrd,
 				StockLoad, SendCFMCusDate, CauseOfDelay, DelayedDepartment, CFMDetailAll, CFMNumberAll, CFMRemarkAll,
 				RollNoRemarkAll, CFMDateActual,
-//				CustomerType, 
+				CustomerType, 
 				CustomerDivision, LotShipping, DyeStatus, CustomerMaterialBase, QuantityKG, QuantityMR, QuantityYD);
 		bean.setCountInSW(CountInSW);
 		bean.setSaleOrderSW(SaleOrderSW);

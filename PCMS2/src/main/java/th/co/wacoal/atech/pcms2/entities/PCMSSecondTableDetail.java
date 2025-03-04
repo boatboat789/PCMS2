@@ -89,7 +89,7 @@ public class PCMSSecondTableDetail {
 	private String cfmNumberAll;
 	private String cfmRemarkAll;
 	private String rollNoRemarkAll;
-//	private String customerType;
+	private String customerType;
 	private String customerDivision;
 		public PCMSSecondTableDetail(String division, String saleOrder, String saleLine, String customerShortName,
 				String saleCreateDate, String purchaseOrder, String materialNo, String customerMaterial, String price,
@@ -105,7 +105,7 @@ public class PCMSSecondTableDetail {
 				String TypePrd , String StockLoad ,String SendCFMCusDate,String CauseOfDelay,
 				String DelayedDepartment ,String CFMDetailAll ,String CFMNumberAll, String CFMRemarkAll,
 				String RollNoRemarkAll , String CFMDateActual,
-//				String CustomerType,
+				String CustomerType,
 				String CustomerDivision,
 				String LotShipping,String dyeStatus,String customerMaterialBase,
 				String grQuantityKG,String grQuantityMR,String grQuantityYD
@@ -119,7 +119,7 @@ public class PCMSSecondTableDetail {
 			this.dyeStatus = dyeStatus;
 			this.lotShipping = LotShipping;
 			this.customerDivision = CustomerDivision;
-//			this.customerType = CustomerType;
+			this.customerType = CustomerType;
 			this.cfmDateActual= CFMDateActual;
 			this.rollNoRemarkAll = RollNoRemarkAll;
 			this.cfmDetailAll = CFMDetailAll;
@@ -667,12 +667,12 @@ public class PCMSSecondTableDetail {
 		public void setRollNoRemarkAll(String rollNoRemarkAll) {
 			this.rollNoRemarkAll = rollNoRemarkAll;
 		}
-//		public String getCustomerType() {
-//			return customerType;
-//		}
-//		public void setCustomerType(String customerType) {
-//			this.customerType = customerType;
-//		}
+		public String getCustomerType() {
+			return customerType;
+		}
+		public void setCustomerType(String customerType) {
+			this.customerType = customerType;
+		}
 		public String getCustomerDivision() {
 			return customerDivision;
 		}

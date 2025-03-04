@@ -140,7 +140,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 		ERPAtechModel erpaModel = new ERPAtechModel();
 
-//		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
+		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
 		CustomerModel cusModel = new CustomerModel();
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
@@ -161,12 +161,12 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		System.out.println("execHandlerCustomerDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		// error ทางเค้ารอแก้ Invalid column name 'STATUS'. and volumn field don't have
-//		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
-//		fsmpModel.upsertFromSapMainProdDetail(frmpList);
+		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
+		fsmpModel.upsertFromSapMainProdDetail(frmpList);
 
 		// error CFMSendDate เป็น String
-//		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
-//		fscfmModel.upsertFromSapCFMDetail(frcfmList);
+		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
+		fscfmModel.upsertFromSapCFMDetail(frcfmList);
 		
 		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
 		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
@@ -177,8 +177,8 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		System.out.println("upsertFromSapMainBillBatchDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 
 		// error ทางเค้ารอแก้ Invalid column name 'STATUS'.
-//		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
-//		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
+		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
+		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
 
 		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
 		System.out.println("getFromErpMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
@@ -194,14 +194,14 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		System.out.println("upsertFromSapPODetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		// ERROR - NO PROD ORDER
-//		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
-//		fssModel.upsertFromSapSaleDetail(frsList);
-//		System.out.println("upsertFromSapSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
+		fssModel.upsertFromSapSaleDetail(frsList);
+		System.out.println("upsertFromSapSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		//  พี่สไบแจ้งไม่ใช้งานแล้ว 14/02/2025
-//		ArrayList<FromErpSaleInputDetail> frsiList = erpaModel.getFromErpSaleInputDetail();
-//		fssiModel.upsertFromSapSaleInputDetail(frsiList);
-//		System.out.println("upsertFromSapSaleInputDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+		ArrayList<FromErpSaleInputDetail> frsiList = erpaModel.getFromErpSaleInputDetail();
+		fssiModel.upsertFromSapSaleInputDetail(frsiList);
+		System.out.println("upsertFromSapSaleInputDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
 		fssdModel.upsertFromSapSubmitDateDetail(fesdList);

@@ -1974,12 +1974,13 @@ function searchByDetail(){
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
 	var customerShort = $('#multi_cusShortName').val(); 
-	var division = $('#multi_division').val(); 
-	var dist = "";     
+	var division = $('#multi_division').val();  
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|"} dist = "HW";}     
+		var distChannel = "";  
+		 if( dmCheck ){ distChannel = "DM";}
+		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
+
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
 		swal({
    		    title: 'Warning',
@@ -1989,6 +1990,15 @@ function searchByDetail(){
    		    buttons: false,
    		})
 	}  
+	else if (distChannel == ''){
+		swal({
+   		    title: 'Warning',
+   		    text: 'Need to choose  distribute channel from check box.',
+   		    icon: 'warning',
+   		    timer: 1000,
+   		    buttons: false,
+   		})
+	}
 	else{
 		var json = createJsonData(); 
 	    var  obj = JSON.parse(json);    
@@ -2062,11 +2072,11 @@ function createJsonData(){
 	var userStatus = $('#multi_userStatus').val();    
 	var customer = $('#multi_cusName').val();
 	var customerShort = $('#multi_cusShortName').val();
-	var dist = "";    
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
+	var distChannel = "";    
+	 if( dmCheck ){ distChannel = "DM";}
+	 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+	 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}
 	 var cusDiv = "";
 // 	 if(configCusList.length > 0 ){ 
 // 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
@@ -2098,7 +2108,7 @@ function createJsonData(){
 	   ',"divisionList":'+JSON.stringify(division)+   
 	   ',"deliveryStatus":'+JSON.stringify(deliStatus)+         
 	   ',"saleStatus":'+JSON.stringify(saleStatus)+  
-	   ',"distChannel":'+JSON.stringify(dist) + 
+	   ',"distChannel":'+JSON.stringify(distChannel) + 
 	   ',"dueDate":'+JSON.stringify(dueDate) + 
 	   '} ';     
 // 	   console.log(json)
@@ -2399,7 +2409,7 @@ function setUserStatusByStockLoad( array, objTmp,data) { //"DelayedDep"CauseOfDe
 	let oldVal = objTmp.oldValue 
    	var checkEQ = false;    
 	let userStatus = array[0].userStatus; 
-// 	let customerType = array[0].customerType;  
+// 	let distChannel = array[0].distChannel;  
 	rowData =  MainTable.row(idx).data();  
 	if(data[0].userStatus != ''){ 
 		rowData.userStatus = data[0].userStatus;

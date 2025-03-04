@@ -191,7 +191,7 @@ public class PCMSMainController {
 			pd.setCustomerNameList(userArray[i].getCustomerNameList());
 			pd.setDivisionList(userArray[i].getDivisionList());
 			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
-			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
+			pd.setDeliveryStatus(userArray[i].getDeliveryStatus()); 
 			pd.setDistChannel(userArray[i].getDistChannel());
 			pd.setSaleStatus(userArray[i].getSaleStatus());
 			pd.setDueDate(userArray[i].getDueDate());
@@ -319,27 +319,7 @@ public class PCMSMainController {
 		String user = (String) session.getAttribute("user");
 //		int i = 0;
 //		for (i = 0; i < userArray.length; i++) {
-			PCMSTableDetail pd = new PCMSTableDetail();
-//			pd.setCustomerName(userArray[i].getCustomerName());
-//			pd.setCustomerShortName(userArray[i].getCustomerShortName());
-//			pd.setSaleNumber(userArray[i].getSaleNumber());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setProductionOrder(userArray[i].getProductionOrder());
-//			pd.setArticleFG(userArray[i].getArticleFG());
-//			pd.setDesignFG(userArray[i].getDesignFG());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
-//			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
-//			pd.setMaterialNo(userArray[i].getMaterialNo());
-//			pd.setLabNo(userArray[i].getLabNo());
-//			pd.setUserStatus(userArray[i].getUserStatus());
-//			pd.setUserStatusList(userArray[i].getUserStatusList());
-//			pd.setCustomerNameList(userArray[i].getCustomerNameList());
-//			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
-//			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
-//			pd.setDistChannel(userArray[i].getDistChannel());
-//			pd.setSaleStatus(userArray[i].getSaleStatus());
-//			pd.setDueDate(userArray[i].getDueDate());
+			PCMSTableDetail pd = new PCMSTableDetail(); 
 			pd.setUserId(user);
 			poList.add(pd);
 //		}

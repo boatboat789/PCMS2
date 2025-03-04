@@ -795,21 +795,20 @@ $(document) .ready( function() {
 //  	   	orderCellsTop : true,
 // 		orderClasses : false, 
 		lengthChange: false,         	  
-	   	columns :  
-		[                   
-		    {"data" : "no"} ,         //0 
-		    {"data" : "nok"},  
-		    {"data" : "ncDate"},  
-		    {"data" : "lotNo"},   
-		    {"data" : "l"},            //5
-		    {"data" : "da"},
-		    {"data" : "db"},
-		    {"data" : "st"},
-		    {"data" : "receiveDate"},  
-		    {"data" : "remark"},       //  9
-		],  	      
+	   	columns :      
+				[                   
+				    {"data" : "labNo"} ,         //0 
+				    {"data" : "remark"},  
+				    {"data" : "sendFrom"},  
+				    {"data" : "sendLabDate"},   
+				    {"data" : "dateRequiredLab"},            //5
+				    {"data" : "noOfSendInLab"},
+				    {"data" : "noOfStartLab"},
+				    {"data" : "labStartDate"},    
+				    {"data" : "labStopDate"} 
+				],  	      
 		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8 ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
 				} ,            
@@ -834,7 +833,7 @@ $(document) .ready( function() {
 // 			  	  className : 'data-custom-padding0505',     
 // 				} ,           
 // 		],     order: [[ 0, "desc" ]]        
-//  	 }); 
+//  	 });   
      
     cfmTable = $('#cfmTable').DataTable({   
     	scrollY:        '175px',    
@@ -1194,17 +1193,18 @@ function searchByDetail(){
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
 	var customerShort = $('#multi_cusShortName').val();
-	var division = $('#multi_division').val(); 
 // 	console.log(userStatus)    
-	var deliStatus = document.getElementById("SL_delivStatus").value .trim();      
+	var deliStatus = document.getElementById("SL_delivStatus").value .trim();     
+	var division = $('#multi_division').val();  
 	var dmCheck = document.getElementById("check_DM").checked;         
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;  
-	var dist = "";     
+	var distChannel = "";  
+	 if( dmCheck ){ distChannel = "DM";}
+	 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+	 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = "HW";}      
+
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
 		swal({
@@ -1216,10 +1216,10 @@ function searchByDetail(){
    		})
 	} 
 
-	else if (dist == ''){
+	else if (distChannel == ''){
 		swal({
    		    title: 'Warning',
-   		    text: 'Need to choose  Dist. from check box.',
+   		    text: 'Need to choose distribute channel from check box.',
    		    icon: 'warning',
    		    timer: 1000,
    		    buttons: false,
@@ -1255,8 +1255,7 @@ function createJsonData(){
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var dmCheck = document.getElementById("check_DM").checked;  
 	var exCheck = document.getElementById("check_EX").checked;  
-	var hwCheck = document.getElementById("check_HW").checked;     
-	var dist = "";    
+	var hwCheck = document.getElementById("check_HW").checked;      
 	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 
@@ -1265,9 +1264,10 @@ function createJsonData(){
 // 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
 // 	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
 	 }     
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
+		var distChannel = "";  
+		 if( dmCheck ){ distChannel = "DM";}
+		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	var json = '{'+    
 	    '"saleOrder":'+JSON.stringify(saleOrder)+      
 	   ',"articleFG":'+JSON.stringify(article)+  
@@ -1286,9 +1286,9 @@ function createJsonData(){
 	   ',"divisionList":'+JSON.stringify(division)+   
 	   ',"deliveryStatus":'+JSON.stringify(deliStatus)+            
 	   ',"saleStatus":'+JSON.stringify(saleStatus)+  
-	   ',"distChannel":'+JSON.stringify(dist) + 
+	   ',"distChannel":'+JSON.stringify(distChannel) + 
 	   ',"dueDate":'+JSON.stringify(dueDate) + 
-	   '} ';            
+	   '} ';             
 	   return json; 
 }
 function exportCSV(data){ 

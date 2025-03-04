@@ -942,7 +942,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 //		String whereCaseA = "";
 		String whereWaitLot = " where ";
 String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",labNo = "" ,articleFG = "",designFG = "",prdOrder= "",
-		prdCreateDate = "",deliveryStatus = "",saleStatus ="",dist="",dueDate = "",po="",
+		prdCreateDate = "",deliveryStatus = "",saleStatus ="",distChannel="",dueDate = "",po="",
 		cusDiv="";
 		PCMSTableDetail bean = poList.get(0);
 		bean.getCustomerName();
@@ -961,7 +961,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		dueDate = bean.getDueDate();
 		deliveryStatus = bean.getDeliveryStatus();
 		saleStatus = bean.getSaleStatus();
-		dist = bean.getDistChannel();
+		distChannel = bean.getDistChannel();
 		cusDiv = bean.getCustomerDivision();
 		List<String> userStatusList = bean.getUserStatusList();
 		List<String> cusNameList = bean.getCustomerNameList();
@@ -1075,9 +1075,9 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 
 			}
 		}
-		if (!dist.equals("")) {
+		if (!distChannel.equals("")) {
 			String tmpWhere = "";
-			String[] array = dist.split("\\|");
+			String[] array = distChannel.split("\\|");
 			listString.clear();
 			for (String element : array) {
 				listString.add("'"+element.replaceAll("'","''")+"' ");
@@ -1631,8 +1631,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			+ "		Drop Table #tempMainSale\r\n"
 			+ "	end ; "
 			+ " SELECT DISTINCT \r\n"
-			+ "	   a.*\r\n"
-//			+ "	  ,b.CustomerType \r\n"
+			+ "	   a.*\r\n" 
 			+ "	  ,a.[Division] AS CustomerDivision\r\n"
 			+ " INTO #tempMainSale \r\n"
 			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"

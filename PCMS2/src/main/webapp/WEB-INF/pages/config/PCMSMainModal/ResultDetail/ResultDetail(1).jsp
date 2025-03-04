@@ -12,16 +12,15 @@
 						<table id="workInLabTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>    
 					            <tr> 
-					                <td style="vertical-align: middle;">ครั้งที่</td>
-					                <td style="vertical-align: middle;">วันที่</td>   
-					                <td style="vertical-align: middle;">NoK จาก</td>   
-					                <td style="vertical-align: middle;">Lot No</td>   
-					                <td style="vertical-align: middle;">L. </td>  
-				                 	<td style="vertical-align: middle;">Da. </td>  
-				                 	<td style="vertical-align: middle;">Db. </td>  
-				                 	<td style="vertical-align: middle;">ST. </td>  
-					                <td style="vertical-align: middle;">วันรับสูตร</td>   
-					                <td style="vertical-align: middle;">หมายเหตุ</td>   
+					                <td style="vertical-align: middle;">LabNo</td>
+					                <td style="vertical-align: middle;">Remark</td>   
+					                <td style="vertical-align: middle;">ส่งจาก</td>   
+					                <td style="vertical-align: middle;">วันที่ส่งเข้า Lab</td>   
+					                <td style="vertical-align: middle;">วันที่ต้องการ Lab</td>  
+				                 	<td style="vertical-align: middle;">ครั้งที่ส่งงานเข้า Lab </td>  
+				                 	<td style="vertical-align: middle;">ครั้งที่ Start Lab </td>  
+				                 	<td style="vertical-align: middle;">วันที Start Lab </td>  
+				                 	<td style="vertical-align: middle;">วันที่ Stop Lab</td>   
 					        	</tr> 
 					        </thead>     
 					        <tbody> 

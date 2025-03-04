@@ -67,6 +67,7 @@ public class PCMSTableDetail {
 	private String typePrdRemark ;
 	private String sendCFMCusDate;
 	private String purchaseOrder;
+	private String customerType;
 	private String customerDivision;
 	private String forPage ;
 	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
@@ -78,12 +79,15 @@ public class PCMSTableDetail {
 			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
 			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
 			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder,
+
+			String CustomerType,
 			String CustomerDivision,String PlanGreigeDate,
 
 			String cfmDetailAll,
 			String rollNoRemarkAll  ) {
 		super();
 
+		this.customerType = CustomerType;
 		this. cfmDetailAll = cfmDetailAll;
 		this. rollNoRemarkAll = rollNoRemarkAll;
 		this.planGreigeDate = PlanGreigeDate;
@@ -162,6 +166,14 @@ public class PCMSTableDetail {
 		this.deliveryStatus = deliveryStatus;
 		this.saleStatus = saleStatus;
 		this.division = division;
+	}
+	public String getCustomerType()
+	{
+		return customerType;
+	}
+	public void setCustomerType(String customerType)
+	{
+		this.customerType = customerType;
 	}
 	public String getCfmDetailAll() {
 		return cfmDetailAll;
