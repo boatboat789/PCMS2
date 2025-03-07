@@ -34,7 +34,7 @@ public interface ERPAtechDao {
 
 	ArrayList<FromErpPackingDetail> getFromErpPackingDetail();
 
-	ArrayList<FromErpPODetail> getFromErpPODetail(); 
+//	ArrayList<FromErpPODetail> getFromErpPODetail(); 
 
 	ArrayList<FromErpSaleDetail> getFromErpSaleDetail();
 

@@ -123,12 +123,12 @@ public class ERPAtechModel extends HttpServlet {
 		return list;
 	}
 
-	public ArrayList<FromErpPODetail> getFromErpPODetail()
-	{
-		// TODO Auto-generated method stub
-		ArrayList<FromErpPODetail> list = this.dao.getFromErpPODetail();
-		return list;
-	}
+//	public ArrayList<FromErpPODetail> getFromErpPODetail()
+//	{
+//		// TODO Auto-generated method stub
+//		ArrayList<FromErpPODetail> list = this.dao.getFromErpPODetail();
+//		return list;
+//	}
 
 	public ArrayList<FromErpSaleDetail> getFromErpSaleDetail()
 

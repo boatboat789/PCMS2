@@ -685,21 +685,21 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("ProductionOrder") != null) {
 			ProductionOrder = (String) map.get("ProductionOrder");
 		}
-		String RollNo = "";
-		if (map.get("RollNo") != null) {
-			RollNo = (String) map.get("RollNo");
+		String RollNumber = "";
+		if (map.get("RollNumber") != null) {
+			RollNumber = (String) map.get("RollNumber");
 		}
-		String QuantityKG = "";
-		if (map.get("QuantityKG") != null) {
-			BigDecimal value = (BigDecimal) map.get("QuantityKG");
+		String RollWeight = "";
+		if (map.get("RollWeight") != null) {
+			BigDecimal value = (BigDecimal) map.get("RollWeight");
 			Double doubleVal = value.doubleValue();
-			QuantityKG = formatter.format(doubleVal);
+			RollWeight = formatter.format(doubleVal);
 		}
-		String QuantityMR = "";
-		if (map.get("QuantityMR") != null) {
-			BigDecimal value = (BigDecimal) map.get("QuantityMR");
+		String RollLength = "";
+		if (map.get("RollLength") != null) {
+			BigDecimal value = (BigDecimal) map.get("RollLength");
 			Double doubleVal = value.doubleValue();
-			QuantityMR = formatter.format(doubleVal);
+			RollLength = formatter.format(doubleVal);
 		}
 		String POCreatedate = "";
 		if (map.get("POCreatedate") != null) {
@@ -733,8 +733,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			java.util.Date dateValue = (Date) map.get("POPostingDateDefault");
 			POPostingDateDefault = sdf2.format(dateValue);
 		}
-		return new PODetail(ProductionOrder, PurchaseOrder, PurchaseOrderLine, POCreatedate, RequiredDate, RollNo, QuantityKG,
-				QuantityMR, PODefault, POLineDefault, POPostingDateDefault);
+		return new PODetail(ProductionOrder, PurchaseOrder, PurchaseOrderLine, POCreatedate, RequiredDate, RollNumber, RollWeight,
+				RollLength, PODefault, POLineDefault, POPostingDateDefault);
 	}
 
 	@Override
@@ -975,8 +975,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 
 	@Override
 	public PackingDetail _genPackingDetail(Map<String, Object> map)
-	{
-		// TODO Auto-generated method stub
+	{ 
 		String PostingDate = "";
 		if (map.get("PostingDate") != null) {
 			java.util.Date dateValue = (Date) map.get("PostingDate");
@@ -1064,8 +1063,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String ST = "";
 		if (map.get("ST") != null) {
 			ST = (String) map.get("ST");
-		}
-		// TODO Auto-generated method stub
+		} 
 		return new WorkInLabDetail(No, SendDate, NOK, NCDate, LotNo, ReceiveDate, Remark, Da, Db, L, ST);
 	}
 
@@ -1192,9 +1190,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String DE = "";
 		if (map.get("DE") != null) {
 			DE = (String) map.get("DE");
-		}
-
-		// TODO Auto-generated method stub
+		} 
 		return new CFMDetail(Id, ProductionOrder, CFMNo, CFMNumber, CFMSendDate, RollNo, RollNoRemark, L, Da, Db, ST, SaleOrder,
 				SaleLine, Color, CFMAnswerDate, CFMStatus, CFMRemark, NextLot, SOChange, SOChangeQty, SOChangeUnit, DE);
 	}
@@ -3066,9 +3062,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		String DataStatus = "";
 		if (map.get("DataStatus") != null) {
 			DataStatus = (String) map.get("DataStatus");
-		}
-
-		// TODO Auto-generated method stub
+		} 
 		return new FromErpReceipeDetail(ProductionOrder, LotNo, SyncDate, DataStatus);
 	}
 

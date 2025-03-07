@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
+import th.co.wacoal.atech.pcms2.info.SqlPPMMInfo; 
 import th.in.totemplate.core.sql.Database;
 
 @Configuration
@@ -32,7 +33,11 @@ public class DatabaseConfig {
 //    public Database inspectDatabase() throws ClassNotFoundException, SQLException  {
 //        return new Database(SqlInspectSystemInfo.getInstance()); // Return the Test SQL configuration
 //    }
-
+    @Bean
+    @Qualifier("ppmmDatabase")
+    public Database ppmmUatDatabase()  throws ClassNotFoundException, SQLException {
+        return new Database(SqlPPMMInfo.getInstance()); // Return the Test SQL configuration
+    }
     @Bean
     @Qualifier("pcmsDatabase")
     public Database pcmsDatabase() throws ClassNotFoundException, SQLException {

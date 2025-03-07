@@ -638,9 +638,9 @@ $(document) .ready( function() {
 		    {"data" : "poLine"},  
 		    {"data" : "poCreatedate"},  
 		    {"data" : "requiredDate"},  
-		    {"data" : "rollNo"},  
-		    {"data" : "quantityKG"},  
-		    {"data" : "quantityMR"},    //6
+		    {"data" : "rollNumber"},  
+		    {"data" : "rollWeight"},  
+		    {"data" : "rollLength"},    //6
 		],  	      
 		columnDefs :  [	   	
 // 			{ targets : [ 0,1,2,3,4,5,6  ],                
@@ -1166,7 +1166,7 @@ $(document) .ready( function() {
 // 		sendTestQCTable.columns.adjust(); 
     	workInLabTable.columns.adjust(); 
 //     	waitTestTable.columns.adjust(); 
-    	cfmTable.columns.adjust(); 
+    	cfmTable.columns.adjust(); 	
     	saleTable.columns.adjust(); 
 //     	saleInputTable.columns.adjust(); 
     	submitDateTable.columns.adjust(); 

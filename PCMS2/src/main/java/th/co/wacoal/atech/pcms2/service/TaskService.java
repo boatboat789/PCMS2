@@ -40,7 +40,7 @@ public class TaskService {
 //	{
 //		System.out.println("hi");
 //	}
-//	@Scheduled(fixedRate = 50000000)
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundTwo()
 	{

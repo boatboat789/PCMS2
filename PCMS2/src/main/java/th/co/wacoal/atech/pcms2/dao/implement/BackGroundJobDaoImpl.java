@@ -148,17 +148,17 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
 		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
 		FromSapPackingModel fspModel = new FromSapPackingModel();
-		FromSapPOModel fspoModel = new FromSapPOModel();
+//		FromSapPOModel fspoModel = new FromSapPOModel();
 		FromSapSaleModel fssModel = new FromSapSaleModel();
 		FromSapSaleInputModel fssiModel = new FromSapSaleInputModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
-		System.out.println("Select: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
+//		System.out.println("Select: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
 
 		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
 		cusModel.upsertCustomerDetail(cusList);
 		this.execHandlerCustomerDetail();
-		System.out.println("execHandlerCustomerDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("execHandlerCustomerDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		// error ทางเค้ารอแก้ Invalid column name 'STATUS'. and volumn field don't have
 		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
@@ -170,51 +170,51 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		
 		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
 		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
-		System.out.println("upsertFromSapGoodReceiveDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapGoodReceiveDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail();
 		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
-		System.out.println("upsertFromSapMainBillBatchDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapMainBillBatchDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 
 		// error ทางเค้ารอแก้ Invalid column name 'STATUS'.
 		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
 		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
 
 		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
-		System.out.println("getFromErpMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("getFromErpMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
-		System.out.println("upsertFromSapMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 
 		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
 		fspModel.upsertFromSapPackingDetail(frpList);
-		System.out.println("upsertFromSapPackingDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapPackingDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
-		ArrayList<FromErpPODetail> frpoList = erpaModel.getFromErpPODetail();
-		fspoModel.upsertFromSapPODetail(frpoList);
-		System.out.println("upsertFromSapPODetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		ArrayList<FromErpPODetail> frpoList = erpaModel.getFromErpPODetail();
+//		fspoModel.upsertFromSapPODetail(frpoList);
+//		System.out.println("upsertFromSapPODetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		// ERROR - NO PROD ORDER
 		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
 		fssModel.upsertFromSapSaleDetail(frsList);
-		System.out.println("upsertFromSapSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		//  พี่สไบแจ้งไม่ใช้งานแล้ว 14/02/2025
 		ArrayList<FromErpSaleInputDetail> frsiList = erpaModel.getFromErpSaleInputDetail();
 		fssiModel.upsertFromSapSaleInputDetail(frsiList);
-		System.out.println("upsertFromSapSaleInputDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
+//		System.out.println("upsertFromSapSaleInputDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 		
 		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
 		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
 
-		System.out.println("upsertFromSapSubmitDateDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+//		System.out.println("upsertFromSapSubmitDateDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
 		fsrModel.upsertFromSapReceipeDetail(ferdList);
 
-		System.out.println("upsertFromSapReceipeDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+//		System.out.println("upsertFromSapReceipeDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.execUpsertToTEMPProdWorkDate();
-		System.out.println("execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+//		System.out.println("execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.execUpsertToTEMPUserStatusOnWeb();
-		System.out.println("After upsert: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
+//		System.out.println("After upsert: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
 
 	}
 }

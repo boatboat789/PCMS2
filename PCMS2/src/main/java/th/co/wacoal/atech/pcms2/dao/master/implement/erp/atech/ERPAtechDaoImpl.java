@@ -507,53 +507,53 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
-	@Override
-	public ArrayList<FromErpPODetail> getFromErpPODetail()
-	{
-		ArrayList<FromErpPODetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-				+ " SELECT distinct   \r\n"
-				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
-				+ " TRY_CAST(RollNo AS NVARCHAR(10)) as RollNo,\r\n"
-				+ " TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG,\r\n"
-				+ " TRY_CAST(QuantityMR AS decimal(13, 3)) as QuantityMR,\r\n" 
-				+ "  CASE \r\n"
-				+ "        WHEN POCreatedate = '1900-01-01 00:00:00.000' THEN null\r\n"
-				+ "        WHEN POCreatedate is null or  "
-				+ "             POCreatedate = '' THEN null \r\n" 
-				+ "        ELSE TRY_CAST( POCreatedate AS DATETIME )  \r\n"
-				+ "      END AS POCreatedate, \r\n"    
-				+ "  CASE \r\n"
-				+ "        WHEN RequiredDate = '1900-01-01 00:00:00.000' THEN null\r\n"
-				+ "        WHEN RequiredDate is null or  "
-				+ "             RequiredDate = '' THEN null \r\n" 
-				+ "        ELSE TRY_CAST( RequiredDate AS DATETIME )  \r\n"
-				+ "      END AS RequiredDate, \r\n"   
-				+ " TRY_CAST(PurchaseOrder AS NVARCHAR(15)) as PurchaseOrder,\r\n"
-				+ " TRY_CAST(PurchaseOrderLine AS NVARCHAR(5)) as PurchaseOrderLine,\r\n"
-				+ " TRY_CAST(PODefault AS NVARCHAR(15)) as PODefault,\r\n"
-				+ " TRY_CAST(POLineDefault AS NVARCHAR(5)) as POLineDefault,\r\n" 
-				+ "  CASE \r\n"
-				+ "        WHEN POPostingDateDefault = '1900-01-01 00:00:00.000' THEN null\r\n"
-				+ "        WHEN POPostingDateDefault is null or  "
-				+ "             POPostingDateDefault = '' THEN null \r\n"
-//				+ "        ELSE POPostingDateDefault  \r\n"
-				+ "        ELSE TRY_CAST( POPostingDateDefault AS DATETIME )  \r\n"
-				+ "      END AS POPostingDateDefault, \r\n"   
-				+ "  [SyncDate]"
-				+ " " 
-				+ " from FromErpPO"
-				
-				; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genFromErpPODetail(map));
-		}
-		return list;
-	}
+//	 
+//	@Override
+//	public ArrayList<FromErpPODetail> getFromErpPODetail()
+//	{
+//		ArrayList<FromErpPODetail> list = new ArrayList<>(); 
+//		String sql =
+//				" "
+//				+ " SELECT distinct   \r\n"
+//				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
+//				+ " TRY_CAST(RollNo AS NVARCHAR(10)) as RollNo,\r\n"
+//				+ " TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG,\r\n"
+//				+ " TRY_CAST(QuantityMR AS decimal(13, 3)) as QuantityMR,\r\n" 
+//				+ "  CASE \r\n"
+//				+ "        WHEN POCreatedate = '1900-01-01 00:00:00.000' THEN null\r\n"
+//				+ "        WHEN POCreatedate is null or  "
+//				+ "             POCreatedate = '' THEN null \r\n" 
+//				+ "        ELSE TRY_CAST( POCreatedate AS DATETIME )  \r\n"
+//				+ "      END AS POCreatedate, \r\n"    
+//				+ "  CASE \r\n"
+//				+ "        WHEN RequiredDate = '1900-01-01 00:00:00.000' THEN null\r\n"
+//				+ "        WHEN RequiredDate is null or  "
+//				+ "             RequiredDate = '' THEN null \r\n" 
+//				+ "        ELSE TRY_CAST( RequiredDate AS DATETIME )  \r\n"
+//				+ "      END AS RequiredDate, \r\n"   
+//				+ " TRY_CAST(PurchaseOrder AS NVARCHAR(15)) as PurchaseOrder,\r\n"
+//				+ " TRY_CAST(PurchaseOrderLine AS NVARCHAR(5)) as PurchaseOrderLine,\r\n"
+//				+ " TRY_CAST(PODefault AS NVARCHAR(15)) as PODefault,\r\n"
+//				+ " TRY_CAST(POLineDefault AS NVARCHAR(5)) as POLineDefault,\r\n" 
+//				+ "  CASE \r\n"
+//				+ "        WHEN POPostingDateDefault = '1900-01-01 00:00:00.000' THEN null\r\n"
+//				+ "        WHEN POPostingDateDefault is null or  "
+//				+ "             POPostingDateDefault = '' THEN null \r\n"
+////				+ "        ELSE POPostingDateDefault  \r\n"
+//				+ "        ELSE TRY_CAST( POPostingDateDefault AS DATETIME )  \r\n"
+//				+ "      END AS POPostingDateDefault, \r\n"   
+//				+ "  [SyncDate]"
+//				+ " " 
+//				+ " from FromErpPO"
+//				
+//				; 
+//		List<Map<String, Object>> datas = this.database.queryList(sql);
+//		list = new ArrayList<>();
+//		for (Map<String, Object> map : datas) {
+//			list.add(this.bcModel._genFromErpPODetail(map));
+//		}
+//		return list;
+//	}
 
 	 
 //	@Override

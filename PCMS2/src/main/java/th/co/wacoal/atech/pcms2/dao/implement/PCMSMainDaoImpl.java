@@ -36,6 +36,7 @@ import th.co.wacoal.atech.pcms2.model.master.SearchSettingModel;
 import th.co.wacoal.atech.pcms2.model.master.InspectSystem.InspectNcModel;
 import th.co.wacoal.atech.pcms2.model.master.InspectSystem.InspectOrdersModel;
 import th.co.wacoal.atech.pcms2.model.master.LBMS.ImportDetailModel;
+import th.co.wacoal.atech.pcms2.model.master.PPMM.RollFromSapModel;
 import th.co.wacoal.atech.pcms2.model.master.PPMM.ShopFloorControlModel;
 import th.in.totemplate.core.sql.Database;
 @Repository // Spring annotation to mark this as a DAO component
@@ -1678,12 +1679,13 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 		}
 		if (list.size() > 0) {
 			boolean isCheck = false ;
-			isCheck = true;
+//			isCheck = true;
 			
 			ShopFloorControlModel sfcModel = new ShopFloorControlModel();
 			ImportDetailModel idModel = new ImportDetailModel();
 			InspectOrdersModel insOrderModel = new InspectOrdersModel();
-			FromSapPOModel fspoModel = new FromSapPOModel();
+			RollFromSapModel rfsModel = new RollFromSapModel();
+//			FromSapPOModel fspoModel = new FromSapPOModel();
 //			FromSapFinishingModel fsfModel = new FromSapFinishingModel();
 //			FromSapPresetModel fspModel = new FromSapPresetModel();
 //			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
@@ -1700,7 +1702,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 			String productionOrder = bean.getProductionOrder();
 			if(isCheck) { System.out.println("1: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder); 
+//			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder); 
+			ArrayList<PODetail> poDetailList = rfsModel.getRollFromSapDetailByProductionOrder(productionOrder) ; 
 //			ArrayList<SendTestQCDetail> sendTestQCDetailList = fsstQCModel.getFromSapSendTestQCByProductionOrder(productionOrder);
 //			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
 			if(isCheck) { System.out.println("2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}

@@ -10,14 +10,14 @@ public class PODetail {
 	private String poCreatedate;
 //	private String createDate ;
 	private String requiredDate ;
-	private String rollNo ;
-	private String quantityKG ;
-	private String quantityMR ;
+	private String rollNumber ;
+	private String rollWeight ;
+	private String rollLength ;
 	private String poDefault ;
 	private String poLineDefault ;
 	private String poPostingDateDefault ;
-	public PODetail(String productionOrder, String pONo, String pOLine, String poCreatedate, String RequiredDate, String rollNo,
-			String quantityKG, String quantityMR, String pODefault, String pOLineDefault, String pOPostingDateDefault ) {
+	public PODetail(String productionOrder, String pONo, String pOLine, String poCreatedate, String RequiredDate, String rollNumber,
+			String rollWeight, String rollLength, String pODefault, String pOLineDefault, String pOPostingDateDefault ) {
 		super();
 		this.poCreatedate = poCreatedate;
 		this.productionOrder = productionOrder;
@@ -25,9 +25,9 @@ public class PODetail {
 		this.poLine = pOLine;
 //		this.createDate = createDate;
 		this.requiredDate = RequiredDate;
-		this.rollNo = rollNo;
-		this.quantityKG = quantityKG;
-		this.quantityMR = quantityMR;
+		this.rollNumber =rollNumber;
+		this.rollWeight = rollWeight;
+		this.rollLength = rollLength;
 		this.poDefault = pODefault;
 		this.poLineDefault = pOLineDefault;
 		this.poPostingDateDefault = pOPostingDateDefault;
@@ -68,23 +68,30 @@ public class PODetail {
 	public void setRequiredDate(String requiredDate) {
 		this.requiredDate = requiredDate;
 	}
-	public String getRollNo() {
-		return rollNo;
+ 
+	public String getRollNumber()
+	{
+		return rollNumber;
 	}
-	public void setRollNo(String rollNo) {
-		this.rollNo = rollNo;
+	public void setRollNumber(String rollNumber)
+	{
+		this.rollNumber = rollNumber;
 	}
-	public String getQuantityKG() {
-		return quantityKG;
+	public String getRollWeight()
+	{
+		return rollWeight;
 	}
-	public void setQuantityKG(String quantityKG) {
-		this.quantityKG = quantityKG;
+	public void setRollWeight(String rollWeight)
+	{
+		this.rollWeight = rollWeight;
 	}
-	public String getQuantityMR() {
-		return quantityMR;
+	public String getRollLength()
+	{
+		return rollLength;
 	}
-	public void setQuantityMR(String quantityMR) {
-		this.quantityMR = quantityMR;
+	public void setRollLength(String rollLength)
+	{
+		this.rollLength = rollLength;
 	}
 	public String getPoDefault() {
 		return poDefault;
