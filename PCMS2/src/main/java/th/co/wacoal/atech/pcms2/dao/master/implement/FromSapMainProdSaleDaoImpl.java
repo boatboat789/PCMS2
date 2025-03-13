@@ -53,6 +53,14 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainProdSale]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [ProductionOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapMainProdSale]\r\n"
 				+ "SET \r\n"
 				+ "    [Volumn] = ?,\r\n"
@@ -65,11 +73,13 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 				+ "    [SaleOrder] = ? and\r\n"
 				+ "    [SaleLine] = ? \r\n"
 				+ "    ;\r\n"
+				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapMainProdSale] (\r\n"
 				+ "        [ProductionOrder]  ,[SaleOrder] ,[SaleLine] ,[Volumn] ,[DataStatus]\r\n"
@@ -81,13 +91,16 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 				+ "?, ?\r\n"
 				+ ", ? "
 				+ "    ); "
-				+ ";";
+				+ "END ";
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpMainProdSaleDetail bean : paList) {
 				index = 1;
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getProductionOrder()    );
+				
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getVolumn(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
@@ -114,7 +127,8 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

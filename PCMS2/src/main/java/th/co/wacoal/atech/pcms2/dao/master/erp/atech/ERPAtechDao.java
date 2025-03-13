@@ -33,16 +33,17 @@ public interface ERPAtechDao {
 	ArrayList<FromErpMainSaleDetail> getFromErpMainSaleDetail();
 
 	ArrayList<FromErpPackingDetail> getFromErpPackingDetail();
-
-//	ArrayList<FromErpPODetail> getFromErpPODetail(); 
+ 
 
 	ArrayList<FromErpSaleDetail> getFromErpSaleDetail();
 
-	ArrayList<FromErpSaleInputDetail> getFromErpSaleInputDetail();
+//	ArrayList<FromErpSaleInputDetail> getFromErpSaleInputDetail();
 
 	ArrayList<FromErpSubmitDateDetail> getFromErpSubmitDateDetail();
 
-	ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail();
+//	ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail();
+
+	ArrayList<FromErpPODetail> getFromErpPODetail();
  
 
 }

@@ -85,6 +85,14 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 		String sql =
 				  "-- Update if the record exists\r\n"
 				  + " "
+				  + "IF ? = 'X'\r\n"
+				  + "BEGIN\r\n"
+				  + "    UPDATE [dbo].[FromSapSale]\r\n"
+				  + "    SET [DataStatus] = 'X'\r\n"
+				  + "    WHERE [SaleOrder] = ?;\r\n"
+				  + "END\r\n"
+				  + "ELSE \r\n"
+				  + "BEGIN\r\n"
 				  + "UPDATE [dbo].[FromSapSale]\r\n"
 				  + "SET \r\n"   
 				  + "    [BillDate] = ?,\r\n"
@@ -104,11 +112,13 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				  + "WHERE \r\n"
 				  + "    [ProductionOrder] = ? AND\r\n"  
 				  + "    [No] = ? ;\r\n"
+				  + "END\r\n"
 				  + "-- Check if rows were updated\r\n"
 				  + "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				  + "IF @rc <> 0\r\n"
 				  + "   SELECT 1;\r\n"
 				  + "ELSE \r\n"
+				  + "BEGIN\r\n"
 				  + "    -- Insert if no rows were updated\r\n"
 				  + "    INSERT INTO [dbo].[FromSapSale] (\r\n"
 				  + "        [ProductionOrder] ,[BillDate] ,[BillQtyPerSale] ,[SaleOrder] ,[SaleLine]\r\n"
@@ -124,13 +134,16 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 					+ "		, ? "
 
 				  + "    ); "
-				+ ";"  ;
+				  + "END "  ;
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql); 
 			for(FromErpSaleDetail bean : paList) {
 				index = 1; 
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getSaleOrder()    );
+				
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getBillDate() , index++); 
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerSale() , index++); 
 				prepared.setString(index++, bean.getSaleOrder()    );
@@ -175,7 +188,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 			prepared.executeBatch();
 			prepared.close(); 
 		} catch (SQLException e) {
-			System.err.println(e); 
+			 e.printStackTrace();
 			iconStatus = "E";
 		}finally {
 			//this.database.close();

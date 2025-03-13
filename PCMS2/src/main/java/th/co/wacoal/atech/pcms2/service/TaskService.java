@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +24,14 @@ public class TaskService {
 	private ServletContext context;
 	private SORModel sorModel;
 	private BackGroundJobModel bgjModel;
-
+	private boolean isCheck =false;
 	@Autowired
 	public TaskService(SORModel sorModel
 			, BackGroundJobModel bgjModel
 			) {
 		this.sorModel = sorModel;
 		this.bgjModel = bgjModel;
+		isCheck = true;
 	}
 
 //	@Scheduled(cron = "*/5 * * * * *")
@@ -40,13 +44,37 @@ public class TaskService {
 //	{
 //		System.out.println("hi");
 //	}
-//	@Scheduled(fixedRate = 50000000)	
+	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
-	public void sortBackGroundTwo()
+	public void sortBackGroundCustomer()
 	{
-		this.bgjModel.handlerERPAtechToWebApp();
+		if(isCheck)System.out.println("Start sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
+		this.bgjModel.handlerERPAtechToWebAppCustomer();
+		if(isCheck)System.out.println("End sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
-
+	@Scheduled(fixedRate = 50000000)	
+	@Scheduled(cron = "30 8/10 * * * *")
+	public void sortBackGroundProductionOrder()
+	{
+		if(isCheck)System.out.println("Start sortBackGroundProductionOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+		this.bgjModel.handlerERPAtechToWebAppProductionOrder();
+		if(isCheck)System.out.println("End sortBackGroundProductionOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+	}
+	@Scheduled(fixedRate = 50000000)	
+	@Scheduled(cron = "30 8/10 * * * *")
+	public void sortBackGroundSaleOrder()
+	{
+		if(isCheck)System.out.println("Start sortBackGroundSaleOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+		this.bgjModel.handlerERPAtechToWebAppSaleOrder();
+		if(isCheck)System.out.println("End sortBackGroundSaleOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+	}
+	@Scheduled(cron = "30 4/10 * * * *")
+	public void sortBackGroundAfterGetERPDataProcedure()
+	{
+		if(isCheck)System.out.println("Start sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+		this.bgjModel.sortBackGroundAfterGetERPDataProcedure();
+		if(isCheck)System.out.println("End sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+	}
 	@Scheduled(cron = "0 0 1 * * *") 
 	public void bgJobHandlerDataFromOrgatex()
 	{

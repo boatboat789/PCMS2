@@ -70,7 +70,7 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 		  + "      , SubmitDate as [PlanDate]\r\n"
 		  + "      , '' AS [CreateBy]\r\n"
 		  + "      , null AS [CreateDate]\r\n"
-		  + "	   , '0:SAP' as InputFrom \r\n"
+		  + "	   , '0:ERP365' as InputFrom \r\n"
 		  + " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n"
 		  + " where a.[ProductionOrder] = '" + prdOrder + "' and SubmitDate is not null \r\n"
   		  + "   and a.[DataStatus] = 'O' \r\n"
@@ -99,6 +99,14 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 		String sql =
 				  "-- Update if the record exists\r\n"
 				  + " "
+				  + "IF ? = 'X'\r\n"
+				  + "BEGIN\r\n"
+				  + "    UPDATE [dbo].[FromSapSubmitDate]\r\n"
+				  + "    SET [DataStatus] = 'X'\r\n"
+				  + "    WHERE [ProductionOrder] = ?;\r\n"
+				  + "END\r\n"
+				  + "ELSE \r\n"
+				  + "BEGIN\r\n"
 				  + "UPDATE [dbo].[FromSapSubmitDate]\r\n"
 				  + "SET \r\n"   
 				  + "    [SubmitDate] = ?,\r\n"
@@ -111,11 +119,13 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				  + "    [SaleOrder] = ? AND\r\n"
 				  + "    [SaleLine] = ? AND\r\n"
 				  + "    [No] = ? ;\r\n"
+				  + "END\r\n"
 				  + "-- Check if rows were updated\r\n"
 				  + "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				  + "IF @rc <> 0\r\n"
 				  + "   SELECT 1;\r\n"
 				  + "ELSE \r\n"
+				  + "BEGIN\r\n"
 				  + "    -- Insert if no rows were updated\r\n"
 				  + "    INSERT INTO [dbo].[FromSapSubmitDate] (\r\n"
 				  + "        [ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[No] ,[SubmitDate]\r\n"
@@ -124,16 +134,17 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 				  + "    ) VALUES (\r\n"
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ? " 
-					+ "		, ? "
-
+					+ "		, ? " 
 				  + "    ); "
-				+ ";"  ;
+				  + "END "    ;
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql); 
 			for(FromErpSubmitDateDetail bean : paList) {
 				index = 1;
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getProductionOrder()    );
 
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getSubmitDate() , index++);  
 				prepared.setString(index++, bean.getRemark()    );
@@ -166,7 +177,8 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 			prepared.executeBatch();
 			prepared.close(); 
 		} catch (SQLException e) {
-			System.err.println(e); 
+//			System.err.println(e); 
+			 e.printStackTrace();
 			iconStatus = "E";
 		}finally {
 			//this.database.close();

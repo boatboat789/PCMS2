@@ -91,6 +91,14 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
 				+ " "
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapPacking]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [ProductionOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapPacking]\r\n"
 				+ "SET \r\n"
 				+ "    [PostingDate] = ?,\r\n"
@@ -98,43 +106,50 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				+ "    [QuantityKG] = ?,\r\n"
 				+ "    [Grade] = ?, \r\n"
 				+ "    [No] = ? ,\r\n"
-				+ "    [QuantityYD] = ?, \r\n" 
+				+ "    [QuantityYD] = ?, \r\n"
 				+ "    [ChangeDate]= ? \r\n"
 				+ "      ,[SyncDate] =  ?\r\n"
+				+ "      ,[DataStatus] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [ProductionOrder] = ? AND\r\n"
 				+ "    [RollNo] = ? ;\r\n"
+				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapPacking] (\r\n"
-				+ "       [ProductionOrder] ,[PostingDate] ,[Quantity] ,[RollNo] " 
+				+ "       [ProductionOrder] ,[PostingDate] ,[Quantity] ,[RollNo] "
 				+ "      ,[QuantityKG] ,[Grade] ,[No] ,[QuantityYD],[ChangeDate] \r\n"
-				+ "      ,[CreateDate]\r\n"
-				+ "      ,[SyncDate] \r\n"
+				+ "      ,[CreateDate] ,[SyncDate],[DataStatus] \r\n"
 				+ "    ) VALUES (\r\n"
-				+ "		?, ?, ?, ?, " 
+				+ "		?, ?, ?, ?, "
 				+ "		?, ?, ?, ?, ?, "
-				+ "		?, ?  "// 10 
+				+ "		?, ?, ?  "// 10
 				+ "    ); "
-				+ ";";
+				+ "END ";
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpPackingDetail bean : paList) {
 				index = 1;
+ 
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getProductionOrder()    );
+				
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPostingDate(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantity(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
 				prepared.setString(index ++ , bean.getGrade());
 				prepared.setString(index ++ , bean.getNo());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ ); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				prepared.setString(index++, bean.getDataStatus()   );
 
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getRollNo());
@@ -146,16 +161,18 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
 				prepared.setString(index ++ , bean.getGrade());
 				prepared.setString(index ++ , bean.getNo());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ ); 
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ ); 
+				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				prepared.setString(index++, bean.getDataStatus()   );
 				prepared.addBatch();
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

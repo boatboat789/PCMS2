@@ -63,5 +63,29 @@ public class BackGroundJobModel extends HttpServlet {
 		 this.dao.execUpsertToTEMPUserStatusOnWebWithProdOrder( productionOrder);
 
 	}
+	public void handlerERPAtechToWebAppProductionOrder()
+	{
+   		this.dao.handlerERPAtechToWebAppProductionOrder();
+		// TODO Auto-generated method stub
+		
+	}
+	public void handlerERPAtechToWebAppSaleOrder()
+	{
+   		this.dao.handlerERPAtechToWebAppSaleOrder();
+		// TODO Auto-generated method stub
+		
+	}
+	public void sortBackGroundAfterGetERPDataProcedure()
+	{
+		// TODO Auto-generated method stub
+   		this.dao.sortBackGroundAfterGetERPDataProcedure();
+		
+	}
+	public void handlerERPAtechToWebAppCustomer()
+	{
+		// TODO Auto-generated method stub
+   		this.dao.handlerERPAtechToWebAppCustomer();
+		
+	}
 
 }

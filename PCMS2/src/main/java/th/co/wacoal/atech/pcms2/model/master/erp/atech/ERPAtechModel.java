@@ -123,12 +123,12 @@ public class ERPAtechModel extends HttpServlet {
 		return list;
 	}
 
-//	public ArrayList<FromErpPODetail> getFromErpPODetail()
-//	{
-//		// TODO Auto-generated method stub
-//		ArrayList<FromErpPODetail> list = this.dao.getFromErpPODetail();
-//		return list;
-//	}
+	public ArrayList<FromErpPODetail> getFromErpPODetail()
+	{
+		// TODO Auto-generated method stub
+		ArrayList<FromErpPODetail> list = this.dao.getFromErpPODetail();
+		return list;
+	}
 
 	public ArrayList<FromErpSaleDetail> getFromErpSaleDetail()
 
@@ -138,13 +138,12 @@ public class ERPAtechModel extends HttpServlet {
 		return list;
 	}
 
-	public ArrayList<FromErpSaleInputDetail> getFromErpSaleInputDetail()
-
-	{
-		// TODO Auto-generated method stub
-		ArrayList<FromErpSaleInputDetail> list = this.dao.getFromErpSaleInputDetail();
-		return list;
-	}
+//	public ArrayList<FromErpSaleInputDetail> getFromErpSaleInputDetail() 
+//	{
+//		// TODO Auto-generated method stub
+//		ArrayList<FromErpSaleInputDetail> list = this.dao.getFromErpSaleInputDetail();
+//		return list;
+//	}
 
 	public ArrayList<FromErpSubmitDateDetail> getFromErpSubmitDateDetail()
 
@@ -153,11 +152,11 @@ public class ERPAtechModel extends HttpServlet {
 		ArrayList<FromErpSubmitDateDetail> list = this.dao.getFromErpSubmitDateDetail();
 		return list;
 	}
-	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetai()
- 
-	{
-		// TODO Auto-generated method stub
-		ArrayList<FromErpReceipeDetail> list = this.dao.getFromErpReceipeDetail();
-		return list;
-	}
+//	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetai()
+// 
+//	{
+//		// TODO Auto-generated method stub
+//		ArrayList<FromErpReceipeDetail> list = this.dao.getFromErpReceipeDetail();
+//		return list;
+//	} 
 }

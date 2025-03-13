@@ -5,9 +5,9 @@ import javax.persistence.Entity;
 @Entity
 public class FromErpPODetail {
 	private String productionOrder;
-	private String rollNo;
-	private String quantityKG;
-	private String quantityMR;
+	private String rollNumber; 
+	private String rollWeight;
+	private String rollLength;
 	private String poCreatedate;
 	private String requiredDate;
 	private String purchaseOrder;
@@ -19,14 +19,14 @@ public class FromErpPODetail {
 	private String dataStatus;
 	private String syncDate;
 
-	public FromErpPODetail(String productionOrder, String rollNo, String quantityKG, String quantityMR, String poCreatedate,
+	public FromErpPODetail(String productionOrder, String rollNumber, String rollWeight, String rollLength, String poCreatedate,
 			String requiredDate, String purchaseOrder, String purchaseOrderLine, String purchaseOrderDate, String poDefault,
 			String poLineDefault, String poPostingDateDefault, String dataStatus, String syncDate) {
 		super();
 		this.productionOrder = productionOrder;
-		this.rollNo = rollNo;
-		this.quantityKG = quantityKG;
-		this.quantityMR = quantityMR;
+		this.rollNumber = rollNumber;
+		this.rollWeight = rollWeight;
+		this.rollLength = rollLength;
 		this.poCreatedate = poCreatedate;
 		this.requiredDate = requiredDate;
 		this.purchaseOrder = purchaseOrder;
@@ -79,34 +79,36 @@ public class FromErpPODetail {
 		this.productionOrder = productionOrder;
 	}
 
-	public String getRollNo()
+ 
+
+	public String getRollNumber()
 	{
-		return rollNo;
+		return rollNumber;
 	}
 
-	public void setRollNo(String rollNo)
+	public void setRollNumber(String rollNumber)
 	{
-		this.rollNo = rollNo;
+		this.rollNumber = rollNumber;
 	}
 
-	public String getQuantityKG()
+	public String getRollWeight()
 	{
-		return quantityKG;
+		return rollWeight;
 	}
 
-	public void setQuantityKG(String quantityKG)
+	public void setRollWeight(String rollWeight)
 	{
-		this.quantityKG = quantityKG;
+		this.rollWeight = rollWeight;
 	}
 
-	public String getQuantityMR()
+	public String getRollLength()
 	{
-		return quantityMR;
+		return rollLength;
 	}
 
-	public void setQuantityMR(String quantityMR)
+	public void setRollLength(String rollLength)
 	{
-		this.quantityMR = quantityMR;
+		this.rollLength = rollLength;
 	}
 
 	public String getpoCreatedate()

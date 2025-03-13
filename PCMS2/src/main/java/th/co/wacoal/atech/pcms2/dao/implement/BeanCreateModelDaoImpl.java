@@ -2976,21 +2976,21 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		if (map.get("ProductionOrder") != null) {
 			ProductionOrder = (String) map.get("ProductionOrder");
 		}
-		String RollNo = "";
-		if (map.get("RollNo") != null) {
-			RollNo = (String) map.get("RollNo");
+		String RollNumber = "";
+		if (map.get("RollNumber") != null) {
+			RollNumber = (String) map.get("RollNumber");
 		}
-		String QuantityKG = "";
-		if (map.get("QuantityKG") != null) {
-			BigDecimal value = (BigDecimal) map.get("QuantityKG");
+		String RollWeight = "";
+		if (map.get("RollWeight") != null) {
+			BigDecimal value = (BigDecimal) map.get("RollWeight");
 			Double doubleVal = value.doubleValue();
-			QuantityKG = formatter.format(doubleVal);
+			RollWeight = formatter.format(doubleVal);
 		}
-		String QuantityMR = "";
-		if (map.get("QuantityMR") != null) {
-			BigDecimal value = (BigDecimal) map.get("QuantityMR");
+		String RollLength = "";
+		if (map.get("RollLength") != null) {
+			BigDecimal value = (BigDecimal) map.get("RollLength");
 			Double doubleVal = value.doubleValue();
-			QuantityMR = formatter.format(doubleVal);
+			RollLength = formatter.format(doubleVal);
 		}
 		String POCreatedate = "";
 		if (map.get("POCreatedate") != null) {
@@ -3039,7 +3039,8 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
 			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
-		return new FromErpPODetail(ProductionOrder, RollNo, QuantityKG, QuantityMR, POCreatedate, RequiredDate, PurchaseOrder,
+		return new FromErpPODetail(ProductionOrder, 
+				RollNumber, RollWeight, RollLength, POCreatedate, RequiredDate, PurchaseOrder,
 				PurchaseOrderLine, null, PODefault, POLineDefault, POPostingDateDefault, DataStatus, SyncDate);
 	}
 

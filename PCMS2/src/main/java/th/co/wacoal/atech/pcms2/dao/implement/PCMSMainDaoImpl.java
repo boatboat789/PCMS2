@@ -1690,7 +1690,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 //			FromSapPresetModel fspModel = new FromSapPresetModel();
 //			FromSapDyeingModel fsdModel = new FromSapDyeingModel( );
 //			FromSapSendTestQCModel fsstQCModel = new FromSapSendTestQCModel( );
-			FromSapReceipeModel fsrModel = new FromSapReceipeModel( );
+//			FromSapReceipeModel fsrModel = new FromSapReceipeModel( );
 			InspectNcModel insNCModel = new InspectNcModel( );
 //			FromSapSaleInputModel fssiModel = new FromSapSaleInputModel( );
 			FromSapSaleModel fssModel = new FromSapSaleModel( );
@@ -1724,8 +1724,8 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 			if(isCheck) { System.out.println("7: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<NCDetail> ncDetailList = insNCModel.getInspectNcByProductionOrder(prdOrder);
 			if(isCheck) { System.out.println("8: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("9: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
+//			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
+//			if(isCheck) { System.out.println("9: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			
 
 			ArrayList<ShopFloorControlDetail> presetDetailList = new ArrayList<ShopFloorControlDetail>();
@@ -1774,7 +1774,7 @@ String saleNumber = "" , materialNo = "",saleOrder = "", saleCreateDate = "",lab
 //			beanTmp.setSaleInputDetailList(saleInputDetailList);
 			beanTmp.setSubmitDateDetailList(submitdatDetailList);
 			beanTmp.setNcDetailList(ncDetailList);
-			beanTmp.setReceipeDetailList(receipeDetailList);
+//			beanTmp.setReceipeDetailList(receipeDetailList);
 
 		}
 		return list;

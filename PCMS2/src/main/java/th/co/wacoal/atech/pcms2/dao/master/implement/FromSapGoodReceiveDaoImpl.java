@@ -53,6 +53,14 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapGoodReceive]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [ProductionOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapGoodReceive]\r\n"
 				+ "SET \r\n"
 				+ "    [SaleOrder] = ?,\r\n"
@@ -62,7 +70,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "    [QuantityYD] = ?,\r\n"
 				+ "    [QuantityMR] = ?,\r\n"
 				+ "    [PriceSTD] = ?,\r\n"
-//				+ "    [DataStatus] = ?,\r\n"
+				+ "    [DataStatus] = ?,\r\n"
 				+ "    [ChangeDate] = ? \r\n"
 				+ "      ,[SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
@@ -70,11 +78,13 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "    [RollNumber] = ? \r\n"
 				+ "    ;\r\n"
 				+ "\r\n"
+				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapGoodReceive] (\r\n"
 				+ "        [ProductionOrder]\r\n"
@@ -86,7 +96,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "      ,[QuantityYD]\r\n"
 				+ "      ,[QuantityMR]\r\n"
 				+ "      ,[PriceSTD]\r\n"
-//				+ "      ,[DataStatus]\r\n"
+				+ "      ,[DataStatus]\r\n"
 				
 				+ "      ,[ChangeDate]\r\n"
 				+ "      ,[CreateDate]\r\n"
@@ -94,18 +104,20 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "    ) VALUES (\r\n"
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, "
-//				+ "?, "// 10
+				+ "?, "// 10
 				+ "?, "
 				+ "?,"
 				+ "? "
 				+ "    ); "
-				+ ";";
+				+ "END\r\n";
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpGoodReceiveDetail bean : paList) {
 				index = 1;
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getProductionOrder()    );
 
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
@@ -115,7 +127,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
@@ -132,7 +144,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
@@ -146,7 +158,8 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

@@ -7,8 +7,8 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 
 public interface FromSapPODao {
 
-	ArrayList<PODetail> getFromSapPODetailByProductionOrder(String prodOrder);
-
-	String upsertFromSapPODetail(ArrayList<FromErpPODetail> paList);
+//	ArrayList<PODetail> getFromSapPODetailByProductionOrder(String prodOrder);
+//
+//	String upsertFromSapPODetail(ArrayList<FromErpPODetail> paList);
 
 }

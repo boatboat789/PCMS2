@@ -187,6 +187,14 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainSale]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [SaleOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapMainSale]\r\n"
 				+ "SET \r\n"
 				+ "    [MaterialNo] = ?,\r\n"
@@ -221,18 +229,20 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    [OrderSheetPrintDate] = ?,\r\n"
 				+ "    [CustomerMaterialBase] = ?,\r\n"
 				+ "    [ChangeDate] = ?,\r\n"
-//				+ "    [DataStatus] = ? \r\n" 
+				+ "    [DataStatus] = ?, \r\n" 
 				+ "    [SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [SaleOrder] = ? and"
 				+ "    [SaleLine] = ?  "
 				+ "    ;\r\n"
+				+ "END\r\n"
 				+ "\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapMainSale] (\r\n"
 				+ "        [SaleOrder] ,[SaleLine] ,[MaterialNo] ,[DueDate] ,[PlanGreigeDate]\r\n"
@@ -242,7 +252,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "      ,[SaleStatus] ,[Currency] ,[Price] ,[OrderAmount] ,[RemainAmount]\r\n"
 				+ "      ,[SaleCreateDate] ,[SaleNumber] ,[SaleFullName] ,[DeliveryStatus] ,[DesignFG]\r\n"
 				+ "      ,[ArticleFG] ,[OrderSheetPrintDate] ,[CustomerMaterialBase] ,[ChangeDate] ,[CreateDate]\r\n"
-//				+ "      ,[DataStatus]\r\n"
+				+ "      ,[DataStatus]\r\n"
 				+ "      ,[SyncDate] \r\n"
 				+ "    ) VALUES (\r\n"
 				+ "?, ?, ?, ?, ?, "
@@ -252,10 +262,10 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, ?, "// 10
 				+ "?, ?, ?, ?, ?, "
-//				+ "? \r\n"
+				+ "?, \r\n"
 				+ "? "
 				+ "    ); "
-				+ ";";
+				+ "END ";
 		try {
 
 			int index = 1;
@@ -263,6 +273,9 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 			for (FromErpMainSaleDetail bean : paList) {
 				index = 1;
 
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getSaleOrder()    );
+				
 				prepared.setString(index ++ , bean.getMaterialNo());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
@@ -295,7 +308,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getOrderSheetPrintDate());
 				prepared.setString(index ++ , bean.getCustomerMaterialBase());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.setString(index ++ , bean.getSaleOrder());
@@ -336,7 +349,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerMaterialBase());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.addBatch();
@@ -348,7 +361,8 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

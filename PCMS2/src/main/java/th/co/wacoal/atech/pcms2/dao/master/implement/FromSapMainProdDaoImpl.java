@@ -95,6 +95,14 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainProd]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [ProductionOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapMainProd]\r\n"
 				+ "SET \r\n"
 				+ "    [SaleOrder] = ?,\r\n"
@@ -128,7 +136,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "    [LotShipping] = ?,\r\n"
 				+ "    [BillSendQuantity] = ?,\r\n"
 				+ "    [Grade] = ?,\r\n"
-//				+ "    [DataStatus] = ?,\r\n"
+				+ "    [DataStatus] = ?,\r\n"
 				+ "    [PrdCreateDate] = ?,\r\n"
 				+ "    [GreigeArticle] = ?,\r\n"
 				+ "    [GreigeDesign] = ?,\r\n"
@@ -141,11 +149,13 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "WHERE \r\n"
 				+ "    [ProductionOrder] = ?;\r\n"
 				+ "\r\n"
+				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapMainProd] (\r\n"
 				+ "        [ProductionOrder],\r\n"
@@ -180,7 +190,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "        [LotShipping],\r\n"// 30 
 				+ "        [BillSendQuantity],\r\n"
 				+ "        [Grade],\r\n"
-//				+ "        [DataStatus],\r\n"
+				+ "        [DataStatus],\r\n"
 				+ "        [PrdCreateDate],\r\n"
 				+ "        [GreigeArticle],\r\n" 
 				+ "        [GreigeDesign],\r\n"
@@ -197,19 +207,22 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ "?, ?, ?, ?, ?, "// 20
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?,"
-//				+ "?, "// 30
+				+ "?, "// 30
 				+ "?, ?, ?, ?, ?, "
 				+ "?, ?, ?, ?, ?, "// 40
 				+ "?\r\n"
 				+ ", ? "
 				+ "    ); "
-				+ ";";
+				+ "END ";
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpMainProdDetail bean : paList) {
 				index = 1;
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getProductionOrder()    );
+				
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getTotalQuantity(), index ++ );
@@ -241,7 +254,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillSendQuantity(), index++); 
 				prepared.setString(index ++ , bean.getGrade());
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPrdCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getGreigeArticle());
 				prepared.setString(index ++ , bean.getGreigeDesign());
@@ -284,7 +297,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillSendQuantity(), index++); 
 				prepared.setString(index ++ , bean.getGrade());
-//				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPrdCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getGreigeArticle());
 				prepared.setString(index ++ , bean.getGreigeDesign());
@@ -299,7 +312,8 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

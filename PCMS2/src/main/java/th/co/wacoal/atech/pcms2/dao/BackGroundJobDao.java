@@ -10,4 +10,12 @@ public interface BackGroundJobDao {
 	void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder);
 
 	void handlerERPAtechToWebApp();
+
+	void handlerERPAtechToWebAppProductionOrder();
+
+	void handlerERPAtechToWebAppSaleOrder();
+
+	void sortBackGroundAfterGetERPDataProcedure();
+
+	void handlerERPAtechToWebAppCustomer();
 }

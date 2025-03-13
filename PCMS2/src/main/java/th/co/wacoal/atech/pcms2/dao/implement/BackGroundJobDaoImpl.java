@@ -37,6 +37,7 @@ import th.co.wacoal.atech.pcms2.model.master.FromSapReceipeModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSaleInputModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSubmitDateModel;
+import th.co.wacoal.atech.pcms2.model.master.PPMM.RollFromSapModel;
 import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 import th.in.totemplate.core.sql.Database;
 
@@ -72,6 +73,90 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		}
 	}
 
+	public void execUpsertToCFM()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToCFM] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToMainProdSale()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToMainProdSale] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToPacking()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToPacking]";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToSale()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToSale]";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToSubmitDate()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToSubmitDate]";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToGoodReceive()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToGoodReceive]";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
 	@Override
 	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder)
 	{
@@ -113,13 +198,42 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		String sql = "EXEC [dbo].[spd_UpsertToTEMP_UserStatusOnWeb] ";
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
-			
+
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
 	}
 
+ 
+	public void execUpsertToMainSale()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToMainSale] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void execUpsertToMainBillBatch()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToMainBillBatch] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
 	public void execHandlerCustomerDetail()
 	{
 		// TODO Auto-generated method stub
@@ -134,81 +248,77 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	@Override
 	public void handlerERPAtechToWebApp()
-	{
+	{ 
 
+	}
+
+	@Override
+	public void handlerERPAtechToWebAppProductionOrder()
+	{
 		ERPAtechModel erpaModel = new ERPAtechModel();
 
-		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
-		CustomerModel cusModel = new CustomerModel();
+		FromSapMainProdModel fsmpModel = new FromSapMainProdModel(); 
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
-		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
-		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
 		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
-		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		FromSapPackingModel fspModel = new FromSapPackingModel();
-//		FromSapPOModel fspoModel = new FromSapPOModel();
-		FromSapSaleModel fssModel = new FromSapSaleModel();
-		FromSapSaleInputModel fssiModel = new FromSapSaleInputModel();
+		FromSapPackingModel fspModel = new FromSapPackingModel(); 
+		RollFromSapModel rfsModel = new RollFromSapModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
-		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
-//		System.out.println("Select: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
+		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
+//		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
 
-		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
-		cusModel.upsertCustomerDetail(cusList);
-		this.execHandlerCustomerDetail();
-//		System.out.println("execHandlerCustomerDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
-		// error ทางเค้ารอแก้ Invalid column name 'STATUS'. and volumn field don't have
 		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
-		fsmpModel.upsertFromSapMainProdDetail(frmpList);
-
-		// error CFMSendDate เป็น String
 		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
-		fscfmModel.upsertFromSapCFMDetail(frcfmList);
-		
-		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
-		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
-//		System.out.println("upsertFromSapGoodReceiveDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
-		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail();
-		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
-//		System.out.println("upsertFromSapMainBillBatchDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-
-		// error ทางเค้ารอแก้ Invalid column name 'STATUS'.
 		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
-		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
-
-		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
-//		System.out.println("getFromErpMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
-//		System.out.println("upsertFromSapMainSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-
 		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
-		fspModel.upsertFromSapPackingDetail(frpList);
-//		System.out.println("upsertFromSapPackingDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
-//		ArrayList<FromErpPODetail> frpoList = erpaModel.getFromErpPODetail();
-//		fspoModel.upsertFromSapPODetail(frpoList);
-//		System.out.println("upsertFromSapPODetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
-		// ERROR - NO PROD ORDER
-		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
-		fssModel.upsertFromSapSaleDetail(frsList);
-//		System.out.println("upsertFromSapSaleDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
-		//  พี่สไบแจ้งไม่ใช้งานแล้ว 14/02/2025
-		ArrayList<FromErpSaleInputDetail> frsiList = erpaModel.getFromErpSaleInputDetail();
-		fssiModel.upsertFromSapSaleInputDetail(frsiList);
-//		System.out.println("upsertFromSapSaleInputDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
-		
+		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
 		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
-		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
+//		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
 
-//		System.out.println("upsertFromSapSubmitDateDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
-		fsrModel.upsertFromSapReceipeDetail(ferdList);
+		fsmpModel.upsertFromSapMainProdDetail(frmpList);
+		this.execUpsertToMainProd();
+		fscfmModel.upsertFromSapCFMDetail(frcfmList);
+		this.execUpsertToCFM(); 
+		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
+		this.execUpsertToMainProdSale();
+		fspModel.upsertFromSapPackingDetail(frpList);
+		this.execUpsertToPacking();
+		rfsModel.upsertRollFromSapFromERPPODetail(rollList); //  HANDLER FLAG ROLL NO IN METHOD ----- 
+		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+		this.execUpsertToSubmitDate();
+		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
+		this.execUpsertToGoodReceive();
+//		fsrModel.upsertFromSapReceipeDetail(ferdList);
+	}
+
+	@Override
+	public void handlerERPAtechToWebAppSaleOrder()
+	{
+		// TODO Auto-generated method stub
+
+		ERPAtechModel erpaModel = new ERPAtechModel();
+		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
+		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
+		FromSapSaleModel fssModel = new FromSapSaleModel(); 
+		
+		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
+		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
+		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
+		
+		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
+		this.execUpsertToMainSale();
+		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
+		this.execUpsertToMainBillBatch();
+		fssModel.upsertFromSapSaleDetail(frsList);
+		this.execUpsertToSale();
+	}
+
+	@Override
+	public void sortBackGroundAfterGetERPDataProcedure()
+	{
 
 //		System.out.println("upsertFromSapReceipeDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.execUpsertToTEMPProdWorkDate();
@@ -216,5 +326,19 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		this.execUpsertToTEMPUserStatusOnWeb();
 //		System.out.println("After upsert: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
 
+	}
+
+	@Override
+	public void handlerERPAtechToWebAppCustomer()
+	{
+		ERPAtechModel erpaModel = new ERPAtechModel();  
+		
+		CustomerModel cusModel = new CustomerModel();
+		
+		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
+		
+		cusModel.upsertCustomerDetail(cusList);
+		this.execHandlerCustomerDetail(); 
+		
 	}
 }

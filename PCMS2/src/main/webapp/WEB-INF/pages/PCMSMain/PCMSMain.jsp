@@ -105,7 +105,8 @@ var workInLabTable ;
 var cfmTable;var saleTable;
 // var saleInputTable;
 var submitDateTable;
-var ncTable;var receipeTable;
+var ncTable;
+// var receipeTable;
 var collapsedGroups = {};        
 // var domain = "http://"+window.location.hostname+":8080";
 var domain ;
@@ -963,26 +964,26 @@ $(document) .ready( function() {
 					} ,           
 			],     order: [[ 0, "desc" ]]        
 	 	 });    
-	    receipeTable = $('#receipeTable').DataTable({   
-	    	scrollY:        '175px',         
-	    	scrollX: true,      
-	    	paging: false,      
-//	 		orderClasses : false,         
-			lengthChange: false,         	  
-	 	   	columns :   
-	 		[               
-			    {"data" : "no"} ,         //0
-			    {"data" : "lotNo"},     
-			    {"data" : "postingDate"},  
-			    {"data" : "receipe"},   
-			],  	          
-			columnDefs :  [	   	
-				{ targets : [ 0,1,2,3 ],                
-				  	  className : 'data-custom-padding0505',    
-//	 		  	 	  type: 'string'      
-					} ,               
-			],     order: [[ 0, "desc" ]]        
-	 	 });      
+// 	    receipeTable = $('#receipeTable').DataTable({   
+// 	    	scrollY:        '175px',         
+// 	    	scrollX: true,      
+// 	    	paging: false,      
+// //	 		orderClasses : false,         
+// 			lengthChange: false,         	  
+// 	 	   	columns :   
+// 	 		[               
+// 			    {"data" : "no"} ,         //0
+// 			    {"data" : "lotNo"},     
+// 			    {"data" : "postingDate"},  
+// 			    {"data" : "receipe"},   
+// 			],  	          
+// 			columnDefs :  [	   	
+// 				{ targets : [ 0,1,2,3 ],                
+// 				  	  className : 'data-custom-padding0505',    
+// //	 		  	 	  type: 'string'      
+// 					} ,               
+// 			],     order: [[ 0, "desc" ]]        
+// 	 	 });      
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
 		let searchVal = this.value;      
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
@@ -1054,7 +1055,7 @@ $(document) .ready( function() {
 // 	$("#saleInputTable_filter").hidฉe();  
 	$("#submitDateTable_filter").hide();  
 	$("#ncTable_filter").hide();  
-	$("#receipeTable_filter").hide();  
+// 	$("#receipeTable_filter").hide();  
 	
 	$("#workInLabTable_info").hide();
 // 	$("#waitTestTable_info").hide();
@@ -1063,7 +1064,7 @@ $(document) .ready( function() {
 // 	$("#saleInputTable_info").hide();
 	$("#submitDateTable_info").hide();
 	$("#ncTable_info").hide();
-	$("#receipeTable_info").hide(); 
+// 	$("#receipeTable_info").hide(); 
 	   
 // 	$("#MainTable_info").hide();      
 // 	$("#presetTable_info").hide();   
@@ -1155,7 +1156,7 @@ $(document) .ready( function() {
 //     	saleInputTable.columns.adjust(); 
     	submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); 
-    	receipeTable.columns.adjust(); 
+//     	receipeTable.columns.adjust(); 
     });          
 	$('.modal').on('shown.bs.modal', function() {    
 		poTable.columns.adjust();         
@@ -1171,7 +1172,7 @@ $(document) .ready( function() {
 //     	saleInputTable.columns.adjust(); 
     	submitDateTable.columns.adjust(); 
     	ncTable.columns.adjust(); 
-    	receipeTable.columns.adjust(); 
+//     	receipeTable.columns.adjust(); 
 	})  
 	preLoaderHandler( preloader)   
 });   
@@ -1555,10 +1556,10 @@ function setModalDetail(data){
 	else{ ncTable.rows.add(innnerText.ncDetailList); }  
 	ncTable.draw();  
 	
-	receipeTable.clear();    	   
-	if(innnerText.receipeDetailList.length == 0){       }     
-	else{ receipeTable.rows.add(innnerText.receipeDetailList); }  
-	receipeTable.draw();  
+// 	receipeTable.clear();    	   
+// 	if(innnerText.receipeDetailList.length == 0){       }     
+// 	else{ receipeTable.rows.add(innnerText.receipeDetailList); }  
+// 	receipeTable.draw();  
 	  	
 	 
 	document.getElementById("input_greigeDesign").value = innnerText.greigeDesign  ;    

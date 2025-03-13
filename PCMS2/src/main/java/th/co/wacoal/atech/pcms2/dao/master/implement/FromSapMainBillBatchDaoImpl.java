@@ -51,15 +51,22 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 		long time = currentTime.getTime();
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
-				+ "UPDATE [dbo].[FromSapGoodReceive]\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainBillBatch]\r\n"
+				+ "    SET [DataStatus] = 'X'\r\n"
+				+ "    WHERE [SaleOrder] = ?;\r\n"
+				+ "END\r\n"
+				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
+				+ "UPDATE [dbo].[FromSapMainBillBatch]\r\n"
 				+ "SET \r\n"
 				+ "    [LotShipping] = ?,\r\n"
 				+ "    [ProductionOrder] = ?,\r\n"
 				+ "    [Grade] = ?,\r\n"
 				+ "    [QuantityKG] = ?,\r\n"
 				+ "    [QuantityYD] = ?,\r\n"
-				+ "    [QuantityMR] = ?,\r\n"
-				+ "    [ProductionOrder] = ?,\r\n"
+				+ "    [QuantityMR] = ?,\r\n" 
 				+ "    [LotNo] = ?,\r\n"
 				+ "    [DataStatus] = ?,\r\n"
 				+ "    [ChangeDate] = ? \r\n"
@@ -72,13 +79,15 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "    [RollNumber] = ? \r\n"
 				+ "    ;\r\n"
 				+ "\r\n"
+				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "IF @rc <> 0\r\n"
 				+ "   SELECT 1;\r\n"
 				+ "ELSE \r\n"
+				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
-				+ "    INSERT INTO [dbo].[FromSapGoodReceive] (\r\n"
+				+ "    INSERT INTO [dbo].[FromSapMainBillBatch] (\r\n"
 				+ "     [BillDoc]  ,[BillItem] ,[LotShipping] ,[ProductionOrder] ,[SaleOrder]\r\n"
 				+ "    ,[SaleLine] ,[Grade] ,[RollNumber] ,[QuantityKG] ,[QuantityYD]\r\n"
 				+ "    ,[QuantityMR] ,[LotNo] ,[DataStatus] ,[ChangeDate],[CreateDate]\r\n"
@@ -90,20 +99,23 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "?, ?, ?, ?, ?, "
 				+ "? " 
 				+ "    ); "
-				+ ";";
+				+ "END ";
 		try {
 
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpMainBillBatchDetail bean : paList) {
 				index = 1;
+				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index++, bean.getSaleOrder()    );
+				
 				prepared.setString(index ++ , bean.getLotShipping());
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getGrade());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
+				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ ); 
 				prepared.setString(index ++ , bean.getLotNo());
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
@@ -132,13 +144,15 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
+				
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch(); 
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+//			System.err.println(e);
+			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();
