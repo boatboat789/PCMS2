@@ -206,7 +206,8 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 			bean.setIconStatus("I");
 			bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
-			System.err.println("upsertSwitchPrd" + e.getMessage());
+//			System.err.println("upsertSwitchPrd" + e.getMessage());
+			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
@@ -273,6 +274,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 			bean.setIconStatus("I");
 			bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
+			e.printStackTrace();
 //			System.err.println("upsertSwitchPrd"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");

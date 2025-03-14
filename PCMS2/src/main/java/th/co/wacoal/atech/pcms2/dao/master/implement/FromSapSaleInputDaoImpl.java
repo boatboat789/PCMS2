@@ -170,7 +170,7 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 			prepared.executeBatch();
 			prepared.close(); 
 		} catch (SQLException e) {
-			System.err.println(e); 
+			e.printStackTrace(); 
 			iconStatus = "E";
 		}finally {
 			//this.database.close();

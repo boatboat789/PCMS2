@@ -86,7 +86,8 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 				bean.setIconStatus("I");
 				bean.setSystemStatus("Update Success.");
 		} catch (Exception e) {
-			System.err.println("saveColSettingToServer"+e.getMessage());
+//			System.err.println("saveColSettingToServer"+e.getMessage());
+			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
@@ -127,7 +128,8 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 				bean.setIconStatus("I");
 				bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
-			System.err.println("saveColSettingToServer"+e.getMessage());
+			e.printStackTrace();
+//			System.err.println("saveColSettingToServer"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {

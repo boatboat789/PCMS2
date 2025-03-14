@@ -1,24 +1,8 @@
 	package th.co.wacoal.atech.pcms2.dao.master.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapPODao;
-import th.co.wacoal.atech.pcms2.entities.PODetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapPODaoImpl implements  FromSapPODao{
@@ -172,7 +156,7 @@ public class FromSapPODaoImpl implements  FromSapPODao{
 //			prepared.executeBatch();
 //			prepared.close(); 
 //		} catch (SQLException e) {
-//			System.err.println(e); 
+//			e.printStackTrace(); 
 //			iconStatus = "E";
 //		}finally {
 //			//this.database.close();

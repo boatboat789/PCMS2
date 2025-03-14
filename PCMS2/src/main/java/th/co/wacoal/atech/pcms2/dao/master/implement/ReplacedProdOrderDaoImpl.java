@@ -177,7 +177,7 @@ public class ReplacedProdOrderDaoImpl implements  ReplacedProdOrderDao{
 				bean.setIconStatus("I");
 				bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		}finally {
@@ -216,7 +216,8 @@ public class ReplacedProdOrderDaoImpl implements  ReplacedProdOrderDao{
 				bean.setIconStatus("I");
 				bean.setSystemStatus("Update Success.");
 		} catch (SQLException e) {
-			System.err.println("ReplacedProdOrder"+e.getMessage());
+			e.printStackTrace();
+//			System.err.println("ReplacedProdOrder"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		}finally {

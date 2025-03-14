@@ -1,20 +1,10 @@
 package th.co.wacoal.atech.pcms2.model.master;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import javax.servlet.http.HttpServlet;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import th.co.wacoal.atech.pcms2.dao.master.FromSapPODao;
-import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapPODaoImpl;
-import th.co.wacoal.atech.pcms2.entities.PODetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
-import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
-import th.in.totemplate.core.sql.Database;
-
+@SuppressWarnings("serial")
 @Component
 public class FromSapPOModel extends HttpServlet {
 //	private static final long serialVersionUID = 1L;

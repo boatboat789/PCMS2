@@ -197,7 +197,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-//			System.err.println(e);
+//			e.printStackTrace();
 			 e.printStackTrace();
 			iconStatus = "E";
 		} finally {

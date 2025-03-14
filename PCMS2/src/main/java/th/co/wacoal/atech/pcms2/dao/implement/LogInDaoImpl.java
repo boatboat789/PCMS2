@@ -117,8 +117,8 @@ public class LogInDaoImpl implements LogInDao {
 
                  }
              } catch(SQLException e) {
-                 System.err.println(this.getClass().getName()+" - "+e.getMessage());
-                 //e.printStackTrace();
+//                 System.err.println(this.getClass().getName()+" - "+e.getMessage());
+                 e.printStackTrace();
              } finally {
                  if(prepared != null)   { prepared.close(); }
                  if(connection != null) { connection.close(); }
@@ -126,8 +126,8 @@ public class LogInDaoImpl implements LogInDao {
              }
          } catch(ClassNotFoundException e) {
          } catch(SQLException e) {
-             System.err.println(this.getClass().getName()+" - "+e.getMessage());
-             //e.printStackTrace();
+//             System.err.println(this.getClass().getName()+" - "+e.getMessage());
+             e.printStackTrace();
          }
 		return user;
 	}
@@ -208,8 +208,8 @@ public class LogInDaoImpl implements LogInDao {
 
                  }
              } catch(SQLException e) {
-                 System.err.println(this.getClass().getName()+" - "+e.getMessage());
-                 //e.printStackTrace();
+//                 System.err.println(this.getClass().getName()+" - "+e.getMessage());
+                 e.printStackTrace();
              } finally {
                  if(prepared != null)   { prepared.close(); }
                  if(connection != null) { connection.close(); }
@@ -217,8 +217,8 @@ public class LogInDaoImpl implements LogInDao {
              }
          } catch(ClassNotFoundException e) {
          } catch(SQLException e) {
-             System.err.println(this.getClass().getName()+" - "+e.getMessage());
-             //e.printStackTrace();
+//             System.err.println(this.getClass().getName()+" - "+e.getMessage());
+             e.printStackTrace();
          }
 		return user;
 	}

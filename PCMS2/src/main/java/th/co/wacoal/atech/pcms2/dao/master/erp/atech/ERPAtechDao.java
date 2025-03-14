@@ -11,9 +11,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 
 public interface ERPAtechDao {

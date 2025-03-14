@@ -155,7 +155,7 @@ public class LoginController {
 							}
 						});
 			} catch (NamingException e) {
-				System.err.println(this.getClass().getName() + " - " + e.getMessage());
+//				System.err.println(this.getClass().getName() + " - " + e.getMessage());
 				e.printStackTrace();
 			}
 			// if authen pass

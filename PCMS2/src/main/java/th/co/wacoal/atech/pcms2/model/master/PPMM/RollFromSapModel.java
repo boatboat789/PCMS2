@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.RollFromSapDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.PPMM.RollFromSapDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PODetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
-import th.co.wacoal.atech.pcms2.info.SqlPPMMInfo; 
+import th.co.wacoal.atech.pcms2.info.SqlPPMMInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -61,11 +60,11 @@ public class RollFromSapModel extends HttpServlet {
 		return list;
 	}
 
-	public String upsertRollFromSapFromERPPODetail(ArrayList<FromErpPODetail> list)
-	{
-		// TODO Auto-generated method stub
-		String iconStatus = this.dao.upsertRollFromSapFromERPPODetail(list);
-		return iconStatus;
-	}
+//	public String upsertRollFromSapFromERPPODetail(ArrayList<FromErpPODetail> list)
+//	{
+//		// TODO Auto-generated method stub
+//		String iconStatus = this.dao.upsertRollFromSapFromERPPODetail(list);
+//		return iconStatus;
+//	}
 
 }

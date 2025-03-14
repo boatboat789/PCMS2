@@ -84,7 +84,8 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println("insertLabNoDetail" + e.getMessage());
+			e.printStackTrace();
+//			System.err.println("insertLabNoDetail" + e.getMessage());
 			iconStatus = "E";
 		}finally {
 			//this.database.close();

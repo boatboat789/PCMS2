@@ -120,7 +120,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

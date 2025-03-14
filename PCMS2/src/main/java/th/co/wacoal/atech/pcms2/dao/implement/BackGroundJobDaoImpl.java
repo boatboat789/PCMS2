@@ -3,10 +3,7 @@ package th.co.wacoal.atech.pcms2.dao.implement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,11 +15,8 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainBillBatchDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
-import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.model.master.CustomerModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapCFMModel;
@@ -31,13 +25,9 @@ import th.co.wacoal.atech.pcms2.model.master.FromSapMainBillBatchModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
-import th.co.wacoal.atech.pcms2.model.master.FromSapPOModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapPackingModel;
-import th.co.wacoal.atech.pcms2.model.master.FromSapReceipeModel;
-import th.co.wacoal.atech.pcms2.model.master.FromSapSaleInputModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSubmitDateModel;
-import th.co.wacoal.atech.pcms2.model.master.PPMM.RollFromSapModel;
 import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 import th.in.totemplate.core.sql.Database;
 
@@ -264,7 +254,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
 		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
 		FromSapPackingModel fspModel = new FromSapPackingModel(); 
-		RollFromSapModel rfsModel = new RollFromSapModel();
+//		RollFromSapModel rfsModel = new RollFromSapModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
 //		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
@@ -273,7 +263,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
 		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
 		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
-		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
+//		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
 		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
 		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
 //		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
@@ -286,7 +276,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		this.execUpsertToMainProdSale();
 		fspModel.upsertFromSapPackingDetail(frpList);
 		this.execUpsertToPacking();
-		rfsModel.upsertRollFromSapFromERPPODetail(rollList); //  HANDLER FLAG ROLL NO IN METHOD ----- 
+//		rfsModel.upsertRollFromSapFromERPPODetail(rollList); //  HANDLER FLAG ROLL NO IN METHOD ----- 
 		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
 		this.execUpsertToSubmitDate();
 		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
@@ -331,14 +321,11 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	@Override
 	public void handlerERPAtechToWebAppCustomer()
 	{
-		ERPAtechModel erpaModel = new ERPAtechModel();  
-		
-		CustomerModel cusModel = new CustomerModel();
-		
-		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
-		
+		ERPAtechModel erpaModel = new ERPAtechModel();   
+		CustomerModel cusModel = new CustomerModel(); 
+		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail(); 
 		cusModel.upsertCustomerDetail(cusList);
-		this.execHandlerCustomerDetail(); 
+//		this.execHandlerCustomerDetail(); 
 		
 	}
 }
