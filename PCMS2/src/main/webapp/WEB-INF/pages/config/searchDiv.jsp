@@ -117,6 +117,7 @@
 						<option value="C" >Completed</option>  
 						<option value="B" >Partial Process</option>  
 						<option value="A" >NotYet Process</option>  
+						<option value="X" >Cancel</option>  
 					</select>
 					</div>      
 				</div>  
@@ -229,8 +230,12 @@
 						<label class="custom-control-label" for="rad_inProc">In-Process</label>
 					</div> 
 					<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
-						<input type="radio" id="rad_closed" name="saleStatusRadio" class="custom-control-input" value=C>    
+						<input type="radio" id="rad_closed" name="saleStatusRadio" class="custom-control-input" value="C">    
 						<label class="custom-control-label" for="rad_closed">Closed</label>
+					</div> 
+					<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
+						<input type="radio" id="rad_canceled" name="saleStatusRadio" class="custom-control-input" value="X">    
+						<label class="custom-control-label" for="rad_canceled">Cancel</label>
 					</div> 
 				</div>     
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   

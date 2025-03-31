@@ -35,7 +35,7 @@ public class SqlAtechERPInfo implements DatabaseInfo {
 	public static SqlAtechERPInfo getInstance()
 	{
 		if (SqlAtechERPInfo._info == null) {
-			SqlAtechERPInfo._info = new SqlAtechERPInfo();
+			SqlAtechERPInfo._info = new SqlAtechERPInfo()	;
 		}
 		return SqlAtechERPInfo._info;
 	}

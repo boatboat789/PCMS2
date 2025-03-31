@@ -2304,9 +2304,16 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			Timestamp timestamp1 = (Timestamp) map.get("CFMAnswerDate");
 			CFMAnswerDate = this.sdfFullDatetime.format(timestamp1); 
 		}
+//		String CFMStatus = "";
+//		if (map.get("CFMStatus") != null) {
+//			CFMStatus = (String) map.get("CFMStatus");
+//		}
 		String CFMStatus = "";
 		if (map.get("CFMStatus") != null) {
-			CFMStatus = (String) map.get("CFMStatus");
+//			CFMStatus = (String) map.get("CFMStatus"); 
+			boolean value = (boolean) map.get("CFMStatus");
+			if(value ) {CFMStatus= "Y";}
+			else {CFMStatus = "N";}
 		}
 		String CFMRemark = "";
 		if (map.get("CFMRemark") != null) {
@@ -2352,8 +2359,12 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 			Timestamp timestamp1 = (Timestamp) map.get("SyncDate");
 			SyncDate = this.sdfFullDatetime.format(timestamp1);
 		}
+		String DataStatus = "";
+		if (map.get("DataStatus") != null) {
+			DataStatus = (String) map.get("DataStatus");
+		}
 		return new FromErpCFMDetail(ID, ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, CFMStatus, CFMRemark,
-				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, CFMStatus, SyncDate);
+				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, DataStatus, SyncDate);
 	}
 
 	@Override

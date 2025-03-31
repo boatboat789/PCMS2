@@ -31,20 +31,9 @@ public class TaskService {
 			) {
 		this.sorModel = sorModel;
 		this.bgjModel = bgjModel;
-		isCheck = true;
-	}
-
-//	@Scheduled(cron = "*/5 * * * * *")
-//	public void test() {  
-//		System.out.println("hi");
-//	}
-//	@Scheduled(fixedRate = 50000000)
-////	@Scheduled(cron = "30 8/10 * * * *")
-//	public void sortBackGroundTwos()
-//	{
-//		System.out.println("hi");
-//	}
-	@Scheduled(fixedRate = 50000000)	
+//		isCheck = true;
+	} 
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundCustomer()
 	{
@@ -52,7 +41,7 @@ public class TaskService {
 		this.bgjModel.handlerERPAtechToWebAppCustomer();
 		if(isCheck)System.out.println("End sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
-	@Scheduled(fixedRate = 50000000)	
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundProductionOrder()
 	{
@@ -60,7 +49,7 @@ public class TaskService {
 		this.bgjModel.handlerERPAtechToWebAppProductionOrder();
 		if(isCheck)System.out.println("End sortBackGroundProductionOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
-	@Scheduled(fixedRate = 50000000)	
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundSaleOrder()
 	{
@@ -79,15 +68,5 @@ public class TaskService {
 	public void bgJobHandlerDataFromOrgatex()
 	{
 		this.sorModel.upSertSORToPCMS();
-	} 
-////	@Scheduled(cron = "30 8/10 * * * *")
-//	public void sortBackGroundProcess()
-//	{
-////	   boolean bl_check = false; 
-//		BackGroundJobModel bgjModel = new BackGroundJobModel();
-//		bgjModel.execUpsertToTEMPProdWorkDate();
-////	   if(bl_check) { System.out.println("execUpsertToTEMPProdWorkDate    :: " + Calendar.getInstance().getTime().toString()); }
-//		bgjModel.execUpsertToTEMPUserStatusOnWeb();
-////	   if(bl_check) { System.out.println("execUpsertToTEMPUserStatusOnWeb    :: " + Calendar.getInstance().getTime().toString()); }
-//	} 
+	}  
 }

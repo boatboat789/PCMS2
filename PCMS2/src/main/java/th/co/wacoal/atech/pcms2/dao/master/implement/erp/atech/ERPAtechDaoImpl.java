@@ -55,8 +55,9 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " TRY_CAST( CustomerNo AS NVARCHAR(50)) as CustomerNoWOZero  ,\r\n"
 				+ " TRY_CAST( CustomerName AS NVARCHAR(500)) as CustomerName  ,\r\n"
 				+ " TRY_CAST( CustomerShortName AS NVARCHAR(500)) as CustomerShortName  ,\r\n"
-				+ " TRY_CAST( CustomerType AS NVARCHAR(50)) as CustomerType  ,\r\n"
-				+ " TRY_CAST( DistChannel AS NVARCHAR(50)) as DistChannel, \r\n"
+				// สลับ CustomerType , DistChannel เพื่อให้ข้อมูลตรงกับ LOGIC ของ Field : DistChannel จาก SOR
+				+ " TRY_CAST( CustomerType AS NVARCHAR(50)) as DistChannel  ,\r\n"
+				+ " TRY_CAST( DistChannel AS NVARCHAR(50)) as CustomerType, \r\n"
 				+ "	 case\r\n"
 				+ "		 when [CustomerName] not like '%SABINA%' and [CustomerShortName] not like '%SBF%'\r\n"
 				+ "		 then CAST ( 0 AS BIT ) \r\n"
@@ -104,14 +105,19 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "        CASE\r\n"
 				+ "            WHEN CFMSendDate = '1900-01-01 00:00:00.000' THEN NULL\r\n"
 				+ "            WHEN CFMSendDate IS NULL OR CFMSendDate = '' THEN NULL\r\n"
-				+ "            ELSE CFMSendDate\r\n"
+				+ "            ELSE TRY_CAST(CFMSendDate as DATETIME)\r\n"
 				+ "        END AS CFMSendDate,\r\n"
 				+ "        CASE\r\n"
 				+ "            WHEN CFMAnswerDate = '1900-01-01 00:00:00.000' THEN NULL\r\n"
 				+ "            WHEN CFMAnswerDate IS NULL OR CFMAnswerDate = '' THEN NULL\r\n"
-				+ "            ELSE CFMAnswerDate\r\n"
-				+ "        END AS CFMAnswerDate,\r\n"
-				+ "        TRY_CAST(CFMStatus AS NVARCHAR(30)) AS CFMStatus,\r\n"
+				+ "            ELSE TRY_CAST(CFMAnswerDate as DATETIME)\r\n"
+				+ "        END AS CFMAnswerDate,\r\n" 
+				+ " 		CASE "
+				+ "				WHEN CFMAnswerDate = '1900-01-01 00:00:00.000' THEN TRY_CAST(NULL AS BIT) \r\n"
+				+ "				WHEN CFMAnswerDate is null or CFMAnswerDate = '' THEN TRY_CAST(NULL AS BIT) \r\n"
+				+ "				ELSE TRY_CAST(CFMStatus AS BIT) "
+				+ "				END AS CFMStatus  ,\r\n"
+//				+ "        TRY_CAST(CFMStatus AS NVARCHAR(30)) AS CFMStatus,\r\n"
 				+ "        TRY_CAST(CFMRemark AS NVARCHAR(80)) AS CFMRemark,\r\n"
 				+ "        TRY_CAST(SaleOrder AS NVARCHAR(50)) AS SaleOrder,\r\n"
 				+ "        TRY_CAST(SaleLine AS NVARCHAR(50)) AS SaleLine,\r\n"
@@ -150,6 +156,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " from FromErpCFM"
 				
 				; 
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -309,7 +316,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				   CASE  \r\n"
 				+ "				         WHEN LotShipping = '1900-01-01 00:00:00.000' THEN null \r\n"
 				+ "				         WHEN LotShipping is null or LotShipping = '' THEN null  \r\n"
-				+ "				         ELSE LotShipping   \r\n"
+				+ "				         ELSE TRY_CAST( LotShipping AS DATETIME)  \r\n"
 				+ "				     END AS LotShipping,    \r\n"
 				+ "				  TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder, \r\n"
 				+ "				  TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrderCheck, \r\n"
@@ -397,7 +404,9 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				WHEN RemAfterCloseOne IS NULL OR LEN(RemAfterCloseOne) < 201 THEN NULL \r\n"
 				+ "				ELSE SUBSTRING(RemAfterCloseOne, 201, 100)  \r\n"
 				+ "			END AS RemAfterCloseThree, \r\n"
-				+ "		TRY_CAST(LabStatus AS NVARCHAR(50)) as LabStatus, \r\n"
+				+ "		CASE WHEN LabStatus = '' THEN '-' "
+				+ "			ELSE TRY_CAST(LabStatus AS NVARCHAR(50)) "
+				+ "			END as LabStatus, \r\n"
 				+ "		TRY_CAST(UserStatus AS NVARCHAR(50)) as UserStatus, \r\n"
 				+ "		TRY_CAST(DesignFG AS NVARCHAR(50)) as DesignFG, \r\n"
 				+ "		TRY_CAST(ArticleFG AS NVARCHAR(50)) as ArticleFG, \r\n"
@@ -691,7 +700,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				              ShipDate = '' THEN null  \r\n"
 				+ "				         ELSE ShipDate   \r\n"
 				+ "				       END AS ShipDate,    \r\n"
-				+ "				  TRY_CAST(SaleStatus AS NVARCHAR(1)) as SaleStatus, \r\n"
+//				+ "				  TRY_CAST(SaleStatus AS NVARCHAR(1)) as SaleStatus, \r\n"
+				+ "				  CASE"
+				+ "					WHEN SaleStatus IN ( 'Open order','Delivered' ) THEN 'O' "
+				+ "					WHEN SaleStatus in ( 'Invoiced') THEN 'C'" 
+				+ "					WHEN SaleStatus in ( 'Canceled' ) THEN 'X' "
+				+ "					ELSE NULL "
+				+ "					END AS SaleStatus ,"
 				+ "				  TRY_CAST(Currency AS NVARCHAR(20)) as Currency, \r\n"
 				+ "				  TRY_CAST(Price AS decimal(13, 3)) as Price, \r\n"
 				+ "				  TRY_CAST(OrderAmount AS decimal(13, 3)) as OrderAmount, \r\n"
@@ -704,7 +719,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				       END AS SaleCreateDate,    \r\n"
 				+ "				  TRY_CAST(SaleNumber AS NVARCHAR(20)) as SaleNumber, \r\n"
 				+ "				  TRY_CAST(SaleFullName AS NVARCHAR(100)) as SaleFullName, \r\n"
-				+ "				  TRY_CAST(DeliveryStatus AS NVARCHAR(1)) as DeliveryStatus, \r\n"
+				+ "				  CASE"
+				+ "					WHEN DeliveryStatus IN ( 'Open order' ) THEN 'O' "
+				+ "					WHEN DeliveryStatus in ( 'Delivered' , 'Invoiced') THEN 'C'" 
+				+ "					WHEN DeliveryStatus in ( 'Canceled' ) THEN 'X' "
+				+ "					ELSE NULL "
+				+ "					END AS DeliveryStatus,"
+//				+ "					TRY_CAST(DeliveryStatus AS NVARCHAR(1)) as DeliveryStatus, \r\n"
 				+ "				  TRY_CAST(DesignFG AS NVARCHAR(50)) as DesignFG, \r\n"
 				+ "				  TRY_CAST(ArticleFG AS NVARCHAR(50)) as ArticleFG,   \r\n"
 				+ "				  CASE  \r\n"
@@ -897,7 +918,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "	FROM FromErpPO AS a \r\n"
 				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
 				+ "), \r\n"
-				+ "PO   AS (   \r\n"
+				+ "	PO   AS (   \r\n"
 				+ " 	SELECT distinct    \r\n"
 				+ "	TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrderCheck, \r\n"
 				+ "	TRY_CAST(RollNo AS NVARCHAR(10)) as RollNumber, \r\n"
@@ -1233,24 +1254,24 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		}
 //		return list;
 //	} 
-	//	@Override
-	//	public ArrayList<FromErpWaitTestDetail> getFromErpWaitTestDetail()
-	//	{
-	//		ArrayList<FromErpWaitTestDetail> list = new ArrayList<>(); 
-	//		String sql =
-	//				" "
-	//				+ " SELECT distinct   \r\n"
-	//				+ this.select 
-	//				+ " from FromErpWaitTest"
-	//				
-	//				; 
-	//		List<Map<String, Object>> datas = this.database.queryList(sql);
-	//		list = new ArrayList<>();
-	//		for (Map<String, Object> map : datas) {
-	//			list.add(this.bcModel._genFromErpWaitTestDetail(map));
-	//		}
-	//		return list;
-	//	} 
+//		@Override
+//		public ArrayList<FromErpWaitTestDetail> getFromErpWaitTestDetail()
+//		{
+//			ArrayList<FromErpWaitTestDetail> list = new ArrayList<>(); 
+//			String sql =
+//					" "
+//					+ " SELECT distinct   \r\n"
+//					+ this.select 
+//					+ " from FromErpWaitTest"
+//					
+//					; 
+//			List<Map<String, Object>> datas = this.database.queryList(sql);
+//			list = new ArrayList<>();
+//			for (Map<String, Object> map : datas) {
+//				list.add(this.bcModel._genFromErpWaitTestDetail(map));
+//			}
+//			return list;
+//		} 
 //	@Override
 //	public ArrayList<FromErpWorkInLabDetail> getFromErpWorkInLabDetail()
 //	{

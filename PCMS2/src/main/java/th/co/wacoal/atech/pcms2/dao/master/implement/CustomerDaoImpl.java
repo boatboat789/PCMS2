@@ -21,8 +21,7 @@ import th.in.totemplate.core.sql.Database;
 public class CustomerDaoImpl implements CustomerDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New
-	@SuppressWarnings("unused")
+	// Sale - Lab-New 
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	@SuppressWarnings("unused")
 	private BeanCreateModel bcModel = new BeanCreateModel();

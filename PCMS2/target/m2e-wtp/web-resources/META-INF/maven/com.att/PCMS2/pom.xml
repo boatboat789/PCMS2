@@ -38,11 +38,17 @@
 					<artifactId>javax.servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>		<dependency>
-			<groupId>com.mashape.unirest</groupId>
-			<artifactId>unirest-java</artifactId>
-			<version>1.4.9</version>
-		</dependency>
+		</dependency>		
+<!--		<dependency>-->
+<!--			<groupId>com.mashape.unirest</groupId>-->
+<!--			<artifactId>unirest-java</artifactId>-->
+<!--			<version>1.4.9</version>-->
+<!--		</dependency>-->
+		  <dependency>
+		    <groupId>com.konghq</groupId>
+		    <artifactId>unirest-java</artifactId>
+		    <version>3.11.11</version>
+		</dependency> 
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
@@ -121,11 +127,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20190722</version>
-		</dependency> 
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20240303</version> <!-- Use latest version -->
+</dependency>
 		<!-- https://mvnrepository.com/artifact/jtds/jtds -->
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>	

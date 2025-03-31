@@ -29,8 +29,7 @@ public class RollFromSapDaoImpl implements RollFromSapDao {
 			+ "			WHEN 0 THEN ''  \r\n"
 			+ "		 	ELSE SUBSTRING( [PurchaseOrderLine] , PATINDEX('%[^0 ]%', [PurchaseOrderLine]  + ' '), LEN( [PurchaseOrderLine] ) )\r\n"
 			+ "       	END AS [PurchaseOrderLine] \r\n"
-			+ "   , [RequiredDate]\r\n"
-			+ "   , [PurchaseOrderDate]\r\n"
+			+ "   , [RequiredDate]\r\n" 
 			+ "   , [PODefault]\r\n"
 			+ "   , [POLineDefault]\r\n"
 			+ "   , [POPostingDateDefault]\r\n"
@@ -59,7 +58,7 @@ public class RollFromSapDaoImpl implements RollFromSapDao {
 		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] in ( 'O' ) \r\n";
 		String sql =
 				  " SELECT DISTINCT  \r\n"
-				+ this.selectPO
+				+ this.selectPO 
 				+ " from [PPMM].[dbo].[RollFromSap] as a \r\n "
 				+ where
 				+ " Order by [RollNumber]";

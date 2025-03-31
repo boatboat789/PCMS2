@@ -17,6 +17,7 @@ public class SqlStatementHandler {
 	public SimpleDateFormat sdf10 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	public SimpleDateFormat sdf11 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
 	public SimpleDateFormat sdf12 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public SimpleDateFormat sdf13 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); // Corrected pattern
 	public SimpleDateFormat sdfFullDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 	public String addStringAndIfNotEmpty(String where) {
@@ -217,7 +218,13 @@ public class SqlStatementHandler {
 			} else if (isValidDate(dateStr, this.sdf10)) {
 				Date date = this.sdf10.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			}else if (isValidDate(dateStr, this.sdfFullDatetime)) {
+			}else if (isValidDate(dateStr, this.sdf11)) {
+				Date date = this.sdf11.parse(dateStr);
+				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
+			} else if (isValidDate(dateStr, this.sdf12)) {
+				Date date = this.sdf12.parse(dateStr);
+				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
+			}  else if (isValidDate(dateStr, this.sdfFullDatetime)) {
 				Date date = this.sdfFullDatetime.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
 			}
