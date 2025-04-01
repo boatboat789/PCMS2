@@ -1017,7 +1017,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ this.pss.leftJoinUCALRP
 					+ " where ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
 					+ whereCaseTryRP    ;
-
+  
 			String sqlRP = ""
 						+ " select \r\n"
 						+ this.selectAll
@@ -1082,7 +1082,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
 				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
-//			 System.out.println(sql);
+			 System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

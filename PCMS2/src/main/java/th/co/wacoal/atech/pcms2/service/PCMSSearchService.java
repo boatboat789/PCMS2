@@ -302,11 +302,12 @@ public class PCMSSearchService {
 		String whereCaseTry = "";
 		String tmpWhereNoLotUCAL = "";
 //		String whereCaseA = "";
+		@SuppressWarnings("unused")
 		String saleNumber = "",materialNo = "",saleOrder = "",saleCreateDate = "",labNo = "",articleFG = "",designFG = "",
 				prdOrder = "",prdCreateDate = "",deliveryStatus = "",saleStatus = "",distChannel = "",dueDate = "",po = "",
 				cusDiv = "";
-		bean.getCustomerName();
-		bean.getCustomerShortName();
+//		bean.getCustomerName();
+//		bean.getCustomerShortName();
 		saleNumber = bean.getSaleNumber();
 		materialNo = bean.getMaterialNo();
 		saleOrder = bean.getSaleOrder();
@@ -497,40 +498,40 @@ public class PCMSSearchService {
 //			whereProd += " and MaterialNo like '" + materialNo + "%' \r\n";
 //		}
 		// Build where clauses
-		where += buildDateClause("SaleCreateDate", saleCreateDate);
-		whereSale += buildDateClause("SaleCreateDate", saleCreateDate);
-		where += buildListClause("Division", divisionList);
-		whereSale += buildListClause("Division", divisionList);
-		where += buildLikeClause("PurchaseOrder", po);
-		whereSale += buildLikeClause("PurchaseOrder", po);
-		where += buildLikeClause("SaleNumber", saleNumber);
-		whereSale += buildLikeClause("SaleNumber", saleNumber);
-		where += buildLikeClause("ArticleFG", articleFG);
-		whereSale += buildLikeClause("ArticleFG", articleFG);
-		where += buildLikeClause("DesignFG", designFG);
-		whereSale += buildLikeClause("DesignFG", designFG);
-		where += buildListClause("CustomerName", cusNameList);
-		whereSale += buildListClause("CustomerName", cusNameList);
-		where += buildListClause("CustomerShortName", cusShortNameList);
-		whereSale += buildListClause("CustomerShortName", cusShortNameList);
-		where += buildListClause("Division", divisionList);
-		whereSale += buildListClause("Division", divisionList);
-		where += buildDateClause("DueDate", dueDate);
-		whereSale += buildDateClause("DueDate", dueDate);
-		where += buildLikeClause("DeliveryStatus", deliveryStatus);
-		whereSale += buildLikeClause("DeliveryStatus", deliveryStatus);
+		where += buildDateClause("SaleCreateDate", saleCreateDate,"a");
+		whereSale += buildDateClause("SaleCreateDate", saleCreateDate,"a");
+		where += buildListClause("Division", divisionList,"a");
+		whereSale += buildListClause("Division", divisionList,"a");
+		where += buildLikeClause("PurchaseOrder", po,"a");
+		whereSale += buildLikeClause("PurchaseOrder", po,"a");
+		where += buildLikeClause("SaleNumber", saleNumber,"a");
+		whereSale += buildLikeClause("SaleNumber", saleNumber,"a");
+		where += buildLikeClause("ArticleFG", articleFG,"a");
+		whereSale += buildLikeClause("ArticleFG", articleFG,"a");
+		where += buildLikeClause("DesignFG", designFG,"a");
+		whereSale += buildLikeClause("DesignFG", designFG,"a");
+		where += buildListClause("CustomerName", cusNameList,"a");
+		whereSale += buildListClause("CustomerName", cusNameList,"a");
+		where += buildListClause("CustomerShortName", cusShortNameList,"a");
+		whereSale += buildListClause("CustomerShortName", cusShortNameList,"a");
+		where += buildListClause("Division", divisionList,"a");
+		whereSale += buildListClause("Division", divisionList,"a");
+		where += buildDateClause("DueDate", dueDate,"a");
+		whereSale += buildDateClause("DueDate", dueDate,"a");
+		where += buildLikeClause("DeliveryStatus", deliveryStatus,"a");
+		whereSale += buildLikeClause("DeliveryStatus", deliveryStatus,"a");
 		where += buildSaleStatusClause(saleStatus);
 		whereSale += buildSaleStatusClause(saleStatus);
 		where += buildListClause("DistChannel", distChannel.split("\\|"));
 		whereSale += buildListClause("DistChannel", distChannel.split("\\|"));
 
 		// Production order conditions
-		whereProd += buildLikeClause("LabNo", labNo);
-		where += buildLikeClause("LabNo", labNo);
-		where += buildLikeClause("ProductionOrder", prdOrder);
-		whereProd += buildLikeClause("ProductionOrder", prdOrder);
-		where += buildDateClause("PrdCreateDate", prdCreateDate);
-		whereProd += buildDateClause("PrdCreateDate", prdCreateDate);
+		whereProd += buildLikeClause("LabNo", labNo,"b");
+		where += buildLikeClause("LabNo", labNo,"b");
+		where += buildLikeClause("ProductionOrder", prdOrder,"b");
+		whereProd += buildLikeClause("ProductionOrder", prdOrder,"b");
+		where += buildDateClause("PrdCreateDate", prdCreateDate,"b");
+		whereProd += buildDateClause("PrdCreateDate", prdCreateDate,"b");
 		whereWaitLot = where;
 
 		whereCaseTry = whereProd;
@@ -610,32 +611,32 @@ public class PCMSSearchService {
 		return whereClauses;
 	}
 
-	private String buildDateClause(String columnName, String dateRange)
+	private String buildDateClause(String columnName, String dateRange, String para)
 	{
 		if (dateRange.isEmpty()) {
 			return "";
 		}
 		String[] dateArray = dateRange.split("-");
-		return "and ("
+		return "and ("+para+"."
 				+ columnName
 				+ " >= CONVERT(DATE,'"
 				+ dateArray[0].trim()
-				+ "',103) and \n"
+				+ "',103) and \n"+para+"."
 				+ columnName
 				+ " <= CONVERT(DATE,'"
 				+ dateArray[1].trim()
 				+ "',103)) \n";
 	}
 
-	private String buildLikeClause(String columnName, String value)
+	private String buildLikeClause(String columnName, String value, String para)
 	{
 		if (value.isEmpty()) {
 			return "";
 		}
-		return "and " + columnName + " like '" + value + "%' \n";
+		return "and "+para+"." + columnName + " like '" + value + "%' \n";
 	}
 
-	private String buildListClause(String columnName, List<String> list)
+	private String buildListClause(String columnName, List<String> list, String para)
 	{
 		if (list.isEmpty()) {
 			return "";
@@ -644,7 +645,7 @@ public class PCMSSearchService {
 		for (String element : list) {
 			escapedList.add("'" + element.replaceAll("'", "''") + "'");
 		}
-		return "and (" + columnName + " IN (" + String.join(",", escapedList) + ")) \n";
+		return "and ("+para+"."   + columnName + " IN (" + String.join(",", escapedList) + ")) \n";
 	}
 
 	private String buildListClause(String columnName, String[] strings)

@@ -41,7 +41,7 @@ public class TaskService {
 		this.bgjModel.handlerERPAtechToWebAppCustomer();
 		if(isCheck)System.out.println("End sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
-//	@Scheduled(fixedRate = 50000000)	
+//	@Scheduled(fixedRate = 5000000	0)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundProductionOrder()
 	{
