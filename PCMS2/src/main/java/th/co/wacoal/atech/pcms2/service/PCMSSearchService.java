@@ -302,7 +302,7 @@ public class PCMSSearchService {
 		String whereCaseTry = "";
 		String tmpWhereNoLotUCAL = "";
 //		String whereCaseA = "";
-		@SuppressWarnings("unused")
+//		@SuppressWarnings("unused")
 		String saleNumber = "",materialNo = "",saleOrder = "",saleCreateDate = "",labNo = "",articleFG = "",designFG = "",
 				prdOrder = "",prdCreateDate = "",deliveryStatus = "",saleStatus = "",distChannel = "",dueDate = "",po = "",
 				cusDiv = "";
@@ -498,6 +498,10 @@ public class PCMSSearchService {
 //			whereProd += " and MaterialNo like '" + materialNo + "%' \r\n";
 //		}
 		// Build where clauses
+		where += buildLikeClause("MaterialNo", materialNo,"a");
+		whereSale += buildLikeClause("MaterialNo", materialNo,"a");
+		where += buildLikeClause("SaleOrder", saleOrder,"a");
+		whereSale += buildLikeClause("SaleOrder", saleOrder,"a");
 		where += buildDateClause("SaleCreateDate", saleCreateDate,"a");
 		whereSale += buildDateClause("SaleCreateDate", saleCreateDate,"a");
 		where += buildListClause("Division", divisionList,"a");

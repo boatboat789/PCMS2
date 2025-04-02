@@ -1228,6 +1228,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String whereWaitLot = results.get("whereWaitLot");
 		where = where.replace("b.", "a.");
 		String createTempMainSale = "" + this.pss.createTempMainSale + whereSale;
+//		System.out.println(createTempMainSale);
 		String sqlWaitLot = " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
 				+ " INTO #tempWaitLot  \r\n"
