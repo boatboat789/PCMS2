@@ -41,7 +41,8 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 	public ArrayList<InputDateDetail> getCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ; 
 		String sql =
 			  " SELECT \r\n"
 			+ "		  [ProductionOrder]\r\n"
@@ -73,12 +74,14 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		String sql =
 				    " SELECT distinct count(a.[ProductionOrder]) as countAll  \r\n"
 		 		  + " FROM [PCMS].[dbo].[PlanCFMDate]  as a\r\n"
-		 		  + " inner join (select distinct [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ,max([CreateDate]) as [MaxCreateDate]\r\n"
-		 		  + "			  FROM [PCMS].[dbo].[PlanCFMDate]  \r\n"
-		 		  + "			  group by [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ) as b  \r\n"
-		 		  + "				on a.ProductionOrder = b.ProductionOrder and \r\n"
-		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and\r\n"
-		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
+		 		  + " inner join ("
+		 		  + "	select distinct [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  ,max([CreateDate]) as [MaxCreateDate]\r\n"
+		 		  + "	FROM [PCMS].[dbo].[PlanCFMDate]  \r\n"
+		 		  + "	group by [ProductionOrder]  ,[SaleOrder] ,[SaleLine]  "
+		 		  + " ) as b on a.ProductionOrder = b.ProductionOrder and \r\n"
+		 		  + "           a.SaleOrder = b.SaleOrder and "
+		 		  + "           a.SaleLine = b.SaleLine and\r\n"
+		 		  + "		    a.[CreateDate] = b.[MaxCreateDate] \r\n "
 		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanDate()+ "',103) ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
@@ -92,7 +95,8 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 	public ArrayList<InputDateDetail> getMaxCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ; 
 		String sql =
 				    " SELECT distinct \r\n"
 				  + " 		a.[ProductionOrder]  ,a.[SaleOrder] ,a.[SaleLine] ,[PlanDate] ,[CreateBy]\r\n"

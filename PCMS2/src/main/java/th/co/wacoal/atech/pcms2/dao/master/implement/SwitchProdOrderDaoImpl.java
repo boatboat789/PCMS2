@@ -224,10 +224,12 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 		connection = this.database.getConnection();
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ;
 		String prdOrderSW = bean.getProductionOrderSW();
 		String saleOrderSW = bean.getSaleOrderSW();
-		String saleLineSW = String.format("%06d", Integer.parseInt(bean.getSaleLineSW()));
+//		String saleLineSW = String.format("%06d", Integer.parseInt(bean.getSaleLineSW()));
+		String saleLineSW = bean.getSaleLineSW() ;
 		String userID = bean.getUserId();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();

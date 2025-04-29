@@ -3045,6 +3045,9 @@ function setSearchDefault(data){
 	else if(saleStatus == 'X'){ 
 		document.getElementById("rad_canceled").checked = true;
 	}
+	else if(saleStatus == 'C'){ 
+		document.getElementById("rad_closed").checked = true;
+	}
 	else{//saleStatus == 'C'
 		document.getElementById("rad_closed").checked = true;
 	}   

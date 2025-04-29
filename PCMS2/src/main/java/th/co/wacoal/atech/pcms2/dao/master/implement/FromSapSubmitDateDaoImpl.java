@@ -48,7 +48,8 @@ public class FromSapSubmitDateDaoImpl implements  FromSapSubmitDateDao{
 		ArrayList<InputDateDetail> list = null;
 		PCMSTableDetail bean = poList.get(0);
 		String prdOrder = bean.getProductionOrder();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ; 
 		String sql =
 			" SELECT \r\n"
 		  + "    	 [ProductionOrder]\r\n"

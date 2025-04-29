@@ -47,13 +47,13 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	}
 
 	@Override
-	public ArrayList<PCMSSecondTableDetail> getDivisionDetail()
-	{
+	public ArrayList<PCMSSecondTableDetail> getDivisionDetail() {
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String sql = "SELECT distinct \r\n"
 				+ "		[Division] \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n"
-				+ " where Division <> '' "
+				+ " where Division <> '' and "
+				+ "		  [DataStatus] = 'O'  "
 				+ " order by [Division] \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -70,6 +70,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		String sql = " SELECT distinct \r\n"
 				+ "		[CustomerName] \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n "
+				+ "	WHERE [DataStatus] = 'O'  "
 				+ " order by [CustomerName] \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -85,7 +86,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		ArrayList<PCMSAllDetail> list = null;
 		ConfigCustomerUserDetail bean = poList.get(0);
 		String custNo = bean.getCustomerNo();
-		String where = " where (";
+		String where = " where 1 = 1 AND DataStatus = 'O' AND (";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
 			where += " [CustomerNo] = '" + array[i] + "' ";
@@ -113,7 +114,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		ArrayList<PCMSAllDetail> list = null;
 		ConfigCustomerUserDetail bean = poList.get(0);
 		String custNo = bean.getCustomerNo();
-		String where = " where (";
+		String where = " where 1 = 1 AND DataStatus = 'O' AND (";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
 			where += " [CustomerNo] = '" + array[i] + "' ";
@@ -142,7 +143,8 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		ArrayList<PCMSAllDetail> list = null;
 		String sql = "SELECT distinct \r\n"
 				+ "		[CustomerShortName]  \r\n"
-				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n "
+				+ " FROM [PCMS].[dbo].[FromSapMainSale] \r\n"
+				+ " where DataStatus = 'O'  "
 				+ " order by  [CustomerShortName] \r\n";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
@@ -165,6 +167,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    		 END AS [SaleFullName]   "
 				+ " FROM [PCMS].[dbo].[FromSapMainSale] as a \r\n "
 				+ " where SaleNumber <> '00000000' \r\n"
+				+ " AND DataStatus = 'O'  "
 				+ " Order by [SaleNumber]";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -179,8 +182,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	{
 		PreparedStatement prepared = null;
 		Connection connection;
-		connection = this.database.getConnection();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
+		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();

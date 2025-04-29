@@ -63,7 +63,8 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 	public ArrayList<InputDateDetail> getMaxDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ; 
 		String sql =
 				    " SELECT distinct \r\n"
 				  + "       a.[ProductionOrder]  \r\n"

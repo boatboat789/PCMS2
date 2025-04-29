@@ -39,13 +39,16 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return this.message;
 	}
 
+	private String declareThirtyMinuteAgo = ""
++" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());";
+//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
 		ArrayList<CustomerDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
+				+  this.declareThirtyMinuteAgo
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
@@ -85,7 +88,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpCFMDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS (\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
 				+ "    FROM [FromErpMainProd] AS a\r\n"
@@ -212,7 +215,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpGoodReceiveDetail> list = new ArrayList<>(); 
 		String sql =
 				" " 
-				+ "declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -297,11 +300,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "    WHERE [SyncDate] >= @dateTimeThirtyMinuteAgo "
+				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "\r\n"
 				+ "    UNION\r\n"
 				+ "\r\n"
@@ -376,7 +380,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpMainProdDetail> list = new ArrayList<>(); 
 		String sql =
 				""
-				+ "declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -452,8 +456,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "		CASE  \r\n"
 				+ "				WHEN CFType = '1900-01-01 00:00:00.000' THEN null \r\n"
 				+ "				WHEN CFType is null or  \r\n"
-				+ "					CFType = '' THEN null  \r\n"
-				+ "				ELSE CFType   \r\n"
+				+ "					CFType = '' THEN null  \r\n"  
+				+ "				ELSE TRY_CAST(CFType as Datetime)   \r\n"
 				+ "			END AS CFType,    \r\n"
 				+ "		TRY_CAST(Shade AS NVARCHAR(30)) as Shade,    \r\n"
 				+ "		CASE  \r\n"
@@ -581,6 +585,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " from [FromErpMainProd] "
 				
 				;  
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -596,7 +601,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpMainProdSaleDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ "declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -651,11 +656,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS (  		  \r\n"
 				+ "	SELECT DISTINCT a.SaleOrder \r\n"
 				+ "	FROM FromErpMainSale AS a \r\n"
 				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "), \r\n"
 				+ "MainSale AS (   \r\n"
 				+ " SELECT distinct    \r\n"
@@ -679,7 +685,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				  TRY_CAST(SaleQuantity AS decimal(13, 3)) as SaleQuantity, \r\n"
 				+ "				  TRY_CAST(CustomerMaterial AS NVARCHAR(50)) as CustomerMaterial, \r\n"
 				+ "				  TRY_CAST(Color AS NVARCHAR(20)) as Color, \r\n"
-				+ "				  TRY_CAST(CustomerNo AS NVARCHAR(20)) as CustomerNo, \r\n"
+//				+ "				  TRY_CAST(CustomerNo AS NVARCHAR(20)) as CustomerNo, \r\n"
+				+ " CASE \r\n"
+				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
+				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
+				+ "	END as [CustomerNo] ,"
 				+ "				  TRY_CAST(PurchaseOrder AS NVARCHAR(20)) as PurchaseOrder, \r\n"
 				+ "				  TRY_CAST(SaleOrg AS NVARCHAR(20)) as SaleOrg, \r\n"
 				+ "				  TRY_CAST(DistChannel AS NVARCHAR(20)) as DistChannel, \r\n"
@@ -818,6 +829,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " from FromErpMainSale"
 				
 				; 
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -833,7 +845,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpPackingDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ "declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -906,7 +918,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpPODetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -1005,11 +1017,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpSaleDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				 + " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
 				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "\r\n"
 				+ "    UNION\r\n"
 				+ "\r\n"
@@ -1031,7 +1044,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "		TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine, \r\n"
 				+ "		TRY_CAST(BillQtyPerStock AS decimal(13, 3)) as BillQtyPerStock, \r\n"
 				+ "		TRY_CAST(Remark AS NVARCHAR(100)) as Remark, \r\n"
-				+ "		TRY_CAST(CustomerNo AS NVARCHAR(20)) as CustomerNo, \r\n"
+//				+ "		TRY_CAST(CustomerNo AS NVARCHAR(20)) as CustomerNo, \r\n"
+
+				+ " CASE \r\n"
+				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
+				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
+				+ "	END as [CustomerNo] ,"
 				+ "		TRY_CAST(CustomerName1 AS NVARCHAR(50)) as CustomerName1, \r\n"
 				+ "		TRY_CAST(CustomErpO AS NVARCHAR(30)) as CustomErpO,  \r\n"
 				+ "			CASE  \r\n"
@@ -1095,7 +1114,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		ArrayList<FromErpSubmitDateDetail> list = new ArrayList<>(); 
 		String sql =
 				" "
-				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE()); \r\n"
+						+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"

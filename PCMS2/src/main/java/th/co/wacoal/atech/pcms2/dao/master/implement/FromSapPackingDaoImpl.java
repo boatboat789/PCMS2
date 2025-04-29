@@ -82,8 +82,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 	{
 		PreparedStatement prepared = null;
 		Connection connection;
-		connection = this.database.getConnection();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
+		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();

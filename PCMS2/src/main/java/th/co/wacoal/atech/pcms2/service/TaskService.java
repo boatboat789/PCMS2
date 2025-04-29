@@ -24,7 +24,7 @@ public class TaskService {
 	private ServletContext context;
 	private SORModel sorModel;
 	private BackGroundJobModel bgjModel;
-	private boolean isCheck =false;
+	private boolean isCheck = false;
 	@Autowired
 	public TaskService(SORModel sorModel
 			, BackGroundJobModel bgjModel
@@ -41,7 +41,7 @@ public class TaskService {
 		this.bgjModel.handlerERPAtechToWebAppCustomer();
 		if(isCheck)System.out.println("End sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
-//	@Scheduled(fixedRate = 5000000	0)	
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 8/10 * * * *")
 	public void sortBackGroundProductionOrder()
 	{
@@ -57,6 +57,7 @@ public class TaskService {
 		this.bgjModel.handlerERPAtechToWebAppSaleOrder();
 		if(isCheck)System.out.println("End sortBackGroundSaleOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
+//	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 4/10 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{

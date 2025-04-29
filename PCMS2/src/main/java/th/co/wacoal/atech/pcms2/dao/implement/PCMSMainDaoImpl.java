@@ -22,6 +22,7 @@ import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.InspectOrdersDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.model.PCMSSearchModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapCFMModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapPackingModel;
@@ -655,6 +656,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		return list;
 	}
 	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList ) {
+		
+		PCMSSearchModel psModel = new PCMSSearchModel();
 		ArrayList<PCMSTableDetail> list = null;
 		PCMSTableDetail bean = poList.get(0); 
 		Map<String, String> results = pss.buildWhereClauses(bean);
@@ -665,9 +668,16 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String whereBMainUserStatus = results.get("whereBMainUserStatus");
 		String whereSale = results.get("whereSale");
 		String whereWaitLot = results.get("whereWaitLot");
-		String createTempMainSale = ""
-				+ this.pss.createTempMainSale
+		String createCusListSearch = ""
+				+ psModel.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
+			String createTempMainSale = ""
+				+ createCusListSearch
+				+ this.pss.createTempMainSaleWithJoinCustomer 
 				+ whereSale;
+		
+//		String createTempMainSale = ""
+//				+ this.pss.createTempMainSale
+//				+ whereSale;
 		String sqlWaitLot =
 				  " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
@@ -792,7 +802,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "       "+this.pss.leftJoinSCC
 				+ "       "+this.pss.leftJoinM
 				+ "       "+this.pss.leftJoinUCAL
-				+ "       where b.DataStatus <> 'X' \r\n"
+				+ "       where b.DataStatus = 'O' \r\n"
 				+ "             "+tmpWhereNoLotUCAL+" \r\n"
 				+ " If(OBJECT_ID('tempdb..#tempPrdOP') Is Not Null)\r\n"
 				+ "	begin\r\n"
@@ -880,7 +890,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL)\r\n"
 				+ "       	) as b on a.SaleOrder = b.SaleOrder and "
 				+ "                   a.SaleLine = b.SaleLine   \r\n"
-				+ "		 	where b.DataStatus <> 'X' and b.SaleLine <> '' ) as a  \r\n "
+				+ "		 	where b.DataStatus = 'O' and b.SaleLine <> '' ) as a  \r\n "
 				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
 				+ this.pss.leftJoinTempG
 				+ this.pss.leftJoinSCC 
@@ -971,7 +981,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "				) AS A\r\n"
 				+ "				group by PRDORDERSW\r\n"
 				+ "		 	) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
-				+ "		 	where b.DataStatus <> 'X') as a  \r\n "
+				+ "		 	where b.DataStatus = 'O') as a  \r\n "
 				+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
 				+ this.pss.leftJoinTempG 
 				+ this.pss.leftJoinSCC
@@ -1082,7 +1092,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
 				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
-			 System.out.println(sql);
+//			 System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

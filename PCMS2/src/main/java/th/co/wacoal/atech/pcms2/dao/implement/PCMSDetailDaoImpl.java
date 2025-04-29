@@ -22,6 +22,7 @@ import th.co.wacoal.atech.pcms2.entities.SwitchProdOrderDetail;
 import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
 import th.co.wacoal.atech.pcms2.model.BackGroundJobModel;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.model.PCMSSearchModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdModel;
 import th.co.wacoal.atech.pcms2.model.master.PlanCFMDateModel;
 import th.co.wacoal.atech.pcms2.model.master.PlanCFMLabDateModel;
@@ -46,15 +47,14 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	private String CLOSE_STATUS = "X";
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private Database database;
-	private String message; 
+	private String message;
 
- 
 	private String leftJoinFSMBBTempSumBill_A = ""
 			+ " left join #tempSumBill AS FSMBB ON FSMBB.[ProductionOrder] = a.[ProductionOrder] AND\r\n"
 			+ "							           FSMBB.SaleOrder = a.SaleOrder AND\r\n"
 			+ "							           FSMBB.SaleLine = a.SaleLine AND\r\n"
 			+ "							           FSMBB.Grade = M.Grade \r\n";
- 
+
 	private String selectWaitLot = ""
 			+ "   a.SaleOrder \r\n"
 			+ "   , CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘') \r\n"
@@ -475,14 +475,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		  + "   , a.CustomerType\r\n"
 			+ "   , a.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n";
- 
- 
+
 	private String leftJoinFSMBBTempSumBill = ""
 			+ " left join #tempSumBill AS FSMBB ON b.[ProductionOrder] = FSMBB.[ProductionOrder] \r\n"
 			+ "							    AND FSMBB.SaleOrder = a.SaleOrder \r\n"
 			+ "							    AND FSMBB.SaleLine = a.SaleLine\r\n"
 			+ "							    AND FSMBB.Grade = M.Grade \r\n";
- 
+
 	private String leftJoinB_Select = ""
 			+ "            a.[SaleOrder]\r\n"
 			+ "                ,a.[Saleline]\r\n"
@@ -602,7 +601,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,a.CustomerName\r\n"
 			+ "                ,a.DeliveryStatus\r\n"
 			+ "                ,a.SaleStatus\r\n"
-			+ "";  
+			+ "";
 	private String leftJoinE = ""
 			+ "  left join ( \r\n"
 			+ "			SELECT distinct\r\n"
@@ -645,7 +644,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	private String leftJoinH = ""
 			+ " left join #tempPlandeliveryDate as h on h.ProductionOrder = a.ProductionOrder and \r\n"
 			+ "                                         h.SaleOrder = a.SaleOrder and\r\n"
-			+ "                                         h.SaleLine = a.SaleLine \r\n"; 
+			+ "                                         h.SaleLine = a.SaleLine \r\n";
 	private String leftJoinJ = ""
 			+ " left join ( \r\n"
 			+ "    SELECT distinct SALELINE,SALEORDER,CFMDATE \r\n"
@@ -774,7 +773,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			ELSE  NULL\r\n"
 			+ "			END AS VolumnFGAmount  \r\n"
 			+ "   , 'Main' as TypePrd \r\n"
-			+ "   , 'Main' AS TypePrdRemark \r\n" 
+			+ "   , 'Main' AS TypePrdRemark \r\n"
 			+ "   , b.[DyeStatus]\r\n"
 			+ "   , b.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempMain  \r\n";
@@ -918,7 +917,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			ELSE  NULL\r\n"
 			+ "			END AS VolumnFGAmount  \r\n"
 			+ "   , 'OrderPuang' as TypePrd \r\n"
-			+ "   , a.TypePrdRemark \r\n" 
+			+ "   , a.TypePrdRemark \r\n"
 			+ "   , a.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " into #tempPrdOP\r\n"
@@ -952,7 +951,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			ELSE  NULL\r\n"
 			+ "			END AS VolumnFGAmount  \r\n"
 			+ "	  , 'OrderPuang' as TypePrd \r\n"
-			+ "	  , a.TypePrdRemark \r\n" 
+			+ "	  , a.TypePrdRemark \r\n"
 			+ "   , g.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempPrdOPSW  \r\n"
@@ -1017,7 +1016,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "				WHERE ( B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL and a.DataStatus = 'O') \r\n"
 			+ "       	) as b on a.SaleOrder = b.SaleOrder and \r\n"
 			+ "                   a.SaleLine = b.SaleLine \r\n"
-			+ "			where b.DataStatus <> 'X' and b.SaleLine <> ''\r\n";
+			+ "			where b.DataStatus = 'O' and b.SaleLine <> ''\r\n";
 	private String createTempOPSWSecond = ""
 			+ "	) as a  \r\n "
 			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
@@ -1054,7 +1053,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			ELSE  NULL\r\n"
 			+ "			END AS VolumnFGAmount  \r\n"
 			+ "   , 'Switch' as TypePrd \r\n"
-			+ "   , TypePrdRemark \r\n" 
+			+ "   , TypePrdRemark \r\n"
 			+ "   , g.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempPrdSW  \r\n"
@@ -1092,7 +1091,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                   when b.ProductionOrder = b.ProductionOrderSW then 'MAIN'\r\n"
 			+ "                   ELSE 'SUB'\r\n"
 			+ "                 END                 TypePrdRemark\r\n"
-			+ "                ,C.SumVol\r\n" 
+			+ "                ,C.SumVol\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
 			+ "		 	from #tempMainSale as a  \r\n"
 			+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleOrder = b.SaleOrderSW and \r\n"
@@ -1124,7 +1123,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "				 ) AS A\r\n"
 			+ "				 group by PRDORDERSW\r\n"
 			+ "		    ) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
-			+ "		    where b.DataStatus <> 'X' \r\n";
+			+ "		    where b.DataStatus = 'O' \r\n";
 
 	private String createTempPrdSWSecond = ""
 			+ " ) as a  \r\n "
@@ -1216,8 +1215,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	@Override
 	public ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList)
 	{
-		ArrayList<PCMSSecondTableDetail> list = null; 
-		PCMSTableDetail bean = poList.get(0);  
+
+		PCMSSearchModel psModel = new PCMSSearchModel();
+		ArrayList<PCMSSecondTableDetail> list = null;
+		PCMSTableDetail bean = poList.get(0);
 		Map<String, String> results = pss.buildWhereClauses(bean);
 		String whereCaseTry = results.get("whereCaseTry");
 		String whereCaseTryRP = results.get("whereCaseTryRP");
@@ -1227,9 +1228,21 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String whereSale = results.get("whereSale");
 		String whereWaitLot = results.get("whereWaitLot");
 		where = where.replace("b.", "a.");
-		String createTempMainSale = "" + this.pss.createTempMainSale + whereSale;
+
+//		this.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList()); 
+		String createCusListSearch = ""
+			+ psModel.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
+		String createTempMainSale = ""
+			+ createCusListSearch
+			+ this.pss.createTempMainSaleWithJoinCustomer 
+			+ whereSale;
+		
+//		String createTempMainSale = ""
+//				+ this.pss.createTempMainSale 
+//				+ whereSale;
 //		System.out.println(createTempMainSale);
-		String sqlWaitLot = " SELECT DISTINCT  \r\n"
+		String sqlWaitLot = " "
+				+ " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
 				+ " INTO #tempWaitLot  \r\n"
 				+ " FROM #tempMainSale as a \r\n "
@@ -1246,7 +1259,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String fromMainB = ""
 				+ " from (\r\n"
 				+ "      SELECT distinct \r\n"
-				+ this.leftJoinB_Select
+				+ this.leftJoinB_Select  
 				+ this.pss.fromMainSale_A
 				+ this.pss.leftJoinBPartOneT_A
 				+ this.pss.leftJoinBPartOneS_A
@@ -1258,7 +1271,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.leftJoinFSMBBTempSumBill_A
 				+ where
 				+ " ) as b \r\n";
-		String sqlMain = "" + this.createTempMainFirst + fromMainB + this.createTempMainSecond
+		String sqlMain = "" 
+				+ this.createTempMainFirst 
+				+ fromMainB 
+				+ this.createTempMainSecond
 //					+ whereCaseTry
 		;
 
@@ -1372,9 +1388,43 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
 		}
+//		this.handlerCloseTempTableCustomerSearchList();
+		;
 		return list;
 	}
-
+//
+//	private void handlerTempTableCustomerSearchList(List<String> customerNameList, List<String> customerShortNameList)
+//	{
+//
+//		PreparedStatement prepared = null;
+//		Connection connection;
+//		connection = this.database.getConnection();
+//		// TODO Auto-generated method stub
+//		String sqlCreateTempTable = ""
+//				+ "CREATE TABLE #tempCustomerList (CustomerName NVARCHAR(500)) ;"
+//				+ "CREATE TABLE #tempCustomerShortList (CustomerShortName NVARCHAR(500)) ;";
+//		try {
+//			prepared = connection.prepareStatement(sqlCreateTempTable);
+//			// Step 1: สร้าง temp table
+//			prepared.execute();
+//			// Step 2: insert รายชื่อลูกค้าลงไป
+//			prepared = connection.prepareStatement("INSERT INTO #tempCustomerList VALUES (?)");
+//			for (String name : customerNameList) {
+//				prepared.setString(1, name);
+//				prepared.addBatch();
+//			}
+//			prepared.executeBatch();
+//			prepared = connection.prepareStatement("INSERT INTO #tempCustomerShortList VALUES (?)");
+//			for (String name : customerShortNameList) {
+//				prepared.setString(1, name);
+//				prepared.addBatch();
+//			}
+//			prepared.executeBatch();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//	} 
 	@Override
 	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList)
 	{
@@ -1415,7 +1465,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine();
 		ArrayList<InputDateDetail> listInput = new ArrayList<>();
 //		java.util.Date date ;
 		InputDateDetail beanInput = new InputDateDetail();
@@ -1948,7 +1999,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	{
 		ArrayList<InputDateDetail> list = null;
 		PCMSSecondTableDetail bean = poList.get(0);
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String sql = ""
 				+ " SET NOCOUNT ON; ;\r\n"
 				+ " SELECT \r\n"
@@ -1968,7 +2019,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ bean.getSaleOrder()
 				+ "' and \r\n"
 				+ "       a.[SaleLine] = '"
-				+ saleLine
+				+ bean.getSaleLine()
 				+ "' \r\n"
 				+ " union ALL  \r\n "
 				+ " SELECT \r\n"
@@ -2243,15 +2294,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getOrderPuangListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
-		String where = " and  ( \r\n";
+		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " b.ProductionOrder = '" + ProductionOrder + "' ";
+			where = where + " '" + ProductionOrder + "' ";
 			if (i != poList.size()-1) {
-				where += " or ";
+				where += " , ";
 			}
 		}
-		where += " ) \r\n";
+		where += " ) " + " ) \r\n";
 		String createTempOPFromA = "" + this.createTempOPFromA + "          " + where + this.createTempOP;
 		String sqlOP = ""
 //				+ this.declareTempApproved
@@ -2279,16 +2330,16 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getOrderPuangSWListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
-		String where = " ";  
-		if (!poList.isEmpty()) {
-		    where = " and b.ProductionOrder IN (";
-		    List<String> productionOrders = new ArrayList<>();
-		    
-		    for (PCMSSecondTableDetail detail : poList) {
-		        productionOrders.add("'" + detail.getProductionOrder() + "'");
-		    }
-		    
-		    where += String.join(", ", productionOrders) + ") \r\n";
+		String where = " ";
+		if ( ! poList.isEmpty()) {
+			where = " and b.ProductionOrder IN (";
+			List<String> productionOrders = new ArrayList<>();
+
+			for (PCMSSecondTableDetail detail : poList) {
+				productionOrders.add("'" + detail.getProductionOrder() + "'");
+			}
+
+			where += String.join(", ", productionOrders) + ") \r\n";
 		}
 		String sql = ""
 				+ this.pss.createTempMainSale
@@ -2353,11 +2404,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ ";";
 			int index = 1;
 			prepared = connection.prepareStatement(sql);
-			prepared.setString(index++, prdOrder);  
-			prepared = this.sshUtl.setSqlDate(prepared, planDate, index++); 
-			prepared.setString(index++, bean.getUserId()); 
-			prepared.setTimestamp(index++, new Timestamp(time)); 
-			prepared.setString(index++, bean.getLotNo()); 
+			prepared.setString(index ++ , prdOrder);
+			prepared = this.sshUtl.setSqlDate(prepared, planDate, index ++ );
+			prepared.setString(index ++ , bean.getUserId());
+			prepared.setTimestamp(index ++ , new Timestamp(time));
+			prepared.setString(index ++ , bean.getLotNo());
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
@@ -2381,7 +2432,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		try {
 			String sql = " UPDATE [PCMS].[dbo]."
 					+ tableName
@@ -2393,7 +2444,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			prepared.setTimestamp(3, new Timestamp(time));
 			prepared.setString(4, prdOrder);
 			prepared.setString(5, saleOrder);
-			prepared.setString(6, saleLine);
+			prepared.setString(6,  bean.getSaleLine() );
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
@@ -2419,7 +2470,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
 		try {
 			String sql = "UPDATE [PCMS].[dbo]."
@@ -2434,7 +2485,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			prepared.setTimestamp(3, new Timestamp(time));
 			prepared.setString(4, prdOrder);
 			prepared.setString(5, saleOrder);
-			prepared.setString(6, saleLine);
+			prepared.setString(6, bean.getSaleLine());
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
@@ -2460,7 +2511,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 //		String caseSave = bean.getCaseSave();
 		String grade = bean.getGrade();
 		try {
@@ -2474,7 +2525,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			prepared.setTimestamp(3, new Timestamp(time));
 			prepared.setString(4, prdOrder);
 			prepared.setString(5, saleOrder);
-			prepared.setString(6, saleLine);
+			prepared.setString(6, bean.getSaleLine());
 			prepared.setString(7, grade);
 			prepared.executeUpdate();
 			prepared.close();
@@ -2500,8 +2551,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		currentTime.getTime(); 
 		try {
 			String sql = "UPDATE [PCMS].[dbo]."
 					+ tableName
@@ -2535,7 +2585,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
 		try {
 			String sql = " INSERT INTO [PCMS].[dbo]."
@@ -2550,7 +2600,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prdOrder);
 			prepared.setString(2, saleOrder);
-			prepared.setString(3, saleLine);
+			prepared.setString(3, bean.getSaleLine());
 			prepared.setString(4, valueChange);
 			prepared.setString(5, bean.getUserId());
 			prepared.setTimestamp(6, new Timestamp(time));
@@ -2578,8 +2628,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		long time = currentTime.getTime(); 
 		try {
 			String sql = " UPDATE [PCMS].[dbo]."
 					+ tableName
@@ -2610,12 +2659,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		PreparedStatement prepared = null;
 		Connection connection;
 		connection = this.database.getConnection();
-		String prdOrder = bean.getProductionOrder();
-//		String saleOrder = bean.getSaleOrder();
+		String prdOrder = bean.getProductionOrder(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		long time = currentTime.getTime(); 
 		String caseSave = bean.getCaseSave();
 		try {
 			String sql = " INSERT INTO [PCMS].[dbo]."
@@ -2656,7 +2703,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
 		String grade = bean.getGrade();
 		try {
@@ -2672,7 +2719,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prdOrder);
 			prepared.setString(2, saleOrder);
-			prepared.setString(3, saleLine);
+			prepared.setString(3, bean.getSaleLine());
 			prepared.setString(4, valueChange);
 			prepared.setString(5, bean.getUserId());
 			prepared.setTimestamp(6, new Timestamp(time));

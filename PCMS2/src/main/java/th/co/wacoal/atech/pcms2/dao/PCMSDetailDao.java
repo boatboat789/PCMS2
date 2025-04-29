@@ -1,6 +1,7 @@
 package th.co.wacoal.atech.pcms2.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
@@ -28,6 +29,9 @@ public interface PCMSDetailDao {
 	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList);
 
 	ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList);
+
+
+//	String handlerTempTableCustomerSearchList(List<String> customerNameList, List<String> customerShortNameList);
 
 
 }

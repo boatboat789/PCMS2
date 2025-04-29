@@ -40,8 +40,7 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 	@Override
 	public ArrayList<InputDateDetail> getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
-		PCMSSecondTableDetail bean = poList.get(0);
-//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		PCMSSecondTableDetail bean = poList.get(0); 
 		String sql =
 				  " SELECT [ProductionOrder]\r\n"
 			    + "       ,[SendCFMCusDate] as [PlanDate]\r\n"

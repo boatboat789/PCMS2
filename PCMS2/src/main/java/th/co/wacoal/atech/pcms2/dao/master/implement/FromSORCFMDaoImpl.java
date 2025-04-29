@@ -68,7 +68,8 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 			prepared = connection.prepareStatement(sql);
 			for (i = 0; i < list.size(); i++) {
 				SORDetail bean = list.get(i);
-				saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//				saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+			 saleLine = bean.getSaleLine() ; 
 				cfmDate = bean.getCfmDate();
 				int index = 1;
 				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index); 

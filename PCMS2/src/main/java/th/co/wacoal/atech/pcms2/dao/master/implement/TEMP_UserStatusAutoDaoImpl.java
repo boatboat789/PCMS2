@@ -44,8 +44,7 @@ public class TEMP_UserStatusAutoDaoImpl implements  TEMP_UserStatusAutoDao{
 		PCMSSecondTableDetail bean = poList.get(0);
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
-		String saleLine = bean.getSaleLine();
-		saleLine = String.format("%06d", Integer.parseInt(saleLine));
+		String saleLine = bean.getSaleLine(); 
 		String sql = "SELECT distinct  [Id]\r\n"
 				+ "      ,[ProductionOrder]\r\n"
 				+ "      ,[SaleOrder]\r\n"

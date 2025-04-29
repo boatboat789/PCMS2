@@ -188,6 +188,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		String sql = "EXEC [dbo].[spd_UpsertToTEMP_UserStatusOnWeb] ";
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
 
 			prepared.close();
 		} catch (SQLException e1) {
@@ -204,7 +205,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		String sql = "EXEC [dbo].[spd_UpsertToMainSale] ";
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
-
+			prepared.execute();
 			prepared.close();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -218,6 +219,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		String sql = "EXEC [dbo].[spd_UpsertToMainBillBatch] ";
 		try {
 			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
 
 			prepared.close();
 		} catch (SQLException e1) {

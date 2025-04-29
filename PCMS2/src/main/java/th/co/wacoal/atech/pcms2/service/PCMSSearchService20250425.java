@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 
 @Service
-public class PCMSSearchService {
+public class PCMSSearchService20250425 {
 	public String createTempSumGR = ""
 			+ " If(OBJECT_ID('tempdb..#tempSumGR') Is Not Null)\r\n"
 			+ "	begin\r\n"
@@ -527,23 +527,11 @@ public class PCMSSearchService {
 		whereSale += buildLikeClause("ArticleFG", articleFG,"a");
 		where += buildLikeClause("DesignFG", designFG,"a");
 		whereSale += buildLikeClause("DesignFG", designFG,"a");
-//		where += buildListClause("CustomerName", cusNameList,"a");
-//		whereSale += buildListClause("CustomerName", cusNameList,"a");
-//		where += buildListClause("CustomerShortName", cusShortNameList,"a");
-//		whereSale += buildListClause("CustomerShortName", cusShortNameList,"a");
-		
-		where += "   "
-				+ "  AND EXISTS (\r\n"
-				+ "        SELECT 1\r\n"
-				+ "        FROM #tempCustomerList AS c\r\n"
-				+ "        WHERE c.CustomerName COLLATE Thai_100_CI_AS = a.CustomerName COLLATE Thai_100_CI_AS\r\n"
-				+ "    ) ";
-		where += "   "
-				+ "  AND EXISTS (\r\n"
-				+ "        SELECT 1\r\n"
-				+ "        FROM #tempCustomerShortList AS c\r\n"
-				+ "        WHERE c.CustomerShortName COLLATE Thai_100_CI_AS = a.CustomerShortName COLLATE Thai_100_CI_AS\r\n"
-				+ "    ) " ;
+		where += buildListClause("CustomerName", cusNameList,"a");
+		whereSale += buildListClause("CustomerName", cusNameList,"a");
+		where += buildListClause("CustomerShortName", cusShortNameList,"a");
+		whereSale += buildListClause("CustomerShortName", cusShortNameList,"a");
+		 
 		where += buildListClause("Division", divisionList,"a");
 		whereSale += buildListClause("Division", divisionList,"a");
 		where += buildDateClause("DueDate", dueDate,"a");
@@ -696,15 +684,8 @@ public class PCMSSearchService {
 			return "";
 		}
 		if (saleStatus.equals("O")) {
-			return ""
-					+ " and (SaleStatus like '"
-					+ saleStatus
-					+ "%' or "
-					+ "			( a.[RemainQuantity] > 0 and SaleStatus <> 'X' ) "
-					+ "		) \n";
+			return "and (SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] > 0) \n";
 		} else if (saleStatus.equals("X")) {
-			return "and (SaleStatus like '" + saleStatus + "%') \n";
-		} else if (saleStatus.equals("C")) {
 			return "and (SaleStatus like '" + saleStatus + "%') \n";
 		} else {
 			return "and (SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] = 0) \n";

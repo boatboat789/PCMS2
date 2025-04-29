@@ -130,7 +130,8 @@ public class ReplacedProdOrderDaoImpl implements  ReplacedProdOrderDao{
 		connection = this.database.getConnection();
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine = bean.getSaleLine() ; 
 		String prdOrderRP = bean.getProductionOrderRP();
 		String volume = bean.getVolume();
 		String userID = bean.getChangeBy();
@@ -192,7 +193,8 @@ public class ReplacedProdOrderDaoImpl implements  ReplacedProdOrderDao{
 		connection = this.database.getConnection();
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
-		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+//		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+		String saleLine =  bean.getSaleLine()  ;
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
