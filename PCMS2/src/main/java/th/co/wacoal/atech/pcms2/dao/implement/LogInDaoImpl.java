@@ -8,25 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.LogInDao;
-import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo; 
 import th.in.totemplate.core.sql.Database;
 @Repository // Spring annotation to mark this as a DAO component
-public class LogInDaoImpl implements LogInDao {
-	private BeanCreateModel bcModel = new BeanCreateModel();
-	private Database database;
+public class LogInDaoImpl implements LogInDao { 
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
@@ -35,7 +27,6 @@ public class LogInDaoImpl implements LogInDao {
 	public SimpleDateFormat sdfDateTime1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     @Autowired
 	public LogInDaoImpl(Database database) {
-		this.database = database;
 		this.message = "";
 	}
 
@@ -311,32 +302,5 @@ public class LogInDaoImpl implements LogInDao {
 			// Clean out temporary data
 			Arrays.fill(generatedData, (byte) 0);
 		}
-	}
-
-	@Override
-	public ArrayList<ConfigCustomerUserDetail> getConfigCustomerUserDetail(String userId) {
-		ArrayList<ConfigCustomerUserDetail> list = null;
-		String sql =
-				  " SELECT [Id]\r\n"
-				  + "      ,[EmployeeID]\r\n"
-				  + "      ,[CustomerNo]\r\n"
-				  + "      ,[CustomerDivision]\r\n"
-				  + "      ,[IsPCMSDetailPage]\r\n"
-				  + "      ,[IsPCMSSumPage]\r\n"
-				  + "      ,[IsProdPathBtn]\r\n"
-				  + "      ,[IsLBMSPathBtn]\r\n"
-				  + "      ,[IsQCMSPathBtn]\r\n"
-				  + "      ,[IsInspectPathBtn]\r\n"
-				  + "      ,[IsSFCPathBtn]\r\n"
-				  + "      ,[DataStatus]\r\n"
-				  + "  FROM [PCMS].[dbo].[ConfigCustomerUser] as a\r\n"
-			  	+ " where a.[EmployeeID] = '" + userId+ "' \r\n"
-			  	+ " ORDER BY EmployeeID desc "; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genConfigCustomerUserDetail(map));
-		}
-		return list;
 	}
 }

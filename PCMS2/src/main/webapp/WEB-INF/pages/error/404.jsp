@@ -3,10 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page isELIgnored="false"%>
-<%@include file="../config/common/commonBase.jsp"%>
+<%@include file="../config/common/commonBase.jsp"%>  
 <html>
 
 <head>
+<%-- 	<jsp:include page="/WEB-INF/pages/config/common/commonBase.jsp"></jsp:include>   --%>
 <jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>
 <jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
 <%-- 	<jsp:include page="/WEB-INF/pages/config/css/errorCSS.jsp"></jsp:include> --%>

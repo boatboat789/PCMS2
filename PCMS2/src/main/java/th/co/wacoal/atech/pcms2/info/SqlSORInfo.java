@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import th.in.totemplate.core.sql.DatabaseInfo;
 
 @Repository
-public class SORSqlInfo implements DatabaseInfo {
+public class SqlSORInfo implements DatabaseInfo {
 	////////////////////j/////////////////////////////////////////////////////////
 	private static final String _driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	//////////////////////////////////////////////////////////////////////////
@@ -19,33 +19,33 @@ public class SORSqlInfo implements DatabaseInfo {
 	private static final String _password = "SorToPcms@2";
 
 
-	private static SORSqlInfo _info;
-	private SORSqlInfo() {  }
+	private static SqlSORInfo _info;
+	private SqlSORInfo() {  }
 
-	public static SORSqlInfo getInstance() {
-		if (SORSqlInfo._info == null) {
-			SORSqlInfo._info = new SORSqlInfo();
+	public static SqlSORInfo getInstance() {
+		if (SqlSORInfo._info == null) {
+			SqlSORInfo._info = new SqlSORInfo();
 		}
-		return SORSqlInfo._info;
+		return SqlSORInfo._info;
 	}
 
 	@Override
 	public String getDriver() {
-		return SORSqlInfo._driver;
+		return SqlSORInfo._driver;
 	}
 
 	@Override
 	public String getUrl() {
-		return SORSqlInfo._url;
+		return SqlSORInfo._url;
 	}
 
 	@Override
 	public String getUsername() {
-		return SORSqlInfo._username;
+		return SqlSORInfo._username;
 	}
 
 	@Override
 	public String getPassword() {
-		return SORSqlInfo._password;
+		return SqlSORInfo._password;
 	}
 }

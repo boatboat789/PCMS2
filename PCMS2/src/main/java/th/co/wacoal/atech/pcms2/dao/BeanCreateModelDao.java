@@ -29,7 +29,7 @@ import th.co.wacoal.atech.pcms2.entities.SwitchProdOrderDetail;
 import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
 import th.co.wacoal.atech.pcms2.entities.WaitTestDetail;
-import th.co.wacoal.atech.pcms2.entities.WorkInLabDetail;
+import th.co.wacoal.atech.pcms2.entities.WorkInLabDetail; 
 import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.InspectOrdersDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
@@ -46,6 +46,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
 public interface BeanCreateModelDao {
 
@@ -141,4 +142,6 @@ public interface BeanCreateModelDao {
 
 	UserDetail _genUsersDetail(Map<String, Object> map);
 
+	Z_ATT_CustomerConfirm2Detail _genZ_ATT_CustomerConfirm2Detail(Map<String, Object> map);
+ 
 }

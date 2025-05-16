@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 
 public interface PermitsDao {
+ 
 
-	ArrayList<PermitDetail> getPermitsDetailByPermitId(String permitId);
-
+	ArrayList<PermitDetail> getPermitsDetailByPermitId( String permitId );
+	
 	ArrayList<PermitDetail> getPermitsDetail();
+
+	ArrayList<PermitDetail> getEmployeePermitsDetailByPermitId(String userId, String permitId);
 
 }

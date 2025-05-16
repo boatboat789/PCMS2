@@ -22,14 +22,17 @@ import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
-import th.co.wacoal.atech.pcms2.model.LogInModel;
+import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.model.PCMSDetailModel;
 import th.co.wacoal.atech.pcms2.model.master.ColumnSettingModel;
+import th.co.wacoal.atech.pcms2.model.master.ConfigCustomerUserModel;
 import th.co.wacoal.atech.pcms2.model.master.ConfigDepartmentModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
+import th.co.wacoal.atech.pcms2.model.master.PermitsModel;
 import th.co.wacoal.atech.pcms2.model.master.PlanCFMDateModel;
 import th.co.wacoal.atech.pcms2.model.master.PlanCFMLabDateModel;
 import th.co.wacoal.atech.pcms2.model.master.PlanSendCFMCusDateModel;
+import th.co.wacoal.atech.pcms2.model.master.PPMM.UserStatusDetailModel;
 
 @Controller
 @RequestMapping(value = { "/Detail" })
@@ -46,40 +49,104 @@ public class PCMSDetailController {
 	}
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView getModelAndView(HttpSession session) {
-		ModelAndView mv = new ModelAndView();
-		PCMSDetailModel model = new PCMSDetailModel();
+		ModelAndView mv = new ModelAndView(); 
 		ColumnSettingModel csModel = new ColumnSettingModel();
 		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
 		ConfigDepartmentModel cdmModel = new ConfigDepartmentModel();
+		UserStatusDetailModel usdModel = new UserStatusDetailModel();
+		ConfigCustomerUserModel ccuModel = new ConfigCustomerUserModel(); 
+		PermitsModel permitsModel = new PermitsModel(); 
+
+		
+		
+		
+//		ModelAndView mv = new ModelAndView(); 
+//		ColumnSettingModel csModel = new ColumnSettingModel();
+//		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
+//		ConfigDepartmentModel cdmModel = new ConfigDepartmentModel();
+//		UserStatusDetailModel usdModel = new UserStatusDetailModel();
+//		ConfigCustomerUserModel ccuModel = new ConfigCustomerUserModel();
+//		Gson g = new Gson();
+//		String user = (String) session.getAttribute("user");
+//		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
+//		String[] arrayCol = null  ;
+//		if(list.size() == 0) {
+//			arrayCol = null;
+//		}
+//		else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }
+//
+//		String OS = System.getProperty("os.name").toLowerCase(); 
+//		ArrayList<ConfigCustomerUserDetail> listConfigCus = ccuModel.getConfigCustomerUserDetail(user);
+//		if(listConfigCus.isEmpty()) {
+//			ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
+//			ccuDetail.setUserId(user);
+//			listConfigCus.add(ccuDetail);
+//		}
+//		mv.setViewName("PCMSDetail/PCMSDetail");
+//		mv.addObject("UserID", g.toJson(user));
+//		mv.addObject("OS", g.toJson(OS));
+//		mv.addObject("ColList", g.toJson(arrayCol));
+//		mv.addObject("ConfigCusListTest", listConfigCus );
+//		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+//		mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
+//		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
+//		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
+//		mv.addObject("UserStatusList", g.toJson(usdModel.getUserStatusDetail()));
+//		mv.addObject("CusNameList", g.toJson(fsmsModel.getCustomerNameDetail()));
+//		mv.addObject("CusShortNameList", g.toJson(fsmsModel.getCustomerShortNameDetail()));
+		
+		
+		
+		
+		
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
-		ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
-		String[] arrayCol = null  ;
-		if(list.size() == 0) {
-			arrayCol = null;
-		}
-		else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }
+		if (user != null) {
+			PermitDetail permit = (PermitDetail) session.getAttribute("permit");
+			if (permit == null) {
+				mv.setViewName("error/AccessDenied"); // Redirect to an access-denied view
+				mv.addObject("errorMsg", "Contact IT for set permission first.");
+			} else {
+				if (permit.isPCMSMain()) {  
+					ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
+					String[] arrayCol = null  ;
+					if(list.size() == 0) {
+						arrayCol = null;
+					}
+					else {  arrayCol = list.get(0).getColVisibleDetail().split(","); }
 
-		String OS = System.getProperty("os.name").toLowerCase();
-		LogInModel logInModel = new LogInModel( );
-		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(user);
-		if(listConfigCus.isEmpty()) {
-			ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
-			ccuDetail.setUserId(user);
-			listConfigCus.add(ccuDetail);
+					String OS = System.getProperty("os.name").toLowerCase(); 
+					ArrayList<ConfigCustomerUserDetail> listConfigCus = ccuModel.getConfigCustomerUserDetail(user);
+					if(listConfigCus.isEmpty()) {
+						ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
+						ccuDetail.setUserId(user);
+						listConfigCus.add(ccuDetail);
+					}
+
+					mv.setViewName("PCMSDetail/PCMSDetail");
+					mv.addObject("PermitIdList", g.toJson(permitsModel.getPermitsDetail()));
+					mv.addObject("OS", g.toJson(OS));
+					mv.addObject("UserID", g.toJson(user));
+					mv.addObject("OS", g.toJson(OS));
+					mv.addObject("ColList", g.toJson(arrayCol));
+					mv.addObject("ConfigCusListTest", listConfigCus );
+					mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+					mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
+					mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
+					mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
+					mv.addObject("UserStatusList", g.toJson(usdModel.getUserStatusDetail()));
+					mv.addObject("CusNameList", g.toJson(fsmsModel.getCustomerNameDetail()));
+					mv.addObject("CusShortNameList", g.toJson(fsmsModel.getCustomerShortNameDetail()));
+				} else {
+					mv.setViewName("error/AccessDenied"); // Redirect to an access-denied view
+					mv.addObject("errorMsg", "You do not have permission to access this page.");
+				}
+			}
+		} else {
+			mv.setViewName("login"); // Redirect to a login page if no user is found
+			mv.addObject("alertmsg", "Please log in to access this page.");
+			mv.addObject("alerttyp", "User Session Not Found.");
 		}
-		mv.setViewName("PCMSDetail/PCMSDetail");
-		mv.addObject("UserID", g.toJson(user));
-		mv.addObject("OS", g.toJson(OS));
-		mv.addObject("ColList", g.toJson(arrayCol));
-		mv.addObject("ConfigCusListTest", listConfigCus );
-		mv.addObject("ConfigCusList", g.toJson(listConfigCus));
-		mv.addObject("DepList", g.toJson(cdmModel.getDelayedDepartmentList()));
-		mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
-		mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
-		mv.addObject("UserStatusList", g.toJson(model.getUserStatusList()));
-		mv.addObject("CusNameList", g.toJson(fsmsModel.getCustomerNameDetail()));
-		mv.addObject("CusShortNameList", g.toJson(fsmsModel.getCustomerShortNameDetail()));
 		return mv;
 	}
 

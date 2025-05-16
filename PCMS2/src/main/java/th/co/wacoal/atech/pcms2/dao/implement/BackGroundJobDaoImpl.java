@@ -18,6 +18,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.model.master.CustomerModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapCFMModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapGoodReceiveModel;
@@ -28,6 +29,7 @@ import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapPackingModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSapSubmitDateModel;
+import th.co.wacoal.atech.pcms2.model.master.Z_ATT_CustomerConfirm2Model;
 import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 import th.in.totemplate.core.sql.Database;
 
@@ -241,6 +243,20 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		}
 	}
 
+	public void execHandlerCustomerConfirm2()
+	{
+		// TODO Auto-generated method stub
+		Connection connection;
+		connection = this.database.getConnection();
+		String sql = "EXEC [dbo].[spd_UpsertToZ_ATT_CustomerConfirm2] ";
+		try {
+			PreparedStatement prepared = connection.prepareStatement(sql);
+			prepared.execute();
+			prepared.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
 	@Override
 	public void handlerERPAtechToWebApp()
 	{ 
@@ -327,7 +343,16 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		CustomerModel cusModel = new CustomerModel(); 
 		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail(); 
 		cusModel.upsertCustomerDetail(cusList);
-//		this.execHandlerCustomerDetail(); 
-		
+//		this.execHandlerCustomerDetail();  
+	}
+
+	@Override
+	public void handlerBackGroundZ_ATT_CustomerConfirm2()
+	{
+		ERPAtechModel erpaModel = new ERPAtechModel();
+		Z_ATT_CustomerConfirm2Model zattCustModel = new Z_ATT_CustomerConfirm2Model();  
+		ArrayList<Z_ATT_CustomerConfirm2Detail> zCustList =erpaModel.getZ_ATT_CustomerConfirm2Detail(); 
+		zattCustModel.upsertZ_ATT_CustomerConfirm2Detail(zCustList); 
+		this.execHandlerCustomerConfirm2();
 	}
 }

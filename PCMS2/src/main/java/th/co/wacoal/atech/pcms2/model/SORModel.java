@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.DataImportSORDao;
 import th.co.wacoal.atech.pcms2.dao.implement.DataImportSORDaoImpl;
-import th.co.wacoal.atech.pcms2.info.SORSqlInfo;
+import th.co.wacoal.atech.pcms2.info.SqlSORInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -25,7 +25,7 @@ public class SORModel extends HttpServlet {
 	    @Autowired
 	   public SORModel() {
 	      try {
-	         this.database = new Database(SORSqlInfo.getInstance());
+	         this.database = new Database(SqlSORInfo.getInstance());
 	         this.dao = new DataImportSORDaoImpl( this.database);
 	         this.uiColumns = arrayColumn();
 	      } catch (SQLException | ClassNotFoundException var2) {

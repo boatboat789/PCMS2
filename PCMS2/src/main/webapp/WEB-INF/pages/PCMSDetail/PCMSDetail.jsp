@@ -138,10 +138,10 @@ var userStatusList ;
 var cusNameList ;  	
 var cusShortNameList ;  
 var selectOptionDepText ; 
-var depList ; 
+var depList ;  
 var divisionList ; 
 var colList ; 
-var configCusList;
+// var configCusList;
 var soTmp ;   
 var soLineTmp;
 var soTmpExcel ;   
@@ -235,12 +235,12 @@ $(document) .ready( function() {
 	let domain ='';
 	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
 	else{ domain = "https://"+window.location.hostname;  } 
-	configCusList = JSON.parse('${ConfigCusList}'); 
-	if(configCusList.length > 0 ){   
-		if(!configCusList[0].isPCMSDetailPage ){
-			window.location.replace(domain+"/PCMS2/login");
-		}
-	}
+// 	configCusList = JSON.parse('${ConfigCusList}'); 
+// 	if(configCusList.length > 0 ){   
+// 		if(!configCusList[0].isPCMSDetailPage ){
+// 			window.location.replace(domain+"/PCMS2/login");
+// 		}
+// 	}
 	 
 	userId = JSON.parse('${UserID}');   ;     
 // 	console.log(document.getElementById("btn_prdDetail"))   
@@ -2869,18 +2869,18 @@ function getInputDate(arrTmp,colIdx){
 // 	console.log(colIdx)    
 // 	if(colIdx == 23){
 	if(colIdx == 'cfmPlanLabDateParent'){	
-		path = "Detail/getCFMPlanLabDateDetail";
+		path = ctx+"/Detail/getCFMPlanLabDateDetail";
 	}    
 	else if(colIdx == 'cfmPlanDateParent'){
 // 	else if(colIdx == 27){
-		path = "Detail/getCFMPlanDateDetail";
+		path = ctx+"/Detail/getCFMPlanDateDetail";
 	}    
 // 	else if(colIdx == 32){
 	else if(colIdx == 'deliveryDateParent'){
-		path = "Detail/getDeliveryPlanDateDetail"; 
+		path = ctx+"/Detail/getDeliveryPlanDateDetail"; 
 	}  
 	else if(colIdx == 'sendCFMCusDateParent'){
-		path = "Detail/getSendCFMCusDateDetail"; 
+		path = ctx+"/Detail/getSendCFMCusDateDetail"; 
 	}   
 	if(path != ''){ 
 		$.ajax({

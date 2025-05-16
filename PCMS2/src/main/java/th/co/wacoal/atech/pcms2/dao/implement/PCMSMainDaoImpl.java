@@ -596,20 +596,20 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.SaleStatus\r\n"
 			  + "\r\n"  ; 
  	private String leftJoinCSW = ""
- 			  + " LEFT JOIN (\r\n"
-		      + "     SELECT [SaleOrderSW] ,[SaleLineSW] ,1 as countSW \r\n"
-			  + "	  FROM [PCMS].[dbo].[SwitchProdOrder] as a\r\n"
-			  + "	  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-			  + "	  WHERE a.[DataStatus] = 'O' and \r\n"
-			  + "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
-			  + "	  GROUP BY [SaleOrderSW] ,[SaleLineSW]\r\n"
-			  + " ) as CSW on  CSW.[SaleOrderSW] = b.SaleOrder and\r\n"
-			  + "              CSW.[SaleLineSW] = b.SaleLine\r\n" ;
+			+ " LEFT JOIN (\r\n"
+			+ "   SELECT [SaleOrderSW] ,[SaleLineSW] ,1 as countSW \r\n"
+			+ "	  FROM [PCMS].[dbo].[SwitchProdOrder] as a\r\n"
+			  + "	  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n" 
+			+ "	  WHERE a.[DataStatus] = 'O' and \r\n"
+			+ "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
+			+ "	  GROUP BY [SaleOrderSW] ,[SaleLineSW]\r\n"
+			+ " ) as CSW on  CSW.[SaleOrderSW] = b.SaleOrder and\r\n"
+			+ "              CSW.[SaleLineSW] = b.SaleLine\r\n" ;
 	private String leftJoinCRP = ""
 			 + " LEFT JOIN (\r\n"
 			 + "     SELECT distinct a.[SaleOrder] ,a.[SaleLine]  ,1 as countnRP  \r\n"
 			 + "	 FROM [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-			 + "	 left join [PCMS].[dbo].[FromSapMainProd] as b on a.[ProductionOrderRP] = b.ProductionOrder  \r\n"
+			 + "	 left join [PCMS].[dbo].[FromSapMainProd] as b on a.[ProductionOrderRP] = b.ProductionOrder  \r\n" 
 			 + "     WHERE a.[DataStatus] = 'O' and\r\n"
 			 + "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
 			 + "	 GROUP BY a.[SaleOrder] ,a.[SaleLine]\r\n"
@@ -618,7 +618,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private String leftJoinCOP = ""
 			  + " LEFT JOIN ( \r\n"
 			  + "     SELECT a.[SaleOrder] ,a.[SaleLine] ,1 as countnOP\r\n"
-			  + "	  FROM [PCMS].[dbo].[FromSapMainProdSale] as a\r\n"
+			  + "	  FROM [PCMS].[dbo].[FromSapMainProdSale] as a\r\n" 
 			  + "	  left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
 			  + "	  WHERE a.[DataStatus] = 'O' and\r\n"
 			  + "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
@@ -673,11 +673,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			String createTempMainSale = ""
 				+ createCusListSearch
 				+ this.pss.createTempMainSaleWithJoinCustomer 
-				+ whereSale;
-		
-//		String createTempMainSale = ""
-//				+ this.pss.createTempMainSale
-//				+ whereSale;
+				+ whereSale; 
 		String sqlWaitLot =
 				  " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
@@ -812,7 +808,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.selectOP
 				+ " into #tempPrdOP\r\n"
     			+ " FROM #tempPrdOPA as a  \r\n "
-				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 				+ this.pss.leftJoinB_H     ;
 		String sqlOP = ""
 					+ " select \r\n"
@@ -887,11 +883,12 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
 				+ "					       WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
 				+ "					       AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL)\r\n"
+				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL) "
+				+ "					AND A.[DataStatus] = 'O' \r\n"
 				+ "       	) as b on a.SaleOrder = b.SaleOrder and "
 				+ "                   a.SaleLine = b.SaleLine   \r\n"
 				+ "		 	where b.DataStatus = 'O' and b.SaleLine <> '' ) as a  \r\n "
-				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 				+ this.pss.leftJoinTempG
 				+ this.pss.leftJoinSCC 
 				+ this.pss.leftJoinB_H
@@ -978,11 +975,12 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "							  WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
 				+ "							   AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
 				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL)\r\n"
+				+ "                AND a.[DataStatus] = 'O' "
 				+ "				) AS A\r\n"
 				+ "				group by PRDORDERSW\r\n"
 				+ "		 	) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
 				+ "		 	where b.DataStatus = 'O') as a  \r\n "
-				+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+				+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 				+ this.pss.leftJoinTempG 
 				+ this.pss.leftJoinSCC
 				+ this.pss.leftJoinB_H
@@ -1013,12 +1011,12 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		  		    + "			CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END as [Volume] ,\r\n"
 		  		    + "			[ProductionOrderRP] AS ProductionOrder \r\n"
 		  		    + "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-		  		    + "		LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrderRP = b.ProductionOrder  \r\n"
+		  		    + "		LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrderRP = b.ProductionOrder  \r\n" 
 		  		    + "		WHERE a.[DataStatus] = 'O'  \r\n"
 		  		    + "			AND (b.UserStatus NOT IN ('ยกเลิก', 'ตัดเกรดZ'))  \r\n"
 		  		    + " )  as rpo on a.SaleOrder = rpo.SaleOrder \r\n"
 		  		    + "		  and a.SaleLine = rpo.SaleLine \r\n"
-					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n"
+					+ " left join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n" 
 					+ this.pss.leftJoinTempG 
 					+ this.pss.leftJoinSCC
 					+ this.pss.leftJoinB_H
@@ -1245,18 +1243,18 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	public ArrayList<PCMSAllDetail> getUserStatusList() {
 		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
 		ArrayList<PCMSAllDetail> list = fsmpModel.getUserStatusDetail();
-		PCMSAllDetail bean = new PCMSAllDetail();
-		bean.setUserStatus("รอ COA ลูกค้า ok สี");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("ขายแล้วบางส่วน");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("รอตอบ CFM ตัวแทน");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("รอเปิดบิล");
-		list.add(bean);
+//		PCMSAllDetail bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอ COA ลูกค้า ok สี");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("ขายแล้วบางส่วน");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอตอบ CFM ตัวแทน");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอเปิดบิล");
+//		list.add(bean);
 		return list;
 	}
 	private String forPage = "Summary";

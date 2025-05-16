@@ -9,4 +9,6 @@ public interface EmployeePermitsDao {
 
 	ArrayList<EmployeeDetail> getEmployeePermitsDetailByUserId(String permitId);
 
+	String upsertEmployeePermits(ArrayList<EmployeeDetail> poList, String webApp);
+
 }

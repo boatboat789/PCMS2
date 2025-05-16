@@ -21,6 +21,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.info.SqlAtechERPInfo; 
 import th.in.totemplate.core.sql.Database;
 
@@ -148,6 +149,13 @@ public class ERPAtechModel extends HttpServlet {
 	{
 		// TODO Auto-generated method stub
 		ArrayList<FromErpSubmitDateDetail> list = this.dao.getFromErpSubmitDateDetail();
+		return list;
+	}
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail()
+
+	{
+		// TODO Auto-generated method stub
+		ArrayList<Z_ATT_CustomerConfirm2Detail> list = this.dao.getZ_ATT_CustomerConfirm2Detail();
 		return list;
 	}
 //	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetai()

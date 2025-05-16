@@ -15,11 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
+ 
+import th.co.wacoal.atech.pcms2.entities.EmployeeDetail;
+import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
 import th.co.wacoal.atech.pcms2.info.AdInfo;
-import th.co.wacoal.atech.pcms2.model.LogInModel;
+import th.co.wacoal.atech.pcms2.model.LogInModel; 
+import th.co.wacoal.atech.pcms2.model.master.EmployeePermitsModel;
+import th.co.wacoal.atech.pcms2.model.master.PermitsModel; 
 import th.in.totemplate.core.authen.ActiveDirectory;
 import th.in.totemplate.core.authen.AuthenAttributes;
 
@@ -40,6 +43,7 @@ public class LoginController {
 			session.removeAttribute("user");
 			session.removeAttribute("userName");
 			session.removeAttribute("userObject");
+			session.removeAttribute("permit");
 		}
 		model.addAttribute("alertmsg", alertmsgText);
 		model.addAttribute("alerttyp", alerttypText);
@@ -54,6 +58,7 @@ public class LoginController {
 			session.removeAttribute("user");
 			session.removeAttribute("userName");
 			session.removeAttribute("userObject");
+			session.removeAttribute("permit");
 			alertmsgText = "";
 			alerttypText = "";
 		}
@@ -65,68 +70,34 @@ public class LoginController {
 			RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response)
 	{
 		LogInModel logInModel = new LogInModel();
-		ArrayList<ConfigCustomerUserDetail> listConfigCus = logInModel.getConfigCustomerUserDetail(userId);
+		PermitsModel permitsModel = new PermitsModel();
+		EmployeePermitsModel employeePermitsModel = new EmployeePermitsModel( ); 
 //		final Gson g = new Gson();
 		final UserDetail user = new UserDetail();
 		final TempLogin temp = new TempLogin();
 		String redirect = ""; 
 		String originalURI = (String) session.getAttribute("originalURI");
-		ConfigCustomerUserDetail bean = null;
 		String homePath = "/Main";
+		ArrayList<EmployeeDetail> empList = new ArrayList<EmployeeDetail>();
+		ArrayList<PermitDetail > pmList = new ArrayList<PermitDetail >(); 
 		if (session.getAttribute("user") != null) {
 			alertmsgText = "";
 			alerttypText = "";
-			UserDetail userTMP = logInModel.getUserDetail(userId, userPassword);
-			if (userTMP != null) {
-				user.setId(userTMP.getId());
-				user.setFirstName(userTMP.getFirstName().trim());
-				user.setUserId(userTMP.getUserId().trim());
-				user.setIsSystem(userTMP.getIsSystem());
-				user.setIsAdmin(userTMP.getIsAdmin());
-				user.setPermitId(userTMP.getPermitId());
-				user.setResponsible(userTMP.getResponsible());
-				user.setChangeBy(userTMP.getChangeBy());
-				user.setChangeDate(userTMP.getChangeDate());
-				user.setRegistBy(userTMP.getRegistBy());
-				user.setRegistDate(userTMP.getRegistDate());
-				user.setCustomer(userTMP.isCustomer());
-				user.setUserType("USER");
-				temp.setStatus(true);
-				session.setAttribute("userObject", user);
-			}
-			if (listConfigCus.size() == 0) {
-				session.removeAttribute("originalURI");
-				if (originalURI == null) {
-					redirect = "redirect:" + homePath;
-				} else {
-					if (originalURI.equals("")) {
-						redirect = "redirect:" + homePath; 
-					} 
-
-					else if(originalURI.contains("login")) {
-						redirect = "redirect:" + homePath; 
-					} 
-					else {
-						redirect = "redirect:" + originalURI; 
-					} 
-				}
-				return redirect;
+			session.removeAttribute("originalURI"); 
+			if (originalURI == null) {
+				redirect = "redirect:" + homePath; 
 			} else {
-				bean = listConfigCus.get(0);
-//				if(bean.getIsPCMSSumPage() &&  (oriPath.equals("")||oriPath.equals("/login") )     ){
-				if (bean.getIsPCMSSumPage() && originalURI == null) {
-					redirect = "redirect:" + homePath;
-				} else if (bean.getIsPCMSSumPage() && originalURI.equals("")) {
-					redirect = "redirect:" + homePath;
-				} else {
-					if (bean.getIsPCMSDetailPage() == true && (originalURI.equals("") || originalURI.contains("Detail"))) {
-						redirect = "redirect:/Detail";
-					} else {
-						redirect = "redirect:" + originalURI;
-					}
-				}
+				if (originalURI.equals("")) {
+					redirect = "redirect:" + homePath; 
+				} 
+				else if(originalURI.contains("login")) {
+					redirect = "redirect:" + homePath; 
+				} 
+				else {
+					redirect = "redirect:" + originalURI; 
+				} 
 			}
-			return redirect;
+			return redirect;   
 		} else { 
 			user.setUserId(userId);
 			user.setPassword(userPassword);
@@ -154,8 +125,7 @@ public class LoginController {
 								}
 							}
 						});
-			} catch (NamingException e) {
-//				System.err.println(this.getClass().getName() + " - " + e.getMessage());
+			} catch (NamingException e) { 
 				e.printStackTrace();
 			}
 			// if authen pass
@@ -201,40 +171,39 @@ public class LoginController {
 			}
 		} 
 		if (user.getFirstName() != null || user.getUserType() != null) {
-			alertmsgText = "";
-			alerttypText = "";
-			if (listConfigCus.size() == 0) {
-				if (originalURI == null) {
-					redirect = "redirect:" + homePath;
-				} else {
-					if (originalURI.equals("")) {
-						redirect = "redirect:" + homePath; 
-					} 
-
-					else if(originalURI.contains("login")) {
-						redirect = "redirect:" + homePath; 
-					} 
-					else {
-						redirect = "redirect:" + originalURI; 
-					} 
-				}
-			} else {
-				bean = listConfigCus.get(0); 
-				if (bean.getIsPCMSSumPage() && originalURI == null) {
-					redirect = "redirect:" + homePath;
-				} else if (bean.getIsPCMSSumPage() && originalURI.equals("")) {
-					redirect = "redirect:" + homePath;
-				} else {
-					if (bean.getIsPCMSDetailPage() == true && (originalURI.equals("") || originalURI.contains("Detail"))) {
-						redirect = "redirect:/Detail";
-					} else {
-						redirect = "redirect:" + originalURI;
-					}
-				}
+			String permitId = "VIEWONLY";
+			empList = employeePermitsModel.getEmployeePermitsDetailByUserId(userId); 
+			if(!empList.isEmpty()) {
+				EmployeeDetail empBean = empList.get(0);
+				permitId = empBean.getPermitId();
+				pmList = permitsModel.getEmployeePermitsDetailByPermitId(userId,permitId); 
+			}   
+			if(pmList.isEmpty()) {
+				pmList = permitsModel.getPermitsDetailByPermitId(permitId); 
+//				PermitDetail bean = new PermitDetail();
+//				bean.setPermitId("VIEWONLY");
+//				pmList.add(bean);
 			}
+			alertmsgText = "";
+			alerttypText = ""; 
+			session.setAttribute("permit", pmList.get(0));  
+			session.removeAttribute("originalURI");
+			if (originalURI == null) {
+				redirect = "redirect:" + homePath; 
+			} else {
+				if (originalURI.equals("")) {
+					redirect = "redirect:" + homePath; 
+				} 
+				else if(originalURI.contains("login")) {
+					redirect = "redirect:" + homePath; 
+				} 
+				else {
+					redirect = "redirect:" + originalURI; 
+				} 
+			}
+			return redirect;  
 		} else {
-			redirect = "redirect:/login";
-//			redirect = "redirect:login" ;
+			redirect = "redirect:/login"; 
 			if (temp.getStatus()) {
 				alertmsgText = "Unauthorized Access Prohibited";
 				alerttypText = "error";

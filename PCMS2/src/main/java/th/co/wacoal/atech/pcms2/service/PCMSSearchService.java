@@ -165,41 +165,47 @@ public class PCMSSearchService {
 
 	public String leftJoinBPartOneT_A = ""
 			+ "			left join ( \r\n"
-			+ "              SELECT a.ProductionOrder  , sum(a.Volumn) as SumVolOP\r\n"
-			+ "              from [PCMS].[dbo].FromSapMainProdSale as a\r\n"
-			+ "			   left join [PCMS].[dbo].[FromSapMainProd] as b on  a.ProductionOrder = b.ProductionOrder  \r\n"
-			+ "			   WHERE a.[DataStatus] = 'O' and \r\n"
-			+ "                    ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ))\r\n"
-			+ "			   group by a.ProductionOrder\r\n"
-			+ "           ) as t on a.ProductionOrder = t.ProductionOrder\r\n";
+			+ "				SELECT "
+			+ "					a.ProductionOrder  , sum(a.Volumn) as SumVolOP\r\n"
+			+ "				from [PCMS].[dbo].FromSapMainProdSale as a\r\n"
+			+ "			   	left join [PCMS].[dbo].[FromSapMainProd] as b "
+			+ "					on a.ProductionOrder = b.ProductionOrder  \r\n"
+			+ "			   	WHERE a.[DataStatus] = 'O' and \r\n"
+			+ "                   ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ))\r\n"
+			+ "			   	group by a.ProductionOrder\r\n"
+			+ "			) as t "
+			+ "				on a.ProductionOrder = t.ProductionOrder\r\n";
 	public String leftJoinBPartOneS_A = ""
 			+ "			left join (\r\n"
-			+ "             	SELECT \r\n"
+			+ "             SELECT \r\n"
 			+ "    				a.ProductionOrderRP,  \r\n"
-			+ "    			SUM(CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END) AS SumVolRP  \r\n"
+			+ "    				SUM(CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END) AS SumVolRP  \r\n"
 			+ "				FROM [PCMS].[dbo].[ReplacedProdOrder] AS a  \r\n"
-			+ "				LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrderRP = b.ProductionOrder  \r\n"
+			+ "				LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b"
+			+ "					ON a.ProductionOrderRP = b.ProductionOrder  \r\n"
 			+ "				WHERE a.[DataStatus] = 'O'  \r\n"
 			+ "    				AND (b.UserStatus NOT IN ('ยกเลิก', 'ตัดเกรดZ'))  \r\n"
 			+ "				GROUP BY a.ProductionOrderRP \r\n"
-			+ "           ) as s on a.ProductionOrder = s.ProductionOrderRP  \r\n";
+			+ "			) as s "
+			+ "				on a.ProductionOrder = s.ProductionOrderRP  \r\n";
 
 	public String leftJoinUCAL = "    "
-			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCAL on UCAL.[DataStatus] = 'O' AND\r\n"
-			+ "                                                         b.ProductionOrder = UCAL.ProductionOrder AND\r\n"
-			+ "                                                         ( m.Grade = UCAL.Grade OR m.Grade IS NULL )  \r\n";
+			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCAL "
+			+ "		on UCAL.[DataStatus] = 'O' \r\n"
+			+ "		AND b.ProductionOrder = UCAL.ProductionOrder \r\n"
+			+ "		AND ( m.Grade = UCAL.Grade OR m.Grade IS NULL )  \r\n";
 	public String leftJoinUCALRP = "    "
-			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP on UCALRP.[DataStatus] = 'O' AND  \r\n"
-			+ "							                                  b.ProductionOrder = UCALRP.ProductionOrder AND \r\n"
-			+ "							                                  ( m.Grade = UCALRP.Grade OR m.Grade IS NULL )    \r\n";
-	public String leftJoinM = " left join #tempSumGR as m on b.ProductionOrder = m.ProductionOrder \r\n";
+			+ " left join [PCMS].[dbo].[TEMP_UserStatusAuto] as UCALRP "
+			+ "		on UCALRP.[DataStatus] = 'O'   \r\n"
+			+ "		AND b.ProductionOrder = UCALRP.ProductionOrder  \r\n"
+			+ "		AND ( m.Grade = UCALRP.Grade OR m.Grade IS NULL )    \r\n";
+	public String leftJoinM = " "
+			+ " left join #tempSumGR as m "
+			+ "		on b.ProductionOrder = m.ProductionOrder \r\n";
 	public String leftJoinTempG =
-			" left join [PCMS].[dbo].[TEMP_ProdWorkDate] as g on g.ProductionOrder = b.ProductionOrder \r\n";
-
-	
-	
-	
-
+			" "
+			+ " left join [PCMS].[dbo].[TEMP_ProdWorkDate] as g "
+			+ "		on g.ProductionOrder = b.ProductionOrder \r\n"; 
 	public String innerJoinWaitLotB = ""
 			+ " INNER JOIN (\r\n"
 			+ "	SELECT DISTINCT "
@@ -338,178 +344,9 @@ public class PCMSSearchService {
 		saleStatus = bean.getSaleStatus();
 		distChannel = bean.getDistChannel();
 		List<String> userStatusList = bean.getUserStatusList();
-		List<String> cusNameList = bean.getCustomerNameList();
-		List<String> cusShortNameList = bean.getCustomerShortNameList();
-		List<String> divisionList = bean.getDivisionList();
-
-//		String whereSale = " where ( a.DataStatus = 'O' or a.DataStatus is null ) \r\n";
-//		where += " MaterialNo like '" + materialNo + "%' and\r\n" 
-//				+ " a.SaleOrder like '" + saleOrder + "%' \r\n";
-//		whereWaitLot += " MaterialNo like '" + materialNo + "%' and\r\n" 
-//				+ " a.SaleOrder like '" + saleOrder + "%' \r\n";
-//
-//		if ( ! saleOrder.equals("")) {
-//			whereSale += " and a.SaleOrder like '" + saleOrder + "%' \r\n";
-//		}
-//		if ( ! saleCreateDate.equals("")) {
-//			String[] dateArray = saleCreateDate.split("-");
-//			where += "and ( SaleCreateDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " SaleCreateDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) ) \r\n";
-//			whereSale += "and ( SaleCreateDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " SaleCreateDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) ) \r\n";
-//		}
-//		if ( ! cusDiv.equals("")) { 
-//			String[] array = cusDiv.split(",");
-//			String tmpWhere = "";
-//
-//			listString.clear();
-//			for (String element : array) {
-//				listString.add("'" + element.replaceAll("'", "''") + "' ");
-//			}
-//			tmpWhere += " and ( a.Division IN ( \r\n";
-//			tmpWhere += String.join(",", listString);
-//			tmpWhere += " ) ) \r\n";
-//
-//			whereSale += tmpWhere;
-//		}
-//		if ( ! po.equals("")) {
-//			where += " and [PurchaseOrder] like '" + po + "%' \r\n";
-//			whereSale += " and [PurchaseOrder] like '" + po + "%' \r\n"; 
-//		} 
-//		if ( ! saleNumber.equals("")) {
-//			where += " and SaleNumber like '" + saleNumber + "%' \r\n";
-//			whereSale += " and SaleNumber like '" + saleNumber + "%' \r\n";
-//		}
-//		if ( ! articleFG.equals("")) {
-//			where += " and a.ArticleFG like '" + articleFG + "%'  \r\n";
-//			whereSale += " and a.ArticleFG like '" + articleFG + "%'  \r\n";
-//		}
-//		if ( ! designFG.equals("")) {
-//			where += " and a.DesignFG like '" + designFG + "%'  \r\n";
-//			whereSale += " and a.DesignFG like '" + designFG + "%'  \r\n";
-//		}
-//		if (cusNameList.size() > 0) {
-//			String tmpWhere = ""; 
-//			listString.clear();
-//			for (String element : cusNameList) {
-//				listString.add("'" + element.replaceAll("'", "''") + "' ");
-//			}
-//			tmpWhere += " and ( CustomerName IN ( \r\n";
-//			tmpWhere += String.join(",", listString);
-//			tmpWhere += " ) ) \r\n";
-//
-//			where += tmpWhere;
-//			whereSale += tmpWhere;
-//		}
-//		if (cusShortNameList.size() > 0) {
-//			String tmpWhere = ""; 
-//			listString.clear();
-//			for (String element : cusShortNameList) {
-//				listString.add("'" + element.replaceAll("'", "''") + "' ");
-//			}
-//			tmpWhere += " and ( CustomerShortName IN ( \r\n";
-//			tmpWhere += String.join(",", listString);
-//			tmpWhere += " ) ) \r\n";
-//
-//			where += tmpWhere;
-//			whereSale += tmpWhere; 
-//		}
-//		if (divisionList.size() > 0) {
-//			String tmpWhere = ""; 
-//			listString.clear();
-//			for (String element : divisionList) {
-//				listString.add("'" + element.replaceAll("'", "''") + "' ");
-//			}
-//			tmpWhere += " and ( Division IN ( \r\n";
-//			tmpWhere += String.join(",", listString);
-//			tmpWhere += " ) ) \r\n";
-//
-//			where += tmpWhere;
-//			whereSale += tmpWhere;
-//		}
-//
-//		if ( ! dueDate.equals("")) {
-//			String[] dateArray = dueDate.split("-");
-//			where += " and ( DueDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " DueDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) )  \r\n";
-//			whereSale += " and ( DueDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " DueDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) )  \r\n";
-//		}
-//		if ( ! deliveryStatus.equals("")) {
-//			where += " and DeliveryStatus like '" + deliveryStatus + "%'  \r\n";
-//			whereSale += " and DeliveryStatus like '" + deliveryStatus + "%'  \r\n";
-//		}
-//		if ( ! saleStatus.equals("")) {
-//			if (saleStatus.equals("O")) {
-//				where += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] > 0 )  \r\n";
-//				whereSale += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] > 0 ) \r\n";
-//			} else if (saleStatus.equals("X")) {
-//				where += " and ( SaleStatus like '" + saleStatus + "%' )  \r\n";
-//				whereSale += " and ( SaleStatus like '" + saleStatus + "%' ) \r\n";
-//			} else {
-//				
-//				//C
-//				where += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] = 0 )  \r\n";
-//				whereSale += " and ( SaleStatus like '" + saleStatus + "%' or a.[RemainQuantity] = 0 ) \r\n";
-//			}
-//		}
-//		if ( ! distChannel.equals("")) {
-//			String tmpWhere = ""; 
-//			String[] array = distChannel.split("\\|"); 
-//			listString.clear();
-//			for (String element : array) {
-//				listString.add("'" + element.replaceAll("'", "''") + "' ");
-//			}
-//			tmpWhere += " and ( DistChannel IN ( \r\n";
-//			tmpWhere += String.join(",", listString);
-//			tmpWhere += " ) ) \r\n";
-//			where += tmpWhere;
-//			whereSale += tmpWhere;
-//		}
-//
-//		// prod order
-//		if ( ! labNo.equals("")) {
-//			whereProd += " and b.LabNo like '" + labNo + "%'  \r\n";
-//			where += " and b.LabNo like '" + labNo + "%'  \r\n";
-//		}
-//		if ( ! prdOrder.equals("")) {
-//			where += " and b.ProductionOrder like '" + prdOrder + "%'  \r\n ";
-//			whereProd += " and b.ProductionOrder like '" + prdOrder + "%'  \r\n ";
-//		}
-//		if ( ! prdCreateDate.equals("")) {
-//			String[] dateArray = prdCreateDate.split("-");
-//			where += " and ( PrdCreateDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " PrdCreateDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) )  \r\n";
-//			whereProd += " and ( PrdCreateDate >= CONVERT(DATE,'"
-//					+ dateArray[0].trim()
-//					+ "',103)  and \r\n"
-//					+ " PrdCreateDate <= CONVERT(DATE,'"
-//					+ dateArray[1].trim()
-//					+ "',103) )  \r\n";
-//		}
-//		if ( ! materialNo.equals("")) {
-//			whereProd += " and MaterialNo like '" + materialNo + "%' \r\n";
-//		}
+//		List<String> cusNameList = bean.getCustomerNameList();
+//		List<String> cusShortNameList = bean.getCustomerShortNameList();
+		List<String> divisionList = bean.getDivisionList(); 
 		// Build where clauses
 		where += buildLikeClause("MaterialNo", materialNo,"a");
 		whereSale += buildLikeClause("MaterialNo", materialNo,"a");
@@ -641,7 +478,7 @@ public class PCMSSearchService {
 		return whereClauses;
 	}
 
-	private String buildDateClause(String columnName, String dateRange, String para)
+	public static String buildDateClause(String columnName, String dateRange, String para)
 	{
 		if (dateRange.isEmpty()) {
 			return "";

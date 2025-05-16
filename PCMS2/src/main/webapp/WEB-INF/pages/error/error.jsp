@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>        
+<%-- 	<jsp:include page="/WEB-INF/pages/config/common/commonBase.jsp"></jsp:include>   --%>
 	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>           
 	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
     <title>${statusCode}</title> 
@@ -27,8 +28,8 @@
         <tr>
 			<td> 
 				<a style="text-decoration: none;
-	            color: #0056b3;
-	            font-weight: bold;" href="${contextpath}/logout">back to login page</a>
+            color: #0056b3;
+            font-weight: bold;" href="${contextpath}/logout">back to login page</a>
 			</td>
 		</tr>
     </table>

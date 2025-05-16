@@ -29,6 +29,24 @@ public class UsersDaoImpl implements UsersDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+	private String select = ""
+			+ "       A.[Id]\r\n"
+			+ "      ,A.[EmployeeID]\r\n"
+			+ "      ,B.[PermitId]\r\n"
+			+ "      ,B.[Responsible]\r\n"
+			+ "      ,A.[IsClosed]\r\n"
+			+ "      ,A.[IsLocalUser]\r\n"
+			+ "      ,A.[FirstName]\r\n"
+			+ "      ,A.[LastName]\r\n"
+			+ "      ,A.[Role]\r\n"
+			+ "      ,A.[Password]\r\n"
+			+ "      ,A.[ArrangedBy]\r\n"
+			+ "      ,A.[AuthorizedBy]\r\n"
+			+ "      ,A.[ChangeBy]\r\n"
+			+ "      ,A.[ChangeDate]\r\n"
+			+ "      ,a.[IsCustomer]\r\n"
+			+ "      ,A.[CreateBy]\r\n"
+			+ "      ,A.[CreateDate]\r\n";
     @Autowired
 	public UsersDaoImpl(Database database ) {
 		this.database = database ;
@@ -46,25 +64,11 @@ public class UsersDaoImpl implements UsersDao {
 		ArrayList<UserDetail> list = null;
 		String sql =
 				""
-						+ " SELECT [Id]\r\n"
-						+ "      ,[UserId] as EmployeeID\r\n"
-						+ "      ,[PermitId]\r\n"
-						+ "      ,[Password]\r\n"
-						+ "      ,[IsClosed]\r\n"
-						+ "      ,[IsLocalUser]\r\n"
-						+ "      ,[Firstname]\r\n"
-						+ "      ,[Lastname]\r\n"
-						+ "      ,[IsAdminSystem]\r\n"
-						+ "      ,[IsAdminUser]\r\n"
-						+ "      ,[PermissionId]\r\n"
-						+ "      ,[Responsible]\r\n"
-						+ "      ,[LastSignDate]\r\n"
-						+ "      ,[ChangeBy]\r\n"
-						+ "      ,[ChangeDate]\r\n"
-						+ "      ,[RegistBy]\r\n"
-						+ "      ,[RegistDate]\r\n"
-						+ "      ,[IsCustomer]\r\n"
-						+ "  FROM [PCMS].[dbo].[Users] as a \r\n"; 
+				+ " SELECT \r\n"
+				+ this.select
+				+ "  FROM [PCMS].[dbo].[Users] as a \r\n" 
+				+ "  left join [PCMS].[dbo].[EmployeePermits] as b on a.[UserId] = b.[EmployeeId] \r\n"
+				+ "  where  ( b.[WebApp] = 'PCMS2' OR B.[WebApp] IS NULL )\r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -79,26 +83,12 @@ public class UsersDaoImpl implements UsersDao {
 		ArrayList<UserDetail> list = null;
 		String sql =
 				""
-						+ " SELECT [Id]\r\n"
-						+ "      ,[UserId] as EmployeeID\r\n"
-						+ "      ,[PermitId]\r\n"
-						+ "      ,[Password]\r\n"
-						+ "      ,[IsClosed]\r\n"
-						+ "      ,[IsLocalUser]\r\n"
-						+ "      ,[Firstname]\r\n"
-						+ "      ,[Lastname]\r\n"
-						+ "      ,[IsAdminSystem]\r\n"
-						+ "      ,[IsAdminUser]\r\n"
-						+ "      ,[PermissionId]\r\n"
-						+ "      ,[Responsible]\r\n"
-						+ "      ,[LastSignDate]\r\n"
-						+ "      ,[ChangeBy]\r\n"
-						+ "      ,[ChangeDate]\r\n"
-						+ "      ,[RegistBy]\r\n"
-						+ "      ,[RegistDate]\r\n"
-						+ "      ,[IsCustomer]\r\n"
-						+ "  FROM [PCMS].[dbo].[Users] as a\r\n"
-						+ " WHERE a.[UserId] = '"+userId+"' \r\n"; 
+				+ " SELECT \r\n"
+				+ this.select
+				+ "  FROM [PCMS].[dbo].[Users] as a \r\n" 
+				+ "  left join [PCMS].[dbo].[EmployeePermits] as b on a.[UserId] = b.[EmployeeId] \r\n"
+				+ "  where  ( b.[WebApp] = 'PCMS2' OR B.[WebApp] IS NULL )\r\n" 
+				+ "     and  a.[UserId] = '"+userId+"' \r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

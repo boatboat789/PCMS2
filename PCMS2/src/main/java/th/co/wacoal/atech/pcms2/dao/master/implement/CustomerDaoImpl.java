@@ -125,7 +125,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		}
 		return iconStatus;
 	} 
-	   public static String addLeadingZeros(String str, int desiredLength) {
-	        return String.format("%0" + desiredLength + "s", str);
-	    }
+//	   public static String addLeadingZeros(String str, int desiredLength) {
+//	        return String.format("%0" + desiredLength + "s", str);
+//	    }
 }

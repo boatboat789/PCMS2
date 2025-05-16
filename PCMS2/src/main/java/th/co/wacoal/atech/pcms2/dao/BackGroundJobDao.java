@@ -17,5 +17,7 @@ public interface BackGroundJobDao {
 
 	void sortBackGroundAfterGetERPDataProcedure();
 
+	void handlerBackGroundZ_ATT_CustomerConfirm2();
+
 	void handlerERPAtechToWebAppCustomer();
 }

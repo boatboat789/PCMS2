@@ -51,6 +51,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
 @Component
 public class BeanCreateModel {
@@ -330,4 +331,10 @@ public class BeanCreateModel {
 		UserDetail bean = this.dao._genUsersDetail(map);
 		return bean;
 	}
+
+	public Z_ATT_CustomerConfirm2Detail _genZ_ATT_CustomerConfirm2Detail(Map<String, Object> map)
+	{
+		Z_ATT_CustomerConfirm2Detail bean = this.dao._genZ_ATT_CustomerConfirm2Detail(map);
+		return bean;
+	} 
 }

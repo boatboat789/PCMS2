@@ -13,6 +13,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
 public interface ERPAtechDao {
 
@@ -42,6 +43,8 @@ public interface ERPAtechDao {
 //	ArrayList<FromErpReceipeDetail> getFromErpReceipeDetail();
 
 	ArrayList<FromErpPODetail> getFromErpPODetail();
+
+	ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail();
  
 
 }

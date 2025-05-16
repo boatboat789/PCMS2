@@ -1,33 +1,34 @@
-package th.co.wacoal.atech.pcms2.model;
+package th.co.wacoal.atech.pcms2.model.master;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import th.co.wacoal.atech.pcms2.dao.LogInDao;
-import th.co.wacoal.atech.pcms2.dao.implement.LogInDaoImpl;
-import th.co.wacoal.atech.pcms2.entities.UserDetail;
+import th.co.wacoal.atech.pcms2.dao.master.FromSapDyeingDao;
+import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapDyeingDaoImpl;
+import th.co.wacoal.atech.pcms2.entities.DyeingDetail;
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
-public class LogInModel extends HttpServlet {
+public class FromSapDyeingModel2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
-	private LogInDao dao;
+	private FromSapDyeingDao dao;
 	@SuppressWarnings("unused")
 	private String[] uiColumns;
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-	@Autowired
-	public LogInModel() {
+    @Autowired
+	public FromSapDyeingModel2() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
-			this.dao = new LogInDaoImpl(this.database);
+			this.dao = new FromSapDyeingDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
@@ -41,7 +42,7 @@ public class LogInModel extends HttpServlet {
 	}
 
 	public static String[] arrayColumn()
-	{
+	{ 
 		return "".replaceAll("'", "").split(",");
 	}
 
@@ -52,21 +53,10 @@ public class LogInModel extends HttpServlet {
 		super.destroy();
 	}
 
-	public UserDetail getUserDetail(String userId)
+	public ArrayList<DyeingDetail> getFromSapDyeingDetailByProductionOrder(String prodOrder) 
 	{
-		UserDetail bean = this.dao.getUserDetail(userId);
-		return bean;
-	}
-
-	public String descryptedText(String encryptedText)
-	{
-		String userId = this.dao.descryptedText(encryptedText);
-		return userId;
-	}
-
-	public UserDetail getUserDetail(String userId, String userPassword)
-	{
-		UserDetail bean = this.dao.getUserDetail(userId, userPassword);
-		return bean;
-	}
+		// TODO Auto-generated method stub
+		ArrayList<DyeingDetail> list = this.dao.getFromSapDyeingDetailByProductionOrder(prodOrder);
+		return list;
+	} 
 }

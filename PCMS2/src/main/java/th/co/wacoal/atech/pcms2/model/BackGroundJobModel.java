@@ -87,5 +87,11 @@ public class BackGroundJobModel extends HttpServlet {
    		this.dao.handlerERPAtechToWebAppCustomer();
 		
 	}
+	public void handlerBackGroundZ_ATT_CustomerConfirm2()
+	{
+		// TODO Auto-generated method stub
+   		this.dao.handlerBackGroundZ_ATT_CustomerConfirm2();
+		
+	}
 
 }

@@ -108,6 +108,14 @@ public class SqlStatementHandler {
 		}
 		return prepared;
 	}
+	public PreparedStatement setSqlDouble(PreparedStatement prepared, Double val, int index) throws SQLException {
+		try {
+			prepared.setDouble(index, val);
+		} catch (Exception e) {
+			prepared.setNull(index, java.sql.Types.DECIMAL);
+		}
+		return prepared;
+	}
 
 	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, String val, int index) throws SQLException {
 		try {
@@ -172,6 +180,19 @@ public class SqlStatementHandler {
 				prepared.setNull(index, java.sql.Types.INTEGER);
 			} else {
 				prepared.setInt(index, value);
+			}
+		} catch (Exception e) {
+			prepared.setNull(index, java.sql.Types.INTEGER);
+		}
+		return prepared;
+	}
+	public PreparedStatement setSqlInt(PreparedStatement prepared, String value, int index) throws SQLException {
+		try {
+			int val = Integer.parseInt(value);
+			if (val == 0 ) {
+				prepared.setNull(index, java.sql.Types.INTEGER);
+			} else {
+				prepared.setInt(index, val);
 			}
 		} catch (Exception e) {
 			prepared.setNull(index, java.sql.Types.INTEGER);

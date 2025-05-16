@@ -922,7 +922,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " into #tempPrdOP\r\n"
 			+ " FROM #tempPrdOPA as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 			+ this.leftJoinE
 			+ this.leftJoinH
 			+ this.leftJoinJ
@@ -1019,7 +1019,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			where b.DataStatus = 'O' and b.SaleLine <> ''\r\n";
 	private String createTempOPSWSecond = ""
 			+ "	) as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 			+ this.leftJoinE
 			+ this.pss.leftJoinTempG
 			+ this.pss.leftJoinSCC
@@ -1119,7 +1119,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "					    FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
 			+ "						WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'\r\n"
 			+ "                 ) AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-			+ "					WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL)\r\n"
+			+ "					WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL) AND"
+			+ "						  A.[DataStatus] = 'O' \r\n"
 			+ "				 ) AS A\r\n"
 			+ "				 group by PRDORDERSW\r\n"
 			+ "		    ) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
@@ -1127,7 +1128,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 
 	private String createTempPrdSWSecond = ""
 			+ " ) as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
 			+ this.leftJoinE
 			+ this.pss.leftJoinTempG
 			+ this.pss.leftJoinSCC
@@ -1176,13 +1177,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END as [Volume] ,\r\n"
 			+ "			[ProductionOrderRP] AS ProductionOrder \r\n"
 			+ "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-			+ "		LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrderRP = b.ProductionOrder  \r\n"
+			+ "		LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrderRP = b.ProductionOrder  \r\n" 
 			+ "		WHERE a.[DataStatus] = 'O'  \r\n"
 			+ "		 AND (b.UserStatus NOT IN ('ยกเลิก', 'ตัดเกรดZ'))  \r\n";
 	private String createTempPrdReplacedSecond = ""
 			+ " )  as rpo on a.SaleOrder = rpo.SaleOrder "
 			+ "          and a.SaleLine = rpo.SaleLine \r\n"
-			+ " inner join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n"
+			+ " inner join  [PCMS].[dbo].[FromSapMainProd] as b on b.ProductionOrder = rpo.ProductionOrder \r\n" 
 			+ this.leftJoinE
 			+ this.pss.leftJoinTempG
 			+ this.pss.leftJoinSCC
@@ -1227,20 +1228,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String whereBMainUserStatus = results.get("whereBMainUserStatus");
 		String whereSale = results.get("whereSale");
 		String whereWaitLot = results.get("whereWaitLot");
-		where = where.replace("b.", "a.");
-
-//		this.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList()); 
+		where = where.replace("b.", "a."); 
 		String createCusListSearch = ""
 			+ psModel.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
 		String createTempMainSale = ""
 			+ createCusListSearch
 			+ this.pss.createTempMainSaleWithJoinCustomer 
-			+ whereSale;
-		
-//		String createTempMainSale = ""
-//				+ this.pss.createTempMainSale 
-//				+ whereSale;
-//		System.out.println(createTempMainSale);
+			+ whereSale; 
 		String sqlWaitLot = " "
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
@@ -1381,50 +1375,14 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SELECT * FROM #tempSW\r\n"
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
-				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] ";
-//	 System.out.println(sql);
+				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
-		}
-//		this.handlerCloseTempTableCustomerSearchList();
-		;
+		} 
 		return list;
-	}
-//
-//	private void handlerTempTableCustomerSearchList(List<String> customerNameList, List<String> customerShortNameList)
-//	{
-//
-//		PreparedStatement prepared = null;
-//		Connection connection;
-//		connection = this.database.getConnection();
-//		// TODO Auto-generated method stub
-//		String sqlCreateTempTable = ""
-//				+ "CREATE TABLE #tempCustomerList (CustomerName NVARCHAR(500)) ;"
-//				+ "CREATE TABLE #tempCustomerShortList (CustomerShortName NVARCHAR(500)) ;";
-//		try {
-//			prepared = connection.prepareStatement(sqlCreateTempTable);
-//			// Step 1: สร้าง temp table
-//			prepared.execute();
-//			// Step 2: insert รายชื่อลูกค้าลงไป
-//			prepared = connection.prepareStatement("INSERT INTO #tempCustomerList VALUES (?)");
-//			for (String name : customerNameList) {
-//				prepared.setString(1, name);
-//				prepared.addBatch();
-//			}
-//			prepared.executeBatch();
-//			prepared = connection.prepareStatement("INSERT INTO #tempCustomerShortList VALUES (?)");
-//			for (String name : customerShortNameList) {
-//				prepared.setString(1, name);
-//				prepared.addBatch();
-//			}
-//			prepared.executeBatch();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
-//	} 
+	} 
 	@Override
 	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList)
 	{
@@ -2032,9 +1990,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ "	     , '1:SAP' as InputFrom \r\n"
 				+ "      ,'' AS LotNo \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] as a\r\n"
-				+ " where a.[ProductionOrder] = '"
-				+ bean.getProductionOrder()
-				+ "' and CFType is not null  \r\n"
+				+ " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' "
+				+ " and CFType is not null  \r\n"  
 				+ " ORDER BY InputFrom ,CreateDate desc ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
@@ -2050,18 +2007,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	{
 		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
 		ArrayList<PCMSAllDetail> list = fsmpModel.getUserStatusDetail();
-		PCMSAllDetail bean = new PCMSAllDetail();
-		bean.setUserStatus("รอ COA ลูกค้า ok สี");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("ขายแล้วบางส่วน");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("รอตอบ CFM ตัวแทน");
-		list.add(bean);
-		bean = new PCMSAllDetail();
-		bean.setUserStatus("รอเปิดบิล");
-		list.add(bean);
+//		PCMSAllDetail bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอ COA ลูกค้า ok สี");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("ขายแล้วบางส่วน");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอตอบ CFM ตัวแทน");
+//		list.add(bean);
+//		bean = new PCMSAllDetail();
+//		bean.setUserStatus("รอเปิดบิล");
+//		list.add(bean);
 		return list;
 	}
 
@@ -2211,7 +2168,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		for (int i = 0; i < poList.size(); i ++ ) {
 			if (prdOrderType.equals(this.C_PRODORDER)) {
 				prodOrder = poList.get(i).getProductionOrder();
-				String saleLine = ("000000" + poList.get(i).getSaleLine()).substring(poList.get(i).getSaleLine().length());
+				String saleLine = poList.get(i).getSaleLine();
 				where = where
 						+ " ( a."
 						+ prdOrderType
@@ -2259,15 +2216,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
-		String where = " and ( \r\n";
+		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " b.ProductionOrder = '" + ProductionOrder + "' ";
+			where = where + " '" + ProductionOrder + "' ";
 			if (i != poList.size()-1) {
-				where += " or ";
+				where += " , ";
 			}
 		}
-		where += " ) \r\n";
+		where += " ) " + " ) \r\n";
 		String createTempSWFromA = ""
 
 				+ this.createTempPrdSWFirst
@@ -2315,10 +2272,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " from #tempPrdOP as a \r\n"
 				+ " WHERE ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
-				+ " and NOT EXISTS ( select distinct ProductionOrderSW \r\n"
-				+ "				   FROM [PCMS].[dbo].[SwitchProdOrder] AS BAA \r\n"
-				+ "				   WHERE DataStatus = 'O' and BAA.ProductionOrderSW = A.ProductionOrder\r\n"
-				+ "				 ) \r\n ";
+				+ " 	and NOT EXISTS ( "
+				+ "			select distinct ProductionOrderSW \r\n"
+				+ "			FROM [PCMS].[dbo].[SwitchProdOrder] AS BAA \r\n"
+				+ "			WHERE DataStatus = 'O' "
+				+ "				and BAA.ProductionOrderSW = A.ProductionOrder\r\n"
+				+ "		) \r\n ";
 		List<Map<String, Object>> datas = this.database.queryList(sqlOP);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2437,7 +2396,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			String sql = " UPDATE [PCMS].[dbo]."
 					+ tableName
 					+ " 	SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O'; ";
+					+ " WHERE [ProductionOrder]  = ? "
+					+ "		and [SaleOrder] = ?  "
+					+ "		and [SaleLine] = ? "
+					+ "		and DataStatus = 'O'; ";
 			prepared = connection.prepareStatement(sql);
 			prepared.setString(1, close_STATUS);
 			prepared.setString(2, bean.getUserId());

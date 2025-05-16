@@ -15,6 +15,9 @@
 
 	<properties>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<dhatim.version>0.16.4</dhatim.version>
+		<jxls.version>2.13.0</jxls.version>
+		<apache.poi.version>5.2.5</apache.poi.version>
 		<spring.version>5.2.0.RELEASE</spring.version>
 		<jasper.version>6.16.0</jasper.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,6 +26,43 @@
 		<springframework.retry.version>2.0.4</springframework.retry.version>
 	</properties>
 	<dependencies>
+			<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.15.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>${apache.poi.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+				    <version>${apache.poi.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jxls/jxls -->
+		<dependency>
+		    <groupId>org.jxls</groupId>
+		    <artifactId>jxls</artifactId>
+		    <version>${jxls.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.dhatim/fastexcel-reader -->
+		<dependency> 	
+		    <groupId>org.dhatim</groupId>
+		    <artifactId>fastexcel-reader</artifactId>
+		    <version>${dhatim.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.dhatim/fastexcel -->
+		<dependency>
+		    <groupId>org.dhatim</groupId>
+		    <artifactId>fastexcel</artifactId>
+		    <version>${dhatim.version}</version>
+		</dependency> 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

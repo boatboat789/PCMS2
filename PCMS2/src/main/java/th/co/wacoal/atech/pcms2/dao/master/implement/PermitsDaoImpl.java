@@ -29,6 +29,26 @@ public class PermitsDaoImpl implements PermitsDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+	private String select =""
+
+						+ "       [Id]\r\n"
+						+ "      ,[WebApp]\r\n"
+						+ "      ,[PermitId]\r\n"
+						+ "      ,[Description]\r\n"
+						+ "      ,[IsPCMSMain]\r\n"
+						+ "      ,[IsPCMSDetail]\r\n"
+						+ "      ,[IsPCMSMainToProd]\r\n"
+						+ "      ,[IsPCMSMainToLBMS]\r\n"
+						+ "      ,[IsPCMSMainToQCMS]\r\n"
+						+ "      ,[IsPCMSMainToInspect]\r\n"
+						+ "      ,[IsPCMSMainToSFC]\r\n"
+						+ "      ,[IsReport]\r\n"
+						+ "      ,[IsUserManagement]\r\n"
+						+ "      ,[DataStatus]\r\n"
+						+ "      ,[ChangeBy]\r\n"
+						+ "      ,[ChangeDate]\r\n"
+						+ "      ,[CreateBy]\r\n"
+						+ "      ,[CreateDate]\r\n";
 	@Autowired
     public PermitsDaoImpl(Database database ) {
 		this.database = database ;
@@ -65,54 +85,58 @@ public class PermitsDaoImpl implements PermitsDao {
 		ArrayList<PermitDetail> list = null;
 		String sql =
 				""
-						+ " SELECT TOP (1000) [Id]\r\n"
-						+ "      ,[PermitId]\r\n"
-						+ "      ,[Description]\r\n"
-						+ "      ,[IsTag]\r\n"
-						+ "      ,[IsPC]\r\n"
-						+ "      ,[IsWorkOp5]\r\n"
-						+ "      ,[IsWorkOp10]\r\n"
-						+ "      ,[IsWorkOp15]\r\n"
-						+ "      ,[IsWorkOp20]\r\n"
-						+ "      ,[IsWorkOp30]\r\n"
-						+ "      ,[IsWorkOp35]\r\n"
-						+ "      ,[IsWorkOp40]\r\n"
-						+ "      ,[IsWorkOp50]\r\n"
-						+ "      ,[IsWorkOp60]\r\n"
-						+ "      ,[IsWorkOp70]\r\n"
-						+ "      ,[IsWorkOp80]\r\n"
-						+ "      ,[IsWorkOp90]\r\n"
-						+ "      ,[IsWorkOp100]\r\n"
-						+ "      ,[IsWorkOp110]\r\n"
-						+ "      ,[IsWorkOp120]\r\n"
-						+ "      ,[IsWorkOp130]\r\n"
-						+ "      ,[IsWorkOp135]\r\n"
-						+ "      ,[IsWorkOp140]\r\n"
-						+ "      ,[IsWorkOp144]\r\n"
-						+ "      ,[IsWorkOp145]\r\n"
-						+ "      ,[IsWorkOp147]\r\n"
-						+ "      ,[IsWorkOp150]\r\n"
-						+ "      ,[IsWorkOp155]\r\n"
-						+ "      ,[IsWorkOp160]\r\n"
-						+ "      ,[IsWorkOp180]\r\n"
-						+ "      ,[IsWorkOp181]\r\n"
-						+ "      ,[IsWorkOp185]\r\n"
-						+ "      ,[IsWorkOp190]\r\n"
-						+ "      ,[IsWorkOp195]\r\n" 
-						+ "      ,[IsWorkOp199]\r\n"
-						+ "      ,[IsWorkOp205]\r\n"
-						+ "      ,[IsWorkOp210]\r\n"
-						+ "      ,[IsWorkOp215]\r\n"
-						+ "      ,[IsWorkOp220]"
-						+ "      ,[DataStatus]\r\n"
-						+ "      ,[ChangeBy]\r\n"
-						+ "      ,[ChangeDate]\r\n"
-						+ "      ,[CreateBy]\r\n"
-						+ "      ,[CreateDate]\r\n"
-						+ "  FROM [PCMS2].[dbo].[Permits] as a\r\n"
+						+ " SELECT TOP (1000)" 
+						+ this.select
+						+ "  FROM [PCMS].[dbo].[Permits] as a\r\n"
 						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
 						+ "       A.DataStatus = 'O' and \r\n"
 						+ "		  a.[PermitId] = '"+permitId+"' \r\n";  
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPermitDetail(map));
+		}
+		return list;		
+	}
+
+	@Override
+	public ArrayList<PermitDetail> getEmployeePermitsDetailByPermitId(String userId, String permitId)
+	{
+		ArrayList<PermitDetail> list = null;
+		String sql =
+				""
+						+ "SELECT \r\n"
+						+ "	pe.Id\r\n"
+						+ "	,ed.UserId  as UserId  \r\n"
+						+ "	,pe.[WebApp]\r\n"
+						+ "	,pe.[PermitId]\r\n"
+						+ "	,pe.[Description]\r\n"
+						+ "	,pe.[IsPCMSMain]\r\n"
+						+ "	,pe.[IsPCMSDetail]\r\n"
+						+ "	,pe.[IsPCMSMainToProd]\r\n"
+						+ "	,pe.[IsPCMSMainToLBMS]\r\n"
+						+ "	,pe.[IsPCMSMainToQCMS]\r\n"
+						+ "	,pe.[IsPCMSMainToInspect]\r\n"
+						+ "	,pe.[IsPCMSMainToSFC]\r\n"
+						+ "	,pe.[IsReport]\r\n"
+						+ "	,pe.[IsUserManagement]\r\n"
+						+ "	,pe.[DataStatus]\r\n"
+						+ "	,pe.[ChangeBy]\r\n"
+						+ "	,pe.[ChangeDate]\r\n"
+						+ "	,pe.[CreateBy]\r\n"
+						+ "	,pe.[CreateDate]\r\n"
+						+ "FROM [PCMS].[dbo].[Users] as ed\r\n"
+						+ "LEFT join [PCMS].[dbo].[EmployeePermits] as ep \r\n"
+						+ "on ep.EmployeeId = ed.UserId \r\n"
+						+ "	and ep.[DataStatus] = 'O' \r\n"
+						+ "left join [PCMS].[dbo].[Permits] as pe \r\n"
+						+ "on pe.PermitId = ep.PermitId  \r\n"
+						+ " WHERE EP.WebApp = 'PCMS2' AND\r\n"
+						+ "		  pe.WebApp = 'PCMS2' AND\r\n"
+						+ "		  pe.[PermitId] = '"+permitId+"' AND\r\n"
+						+ "		  ed.UserId = '"+userId+"' \r\n" 
+						+ " ORDER BY ed.UserId\r\n"
+						+ "\r\n"  ;   
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

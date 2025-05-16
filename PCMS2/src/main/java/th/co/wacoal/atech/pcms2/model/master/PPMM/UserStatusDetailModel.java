@@ -1,4 +1,4 @@
-package th.co.wacoal.atech.pcms2.model.master;
+package th.co.wacoal.atech.pcms2.model.master.PPMM;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,27 +8,27 @@ import javax.servlet.http.HttpServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import th.co.wacoal.atech.pcms2.dao.master.FromSapDyeingDao;
-import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapDyeingDaoImpl;
-import th.co.wacoal.atech.pcms2.entities.DyeingDetail;
+import th.co.wacoal.atech.pcms2.dao.master.PPMM.UserStatusDetailDao;
+import th.co.wacoal.atech.pcms2.dao.master.implement.PPMM.UserStatusDetailDaoImpl;
+import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail; 
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
-public class FromSapDyeingModel extends HttpServlet {
+public class UserStatusDetailModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
-	private FromSapDyeingDao dao;
+	private UserStatusDetailDao dao;
 	@SuppressWarnings("unused")
 	private String[] uiColumns;
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
     @Autowired
-	public FromSapDyeingModel() {
+	public UserStatusDetailModel () {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
-			this.dao = new FromSapDyeingDaoImpl(this.database);
+			this.dao = new UserStatusDetailDaoImpl(this.database);
 			this.uiColumns = arrayColumn();
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
@@ -42,7 +42,7 @@ public class FromSapDyeingModel extends HttpServlet {
 	}
 
 	public static String[] arrayColumn()
-	{ 
+	{
 		return "".replaceAll("'", "").split(",");
 	}
 
@@ -53,10 +53,10 @@ public class FromSapDyeingModel extends HttpServlet {
 		super.destroy();
 	}
 
-	public ArrayList<DyeingDetail> getFromSapDyeingDetailByProductionOrder(String prodOrder) 
+	public ArrayList<PCMSAllDetail> getUserStatusDetail( )
 	{
 		// TODO Auto-generated method stub
-		ArrayList<DyeingDetail> list = this.dao.getFromSapDyeingDetailByProductionOrder(prodOrder);
+		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusDetail( );
 		return list;
-	} 
+	}
 }

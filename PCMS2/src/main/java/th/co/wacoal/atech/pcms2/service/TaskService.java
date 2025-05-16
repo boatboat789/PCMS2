@@ -65,6 +65,16 @@ public class TaskService {
 		this.bgjModel.sortBackGroundAfterGetERPDataProcedure();
 		if(isCheck)System.out.println("End sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 	}
+	
+
+//	@Scheduled(fixedRate = 50000000)	
+	@Scheduled(cron = "0,30 * * * * *")
+	public void handlerBackGroundZ_ATT_CustomerConfirm2()
+	{
+		if(isCheck)System.out.println("Start sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+		this.bgjModel.handlerBackGroundZ_ATT_CustomerConfirm2();
+		if(isCheck)System.out.println("End sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+	}
 	@Scheduled(cron = "0 0 1 * * *") 
 	public void bgJobHandlerDataFromOrgatex()
 	{

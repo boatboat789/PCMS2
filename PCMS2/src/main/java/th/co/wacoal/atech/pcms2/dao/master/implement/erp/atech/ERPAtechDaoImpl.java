@@ -19,16 +19,18 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPODetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
+import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
 import th.in.totemplate.core.sql.Database;
 
 @Component
-public class ERPAtechDaoImpl implements ERPAtechDao  { 
+public class ERPAtechDaoImpl implements ERPAtechDao {
 	private BeanCreateModel bcModel = new BeanCreateModel();
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm"); 
+	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	private Database database;
+
 	public ERPAtechDaoImpl(Database database) {
 		this.message = "";
 		this.database = database;
@@ -39,39 +41,41 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return this.message;
 	}
 
-	private String declareThirtyMinuteAgo = ""
-+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());";
+	private String declareThirtyMinuteAgo = "" + " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());";
+
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
-		ArrayList<CustomerDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-				+  this.declareThirtyMinuteAgo
+		ArrayList<CustomerDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
 				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				// 20250506
 				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
+//				+ "		ELSE [CustomerNo] \r\n"
 				+ "	END as [CustomerNo] ,"
 				+ " TRY_CAST( CustomerNo AS NVARCHAR(50)) as CustomerNoWOZero  ,\r\n"
 				+ " TRY_CAST( CustomerName AS NVARCHAR(500)) as CustomerName  ,\r\n"
 				+ " TRY_CAST( CustomerShortName AS NVARCHAR(500)) as CustomerShortName  ,\r\n"
-				// สลับ CustomerType , DistChannel เพื่อให้ข้อมูลตรงกับ LOGIC ของ Field : DistChannel จาก SOR
+				// สลับ CustomerType , DistChannel เพื่อให้ข้อมูลตรงกับ LOGIC ของ Field :
+				// DistChannel จาก SOR
 				+ " TRY_CAST( CustomerType AS NVARCHAR(50)) as DistChannel  ,\r\n"
 				+ " TRY_CAST( DistChannel AS NVARCHAR(50)) as CustomerType, \r\n"
 				+ "	 case\r\n"
 				+ "		 when [CustomerName] not like '%SABINA%' and [CustomerShortName] not like '%SBF%'\r\n"
 				+ "		 then CAST ( 0 AS BIT ) \r\n"
 				+ "		 else CAST ( 1 AS BIT ) "
-				+ "	end as IsSabina ," 
+				+ "	end as IsSabina ,"
 				+ " [SyncDate] "
 				+ " from CustomerDetail "
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
 				+ "       SyncDate >= @dateTimeThirtyMinuteAgo "
-				
-				; 
+
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -81,13 +85,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 	@Override
 	public ArrayList<FromErpCFMDetail> getFromErpCFMDetail()
 	{
-		ArrayList<FromErpCFMDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
+		ArrayList<FromErpCFMDetail> list = new ArrayList<>();
+		String sql = " "
 				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS (\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
@@ -114,7 +116,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "            WHEN CFMAnswerDate = '1900-01-01 00:00:00.000' THEN NULL\r\n"
 				+ "            WHEN CFMAnswerDate IS NULL OR CFMAnswerDate = '' THEN NULL\r\n"
 				+ "            ELSE TRY_CAST(CFMAnswerDate as DATETIME)\r\n"
-				+ "        END AS CFMAnswerDate,\r\n" 
+				+ "        END AS CFMAnswerDate,\r\n"
 				+ " 		CASE "
 				+ "				WHEN CFMAnswerDate = '1900-01-01 00:00:00.000' THEN TRY_CAST(NULL AS BIT) \r\n"
 				+ "				WHEN CFMAnswerDate is null or CFMAnswerDate = '' THEN TRY_CAST(NULL AS BIT) \r\n"
@@ -127,7 +129,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "        TRY_CAST(RollNoRemark AS NVARCHAR(200)) AS RollNoRemark,\r\n"
 				+ "        [SyncDate]\r\n"
 				+ "    FROM FromErpCFM\r\n"
-				+ ")\r\n" 
+				+ ")\r\n"
 				+ "SELECT A.[ProductionOrder]\r\n"
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
@@ -157,8 +159,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST(RollNoRemark AS NVARCHAR(200)) as RollNoRemark,  \r\n" 
 //				+ " [SyncDate]"
 //				+ " from FromErpCFM"
-				
-				; 
+
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -168,7 +170,6 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 //	@Override
 //	public ArrayList<FromErpDyeingDetail> getFromErpDyeingDetail()
 //	{
@@ -188,7 +189,6 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		return list;
 //	}
 
-	 
 //	@Override
 //	public ArrayList<FromErpFinishingDetail> getFromErpFinishingDetail()
 //	{
@@ -208,13 +208,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		return list;
 //	}
 
-	 
 	@Override
 	public ArrayList<FromErpGoodReceiveDetail> getFromErpGoodReceiveDetail()
 	{
-		ArrayList<FromErpGoodReceiveDetail> list = new ArrayList<>(); 
-		String sql =
-				" " 
+		ArrayList<FromErpGoodReceiveDetail> list = new ArrayList<>();
+		String sql = " "
 				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
@@ -263,8 +261,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " [SyncDate]"
 //				+ " "
 //				+ " from FromErpGoodReceive"
-				
-				; 
+
+		;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -273,7 +271,6 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 //	@Override
 //	public ArrayList<FromErpInspectDetail> getFromErpInspectDetail()
 //	{
@@ -293,14 +290,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		return list;
 //	}
 
-	 
 	@Override
 	public ArrayList<FromErpMainBillBatchDetail> getFromErpMainBillBatchDetail()
 	{
-		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
@@ -334,7 +329,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				  from FromErpMainBillBatch \r\n"
 				+ ") \r\n"
 				+ "\r\n"
-				+ "SELECT a.[SaleOrder]" 
+				+ "SELECT a.[SaleOrder]"
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
 				+ "			ELSE 'O'\r\n"
@@ -363,8 +358,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " [SyncDate] " 
 //				+ " from FromErpMainBillBatch"
 //				+ " where BillDoc is not null and BillDoc <> ''"
-				
-				; 
+
+		;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -373,18 +368,16 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 	@Override
 	public ArrayList<FromErpMainProdDetail> getFromErpMainProdDetail()
 	{
-		ArrayList<FromErpMainProdDetail> list = new ArrayList<>(); 
-		String sql =
-				""
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpMainProdDetail> list = new ArrayList<>();
+		String sql = ""
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n" 
+				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
 				+ "), \r\n"
 				+ "MainProd AS (  \r\n"
 				+ "	SELECT distinct    \r\n"
@@ -456,7 +449,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "		CASE  \r\n"
 				+ "				WHEN CFType = '1900-01-01 00:00:00.000' THEN null \r\n"
 				+ "				WHEN CFType is null or  \r\n"
-				+ "					CFType = '' THEN null  \r\n"  
+				+ "					CFType = '' THEN null  \r\n"
 				+ "				ELSE TRY_CAST(CFType as Datetime)   \r\n"
 				+ "			END AS CFType,    \r\n"
 				+ "		TRY_CAST(Shade AS NVARCHAR(30)) as Shade,    \r\n"
@@ -481,7 +474,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "		TRY_CAST(OrderType AS NVARCHAR(20)) as OrderType, \r\n"
 				+ "		[SyncDate] \r\n"
 				+ "	from [FromErpMainProd]  \r\n"
-				+ ") \r\n" 
+				+ ") \r\n"
 				+ "SELECT A.[ProductionOrder]\r\n"
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
@@ -583,8 +576,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST(OrderType AS NVARCHAR(20)) as OrderType,\r\n"
 //				+ " [SyncDate]"
 //				+ " from [FromErpMainProd] "
-				
-				;  
+
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -594,14 +587,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 	@Override
 	public ArrayList<FromErpMainProdSaleDetail> getFromErpMainProdSaleDetail()
 	{
-		ArrayList<FromErpMainProdSaleDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpMainProdSaleDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -639,8 +630,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST(Volumn AS decimal(13, 3)) as Volumn ,\r\n\r\n" 
 //				+ " [SyncDate]" 
 //				+ " from FromErpMainProdSale "
-				
-				; 
+
+		;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -649,14 +640,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 	@Override
 	public ArrayList<FromErpMainSaleDetail> getFromErpMainSaleDetail()
 	{
-		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS (  		  \r\n"
 				+ "	SELECT DISTINCT a.SaleOrder \r\n"
 				+ "	FROM FromErpMainSale AS a \r\n"
@@ -689,6 +678,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
 				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				// 20250506
+//				+ "		ELSE [CustomerNo] \r\n"
 				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
 				+ "	END as [CustomerNo] ,"
 				+ "				  TRY_CAST(PurchaseOrder AS NVARCHAR(20)) as PurchaseOrder, \r\n"
@@ -714,7 +705,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ "				  TRY_CAST(SaleStatus AS NVARCHAR(1)) as SaleStatus, \r\n"
 				+ "				  CASE"
 				+ "					WHEN SaleStatus IN ( 'Open order','Delivered' ) THEN 'O' "
-				+ "					WHEN SaleStatus in ( 'Invoiced') THEN 'C'" 
+				+ "					WHEN SaleStatus in ( 'Invoiced') THEN 'C'"
 				+ "					WHEN SaleStatus in ( 'Canceled' ) THEN 'X' "
 				+ "					ELSE NULL "
 				+ "					END AS SaleStatus ,"
@@ -732,7 +723,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				  TRY_CAST(SaleFullName AS NVARCHAR(100)) as SaleFullName, \r\n"
 				+ "				  CASE"
 				+ "					WHEN DeliveryStatus IN ( 'Open order' ) THEN 'O' "
-				+ "					WHEN DeliveryStatus in ( 'Delivered' , 'Invoiced') THEN 'C'" 
+				+ "					WHEN DeliveryStatus in ( 'Delivered' , 'Invoiced') THEN 'C'"
 				+ "					WHEN DeliveryStatus in ( 'Canceled' ) THEN 'X' "
 				+ "					ELSE NULL "
 				+ "					END AS DeliveryStatus,"
@@ -750,7 +741,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				  from FromErpMainSale  \r\n"
 				+ ") \r\n"
 				+ "				  \r\n"
-				+ "SELECT A.[SaleOrder]\r\n" 
+				+ "SELECT A.[SaleOrder]\r\n"
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
 				+ "			ELSE 'O'\r\n"
@@ -827,8 +818,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST(CustomerMaterialBase  AS NVARCHAR(50)) as CustomerMaterialBase, \r\n"
 //				+ " [SyncDate]" 
 //				+ " from FromErpMainSale"
-				
-				; 
+
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -838,14 +829,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		return list;
 	}
 
-	 
 	@Override
 	public ArrayList<FromErpPackingDetail> getFromErpPackingDetail()
 	{
-		ArrayList<FromErpPackingDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpPackingDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -902,8 +891,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD ,\r\n"
 //				+ " [SyncDate]" 
 //				+ " from FromErpPacking"
-				
-				; 
+
+		;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -915,10 +904,9 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 	@Override
 	public ArrayList<FromErpPODetail> getFromErpPODetail()
 	{
-		ArrayList<FromErpPODetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpPODetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -958,10 +946,10 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "				POPostingDateDefault = '' THEN null   \r\n"
 				+ "			ELSE TRY_CAST( POPostingDateDefault AS DATETIME )   \r\n"
 				+ "		END AS POPostingDateDefault,     \r\n"
-				+ "	[SyncDate]  \r\n" 
+				+ "	[SyncDate]  \r\n"
 				+ "	from FromErpPO "
 				+ " where [RollNo] <> '' and [RollNo] is not null\r\n"
-				+ ") \r\n" 
+				+ ") \r\n"
 				+ "SELECT A.[ProductionOrder]\r\n"
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
@@ -1001,8 +989,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ "  [SyncDate] ,\r\n"
 //				+ "  'O' AS DataStatus \r\n" 
 //				+ " from FromErpPO"
-				
-				; 
+
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -1010,14 +998,14 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 			list.add(this.bcModel._genFromErpPODetail(map));
 		}
 		return list;
-	} 
+	}
+
 	@Override
 	public ArrayList<FromErpSaleDetail> getFromErpSaleDetail()
 	{
-		ArrayList<FromErpSaleDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpSaleDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
@@ -1044,11 +1032,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 				+ "		TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine, \r\n"
 				+ "		TRY_CAST(BillQtyPerStock AS decimal(13, 3)) as BillQtyPerStock, \r\n"
 				+ "		TRY_CAST(Remark AS NVARCHAR(100)) as Remark, \r\n"
-//				+ "		TRY_CAST(CustomerNo AS NVARCHAR(20)) as CustomerNo, \r\n"
-
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
 				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				// 20250506
+//				+ "		ELSE [CustomerNo] \r\n"
 				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
 				+ "	END as [CustomerNo] ,"
 				+ "		TRY_CAST(CustomerName1 AS NVARCHAR(50)) as CustomerName1, \r\n"
@@ -1100,21 +1088,21 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 ////				+ " TRY_CAST(No AS NVARCHAR(3)) as No, \r\n"
 //				+ "  [SyncDate]" 
 //				+ " from FromErpSale" 
-				; 
+		;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpSaleDetail(map));
 		}
 		return list;
-	} 
+	}
+
 	@Override
 	public ArrayList<FromErpSubmitDateDetail> getFromErpSubmitDateDetail()
 	{
-		ArrayList<FromErpSubmitDateDetail> list = new ArrayList<>(); 
-		String sql =
-				" "
-						+ this.declareThirtyMinuteAgo
+		ArrayList<FromErpSubmitDateDetail> list = new ArrayList<>();
+		String sql = " "
+				+ this.declareThirtyMinuteAgo
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -1166,7 +1154,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //				+ " TRY_CAST( Remark AS NVARCHAR(50)) as Remark,  \r\n"
 //				+ " [SyncDate]" 
 //				+ " from [FromErpSubmitDate] " 
-				; 
+		;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -1175,6 +1163,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 		}
 		return list;
 	}
+
 //	@Override
 //	public ArrayList<FromErpPresetDetail> getFromErpPresetDetail()
 //	{
@@ -1309,6 +1298,50 @@ public class ERPAtechDaoImpl implements ERPAtechDao  {
 //		}
 //		return list;
 //	}
-	
- 
+	@Override
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail()
+	{
+		ArrayList<Z_ATT_CustomerConfirm2Detail> list = new ArrayList<>();
+		String sql = " "
+				+ " SELECT \r\n"
+				+ "   TRY_CAST([SendDate] AS DATE) AS SendDate, "
+				+ "   TRY_CAST([NoPerDay] AS INT) AS NoPerDay, "
+				+ "   TRY_CAST([ReplyDate] AS DATE) AS ReplyDate, "
+				+ "   [CFMNo], "
+				+ "   [Customer Name] AS CustomerName, "
+				+ "   [SO], "
+				+ "   TRY_CAST([SOLineNo] AS NVARCHAR(50)) AS SOLine, "
+				+ "   TRY_CAST([DueDate] AS DATE) AS DueDate, "
+				+ "   [PO], "
+				+ "   [Material], "
+				+ "   [ProductName], "
+				+ "   [LabNo], "
+				+ "   [Color], "
+				+ "   [ProdId], "
+				+ "   [LotNo], "
+				+ "   TRY_CAST([L] AS DECIMAL(13,3)) AS CFM_L, "
+				+ "   TRY_CAST([Da] AS DECIMAL(13,3)) AS CFM_Da, "
+				+ "   TRY_CAST([Db] AS DECIMAL(13,3)) AS CFM_Db, "
+				+ "   TRY_CAST([St] AS DECIMAL(13,3)) AS CFM_St, "
+				+ "   TRY_CAST([DE] AS DECIMAL(13,3)) AS CFM_DeltaE, "
+				+ "   [QCComment], "
+				+ "   [Result], "
+				+ "   [Remark from submit] AS RemarkFromSubmit, "
+				+ "   [NextLot], "
+				+ "   TRY_CAST([Qty] AS DECIMAL(13,3)) AS Qty, "
+				+ "   [UnitId], "
+				+ "   'O' AS DataStatus "
+				+ "  FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a\r\n"
+				+ "; \r\n"
+				+ "  ";
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+//		System.out.println(new Date());
+		for (Map<String, Object> map : datas) { 
+			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
+		}
+//		System.out.println("End : " + new Date());
+		return list;
+	}
+
 }

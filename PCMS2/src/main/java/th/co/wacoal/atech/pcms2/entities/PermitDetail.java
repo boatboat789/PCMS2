@@ -7,250 +7,129 @@ public class PermitDetail {
 	private int id;
 	private String permitId;
 	private String description; 
-	private boolean isPCMSDetailPage ; 
-	private boolean isPCMSSumPage ; 
-	private boolean isProdPathBtn ; 
-	private boolean isLBMSPathBtn ; 
-	private boolean isQCMSPathBtn ; 
-	private boolean isInspectPathBtn ; 
-	private boolean isSFCPathBtn ; 
-
-	public PermitDetail(int id, String permitId, String description, boolean isPCMSDetailPage, boolean isPCMSSumPage,
-			boolean isProdPathBtn, boolean isLBMSPathBtn, boolean isQCMSPathBtn, boolean isInspectPathBtn, boolean isSFCPathBtn) {
+	private boolean isPCMSMain ; 
+	private boolean isPCMSDetail ; 
+	private boolean isPCMSMainToProd ; 
+	private boolean isPCMSMainToLBMS ; 
+	private boolean isPCMSMainToQCMS ; 
+	private boolean isPCMSMainToInspect ; 
+	private boolean isPCMSMainToSFC ; 
+	private boolean isReport ; 
+	private boolean isUserManagement ;
+	public PermitDetail(int id, String permitId, String description, boolean isPCMSMain, boolean isPCMSDetail,
+			boolean isPCMSMainToProd, boolean isPCMSMainToLBMS, boolean isPCMSMainToQCMS, boolean isPCMSMainToInspect,
+			boolean isPCMSMainToSFC, boolean isReport, boolean isUserManagement) {
 		super();
 		this.id = id;
 		this.permitId = permitId;
 		this.description = description;
-		this.isPCMSDetailPage = isPCMSDetailPage;
-		this.isPCMSSumPage = isPCMSSumPage;
-		this.isProdPathBtn = isProdPathBtn;
-		this.isLBMSPathBtn = isLBMSPathBtn;
-		this.isQCMSPathBtn = isQCMSPathBtn;
-		this.isInspectPathBtn = isInspectPathBtn;
-		this.isSFCPathBtn = isSFCPathBtn;
+		this.isPCMSMain = isPCMSMain;
+		this.isPCMSDetail = isPCMSDetail;
+		this.isPCMSMainToProd = isPCMSMainToProd;
+		this.isPCMSMainToLBMS = isPCMSMainToLBMS;
+		this.isPCMSMainToQCMS = isPCMSMainToQCMS;
+		this.isPCMSMainToInspect = isPCMSMainToInspect;
+		this.isPCMSMainToSFC = isPCMSMainToSFC;
+		this.isReport = isReport;
+		this.isUserManagement = isUserManagement;
 	}
-
-	public PermitDetail() {
-		super();
-	}
-
 	public int getId()
 	{
 		return id;
 	}
-
 	public void setId(int id)
 	{
 		this.id = id;
 	}
-
 	public String getPermitId()
 	{
 		return permitId;
 	}
-
 	public void setPermitId(String permitId)
 	{
 		this.permitId = permitId;
 	}
-
 	public String getDescription()
 	{
 		return description;
 	}
-
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
-
-	public boolean isPCMSDetailPage()
+	public boolean isPCMSMain()
 	{
-		return isPCMSDetailPage;
+		return isPCMSMain;
 	}
-
-	public void setPCMSDetailPage(boolean isPCMSDetailPage)
+	public void setPCMSMain(boolean isPCMSMain)
 	{
-		this.isPCMSDetailPage = isPCMSDetailPage;
+		this.isPCMSMain = isPCMSMain;
 	}
-
-	public boolean isPCMSSumPage()
+	public boolean isPCMSDetail()
 	{
-		return isPCMSSumPage;
+		return isPCMSDetail;
 	}
-
-	public void setPCMSSumPage(boolean isPCMSSumPage)
+	public void setPCMSDetail(boolean isPCMSDetail)
 	{
-		this.isPCMSSumPage = isPCMSSumPage;
+		this.isPCMSDetail = isPCMSDetail;
 	}
-
-	public boolean isProdPathBtn()
+	public boolean isPCMSMainToProd()
 	{
-		return isProdPathBtn;
+		return isPCMSMainToProd;
 	}
-
-	public void setProdPathBtn(boolean isProdPathBtn)
+	public void setPCMSMainToProd(boolean isPCMSMainToProd)
 	{
-		this.isProdPathBtn = isProdPathBtn;
+		this.isPCMSMainToProd = isPCMSMainToProd;
 	}
-
-	public boolean isLBMSPathBtn()
+	public boolean isPCMSMainToLBMS()
 	{
-		return isLBMSPathBtn;
+		return isPCMSMainToLBMS;
 	}
-
-	public void setLBMSPathBtn(boolean isLBMSPathBtn)
+	public void setPCMSMainToLBMS(boolean isPCMSMainToLBMS)
 	{
-		this.isLBMSPathBtn = isLBMSPathBtn;
+		this.isPCMSMainToLBMS = isPCMSMainToLBMS;
 	}
-
-	public boolean isQCMSPathBtn()
+	public boolean isPCMSMainToQCMS()
 	{
-		return isQCMSPathBtn;
+		return isPCMSMainToQCMS;
 	}
-
-	public void setQCMSPathBtn(boolean isQCMSPathBtn)
+	public void setPCMSMainToQCMS(boolean isPCMSMainToQCMS)
 	{
-		this.isQCMSPathBtn = isQCMSPathBtn;
+		this.isPCMSMainToQCMS = isPCMSMainToQCMS;
 	}
-
-	public boolean isInspectPathBtn()
+	public boolean isPCMSMainToInspect()
 	{
-		return isInspectPathBtn;
+		return isPCMSMainToInspect;
 	}
-
-	public void setInspectPathBtn(boolean isInspectPathBtn)
+	public void setPCMSMainToInspect(boolean isPCMSMainToInspect)
 	{
-		this.isInspectPathBtn = isInspectPathBtn;
+		this.isPCMSMainToInspect = isPCMSMainToInspect;
 	}
-
-	public boolean isSFCPathBtn()
+	public boolean isPCMSMainToSFC()
 	{
-		return isSFCPathBtn;
+		return isPCMSMainToSFC;
 	}
-
-	public void setSFCPathBtn(boolean isSFCPathBtn)
+	public void setPCMSMainToSFC(boolean isPCMSMainToSFC)
 	{
-		this.isSFCPathBtn = isSFCPathBtn;
+		this.isPCMSMainToSFC = isPCMSMainToSFC;
 	}
-  
-//	public boolean checkPermitsWorkOperation(String operationNumber)
-//	{
-//		boolean isPermit = false;
-//		// TODO Auto-generated method stub
-//		switch (operationNumber) {
-//		case "5":
-//			isPermit = this.isWorkOp5();
-//			break;
-//		case "10":
-//			isPermit = this.isWorkOp10();
-//			break;
-//		case "15":
-//			isPermit = this.isWorkOp15();
-//			break;
-//		case "20":
-//			isPermit = this.isWorkOp20();
-//			break;
-//		case "30":
-//			isPermit = this.isWorkOp30();
-//			break;
-//		case "35":
-//			isPermit = this.isWorkOp35();
-//			break;
-//		case "40":
-//			isPermit = this.isWorkOp40();
-//			break;
-//		case "50":
-//			isPermit = this.isWorkOp50();
-//			break;
-//		case "60":
-//			isPermit = this.isWorkOp60();
-//			break;
-//		case "70":
-//			isPermit = this.isWorkOp70();
-//			break;
-//		case "80":
-//			isPermit = this.isWorkOp80();
-//			break;
-//		case "90":
-//			isPermit = this.isWorkOp90();
-//			break;
-//		case "100":
-//			isPermit = this.isWorkOp100();
-//			break;
-//		case "104":
-//			isPermit = this.isWorkOp100();
-//			break;
-//		case "110":
-//			isPermit = this.isWorkOp110();
-//			break;
-//		case "120":
-//			isPermit = this.isWorkOp120();
-//			break;
-//		case "130":
-//			isPermit = this.isWorkOp130();
-//			break;
-//		case "135":
-//			isPermit = this.isWorkOp135();
-//			break;
-//		case "140":
-//			isPermit = this.isWorkOp140();
-//			break;
-//		case "144":
-//			isPermit = this.isWorkOp144();
-//			break;
-//		case "145":
-//			isPermit = this.isWorkOp145();
-//			break;
-//		case "147":
-//			isPermit = this.isWorkOp147();
-//			break;
-//		case "150":
-//			isPermit = this.isWorkOp150();
-//			break;
-//		case "155":
-//			isPermit = this.isWorkOp155();
-//			break;
-//		case "160":
-//			isPermit = this.isWorkOp160();
-//			break;
-//		case "180":
-//			isPermit = this.isWorkOp180();
-//			break;
-//		case "181":
-//			isPermit = this.isWorkOp181();
-//			break;
-//		case "185":
-//			isPermit = this.isWorkOp185();
-//			break;
-//		case "190":
-//			isPermit = this.isWorkOp190();
-//			break;
-//		case "195":
-//			isPermit = this.isWorkOp195();
-//			break;
-//		case "198":
-//			isPermit = this.isWorkOp198();
-//			break;
-//		case "199":
-//			isPermit = this.isWorkOp199();
-//			break;
-//		case "205":
-//			isPermit = this.isWorkOp205();
-//			break;
-//		case "210":
-//			isPermit = this.isWorkOp210();
-//			break;
-//		case "215":
-//			isPermit = this.isWorkOp215();
-//			break;
-//		case "220":
-//			isPermit = this.isWorkOp220();
-//			break;
-//		default:
-//			isPermit = false;
-//			break;
-//		}
-//		return isPermit;
-//	}
+	public boolean isReport()
+	{
+		return isReport;
+	}
+	public void setReport(boolean isReport)
+	{
+		this.isReport = isReport;
+	}
+	public boolean isUserManagement()
+	{
+		return isUserManagement;
+	}
+	public void setUserManagement(boolean isUserManagement)
+	{
+		this.isUserManagement = isUserManagement;
+	} 
+
+
+ 
 }
