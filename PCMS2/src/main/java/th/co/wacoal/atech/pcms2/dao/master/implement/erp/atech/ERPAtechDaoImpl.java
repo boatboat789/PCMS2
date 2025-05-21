@@ -41,8 +41,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		return this.message;
 	}
 
-	private String declareThirtyMinuteAgo = "" + " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());";
-
+	private String declareThirtyMinuteAgo = "" 
+	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
@@ -1337,7 +1337,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 //		System.out.println(new Date());
-		for (Map<String, Object> map : datas) { 
+		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
 		}
 //		System.out.println("End : " + new Date());

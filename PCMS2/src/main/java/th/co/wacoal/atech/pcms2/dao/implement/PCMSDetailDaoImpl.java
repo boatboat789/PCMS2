@@ -1376,6 +1376,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
 				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
+//		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

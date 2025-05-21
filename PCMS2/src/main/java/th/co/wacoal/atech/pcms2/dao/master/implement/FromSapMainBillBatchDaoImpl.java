@@ -109,7 +109,8 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				prepared.setString(index++, bean.getDataStatus()   );
 				prepared.setString(index++, bean.getSaleOrder()    );
 				
-				prepared.setString(index ++ , bean.getLotShipping());
+//				prepared.setString(index ++ , bean.getLotShipping());
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getGrade());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
@@ -129,7 +130,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 
 				prepared.setString(index ++ , bean.getBillDoc());
 				prepared.setString(index ++ , bean.getBillItem());
-				prepared.setString(index ++ , bean.getLotShipping());
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
 
