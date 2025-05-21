@@ -1,5 +1,5 @@
 <%-- <%@ page language="java" contentType="text/html; charset=UTF-8" --%>
-<%--     pageEncoding="UTF-8"%> --%>
+<%--     pageEncoding="UTF-8"%> --%> 
  <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
@@ -117,6 +117,7 @@
 						<option value="C" >Completed</option>  
 						<option value="B" >Partial Process</option>  
 						<option value="A" >NotYet Process</option>  
+						<option value="X" >Cancel</option>  
 					</select>
 					</div>      
 				</div>  
@@ -229,42 +230,46 @@
 						<label class="custom-control-label" for="rad_inProc">In-Process</label>
 					</div> 
 					<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
-						<input type="radio" id="rad_closed" name="saleStatusRadio" class="custom-control-input" value=C>    
+						<input type="radio" id="rad_closed" name="saleStatusRadio" class="custom-control-input" value="C">    
 						<label class="custom-control-label" for="rad_closed">Closed</label>
+					</div> 
+					<div class="custom-control custom-radio" style="margin-left: 10px; display: inline;">
+						<input type="radio" id="rad_canceled" name="saleStatusRadio" class="custom-control-input" value="X">    
+						<label class="custom-control-label" for="rad_canceled">Cancel</label>
 					</div> 
 				</div>     
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   
-					<div class="row">       
-						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  >  
-							<c:if test="${ConfigCusListTest[0].getIsProdPathBtn()  == true || ConfigCusListTest.size() == 0}">     
-<%-- 							<c:if test="${userObject.isCustomer  == false }">  --%>
+					<div class="row">          
+						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  > 
+<%-- 						<p>${permit.isPCMSMainToProd()  == true}${permit.isPCMSMainToProd()}</p>      --%>
+							<c:if test="${permit.isPCMSMainToProd()  == true}">      
 				              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
 				                    Production Detail 
 				              	</button>     
-			              	</c:if>   
-			              	<c:if test="${ConfigCusListTest[0].getIsLBMSPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+			              	</c:if>       	
+			              	<c:if test="${permit.isPCMSMainToLBMS()  == true}">  
 				              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
 				                   LBMS Detail            
 				              	</button>                    
 			              	</c:if>     
-							<c:if test="${ConfigCusListTest[0].getIsQCMSPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+							<c:if test="${permit.isPCMSMainToQCMS()  == true}">  
 				              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
 				                    QCMS Result                
-<%-- 				                    ${ConfigCusListTest[0].getIsQCMSPathBtn()}    --%>
+<%-- 				                    ${permit.getIsQCMSPathBtn()}    --%>
 				              	</button>         
 			              	</c:if>     
-			              	<c:if test="${ConfigCusListTest[0].getIsInspectPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+			              	<c:if test="${permit.isPCMSMainToInspect()  == true}">  
 				              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
 				                    Inspect Result     
 				              	</button>             
 			              	</c:if>    
-			              	<c:if test="${ConfigCusListTest[0].getIsSFCPathBtn()  == true || ConfigCusListTest.size() == 0}">  
+			              	<c:if test="${permit.isPCMSMainToSFC()  == true}">    
 <%-- 							<c:if test="${userObject.isCustomer  == false }">   --%>
-				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >
+				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >         
 				                    SFC Detail
 				              	</button>          
 			              	</c:if>   
-			              	<button id="btn_lockColumn" class="btn btn-primary" type="button"  >
+			              	<button	 id="btn_lockColumn" class="btn btn-primary" type="button"  >
 			                    Lock Column
 			              	</button>      
 						</div>       

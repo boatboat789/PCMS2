@@ -16,38 +16,15 @@
 			http://www.springframework.org/schema/task/spring-task-3.0.xsd"> 
     <!-- Enable autowire -->
 	<ctx:annotation-config ></ctx:annotation-config>
-	<ctx:component-scan base-package="controller" />
+	<ctx:component-scan base-package="  
+	th.co.wacoal.atech.pcms2.controller 
+	,th.co.wacoal.atech.pcms2.config
+	,th.co.wacoal.atech.pcms2.model
+	,th.co.wacoal.atech.pcms2.service " />
 	<mvc:annotation-driven ></mvc:annotation-driven> 
 	<mvc:resources mapping="/resources/**" location="/resources/" ></mvc:resources> 
     <bean id = "view" class = "org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"></property>
         <property name="suffix" value=".jsp"></property>
-	</bean> 
-<!-- 	  <task:scheduler id="taskScheduler" pool-size="10"/> -->
-<!--      <task:annotation-driven scheduler="taskScheduler"/>      -->
-<!--      <bean id="bookApp" class="com.concretepage.BookApp"/> -->
-<!--      <task:scheduled-tasks scheduler="taskScheduler"> -->
-<!--      	<task:scheduled ref="bookApp" method="cleanDustOne" fixed-rate="2000"/> -->
-<!--      	<task:scheduled ref="bookApp" method="cleanDustTwo" fixed-rate="3000"/> -->
-<!--      </task:scheduled-tasks> -->
-	
-	<task:annotation-driven  scheduler="myScheduler"/>      
-	<task:scheduler id="myScheduler" pool-size="1000"/>
-	<bean id="BackGroundJob" class="service.BackGroundJob"></bean>   
-<!-- 	<task:annotation-driven  scheduler="myScheduler"/>        -->
-<!-- 	<task:scheduler id="myScheduler" pool-size="1000"/> -->
-	<!-- Configure the scheduler -->
-<!-- <bean id="TaskScheduler" -->
-<!-- class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler"> -->
-<!--     <property name="waitForTasksToCompleteOnShutdown" value="true" /> -->
-<!--     <property name="poolSize" value="1000" /> -->
-<!-- </bean> -->
-
-<!-- <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"> -->
-<!--   <property name="corePoolSize" value="5" /> -->
-<!--   <property name="maxPoolSize" value="10" /> -->
-<!--   <property name="queueCapacity" value="25" /> -->
-<!-- </bean>    -->      
-<!-- 	 Including beans -->
-<!--     <import resource="beans.xml" />  -->
+	</bean>  
 </beans>

@@ -5,23 +5,26 @@
 <!-- 	LEFT -->        
 		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " >
 			<div class="row"  >    
+<<<<<<< HEAD
 				<div class="col-12 	col-sm-12 col-md-8 col-lg-8 col-xl-8 workInLabWrapper " style="display: inline-flex;
+=======
+				<div class="col-12 	col-sm-12 col-md-12 col-lg-9 col-xl-9 workInLabWrapper " style="display: inline-flex;
+>>>>>>> 365Import
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="workInLabTable">งานเข้า Lab</label>            -->
 			  	 	<div class="table-responsive ">      
 						<table id="workInLabTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>    
 					            <tr> 
-					                <td style="vertical-align: middle;">ครั้งที่</td>
-					                <td style="vertical-align: middle;">วันที่</td>   
-					                <td style="vertical-align: middle;">NoK จาก</td>   
-					                <td style="vertical-align: middle;">Lot No</td>   
-					                <td style="vertical-align: middle;">L. </td>  
-				                 	<td style="vertical-align: middle;">Da. </td>  
-				                 	<td style="vertical-align: middle;">Db. </td>  
-				                 	<td style="vertical-align: middle;">ST. </td>  
-					                <td style="vertical-align: middle;">วันรับสูตร</td>   
-					                <td style="vertical-align: middle;">หมายเหตุ</td>   
+					                <td style="vertical-align: middle;">LabNo</td>
+					                <td style="vertical-align: middle;">Remark</td>   
+					                <td style="vertical-align: middle;">ส่งจาก</td>   
+					                <td style="vertical-align: middle;">วันที่ส่งเข้า Lab</td>   
+					                <td style="vertical-align: middle;">วันที่ต้องการ Lab</td>  
+				                 	<td style="vertical-align: middle;">ครั้งที่ส่งงานเข้า Lab </td>  
+				                 	<td style="vertical-align: middle;">ครั้งที่ Start Lab </td>  
+				                 	<td style="vertical-align: middle;">วันที Start Lab </td>  
+				                 	<td style="vertical-align: middle;">วันที่ Stop Lab</td>   
 					        	</tr> 
 					        </thead>     
 					        <tbody> 
@@ -65,8 +68,32 @@
 <!-- 					    </table>   -->
 <!-- 			    	</div>     -->
 <!-- 				</div>         -->
+<<<<<<< HEAD
 				<div class="col-12 	col-sm-12 col-md-12 col-lg-12 col-xl-12 cfmWrapper " style="display: inline-flex;
 				 			 text-align: right;">  
+=======
+
+				 <div class="col-12 	col-sm-12 col-md-12 col-lg-3 col-xl-3 submitDateWrapper " style="display: inline-flex;
+				 			 text-align: right;"> 
+<!-- 				 	<label class="my-1 mr-2 " for="submitDateTable">วันนัดส่ง CFM</label>            -->
+			  	 	<div class="table-responsive ">
+						<table id="submitDateTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
+					        <thead>
+					            <tr> 
+					                <td style="vertical-align: middle;">ครั้งที่</td>
+					                <td style="vertical-align: middle;">วันที่</td>
+					                <td style="vertical-align: middle;">หมายเหตุ</td> 
+					        	</tr> 
+					        </thead>     
+					        <tbody> 
+					        </tbody> 
+					    </table>  
+			    	</div>  
+				</div> 
+				<div class="col-12 	col-sm-12 col-md-12 col-lg-12 col-xl-12 cfmWrapper " style="display: inline-flex;
+				 			 text-align: right;"> 
+<!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -->
+>>>>>>> 365Import
 			  	 	<div class="table-responsive ">
 						<table id="cfmTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>
@@ -96,7 +123,11 @@
 					        </tbody> 
 					    </table>      
 			    	</div>     
+<<<<<<< HEAD
 				</div>         
+=======
+				</div>           
+>>>>>>> 365Import
 			</div> 
 		</div> 
 		

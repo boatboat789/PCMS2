@@ -90,7 +90,8 @@ var poTable ;
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
-var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
+var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;
+// var sendTestQCTable;
 var columnsHeader  = [];
 var colList ;
 var userStatusList ;  	
@@ -101,8 +102,11 @@ var cusShortNameList ;
 var isCustomer = 0 ;  	
 var workInLabTable ;
 // var waitTestTable;
-var cfmTable;var saleTable;var saleInputTable;var submitDateTable;
-var ncTable;var receipeTable;
+var cfmTable;var saleTable;
+// var saleInputTable;
+var submitDateTable;
+var ncTable;
+// var receipeTable;
 var collapsedGroups = {};        
 // var domain = "http://"+window.location.hostname+":8080";
 var domain ;
@@ -293,16 +297,8 @@ $(document) .ready( function() {
 			}      
 			else { 
 				  var arrayTmp = [];        
-					arrayTmp.push();     
-					$.ajax({
-					   type: "POST",     
-						contentType: "application/json",         
-						url: ctx+"/Main/getEncrypted/"+userId,      
-					    data : JSON.stringify(arrayTmp),             
-					    success : function(data) {   
-					    	goToLBMS(tblData,userId,data);   
-					    }   	
-					});      
+					arrayTmp.push();      
+					getEncrypted('LBMS',tblData,userId,arrayTmp);   
 			}   
 		} 
  	} ); 
@@ -362,18 +358,10 @@ $(document) .ready( function() {
 		   		})
 			}      
 			else {
-				
+					
 				var arrayTmp = [];        
-				arrayTmp.push();     
-				$.ajax({
-				   type: "POST",     
-					contentType: "application/json",         
-					url: ctx+"/Main/getEncrypted/"+userId,      
-				    data : JSON.stringify(arrayTmp),             
-				    success : function(data) {   
-				    	goToInspect(tblData,userId,data); 
-				    }   	
-				});      
+				arrayTmp.push();      
+				getEncrypted('INSPECT',tblData,userId,arrayTmp);     
 			}   
 		}  
  	} ); 
@@ -401,16 +389,8 @@ $(document) .ready( function() {
 			}      
 			else { 
 				var arrayTmp = [];        
-				arrayTmp.push();     
-				$.ajax({
-				   type: "POST",     
-					contentType: "application/json",         
-					url: ctx+"/Main/getEncrypted/"+userId,      
-				    data : JSON.stringify(arrayTmp),             
-				    success : function(data) {   
-				    	goToSFC(tblData,userId,data);   
-				    }   	
-				});         
+				arrayTmp.push();      
+				getEncrypted('SFC',tblData,userId,arrayTmp);       
 					
 			}   
 		}
@@ -442,15 +422,7 @@ $(document) .ready( function() {
 				 
 				 var arrayTmp = [];        
 					arrayTmp.push();     
-					$.ajax({
-					   type: "POST",     
-						contentType: "application/json",         
-						url: ctx+"/Main/getEncrypted/"+userId,      
-					    data : JSON.stringify(arrayTmp),             
-					    success : function(data) {    
-					    	goToQCMS(tblData,userId,data);
-					    }   	
-					});      
+					getEncrypted('QCMS',tblData,userId,arrayTmp);     
 			}   
 		} 
  	} );  
@@ -635,9 +607,9 @@ $(document) .ready( function() {
 		    {"data" : "poLine"},  
 		    {"data" : "poCreatedate"},  
 		    {"data" : "requiredDate"},  
-		    {"data" : "rollNo"},  
-		    {"data" : "quantityKG"},  
-		    {"data" : "quantityMR"},    //6
+		    {"data" : "rollNumber"},  
+		    {"data" : "rollWeight"},  
+		    {"data" : "rollLength"},    //6
 		],  	      
 		columnDefs :  [	   	
 // 			{ targets : [ 0,1,2,3,4,5,6  ],                
@@ -648,35 +620,32 @@ $(document) .ready( function() {
 		 order: [[ 4, "asc" ]],   
 		 createdRow : function(row, data, index) {      
 		 },   
- 	 });   
+ 	 });    
     dyeingTable = $('#dyeingTable').DataTable({  
     	scrollY: '160px',       
     	scrollX: true,            
-    	paging: false,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,     
-// 		orderClasses : false, 
-// 		lengthChange: false,    
-// 		"autoWidth":false,
+    	paging: false,                
  	   	columns : 
- 	[      
-		    {"data" : "postingDate"} ,         //0
+ 	[        
+		    {"data" : "workDate"} ,         //0
 		    {"data" : "operation"}, 
 		    {"data" : "workCenter"}, 
-		    {"data" : "dyeStatus"}, 
-		    {"data" : "deltaE"}, 
-		    {"data" : "l"},                    //5
+		    {"data" : "cartNo"}, 
+		    {"data" : "cartType"}, 
+		    
+		    {"data" : "dyeingStatus"}, 
+		    {"data" : "deltaE"},                   //5
 		    {"data" : "da"}, 
 		    {"data" : "db"}, 
 		    {"data" : "st"}, 
-		    {"data" : "remark"},
-		    {"data" : "redye"},                //10
-		    {"data" : "batch"},
-		    {"data" : "colorStatus"},
-		    {"data" : "colorRemark"},          //12
+		    
+		    {"data" : "l"},    
+		    {"data" : "dyeRemark"}, 
+		    {"data" : "colorCheckStatus"},
+		    {"data" : "colorCheckRemark"},          //12
 		],  	      
 		columnDefs :  [	   	 
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ,13],                
 			  	  className : 'data-custom-padding0505',    
 // 		  	 	  type: 'string'      
 			} ,                    
@@ -685,32 +654,33 @@ $(document) .ready( function() {
     fnTable = $('#fnTable').DataTable({     
     	scrollY:        '160px',        
     	scrollX: true,           
-    	paging: false,    
-//  	 	scrollCollapse: true,                    
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
+    	paging: false,     
 		lengthChange: false,         	  
  	   	columns : 
  		[      
-			{"data" : "postingDate"} ,         //0
- 		    {"data" : "workCenter"  }, 
- 		    {"data" : "rollNo"}, 
- 		    {"data" : "status"}, 
- 		    {"data" : "ccOperation"}, 
- 		    {"data" : "ccPostingDate"},         //5
- 		    {"data" : "deltaE"}, 
- 		    {"data" : "color"}, 
- 		    {"data" : "l"}, 
+// 			{"data" : "lotNo"} ,         //0
+ 		    {"data" : "workDate"}, 
+ 		    {"data" : "operation"  }, 
+ 		    {"data" : "workCenter"}, 
+ 		    {"data" : "cartNo"}, 
+ 		    {"data" : "cartType"},
+
+ 		    {"data" : "colorCheckOperation"},    //5
+ 		    {"data" : "colorCheckWorkDate"},   
 		    {"data" : "da"}, 
-		    {"data" : "db"},                   //10
-		    {"data" : "st"},  
- 		    {"data" : "ncDate"},
- 		    {"data" : "cause"},
- 		    {"data" : "carNo"},
- 		    {"data" : "lotNo"},                //15
+		    {"data" : "db"},     
+ 		    {"data" : "l"},     
+ 		    
+		    {"data" : "st"},   //10 
+ 		    {"data" : "deltaE"},  
+ 		    {"data" : "colorCheckName"},      
+ 		    {"data" : "colorCheckStatus"},
+ 		    {"data" : "colorCheckRollNo"},
+ 		    
+ 		    {"data" : "colorCheckRemark"} 
 		],  	      
 		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15    ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
 				} ,                    
@@ -719,20 +689,17 @@ $(document) .ready( function() {
     inspectTable = $('#inspectTable').DataTable({   
     	scrollY:       '190px',    
     	scrollX: true,               
-    	paging: false,
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
-		lengthChange: false,         	  
+    	paging: false, 
+		lengthChange: false,         	   
  	   	columns : 
  	[      
-		    {"data" : "postingDate"} ,         //0
+		    {"data" : "workDate"} ,         //0
 		    {"data" : "operation"},  
-		    {"data" : "quantityGreige"},  
-		    {"data" : "quantityFG"},  
-		    {"data" : "remark"},   
+		    {"data" : "workCenter"} ,         //0
+		    {"data" : "machineInspect"},   
+		    {"data" : "inspectRemark"}, 
 		],  	      
-		columnDefs :  [	   	
+		columnDefs :  [	   	   	
 			{ targets : [ 0,1,2,3,4 ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
@@ -764,31 +731,31 @@ $(document) .ready( function() {
 				} ,                         
 		],  order: [[ 0, "desc" ]]     
  	 });   
-    sendTestQCTable = $('#sendTestQCTable').DataTable({   
-    	scrollY:        '190px',    
-    	scrollX: true,      
-    	paging: false,     
-//  	 	scrollCollapse: true,                  
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
-		lengthChange: false,         	  
- 	   	columns : 
- 		[           
-		    {"data" : "sendDate"} ,         //0
-		    {"data" : "rollNo"},  
-		    {"data" : "status"},  
-		    {"data" : "checkColorDate"},  
-		    {"data" : "deltaE"},  
-		    {"data" : "color"},  
-		    {"data" : "remark"},            //6
-		],  	          
-		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6 ],                
-			  	  className : 'data-custom-padding0505',    
-// 		  	 	  type: 'string'      
-				} ,           
-		],     order: [[ 0, "desc" ]]        
- 	 });  
+//     sendTestQCTable = $('#sendTestQCTable').DataTable({   
+//     	scrollY:        '190px',    
+//     	scrollX: true,      
+//     	paging: false,     
+// //  	 	scrollCollapse: true,                  
+// //  	   	orderCellsTop : true,
+// // 		orderClasses : false, 
+// 		lengthChange: false,         	  
+//  	   	columns : 
+//  		[           
+// 		    {"data" : "sendDate"} ,         //0
+// 		    {"data" : "rollNo"},  
+// 		    {"data" : "status"},  
+// 		    {"data" : "checkColorDate"},  
+// 		    {"data" : "deltaE"},  
+// 		    {"data" : "color"},  
+// 		    {"data" : "remark"},            //6
+// 		],  	          
+// 		columnDefs :  [	   	
+// 			{ targets : [ 0,1,2,3,4,5,6 ],                
+// 			  	  className : 'data-custom-padding0505',    
+// // 		  	 	  type: 'string'      
+// 				} ,           
+// 		],     order: [[ 0, "desc" ]]        
+//  	 });  
     workInLabTable = $('#workInLabTable').DataTable({   
     	scrollY:       '175px',    
     	scrollX: true,               
@@ -797,47 +764,25 @@ $(document) .ready( function() {
 //  	   	orderCellsTop : true,
 // 		orderClasses : false, 
 		lengthChange: false,         	  
-	   	columns :  
-		[                   
-		    {"data" : "no"} ,         //0 
-		    {"data" : "nok"},  
-		    {"data" : "ncDate"},  
-		    {"data" : "lotNo"},   
-		    {"data" : "l"},            //5
-		    {"data" : "da"},
-		    {"data" : "db"},
-		    {"data" : "st"},
-		    {"data" : "receiveDate"},  
-		    {"data" : "remark"},       //  9
-		],  	      
+	   	columns :      
+				[                   
+				    {"data" : "labNo"} ,         //0 
+				    {"data" : "remark"},  
+				    {"data" : "sendFrom"},  
+				    {"data" : "sendLabDate"},   
+				    {"data" : "dateRequiredLab"},            //5
+				    {"data" : "noOfSendInLab"},
+				    {"data" : "noOfStartLab"},
+				    {"data" : "labStartDate"},    
+				    {"data" : "labStopDate"} 
+				],  	      
 		columnDefs :  [	   	
-			{ targets : [ 0,1,2,3,4,5,6,7,8,9],                
+			{ targets : [ 0,1,2,3,4,5,6,7,8 ],                
 			  	  className : 'data-custom-padding0505',    
 //		  	 	  type: 'string'      
 				} ,            
 		],  order: [[ 0, "desc" ]]
- 	 });       
-     
-//     waitTestTable = $('#waitTestTable').DataTable({   
-//     	scrollY:        '175px',       
-//     	scrollX: true,      
-//     	paging: false,       
-// 		lengthChange: false,         	  
-//  	   	columns :  
-//  		[           
-// 		    {"data" : "no"} ,         //0
-// 		    {"data" : "dateInTest"},  
-// 		    {"data" : "dateOutTest"},  
-// 		    {"data" : "status"},  
-// 		    {"data" : "remark"},  
-// 		],  	          
-// 		columnDefs :  [	   	
-// 			{ targets : [ 0,1,2,3,4 ],                
-// 			  	  className : 'data-custom-padding0505',     
-// 				} ,           
-// 		],     order: [[ 0, "desc" ]]        
-//  	 }); 
-     
+ 	 });        
     cfmTable = $('#cfmTable').DataTable({   
     	scrollY:        '300px',    
     	scrollX: true,      
@@ -872,9 +817,7 @@ $(document) .ready( function() {
 // 		  	 	  type: 'string'      
 				} ,           
 		],     order: [[ 0, "desc" ]]        
- 	 });  
-    
-    
+ 	 });   
 	  saleTable = $('#saleTable').DataTable({   
     	scrollY:        '175px',    
     	scrollX: true,      
@@ -895,28 +838,7 @@ $(document) .ready( function() {
 // 		  	 	  type: 'string'      
 				} ,           
 		],     order: [[ 0, "desc" ]]        
- 	 });   
-	  saleInputTable = $('#saleInputTable').DataTable({   
-	    	scrollY:        '175px',    
-	    	scrollX: true,      
-	    	paging: false,      
-//	 		orderClasses : false, 
-			lengthChange: false,         	  
-	 	   	columns :  
-	 		[           
-			    {"data" : "billDate"} ,         //0
-			    {"data" : "billQtyPerSale"},  
-			    {"data" : "saleOrder"},  
-			    {"data" : "saleLine"},  
-			    {"data" : "billQtyPerStock"}, 
-			],  	          
-			columnDefs :  [	   	
-				{ targets : [ 0,1,2,3,4 ],                
-				  	  className : 'data-custom-padding0505',    
-//	 		  	 	  type: 'string'      
-					} ,           
-			],     order: [[ 0, "desc" ]]        
-	 	 });      
+ 	 });    
 	    submitDateTable = $('#submitDateTable').DataTable({   
 	    	scrollY:        '175px',    
 	    	scrollX: true,      
@@ -966,26 +888,26 @@ $(document) .ready( function() {
 					} ,           
 			],     order: [[ 0, "desc" ]]        
 	 	 });    
-	    receipeTable = $('#receipeTable').DataTable({   
-	    	scrollY:        '175px',         
-	    	scrollX: true,      
-	    	paging: false,      
-//	 		orderClasses : false,         
-			lengthChange: false,         	  
-	 	   	columns :   
-	 		[               
-			    {"data" : "no"} ,         //0
-			    {"data" : "lotNo"},     
-			    {"data" : "postingDate"},  
-			    {"data" : "receipe"},   
-			],  	          
-			columnDefs :  [	   	
-				{ targets : [ 0,1,2,3 ],                
-				  	  className : 'data-custom-padding0505',    
-//	 		  	 	  type: 'string'      
-					} ,               
-			],     order: [[ 0, "desc" ]]        
-	 	 });      
+// 	    receipeTable = $('#receipeTable').DataTable({   
+// 	    	scrollY:        '175px',         
+// 	    	scrollX: true,      
+// 	    	paging: false,      
+// //	 		orderClasses : false,         
+// 			lengthChange: false,         	  
+// 	 	   	columns :   
+// 	 		[               
+// 			    {"data" : "no"} ,         //0
+// 			    {"data" : "lotNo"},     
+// 			    {"data" : "postingDate"},  
+// 			    {"data" : "receipe"},   
+// 			],  	          
+// 			columnDefs :  [	   	
+// 				{ targets : [ 0,1,2,3 ],                
+// 				  	  className : 'data-custom-padding0505',    
+// //	 		  	 	  type: 'string'      
+// 					} ,               
+// 			],     order: [[ 0, "desc" ]]        
+// 	 	 });      
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
 		let searchVal = this.value;      
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
@@ -1015,13 +937,7 @@ $(document) .ready( function() {
 				else{ regrex = '^'+searchVal+'$';  } 
 			}    
 			else{regrex = ''+searchVal+''; }
-			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
-// 			regrex = '^'+searchVal+'$';
-// 			MainTable   
-// 			.column(indexAfterReCol)
-// 			.search('^([/][0-9]{1}|[/][0-9]{2}|[0-9]{1}[/][0-9]{1}|[0-9]{1}[/][0-9]{2}|[0-9]{2}[/][0-9]{2}|[0-9]{2}[/][0-9]{2})$', true, false ).draw();
-// 	  		.search( regrex, true, false ).draw();  
-// 			console.log(search('^([/][0-9]{1}|[/][0-9]{2}|[0-9]{1}[/][0-9]{1}|[0-9]{1}[/][0-9]{2}|[0-9]{2}[/][0-9]{2}|[0-9]{2}[/][0-9]{2})$', true, false ))
+			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
 		}    
 		else if(indexAfterReCol == 13){
 			if(size == 1){ regrex = '^'+searchVal+'';  }
@@ -1033,48 +949,32 @@ $(document) .ready( function() {
 			else{regrex = ''+searchVal+''; }
 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
 		}
-		else{
-// 			MainTable.column($(this).data('index')).search(searchVal).draw(); 
-// 			MainTable.column($(this).data('index')).search( '^'+searchVal+'$', true, false ).draw(); 
+		else{ 
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}
 		
-	});      
-// 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable; 
-	$("#MainTable_filter").hide();  
-// 	$("#presetTable_filter").hide();  
+	});       
+	$("#MainTable_filter").hide();   
 	$("#dyeingTable_filter").hide();  
 	$("#fnTable_filter").hide();  
 	$("#inspectTable_filter").hide();  
-	$("#packingTable_filter").hide();  
-	$("#sendTestQCTable_filter").hide(); 
+	$("#packingTable_filter").hide();    
 	$("#poTable_filter").hide();	
 	
-	$("#workInLabTable_filter").hide();  
-// 	$("#waitTestTable_filter").hide();  
+	$("#workInLabTable_filter").hide();   
 	$("#cfmTable_filter").hide();  
-	$("#saleTable_filter").hide();  
-	$("#saleInputTable_filter").hide();  
+	$("#saleTable_filter").hide();   
 	$("#submitDateTable_filter").hide();  
-	$("#ncTable_filter").hide();  
-	$("#receipeTable_filter").hide();  
-	
-	$("#workInLabTable_info").hide();
-// 	$("#waitTestTable_info").hide();
+	$("#ncTable_filter").hide();      
+	$("#workInLabTable_info").hide(); 
 	$("#cfmTable_info").hide();
-	$("#saleTable_info").hide();
-	$("#saleInputTable_info").hide();
+	$("#saleTable_info").hide(); 
 	$("#submitDateTable_info").hide();
-	$("#ncTable_info").hide();
-	$("#receipeTable_info").hide(); 
-	   
-// 	$("#MainTable_info").hide();      
-// 	$("#presetTable_info").hide();   
+	$("#ncTable_info").hide();  
 	$("#dyeingTable_info").hide();   
 	$("#fnTable_info").hide();   
 	$("#inspectTable_info").hide();   
-	$("#packingTable_info").hide();   
-	$("#sendTestQCTable_info").hide();      
+	$("#packingTable_info").hide();          
 	$("#poTable_info").hide();  
 	
 	$('#multi_userStatus').selectpicker();     
@@ -1090,45 +990,11 @@ $(document) .ready( function() {
 	divisionList = JSON.parse('${DivisionList}');        
 	var saleNumberList = JSON.parse('${SaleNumberList}');
 	configCusList = JSON.parse('${ConfigCusList}');      
-	handlerIsCustomer();
-// 	handlerByConfigCus(configCusList);
-// 	function handlerByConfigCus(list){       
-// 		if (list.length > 0){ 
-// 			isCustomer = 1;    
-// 			let bean = list[0];
-// 			let IsPCMSDetailPage = bean.IsPCMSDetailPage;
-// 			let IsPCMSSumPage = bean.IsPCMSSumPage;
-			
-// 			let IsProdPathBtn = bean.IsProdPathBtn;
-// 			let IsQCMSPathBtn = bean.IsQCMSPathBtn;
-// 			let IsSFCPathBtn = bean.IsSFCPathBtn;
-// 			let IsLBMSPathBtn = bean.IsLBMSPathBtn;
-// 			let IsInspectPathBtn = bean.IsInspectPathBtn; 
-			
-
-// 			let PCMSSummaryPage = document.getElementById("PCMSSummaryPage") ;  
-// 			let PCMSDetailPage = document.getElementById("PCMSDetailPage") ;  
-// 			let btn_prdDetail = document.getElementById("btn_prdDetail") ;   
-// 			let btn_lbms = document.getElementById("btn_lbms")  ;  
-// 			let btn_qcms = document.getElementById("btn_qcms") ;  
-// 			let btn_inspect = document.getElementById("btn_inspect") ;  
-// 			let btn_sfc = document.getElementById("btn_sfc") ;  
-// 			if(!IsPCMSSumPage){ PCMSSummaryPage.remove(); }
-// 			if(!IsPCMSDetailPage){ PCMSDetailPage.remove(); }
-// 			if(!IsProdPathBtn){ btn_prdDetail.remove(); }
-// 			if(!IsLBMSPathBtn){ btn_lbms.remove(); }
-// 			if(!IsQCMSPathBtn){ btn_qcms.remove(); }
-// 			if(!IsSFCPathBtn){ btn_sfc.remove(); }
-// 			if(!IsPCMSDetailPage){ btn_prdDetail.remove(); }
-// 			if(!IsInspectPathBtn){ btn_inspect.remove(); } 
-// 		}
-// 	}      
+	handlerIsCustomer(); 
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
   	addDivisionOption(divisionList );       
-	addColOption(columnsHeader )  
-// 	console.log(columnsHeader )
-// 	console.log( colList)
+	addColOption(columnsHeader )   
 	settingColumnOption(columnsHeader, colList); 
 	          
 	addCusNameOption(cusNameList );      
@@ -1148,40 +1014,28 @@ $(document) .ready( function() {
     	dyeingTable.columns.adjust(); 
     	fnTable.columns.adjust(); 
     	inspectTable.columns.adjust(); 
-    	packingTable.columns.adjust(); 
-    	sendTestQCTable.columns.adjust(); 
-    	
-    	workInLabTable.columns.adjust(); 
-//     	waitTestTable.columns.adjust(); 
+    	packingTable.columns.adjust();  
+    	workInLabTable.columns.adjust();  
     	cfmTable.columns.adjust(); 
-    	saleTable.columns.adjust(); 
-    	saleInputTable.columns.adjust(); 
+    	saleTable.columns.adjust();  
     	submitDateTable.columns.adjust(); 
-    	ncTable.columns.adjust(); 
-    	receipeTable.columns.adjust(); 
+    	ncTable.columns.adjust();  
     });          
 	$('.modal').on('shown.bs.modal', function() {    
 		poTable.columns.adjust();         
 		dyeingTable.columns.adjust();   	
 		fnTable.columns.adjust(); 
 		inspectTable.columns.adjust(); 
-		packingTable.columns.adjust(); 
-		sendTestQCTable.columns.adjust(); 
-    	workInLabTable.columns.adjust(); 
-//     	waitTestTable.columns.adjust(); 
-    	cfmTable.columns.adjust(); 
-    	saleTable.columns.adjust(); 
-    	saleInputTable.columns.adjust(); 
+		packingTable.columns.adjust();  
+    	workInLabTable.columns.adjust();  
+    	cfmTable.columns.adjust(); 	
+    	saleTable.columns.adjust();  
     	submitDateTable.columns.adjust(); 
-    	ncTable.columns.adjust(); 
-    	receipeTable.columns.adjust(); 
+    	ncTable.columns.adjust();  
 	})  
 	preLoaderHandler( preloader)   
 });   
-function searchByDetail(){ 
-// 	var customer = document.getElementById("input_customer").value .trim();
-// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
-	 
+function searchByDetail(){  
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();
@@ -1195,18 +1049,18 @@ function searchByDetail(){
 	var PO = document.getElementById("input_PO").value .trim();    
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
-	var customerShort = $('#multi_cusShortName').val();
-	var division = $('#multi_division').val(); 
-// 	console.log(userStatus)    
-	var deliStatus = document.getElementById("SL_delivStatus").value .trim();      
+	var customerShort = $('#multi_cusShortName').val(); 
+	var deliStatus = document.getElementById("SL_delivStatus").value .trim();     
+	var division = $('#multi_division').val();  
 	var dmCheck = document.getElementById("check_DM").checked;         
 	var exCheck = document.getElementById("check_EX").checked;  
 	var hwCheck = document.getElementById("check_HW").checked;  
-	var dist = "";     
+	var distChannel = "";  
+	 if( dmCheck ){ distChannel = "DM";}
+	 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+	 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = "EX";}     
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = "HW";}      
+
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
 		swal({
@@ -1218,10 +1072,10 @@ function searchByDetail(){
    		})
 	} 
 
-	else if (dist == ''){
+	else if (distChannel == ''){
 		swal({
    		    title: 'Warning',
-   		    text: 'Need to choose  Dist. from check box.',
+   		    text: 'Need to choose distribute channel from check box.',
    		    icon: 'warning',
    		    timer: 1000,
    		    buttons: false,
@@ -1236,10 +1090,7 @@ function searchByDetail(){
 		searchByDetailToServer(arrayTmp); 
 	}
 } 
-function createJsonData(){ 
-// 	var customer = document.getElementById("input_customer").value .trim();  
-// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
-	 
+function createJsonData(){  
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();
@@ -1257,8 +1108,7 @@ function createJsonData(){
 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
 	var dmCheck = document.getElementById("check_DM").checked;  
 	var exCheck = document.getElementById("check_EX").checked;  
-	var hwCheck = document.getElementById("check_HW").checked;     
-	var dist = "";    
+	var hwCheck = document.getElementById("check_HW").checked;      
 	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 
@@ -1267,9 +1117,10 @@ function createJsonData(){
 // 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
 // 	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
 	 }     
-	 if( dmCheck ){ dist = "DM";}
-	 if( exCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "EX";}       
-	 if( hwCheck ){ if(dist != "") {dist = dist + "|" } dist = dist + "HW";}
+		var distChannel = "";  
+		 if( dmCheck ){ distChannel = "DM";}
+		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	var json = '{'+    
 	    '"saleOrder":'+JSON.stringify(saleOrder)+      
 	   ',"articleFG":'+JSON.stringify(article)+  
@@ -1288,9 +1139,9 @@ function createJsonData(){
 	   ',"divisionList":'+JSON.stringify(division)+   
 	   ',"deliveryStatus":'+JSON.stringify(deliStatus)+            
 	   ',"saleStatus":'+JSON.stringify(saleStatus)+  
-	   ',"distChannel":'+JSON.stringify(dist) + 
+	   ',"distChannel":'+JSON.stringify(distChannel) + 
 	   ',"dueDate":'+JSON.stringify(dueDate) + 
-	   '} ';            
+	   '} ';             
 	   return json; 
 }
 function exportCSV(data){ 
@@ -1424,10 +1275,14 @@ function getPrdDetailByRow(arrayTmp) {
 		type: "POST",
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
+// 	       data :{   
+// //	     	   data:encodeURI(value)
+// 	    	   data:JSON.stringify( arrayTmp 	)
+// 	       },  
 		url: ctx+"/Main/getPrdDetailByRow", 
 		success: function(data) {       
 			setModalDetail(data);   
-		},   
+		},     
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
 		},
@@ -1438,10 +1293,8 @@ function getPrdDetailByRow(arrayTmp) {
 function clearInput(){
 	document.getElementById("input_saleOrder").value = '';  
 	document.getElementById("input_article").value   = '';  
-	document.getElementById("input_prdOrder").value  = '';     
-// 	document.getElementById("input_saleOrderDate").value = '';  
-	document.getElementById("input_designNo").value  = '';  
-// 	document.getElementById("input_prdOrderDate").value  = '';  
+	document.getElementById("input_prdOrder").value  = '';      
+	document.getElementById("input_designNo").value  = '';   
 	document.getElementById("input_material").value  = '';         
 	document.getElementById("input_PO").value     = '';     
 	document.getElementById("input_labNo").value     = '';  
@@ -1459,20 +1312,20 @@ function clearInput(){
 	$('#multi_cusShortName').selectpicker('refresh'); 
 	$('#multi_division').selectpicker('refresh');       
 }
-function searchByDetailToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
+function searchByDetailToServer(arrayTmp) {    
 	$.ajax({
 		type: "POST",  
 		contentType: "application/json",   
-		data: JSON.stringify(arrayTmp),           
+		data: JSON.stringify(arrayTmp),      
+// 	       data :{   
+// //	     	   data:encodeURI(value)
+// 	    	   data:JSON.stringify( arrayTmp 	)
+// 	       },       
 		url: ctx+"/Main/searchByDetail", 
-		success: function(data) {  
-// 			getVisibleColumnsTable();              
-// 			console.log('START  :'+'  '+new Date())  
+		success: function(data) {   
 			MainTable.clear();        
 			MainTable.rows.add(data);           
-			MainTable.draw();     
-// 			console.log('END    :'+'  '+new Date(	))  
+			MainTable.draw();      
 		},   
 		error: function(e) {
 			swal("Fail", "Please contact to IT", "error");
@@ -1483,8 +1336,9 @@ function searchByDetailToServer(arrayTmp) {
 }      
 function setModalDetail(data){
     
-   	var innnerText = data[0];        
-   	poTable.clear();    	          
+   	var innnerText = data[0];             
+   	poTable.clear();    
+//    	console.log(innnerText)
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
@@ -1495,7 +1349,7 @@ function setModalDetail(data){
 	poTable.draw();       	   
 	if(innnerText.presetDetailList.length == 0){       }     
 	else{ 
-		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].postingDate;    
+		document.getElementById("input_presetDate").value = innnerText.presetDetailList[0].workDate;    
 		document.getElementById("input_presetWorkCenter").value = innnerText.presetDetailList[0].workCenter; 
 	}   
 	
@@ -1503,13 +1357,8 @@ function setModalDetail(data){
 	if(innnerText.dyeingDetailList.length == 0){       }     
 	else{ dyeingTable.rows.add(innnerText.dyeingDetailList); }  
 	dyeingTable.draw();                 
-	
-	sendTestQCTable.clear();    	   
-	if(innnerText.sendTestQCDetailList.length == 0){       }     
-	else{ sendTestQCTable.rows.add(innnerText.sendTestQCDetailList); }  
-	sendTestQCTable.draw();   
-	
-	fnTable.clear();    	   
+	 
+	fnTable.clear();     
 	if(innnerText.finishingDetailList.length == 0){       }     
 	else{ fnTable.rows.add(innnerText.finishingDetailList); }  
 	fnTable.draw();   
@@ -1528,13 +1377,7 @@ function setModalDetail(data){
 	if(innnerText.workInLabDetailList.length == 0){       }     
 	else{ workInLabTable.rows.add(innnerText.workInLabDetailList); }  
 	workInLabTable.draw();  
-	
-// 	waitTestTable.clear();    	   
-// 	if(innnerText.waitTestDetailList.length == 0){       }     
-// 	else{ waitTestTable.rows.add(innnerText.waitTestDetailList); }  
-// 	waitTestTable.draw();  
-
-// 	console.log(innnerText.cfmDetailList)     
+	   
 	cfmTable.clear();    	   
 	if(innnerText.cfmDetailList.length == 0){       }     
 	else{ cfmTable.rows.add(innnerText.cfmDetailList); }  
@@ -1555,12 +1398,6 @@ function setModalDetail(data){
 	if(innnerText.ncDetailList.length == 0){       }     
 	else{ ncTable.rows.add(innnerText.ncDetailList); }  
 	ncTable.draw();  
-	
-	receipeTable.clear();    	   
-	if(innnerText.receipeDetailList.length == 0){       }     
-	else{ receipeTable.rows.add(innnerText.receipeDetailList); }  
-	receipeTable.draw();  
-	  	
 	 
 	document.getElementById("input_greigeDesign").value = innnerText.greigeDesign  ;    
 	document.getElementById("input_greigeArticle").value = innnerText.greigeArticle;    
@@ -1624,11 +1461,11 @@ function goToLBMS(tblData,pUserId,data){
 // 					tab.document.getElementById('input_prdMS0').value = "ddddddddd"  ;    
 // 					}, 2000);   
 				setTimeout(function(){     
-// 					tab.document.getElementById('byPrdTable_filter').value = prdOrder  ;
-// 					tab.$("#byPrdTable_filter input").value(prdOrder);     
-					tab.$('#byPrdTable').DataTable().search(prdOrder).draw();
+// 					tab.document.getElementById('prodOrderTable_filter').value = prdOrder  ;
+// 					tab.$("#prodOrderTable_filter input").value(prdOrder);     
+					tab.$('#prodOrderTable').DataTable().search(prdOrder).draw();
 					},500);                      
-// 				console.log( tab.$('#byPrdTable').DataTable()  )  
+// 				console.log( tab.$('#prodOrderTable').DataTable()  )  
    	    	};     
 	   		tab.addEventListener('load', (event) => { 
 
@@ -1669,10 +1506,8 @@ function goToSFC(tblData,pUserId,data){
 	});       
 } 
 function goToInspect(tblData,pUserId,data){  
-	var prdOrder = tblData[0].productionOrder
-// 	console.log(tblData[0].ProductionOrder,data.Encrypted)
-	$.ajax({
-// 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
+	var prdOrder = tblData[0].productionOrder 
+	$.ajax({ 
 	    url: urlInspect,
 	    type : 'GET',      
 // 	    async : false,
@@ -1681,8 +1516,7 @@ function goToInspect(tblData,pUserId,data){
   	        "isCustomer": isCustomer      	
 // 	    	"comeFrom": "PCMS"
 	    },    
-	    success : function(data) { 
-// 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
+	    success : function(data) {  
 	    	var url = urlInspectObj; 
 	    	var tab = window.open(url );
 	    	tab.onload = function() {    
@@ -1699,23 +1533,19 @@ function goToInspect(tblData,pUserId,data){
 	});      
 // 	test3T(); 
 }  
-function goToQCMS(tblData,pUserId,data){ 
-// 	let obj = createEncryptObj(pUserId);    
+function goToQCMS(tblData,pUserId,data){  
 		var article = tblData[0].articleFG
 		var lotNo = tblData[0].lotNo
 		var color = tblData[0].color 
-		$.ajax({
-//	 	    url: "http://localhost:8080/InspectSystem/search/home.html",   
+		$.ajax({ 
 		    url: urlQCMSObj,
 		    type : 'GET',      
 //	 	    async : false,
 		    data : {    
 		    	"comeFrom": data.encrypted  ,   
-	  	        "isCustomer": isCustomer
-// 		    		    	"comeFrom": "PCMS"
+	  	        "isCustomer": isCustomer 
 		    },    
-		    success : function(data) { 
-//	 	    	var url = "http://localhost:8080/InspectSystem/search/home.html";  
+		    success : function(data) {   
 		    	var url = urlQCMSObj; 
 		    	var tab = window.open(url );
 		    	tab.onload = function() {    
@@ -1842,8 +1672,7 @@ function setColVisibleTable(mainCol,colVisible) {
 	MainTable.columns.adjust().draw( false ); // adjust column sizing and redraw
 
 }    
-function saveColSettingToServer(arrayTmp) {   
-// 	console.log(arrayTmp)
+function saveColSettingToServer(arrayTmp) {    
 	$.ajax({     
 		type: "POST",  
 		contentType: "application/json",  
@@ -1991,14 +1820,10 @@ function addColOption(colName ){
 	for (i = sel.length - 1; i >= 0; i--) {
 		sel.remove(i);
 	}             
-	let counter = 0; 
-	
-
-// 	console.log(columnsHeader)
+	let counter = 0;  
 	var size = colName.length;
 	for (var i = 0; i < size; i++) {		   
-		 var resultData = colName[i]; 	
-// 			console.log(resultData.data)   
+		 var resultData = colName[i]; 	  
 		 if(resultData.data != 'cfmDetailAll' && resultData.data != "rollNoRemarkAll" ){  
 			counter = counter + 1;
 			 var opt = document.createElement('option');
@@ -2009,8 +1834,7 @@ function addColOption(colName ){
 		 }
 		 else if(resultData.data == 'cfmDetailAll' || resultData.data == "rollNoRemarkAll" ){ 
 		 	if(isCustomer == 1 ){   }
-		 	else{   
-// 		 		console.log('hi')
+		 	else{    
 				counter = counter + 1;
 				var opt = document.createElement('option');
 				opt.appendChild(document.createTextNode(i));
@@ -2019,13 +1843,7 @@ function addColOption(colName ){
 				sel.appendChild(opt);     
 		 	}
 		 }
-	}         
-// 	$('#multi_colVis option').attr("selected","selected");
-// 	$('#multi_colVis').selectpicker('refresh');
-// 	 var selectobject = sel.getElementsByTagName("option");
-// 	for (var i = 0; i < 9; i++) {		
-// 		selectobject[i].disabled = true;      
-// 	}        
+	}          
 	$("#multi_colVis").selectpicker("refresh");
 } 
 function saveDefault( ){  
@@ -2130,6 +1948,9 @@ function setSearchDefault(data){
 	else if(saleStatus == 'O'){ 
 		document.getElementById("rad_inProc").checked = true;
 	}
+	else if(saleStatus == 'X'){ 
+		document.getElementById("rad_canceled").checked = true;
+	}
 	else{//saleStatus == 'C'
 		document.getElementById("rad_closed").checked = true;
 	}   
@@ -2160,6 +1981,29 @@ function setSearchDefault(data){
 	$('#multi_userStatus').selectpicker('refresh');      
 	$('#multi_division').selectpicker('refresh');  
 }       
+function getEncrypted(webApp,tblData,userId,arrayTmp){
+	$.ajax({
+	   type: "POST",     
+		contentType: "application/json",         
+		url: ctx+"/Main/getEncrypted/"+userId,        
+	    data : JSON.stringify(arrayTmp),             
+	    success : function(data) {   
+	    	if(webApp == 'LBMS'){
+	    		goToLBMS(tblData,userId,data);
+	    	}
+	    	else if(webApp == 'SFC'){
+	    		goToSFC(tblData,userId,data);
+	    	}
+	    	else if(webApp == 'INSPECT'){
+	    		goToInspect(tblData,userId,data);
+	    	}
+	    	else if(webApp == 'QCMS'){
+	    		goToQCMS(tblData,userId,data);
+	    	}
+	    	
+	    }   	
+	});    
+}
 function handlerIsCustomer(){
 
 	if(isCustomer == 1 ){ 
@@ -2171,17 +2015,8 @@ function handlerIsCustomer(){
 					 colList.splice(i, 1);
 				 }
 			}
-		}    
-// 		for (var i = columnsHeader.length - 1; i > -1; i--) { 
-// 			 var resultData = columnsHeader[i].data; 	   	
-// 			 if(resultData == 'cfmDetailAll' || resultData == "rollNoRemarkAll" ){ 
-// 				 columnsHeader.splice(i, 1);
-// 			 }
-// 		} 
+		}     
 	}
-}
-// function preLoaderHandler (){         
-// 	   preloader.style.display = 'none';  
-// 	} 
+} 
 </script>
 </html>

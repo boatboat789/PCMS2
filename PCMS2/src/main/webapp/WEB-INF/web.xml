@@ -82,7 +82,7 @@
 	
     <filter>
         <filter-name>FilterLogin</filter-name>
-        <filter-class>filter.FilterLogin</filter-class>
+        <filter-class>th.co.wacoal.atech.pcms2.filter.FilterLogin</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>FilterLogin</filter-name>
@@ -90,12 +90,8 @@
     </filter-mapping>  
      <session-config>
         <session-timeout>300</session-timeout>
-    </session-config>  
-<!-- 	 <error-page> -->
-<!-- 	   <exception-type>404</exception-type>  -->
-<!-- 	   <location>/404.jsp</location> -->
-<!-- 	</error-page> -->
+    </session-config>   
  <error-page>    
-  <location>/error</location>
+  <location>/handleError</location>
  </error-page>
 </web-app>
