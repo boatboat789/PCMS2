@@ -4,12 +4,8 @@
 	<div class="row" style="margin: 10px;" >          
 <!-- 	LEFT -->        
 		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " >
-			<div class="row"  >    
-<<<<<<< HEAD
-				<div class="col-12 	col-sm-12 col-md-8 col-lg-8 col-xl-8 workInLabWrapper " style="display: inline-flex;
-=======
-				<div class="col-12 	col-sm-12 col-md-12 col-lg-9 col-xl-9 workInLabWrapper " style="display: inline-flex;
->>>>>>> 365Import
+			<div class="row"  >     
+				<div class="col-12 	col-sm-12 col-md-12 col-lg-9 col-xl-9 workInLabWrapper " style="display: inline-flex; 
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="workInLabTable">งานเข้า Lab</label>            -->
 			  	 	<div class="table-responsive ">      
@@ -67,13 +63,8 @@
 <!-- 					        </tbody>  -->
 <!-- 					    </table>   -->
 <!-- 			    	</div>     -->
-<!-- 				</div>         -->
-<<<<<<< HEAD
-				<div class="col-12 	col-sm-12 col-md-12 col-lg-12 col-xl-12 cfmWrapper " style="display: inline-flex;
-				 			 text-align: right;">  
-=======
-
-				 <div class="col-12 	col-sm-12 col-md-12 col-lg-3 col-xl-3 submitDateWrapper " style="display: inline-flex;
+<!-- 				</div>         -->  
+				 <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 submitDateWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="submitDateTable">วันนัดส่ง CFM</label>            -->
 			  	 	<div class="table-responsive ">
@@ -92,8 +83,7 @@
 				</div> 
 				<div class="col-12 	col-sm-12 col-md-12 col-lg-12 col-xl-12 cfmWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
-<!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -->
->>>>>>> 365Import
+<!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -- 
 			  	 	<div class="table-responsive ">
 						<table id="cfmTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>
@@ -122,12 +112,8 @@
 					        <tbody> 
 					        </tbody> 
 					    </table>      
-			    	</div>     
-<<<<<<< HEAD
+			    	</div>      
 				</div>         
-=======
-				</div>           
->>>>>>> 365Import
 			</div> 
 		</div> 
 		
