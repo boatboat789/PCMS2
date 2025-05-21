@@ -4,8 +4,8 @@
 	<div class="row" style="margin: 10px;" >          
 <!-- 	LEFT -->        
 		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " >
-			<div class="row"  >     
-				<div class="col-12 	col-sm-12 col-md-12 col-lg-9 col-xl-9 workInLabWrapper " style="display: inline-flex; 
+			<div class="row"  >    
+				<div class="col-12 	col-sm-12 col-md-12 col-lg-9 col-xl-9 workInLabWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="workInLabTable">งานเข้า Lab</label>            -->
 			  	 	<div class="table-responsive ">      
@@ -27,25 +27,7 @@
 					        </tbody> 
 					    </table>  
 			    	</div>  
-				</div>               
-				
-				 <div class="col-12 	col-sm-12 col-md-12 col-lg-4 col-xl-4 submitDateWrapper " style="display: inline-flex;
-				 			 text-align: right;"> 
-<!-- 				 	<label class="my-1 mr-2 " for="submitDateTable">วันนัดส่ง CFM</label>            -->
-			  	 	<div class="table-responsive ">
-						<table id="submitDateTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
-					        <thead>
-					            <tr> 
-					                <td style="vertical-align: middle;">ครั้งที่</td>
-					                <td style="vertical-align: middle;">วันที่</td>
-					                <td style="vertical-align: middle;">หมายเหตุ</td> 
-					        	</tr> 
-					        </thead>     
-					        <tbody> 
-					        </tbody> 
-					    </table>  
-			    	</div>  
-				</div>   
+				</div>        
 <!-- 			  	 <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 waitTestWrapper " style="display: inline-flex; -->
 <!-- 				 			 text-align: right;">  --> 
 <!-- 			  	 	<div class="table-responsive "> -->
@@ -63,8 +45,9 @@
 <!-- 					        </tbody>  -->
 <!-- 					    </table>   -->
 <!-- 			    	</div>     -->
-<!-- 				</div>         -->  
-				 <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 submitDateWrapper " style="display: inline-flex;
+<!-- 				</div>         -->
+
+				 <div class="col-12 	col-sm-12 col-md-12 col-lg-3 col-xl-3 submitDateWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
 <!-- 				 	<label class="my-1 mr-2 " for="submitDateTable">วันนัดส่ง CFM</label>            -->
 			  	 	<div class="table-responsive ">
@@ -83,7 +66,7 @@
 				</div> 
 				<div class="col-12 	col-sm-12 col-md-12 col-lg-12 col-xl-12 cfmWrapper " style="display: inline-flex;
 				 			 text-align: right;"> 
-<!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -- 
+<!-- 				 	<label class="my-1 mr-2 " for="cfmTable">CFM</label>            -->
 			  	 	<div class="table-responsive ">
 						<table id="cfmTable" class="table table-bordered table-striped text-center display compact" style="width:100%">
 					        <thead>
@@ -112,8 +95,8 @@
 					        <tbody> 
 					        </tbody> 
 					    </table>      
-			    	</div>      
-				</div>         
+			    	</div>     
+				</div>           
 			</div> 
 		</div> 
 		
