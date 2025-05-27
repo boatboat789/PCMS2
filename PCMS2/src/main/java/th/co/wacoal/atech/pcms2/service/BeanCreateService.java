@@ -1,4 +1,4 @@
-package th.co.wacoal.atech.pcms2.dao.implement;
+package th.co.wacoal.atech.pcms2.service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -7,9 +7,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import th.co.wacoal.atech.pcms2.dao.BeanCreateModelDao;
 import th.co.wacoal.atech.pcms2.entities.CFMDetail;
 import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
@@ -56,8 +55,8 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
-@Repository // Spring annotation to mark this as a DAO component
-public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
+@Service
+public class BeanCreateService   {
 	public SimpleDateFormat sdfDateFullWithSlash = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdfDateFullWithMinus = new SimpleDateFormat("dd-MM-yyyy");
 	public SimpleDateFormat sdfDateTime1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -67,7 +66,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 	DecimalFormat df = new DecimalFormat("0.00");
 	DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
 
-	@Override
+	
 	public PCMSTableDetail _genPCMSTableDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -402,7 +401,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return dateStr;
 	}
 
-	@Override
+	
 	public PCMSTableDetail _genSearchTableDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -490,7 +489,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CustomerName, No, UserId, Division, PurchaseOrder);
 	}
 
-	@Override
+	
 	public PCMSAllDetail _genPCMSAllDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -680,7 +679,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				GreigeArticle, GreigeDesign, ColorCustomer);
 	}
 
-	@Override
+	
 	public PODetail _genPODetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -739,7 +738,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				RollLength, PODefault, POLineDefault, POPostingDateDefault);
 	}
 
-	@Override
+	
 	public PresetDetail _genPresetDetail(Map<String, Object> map)
 	{
 		String PostingDate = "";
@@ -754,7 +753,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new PresetDetail(PostingDate, WorkCenter);
 	}
 
-	@Override
+	
 	public DyeingDetail _genDyeingDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -827,7 +826,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				ValDeltaE, L, Da, Db, ST, DyeRemark, ColorCheckStatus, ColorCheckRemark);
 	}
 
-	@Override
+	
 	public SendTestQCDetail _genSendTestQCDetail(Map<String, Object> map)
 	{
 		String SendDate = "";
@@ -859,7 +858,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SendTestQCDetail(SendDate, RollNo, Status, CheckColorDate, DeltaE, CheckColorDate, Color);
 	}
 
-	@Override
+	
 	public InspectDetail _genInspectDetail(Map<String, Object> map)
 	{
 		String PostingDate = "";
@@ -890,7 +889,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new InspectDetail(PostingDate, QuantityGreige, Operation, QuantityFG, Remark);
 	}
 
-	@Override
+	
 	public FinishingDetail _genFinishingDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -975,7 +974,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				ColorCheckRemark);
 	}
 
-	@Override
+	
 	public PackingDetail _genPackingDetail(Map<String, Object> map)
 	{
 		String PostingDate = "";
@@ -1016,7 +1015,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new PackingDetail(PostingDate, Quantity, RollNo, Status, QuantityKG, Grade, QuantityYD);
 	}
 
-	@Override
+	
 	public WorkInLabDetail _genWorkInLabDetail(Map<String, Object> map)
 	{
 		String No = "";
@@ -1069,7 +1068,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new WorkInLabDetail(No, SendDate, NOK, NCDate, LotNo, ReceiveDate, Remark, Da, Db, L, ST);
 	}
 
-	@Override
+	
 	public WaitTestDetail _genWaitTestDetail(Map<String, Object> map)
 	{
 		String No = "";
@@ -1097,7 +1096,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new WaitTestDetail(No, DateInTest, DateOutTest, Status, Remark);
 	}
 
-	@Override
+	
 	public CFMDetail _genCFMDetail(Map<String, Object> map)
 	{
 		int Id = 0;
@@ -1197,7 +1196,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				SaleLine, Color, CFMAnswerDate, CFMStatus, CFMRemark, NextLot, SOChange, SOChangeQty, SOChangeUnit, DE);
 	}
 
-	@Override
+	
 	public SaleDetail _genSaleDetail(Map<String, Object> map)
 	{
 		String BillDate = "";
@@ -1228,7 +1227,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SaleDetail(BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock);
 	}
 
-	@Override
+	
 	public SaleInputDetail _genSaleInputDetail(Map<String, Object> map)
 	{
 		String BillDate = "";
@@ -1259,7 +1258,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SaleInputDetail(BillDate, BillQtyPerSale, SaleOrder, SaleLine, BillQtyPerStock);
 	}
 
-	@Override
+	
 	public SubmitDateDetail _genSubmitDateDetail(Map<String, Object> map)
 	{
 		String No = "";
@@ -1278,7 +1277,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SubmitDateDetail(No, SubmitDate, Remark);
 	}
 
-	@Override
+	
 	public NCDetail _genNCDetail(Map<String, Object> map)
 	{
 		String productionOrder = "";
@@ -1321,7 +1320,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new NCDetail(productionOrder, No, NCDate, NcLength, NcReceiverBase, NcCarNumber, NcProblem, NcSolution);
 	}
 
-	@Override
+	
 	public ReceipeDetail _genReceipeDetail(Map<String, Object> map)
 	{
 		int Id = 0;
@@ -1366,7 +1365,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new ReceipeDetail(Id, No, LotNo, PostingDate, Receipe, ChangeDate, ChangeBy, CreateDate, CreateBy);
 	}
 
-	@Override
+	
 	public PCMSSecondTableDetail _genPCMSSecondTableDetail(Map<String, Object> map)
 	{
 		String Division = "";
@@ -1758,7 +1757,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return bean;
 	}
 
-	@Override
+	
 	public InputDateDetail _genInputDateDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -1803,7 +1802,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				LotNo);
 	}
 
-	@Override
+	
 	public ColumnHiddenDetail _genColumnHiddenDetail(Map<String, Object> map)
 	{
 		String UserId = "";
@@ -1827,7 +1826,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new ColumnHiddenDetail(UserId, ColVisibleDetail, ColVisibleSummary);
 	}
 
-	@Override
+	
 	public SORDetail _genSORDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -1851,7 +1850,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SORDetail(SaleOrder, SaleLine, CFMDate, LastUpdate);
 	}
 
-	@Override
+	
 	public SORDetail _genSORFromPCMSDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -1875,7 +1874,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new SORDetail(SaleOrder, SaleLine, CFMDate, LastUpdate);
 	}
 
-	@Override
+	
 	public SwitchProdOrderDetail _genSwitchProdOrderDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -1921,7 +1920,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return bean;
 	}
 
-	@Override
+	
 	public ReplacedProdOrderDetail _genReplacedProdOrderDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -1958,7 +1957,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new ReplacedProdOrderDetail(SaleOrder, SaleLine, ProductionOrder, ProductionOrderRP, Volume, ChangeBy, ChangeDate);
 	}
 
-	@Override
+	
 	public ConfigCustomerUserDetail _genConfigCustomerUserDetail(Map<String, Object> map)
 	{
 		int Id = 0;
@@ -1980,7 +1979,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new ConfigCustomerUserDetail(Id, UserId, CustomerNo, CustomerDivision);
 	}
 
-	@Override
+	
 	public TempUserStatusAutoDetail _genTempUserStatusAutoDetail(Map<String, Object> map)
 	{
 		String SaleOrder = "";
@@ -2021,7 +2020,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				UserStatusCal, UserStatusCalRP);
 	}
 
-	@Override
+	
 	public ShopFloorControlDetail _genShopFloorControlDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2124,7 +2123,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 
 	}
 
-	@Override
+	
 	public InspectOrdersDetail _genInspectOrdersDetail(Map<String, Object> map)
 	{
 		String prdNumber = "";
@@ -2152,7 +2151,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new InspectOrdersDetail(prdNumber, inspectNote, rollupNote, machineInspect, machineRollup);
 	}
 
-	@Override
+	
 	public ImportDetail _genImportDetail(Map<String, Object> map)
 	{
 		String productionOrder = "";
@@ -2205,7 +2204,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				dateRequiredLab, labStartDate, labStopDate);
 	}
 
-	@Override
+	
 	public CustomerDetail _genCustomerDetail(Map<String, Object> map)
 	{
 		String CustomerNo = "";
@@ -2248,7 +2247,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return bean;
 	}
 
-	@Override
+	
 	public FromErpCFMDetail _genFromErpCFMDetail(Map<String, Object> map)
 	{
 		String ID = "";
@@ -2343,7 +2342,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, RollNo, RollNoRemark, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpGoodReceiveDetail _genFromErpGoodReceiveDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2405,7 +2404,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				QuantityMR, PriceSTD, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpMainBillBatchDetail _genFromErpMainBillBatchDetail(Map<String, Object> map)
 	{
 		String BillDoc = "";
@@ -2480,7 +2479,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpMainProdDetail _genFromErpMainProdDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2682,7 +2681,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				GreigeMR, GreigeKG, OrderType, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpMainProdSaleDetail _genFromErpMainProdSaleDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2716,7 +2715,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new FromErpMainProdSaleDetail(ProductionOrder, SaleOrder, SaleLine, Volumn, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpMainSaleDetail _genFromErpMainSaleDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2900,7 +2899,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CustomerMaterialBase, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpPackingDetail _genFromErpPackingDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -2956,7 +2955,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpPODetail _genFromErpPODetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -3030,7 +3029,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				PurchaseOrderLine, null, PODefault, POLineDefault, POPostingDateDefault, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpReceipeDetail _genFromErpReceipeDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -3053,7 +3052,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new FromErpReceipeDetail(ProductionOrder, LotNo, SyncDate, DataStatus);
 	}
 
-	@Override
+	
 	public FromErpSaleDetail _genFromErpSaleDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -3130,7 +3129,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpSaleInputDetail _genFromErpSaleInputDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -3212,7 +3211,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				CustomerNo, CustomerName1, CustomErpO, DueDate, Color, No, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public FromErpSubmitDateDetail _genFromErpSubmitDateDetail(Map<String, Object> map)
 	{
 		String ProductionOrder = "";
@@ -3255,7 +3254,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return new FromErpSubmitDateDetail(ProductionOrder, SaleOrder, SaleLine, No, SubmitDate, Remark, DataStatus, SyncDate);
 	}
 
-	@Override
+	
 	public EmployeeDetail _genEmployeeDetail(Map<String, Object> map)
 	{
 		String Id = "";
@@ -3323,7 +3322,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return bean;
 	}
 
-	@Override
+	
 	public UserDetail _genUsersDetail(Map<String, Object> map)
 	{
 //		String Id = "";
@@ -3411,7 +3410,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 		return bean;
 	}
 
-	@Override
+	
 	public PermitDetail _genPermitDetail(Map<String, Object> map)
 	{
 		int Id = 0;
@@ -3468,7 +3467,7 @@ public class BeanCreateModelDaoImpl implements BeanCreateModelDao {
 				IsPCMSMainToQCMS, IsPCMSMainToInspect, IsPCMSMainToSFC, IsReport, IsUserManagement);
 	}
 
-	@Override
+	
 	public Z_ATT_CustomerConfirm2Detail _genZ_ATT_CustomerConfirm2Detail(Map<String, Object> map)
 	{
 		int Id = 0;

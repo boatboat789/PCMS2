@@ -1555,8 +1555,8 @@ function goToQCMS(tblData,pUserId,data){
 		    	      if(isCustomer != 1){
 			    	      setTimeout(function(){      
 			    	      	 tab.document.getElementById('btnSearchRequest').click();  
-						 },500);         
-		    	      }
+						 }, 500);         
+		    	      }   
 	    	    };          
 		    }    
 		});      

@@ -55,36 +55,35 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "BEGIN\r\n"
 				+ "    UPDATE [dbo].[FromSapMainBillBatch]\r\n"
 				+ "    SET [DataStatus] = 'X'\r\n"
-				+ "    WHERE [SaleOrder] = ?;\r\n"
+				+ "    WHERE [SaleOrder] = ? "
+				+ "		AND [SaleLine] = ? ;\r\n"
 				+ "END\r\n"
 				+ "ELSE \r\n"
 				+ "BEGIN\r\n"
 				+ "UPDATE [dbo].[FromSapMainBillBatch]\r\n"
 				+ "SET \r\n"
-				+ "    [LotShipping] = ?,\r\n"
-				+ "    [ProductionOrder] = ?,\r\n"
-				+ "    [Grade] = ?,\r\n"
-				+ "    [QuantityKG] = ?,\r\n"
-				+ "    [QuantityYD] = ?,\r\n"
-				+ "    [QuantityMR] = ?,\r\n" 
-				+ "    [LotNo] = ?,\r\n"
-				+ "    [DataStatus] = ?,\r\n"
-				+ "    [ChangeDate] = ? \r\n"
+				+ "    [LotShipping] = ?\r\n" 
+				+ "   , [Grade] = ?\r\n"
+				+ "   , [QuantityKG] = ?\r\n"
+				+ "   , [QuantityYD] = ?\r\n"
+				+ "   , [QuantityMR] = ?\r\n" 
+				+ "   , [LotNo] = ?\r\n"
+				+ "   , [DataStatus] = ?\r\n"
+				+ "   , [ChangeDate] = ? \r\n"
 				+ "   , [SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [BillDoc] = ? and\r\n"
 				+ "    [BillItem] = ? and\r\n"
 				+ "    [SaleOrder] = ? and\r\n"
 				+ "    [SaleLine] = ? and\r\n"
-				+ "    [RollNumber] = ? \r\n"
+				+ "    [RollNumber] = ? and\r\n"
+				+ "    [ProductionOrder] = ? \r\n"
 				+ "    ;\r\n"
 				+ "\r\n"
 				+ "END\r\n"
 				+ "-- Check if rows were updated\r\n"
 				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
-				+ "IF @rc <> 0\r\n"
-				+ "   SELECT 1;\r\n"
-				+ "ELSE \r\n"
+				+ "IF @rc = 0\r\n" 
 				+ "BEGIN\r\n"
 				+ "    -- Insert if no rows were updated\r\n"
 				+ "    INSERT INTO [dbo].[FromSapMainBillBatch] (\r\n"
@@ -103,15 +102,22 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 		try {
 
 			int index = 1;
-			prepared = connection.prepareStatement(sql);
+			prepared = connection.prepareStatement(sql); 
 			for (FromErpMainBillBatchDetail bean : paList) {
 				index = 1;
+//				if(bean.getSaleOrder().equals("1107014200")) {
+//					System.out.println(bean.getDataStatus());
+//					System.out.println(bean.getSaleOrder());
+//					System.out.println(bean.getSaleLine());
+//					System.out.println(bean.getRollNumber());
+//				}
 				prepared.setString(index++, bean.getDataStatus()   );
 				prepared.setString(index++, bean.getSaleOrder()    );
+				prepared.setString(index++, bean.getSaleLine()   );
 				
 //				prepared.setString(index ++ , bean.getLotShipping());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
-				prepared.setString(index ++ , bean.getProductionOrder());
+//				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getGrade());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
@@ -127,6 +133,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getRollNumber());
+				prepared.setString(index ++ , bean.getProductionOrder());
 
 				prepared.setString(index ++ , bean.getBillDoc());
 				prepared.setString(index ++ , bean.getBillItem());
@@ -149,6 +156,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch(); 
 			}
+//			System.out.println("here1");
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {

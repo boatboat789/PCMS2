@@ -51,10 +51,8 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 		String sql = " SELECT DISTINCT * \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] \r\n"
 				+ " where \r\n "
-				+ " 	ProductionOrder = '"
-				+ prdOrder
-				+ "' and \r\n"
-				+ " 	( DataStatus = 'O' ) ";
+				+ " 	ProductionOrder = '" + prdOrder + "'  \r\n"
+				+ "		and ( DataStatus = 'O' ) ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

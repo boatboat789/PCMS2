@@ -4,9 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import th.co.wacoal.atech.pcms2.dao.BeanCreateModelDao;
-import th.co.wacoal.atech.pcms2.dao.implement.BeanCreateModelDaoImpl;
+ 
 import th.co.wacoal.atech.pcms2.entities.CFMDetail;
 import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
@@ -52,14 +50,15 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 
 @Component
 public class BeanCreateModel {
-	private BeanCreateModelDao dao;
+	private BeanCreateService dao;
 
 	@Autowired
 	public BeanCreateModel() {
-		this.dao = new BeanCreateModelDaoImpl();
+		this.dao = new BeanCreateService();
 	}
 
 	public SORDetail _genSORDetail(Map<String, Object> map)

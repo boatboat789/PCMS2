@@ -603,8 +603,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			+ "	  WHERE a.[DataStatus] = 'O' and \r\n"
 			+ "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
 			+ "	  GROUP BY [SaleOrderSW] ,[SaleLineSW]\r\n"
-			+ " ) as CSW on  CSW.[SaleOrderSW] = b.SaleOrder and\r\n"
-			+ "              CSW.[SaleLineSW] = b.SaleLine\r\n" ;
+			+ " ) as CSW on CSW.[SaleOrderSW] = b.SaleOrder \r\n"
+			+ "			and CSW.[SaleLineSW] = b.SaleLine\r\n" ;
 	private String leftJoinCRP = ""
 			 + " LEFT JOIN (\r\n"
 			 + "     SELECT distinct a.[SaleOrder] ,a.[SaleLine]  ,1 as countnRP  \r\n"
@@ -613,7 +613,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			 + "     WHERE a.[DataStatus] = 'O' and\r\n"
 			 + "           ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) )\r\n"
 			 + "	 GROUP BY a.[SaleOrder] ,a.[SaleLine]\r\n"
-			 + " )  as CRP on CRP.SaleOrder = b.SaleOrder and\r\n"
+			 + " ) as CRP on CRP.SaleOrder = b.SaleOrder and\r\n"
 			 + "              CRP.SaleLine = b.SaleLine\r\n" ;
 	private String leftJoinCOP = ""
 			  + " LEFT JOIN ( \r\n"
@@ -1030,8 +1030,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 						+ " select \r\n"
 						+ this.selectAll
 			  		    + " INTO #tempRP  \r\n"
-						+ " from #tempPrdReplaced as a \r\n" 
-				;
+						+ " from #tempPrdReplaced as a \r\n"  ;
 
 			 String sql =
 					 " "
@@ -1107,12 +1106,12 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		PCMSTableDetail bean = poList.get(0);
 		prdOrder = bean.getProductionOrder();
 		where += " a.ProductionOrder = '" + prdOrder + "' \r\n";
-		String fromMainB = ""  
-				  +	" from ( \r\n"
-				  + "			SELECT distinct \r\n"
-				  + this.leftJoinBSelect 
-				  + this.pss.fromMainSale_A   
-				  + this.pss.leftJoinBPartOneT_A
+		String fromMainB = ""
+				+ " from ( \r\n"
+				+ "			SELECT distinct \r\n"
+				+ this.leftJoinBSelect
+				+ this.pss.fromMainSale_A
+				+ this.pss.leftJoinBPartOneT_A
 				+ this.pss.leftJoinBPartOneS_A
 				+ this.pss.leftJoinBPartOneH_A
 				+ this.pss.leftJoinTempG_A
@@ -1120,7 +1119,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.pss.leftJoinM_A
 				+ this.pss.leftJoinUCAL_A
 //				  + this.leftJoinFSMBBTempSumBill_A 
-				  + where
+				+ where
 				  + " ) as b \r\n";
 		String sql =  ""
 				+ this.pss.createTempMainSale
@@ -1139,8 +1138,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		}
 		if (list.size() > 0) {
 			boolean isCheck = false ;
-//			isCheck = true;
-			
+//			isCheck = true; 
 			ShopFloorControlModel sfcModel = new ShopFloorControlModel();
 			ImportDetailModel idModel = new ImportDetailModel();
 			InspectOrdersModel insOrderModel = new InspectOrdersModel();

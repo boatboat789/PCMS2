@@ -114,14 +114,15 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		ArrayList<PCMSAllDetail> list = null;
 		ConfigCustomerUserDetail bean = poList.get(0);
 		String custNo = bean.getCustomerNo();
-		String where = " where 1 = 1 AND DataStatus = 'O' AND (";
+		String where = " where 1 = 1 AND DataStatus = 'O' AND ( [CustomerNo] IN ( ";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
-			where += " [CustomerNo] = '" + array[i] + "' ";
+			where += " '" + array[i] + "' ";
 			if (i != array.length-1) {
-				where += " or \r\n";
+				where += " , \r\n";
 			}
 		}
+		where += " ) \r\n";
 		where += " ) \r\n";
 		String sql = " SELECT distinct \r\n"
 				+ "		[CustomerShortName]  \r\n"
