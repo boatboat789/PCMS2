@@ -2,6 +2,7 @@ package th.co.wacoal.atech.pcms2.dao.master.implement.erp.atech;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,9 +72,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " [SyncDate] "
 				+ " from CustomerDetail "
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
-				+ "       SyncDate >= @dateTimeThirtyMinuteAgo "
-
-		; 
+				+ "       SyncDate >= @dateTimeThirtyMinuteAgo " ; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -293,17 +292,14 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>();
 		String sql = " "
 				+ this.declareThirtyMinuteAgo
-				+ "WITH SaleOrderLines AS (\r\n"
-				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
-				+ "    FROM [FromErpMainSale] AS a\r\n"
-				+ "    WHERE [SyncDate] >= @dateTimeThirtyMinuteAgo "
-				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
-				+ "\r\n"
-				+ "    UNION\r\n"
-				+ "\r\n"
-				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
-				+ "    FROM FromErpMainBillBatch AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ " WITH ProductionOrders AS (\r\n"
+//				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
+//				+ "	FROM [FromErpMainProd] AS a\r\n"
+//				+ "	WHERE [SyncDate] >= @dateTimeThirtyMinuteAgo    \r\n"
+//				+ "	UNION \r\n"
+				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
+				+ "	FROM FromErpMainBillBatch AS a\r\n"
+				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "),\r\n"
 				+ "BillBatch  AS (\r\n"
 				+ "    SELECT DISTINCT\r\n"
@@ -326,38 +322,54 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "				  from FromErpMainBillBatch \r\n"
 				+ ") \r\n"
 				+ "\r\n"
-				+ "SELECT a.[SaleOrder]"
+				+ " SELECT a.[ProductionOrder] "
 				+ "		,CASE\r\n"
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
 				+ "			ELSE 'O'\r\n"
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
-				+ "FROM SaleOrderLines AS A\r\n"
-				+ "LEFT JOIN BillBatch AS B ON A.[SaleOrder] = B.[SaleOrderCheck]"
-//				+ " and\r\n"
-//				+ "							  a.[SaleLine] = b.[SaleLineCheck] ;"
-//				+ " SELECT distinct   \r\n"
-//				+ " TRY_CAST(BillDoc AS NVARCHAR(20)) as BillDoc,\r\n"
-//				+ " TRY_CAST(BillItem AS NVARCHAR(20)) as BillItem,\r\n" 
-//				+ "  CASE \r\n"
-//				+ "        WHEN LotShipping = '1900-01-01 00:00:00.000' THEN null\r\n"
-//				+ "        WHEN LotShipping is null or LotShipping = '' THEN null \r\n"
-//				+ "        ELSE LotShipping  \r\n"
-//				+ "    END AS LotShipping, \r\n"  
-//				+ " TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
-//				+ " TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder,\r\n"
-//				+ " TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine,\r\n"
-//				+ " TRY_CAST(Grade AS NVARCHAR(20)) as Grade,\r\n"
-//				+ " TRY_CAST(RollNumber AS NVARCHAR(20)) as RollNumber,\r\n"
-//				+ " TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG,\r\n"
-//				+ " TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD,\r\n"
-//				+ " TRY_CAST(QuantityMR AS decimal(13, 3)) as QuantityMR,\r\n" 	
-//				+ " [SyncDate] " 
-//				+ " from FromErpMainBillBatch"
-//				+ " where BillDoc is not null and BillDoc <> ''"
-
-		;
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				+ " FROM ProductionOrders AS A\r\n"
+				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrder] "
+		/*
+		 * + this.declareThirtyMinuteAgo + "WITH SaleOrderLines AS (\r\n" +
+		 * "    SELECT DISTINCT a.[SaleOrder] \r\n" +
+		 * "    FROM [FromErpMainSale] AS a\r\n" +
+		 * "    WHERE [SyncDate] >= @dateTimeThirtyMinuteAgo " +
+		 * "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n" + "\r\n" +
+		 * "    UNION\r\n" + "\r\n" + "    SELECT DISTINCT a.[SaleOrder] \r\n" +
+		 * "    FROM FromErpMainBillBatch AS a\r\n" +
+		 * "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n" + "),\r\n" +
+		 * "BillBatch  AS (\r\n" + "    SELECT DISTINCT\r\n" +
+		 * "				  TRY_CAST(BillDoc AS NVARCHAR(20)) as BillDoc, \r\n" +
+		 * "				  TRY_CAST(BillItem AS NVARCHAR(20)) as BillItem,  \r\n" +
+		 * "				   CASE  \r\n" +
+		 * "				         WHEN LotShipping = '1900-01-01 00:00:00.000' THEN null \r\n"
+		 * +
+		 * "				         WHEN LotShipping is null or LotShipping = '' THEN null  \r\n"
+		 * + "				         ELSE TRY_CAST( LotShipping AS DATETIME)  \r\n" +
+		 * "				     END AS LotShipping,    \r\n" +
+		 * "				  TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder, \r\n"
+		 * +
+		 * "				  TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrderCheck, \r\n"
+		 * + "				  TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine , \r\n" +
+		 * "				  TRY_CAST(Grade AS NVARCHAR(20)) as Grade, \r\n" +
+		 * "				  TRY_CAST(RollNumber AS NVARCHAR(20)) as RollNumber, \r\n"
+		 * +
+		 * "				  TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG, \r\n"
+		 * +
+		 * "				  TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD, \r\n"
+		 * +
+		 * "				  TRY_CAST(QuantityMR AS decimal(13, 3)) as QuantityMR,  	\r\n"
+		 * + "				  [SyncDate]   \r\n" +
+		 * "				  from FromErpMainBillBatch \r\n" + ") \r\n" + "\r\n" +
+		 * "SELECT a.[SaleOrder]" + "		,CASE\r\n" +
+		 * "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n" +
+		 * "			ELSE 'O'\r\n" + "			END AS DataStatus \r\n" +
+		 * "		,B.*\r\n" + "FROM SaleOrderLines AS A\r\n" +
+		 * "LEFT JOIN BillBatch AS B ON A.[SaleOrder] = B.[SaleOrderCheck]"
+		 */ 
+		; 
+		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainBillBatchDetail(map));

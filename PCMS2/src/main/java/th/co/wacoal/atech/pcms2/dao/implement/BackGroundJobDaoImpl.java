@@ -275,6 +275,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 //		RollFromSapModel rfsModel = new RollFromSapModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
+		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
 //		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
 
 		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
@@ -284,6 +285,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 //		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
 		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
 		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
+		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
 //		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
 
 		fsmpModel.upsertFromSapMainProdDetail(frmpList);
@@ -299,6 +301,9 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		this.execUpsertToSubmitDate();
 		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
 		this.execUpsertToGoodReceive();
+ 
+		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList); 
+		this.execUpsertToMainBillBatch();
 //		fsrModel.upsertFromSapReceipeDetail(ferdList);
 	}
 
@@ -309,17 +314,13 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 		ERPAtechModel erpaModel = new ERPAtechModel();
 		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
 		FromSapSaleModel fssModel = new FromSapSaleModel(); 
 		
 		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
-		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
 		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
 		
 		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
 		this.execUpsertToMainSale();
-		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
-		this.execUpsertToMainBillBatch();
 		fssModel.upsertFromSapSaleDetail(frsList);
 		this.execUpsertToSale();
 	}

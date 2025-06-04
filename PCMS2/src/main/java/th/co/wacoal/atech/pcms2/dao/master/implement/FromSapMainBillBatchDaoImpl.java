@@ -55,8 +55,9 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "BEGIN\r\n"
 				+ "    UPDATE [dbo].[FromSapMainBillBatch]\r\n"
 				+ "    SET [DataStatus] = 'X'\r\n"
-				+ "    WHERE [SaleOrder] = ? "
-				+ "		AND [SaleLine] = ? ;\r\n"
+				+ "    WHERE [ProductionOrder] = ? ;\r\n"
+//				+ "    WHERE [SaleOrder] = ? "
+//				+ "		AND [SaleLine] = ? ;\r\n"
 				+ "END\r\n"
 				+ "ELSE \r\n"
 				+ "BEGIN\r\n"
@@ -112,8 +113,9 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 //					System.out.println(bean.getRollNumber());
 //				}
 				prepared.setString(index++, bean.getDataStatus()   );
-				prepared.setString(index++, bean.getSaleOrder()    );
-				prepared.setString(index++, bean.getSaleLine()   );
+				prepared.setString(index++, bean.getProductionOrder()  ); 
+//				prepared.setString(index++, bean.getSaleOrder()    );
+//				prepared.setString(index++, bean.getSaleLine()   ); 
 				
 //				prepared.setString(index ++ , bean.getLotShipping());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
