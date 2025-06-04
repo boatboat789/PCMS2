@@ -53,10 +53,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
-				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
-				// 20250506
-				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
-//				+ "		ELSE [CustomerNo] \r\n"
+				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n" 
+				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n" 
 				+ "	END as [CustomerNo] ,"
 				+ " TRY_CAST( CustomerNo AS NVARCHAR(50)) as CustomerNoWOZero  ,\r\n"
 				+ " TRY_CAST( CustomerName AS NVARCHAR(500)) as CustomerName  ,\r\n"
@@ -75,8 +73,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
 				+ "       SyncDate >= @dateTimeThirtyMinuteAgo "
 
-		;
-//		System.out.println(sql);
+		; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
