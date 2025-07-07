@@ -144,6 +144,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 		try {
 
 			int index = 1;
+			int batchSize = 0;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpCFMDetail bean : paList) {
 				index = 1;
@@ -192,6 +193,13 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch();
+				batchSize++;
+	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
+	    			prepared.executeBatch();
+	    			prepared.clearBatch();
+	                batchSize = 0; // Reset batch size
+	            }
+//				prepa
 			}
 			prepared.executeBatch();
 			prepared.close();

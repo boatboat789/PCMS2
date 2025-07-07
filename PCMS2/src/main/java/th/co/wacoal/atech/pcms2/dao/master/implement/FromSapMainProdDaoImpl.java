@@ -10,14 +10,20 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapMainProdDao;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdDetail;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.utilities.MapperUtility;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
@@ -43,12 +49,72 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 	{
 		return this.message;
 	}
-
+ 
+	private String selectForLog = ""
+			+ " [Id] "
+			+ ",[ProductionOrder]\r\n"
+			+ ",SaleOrder\r\n"
+			+ ",SaleLine\r\n"
+			+ ",OrderType\r\n"
+			+ ",GreigeInDate\r\n"
+			+ ",PrdCreateDate\r\n"
+			+ ",GreigeArticle\r\n"    
+			+ ",GreigeDesign\r\n"
+			+ ",ArticleFG\r\n"
+			+ ",DesignFG\r\n"
+			+ ",TotalQuantity\r\n"
+			+ ",Volumn\r\n"
+			+ ",Unit\r\n"
+			+ ",UserStatus\r\n"
+			+ ",LabStatus\r\n"
+			+ ",BookNo\r\n"
+			+ ",Center\r\n"
+			+ ",LotNo\r\n"
+			+ ",LabNo\r\n"
+			+ ",Shade\r\n"
+			+ ",ChangeDate\r\n"
+			+ ",SyncDate\r\n" ;
+	@Override
+	public ArrayList<ProductionOrderLogDetail> getFromSapMainProdDetailWithRangeOfChangeDate( String startLogDate , String endLogDate  , String productionOrder )
+	{
+		ArrayList<ProductionOrderLogDetail> list = null;
+		String where = " WHERE 1 = 1 and ( DataStatus = 'O' )   ";
+		if ( ! startLogDate.equals("")) {
+//			String[] array = startLogDate.split(" - ");
+			where += " "
+					+ " and (  "
+					+ "	CAST(a.[ChangeDate] AS DATE) >= convert(date,'" + startLogDate + "', 103) AND \r\n"
+					+ "	CAST(a.[ChangeDate] AS DATE) <= convert(date,'" + endLogDate + "', 103) \r\n"
+					+ "	) \r\n";    
+//			where += " CAST(a.[CreateDate] AS DATE) = convert(date, '"+createDate+"', 103)  \r\n" ;
+		}
+		if ( ! productionOrder.equals("")) { 
+			where += " "
+					+ " and (  "
+					+ " a.[ProductionOrder] = '" + productionOrder + "' \r\n" 
+					+ "	) \r\n";     
+		}
+		String sql = " "
+				+ " SELECT DISTINCT \r\n"
+				+ this.selectForLog
+				+ " FROM [PCMS].[dbo].[FromSapMainProd] a\r\n"
+				+ where  ;
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(MapperUtility .mapToObject(map, ProductionOrderLogDetail.class));
+//			list.add(this.bcModel._genProductionOrderLogDetail(map));
+		
+		} 
+		return list;
+	}
 	@Override
 	public ArrayList<PCMSSecondTableDetail> getFromSapMainProdDetail(String prdOrder)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
-		String sql = " SELECT DISTINCT * \r\n"
+		String sql = ""
+				+ "  SELECT DISTINCT"
+				+ " * \r\n" 
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] \r\n"
 				+ " where \r\n "
 				+ " 	ProductionOrder = '" + prdOrder + "'  \r\n"
@@ -214,6 +280,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 		try {
 
 			int index = 1;
+			int batchSize = 0;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpMainProdDetail bean : paList) {
 				index = 1;
@@ -305,6 +372,12 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				prepared.setString(index ++ , bean.getOrderType());
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch();
+				batchSize++;
+	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
+	    			prepared.executeBatch();
+	    			prepared.clearBatch();
+	                batchSize = 0; // Reset batch size
+	            }
 			}
 			prepared.executeBatch();
 			prepared.close();

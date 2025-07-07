@@ -18,8 +18,11 @@ import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.utilities.MapperUtility;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
@@ -46,8 +49,73 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		return this.message;
 	}
 
+	private String selectForLog = ""
+			+ " [SaleOrder]\r\n"
+			+ "      ,[SaleLine]\r\n"
+			+ "      ,[Division]\r\n"
+			+ "      ,[MaterialNo]\r\n"
+			+ "      ,[ArticleFG]\r\n"
+			+ "      ,[DesignFG] \r\n"
+			+ "      ,[Color]\r\n"
+			+ "      ,[DistChannel]\r\n"
+			+ "      ,[CustomerName]\r\n"
+			+ "      ,[CustomerShortName]\r\n"
+			+ "      ,[ColorCustomer] \r\n"
+			+ "	  , [SaleCreateDate] \r\n"
+			+ "	  , [PlanGreigeDate] \r\n"
+			+ "	  , [DueDate]\r\n"
+			+ "	  , [CustomerDue]      \r\n"
+			+ "      ,[SaleQuantity]\r\n"
+			+ "      ,[SaleUnit]\r\n"
+			+ "      ,[OrderAmount]\r\n"
+			+ "      ,[RemainQuantity]\r\n"
+			+ "      ,[RemainAmount]\r\n"
+			+ "      ,[PurchaseOrder]\r\n"
+			+ "      ,[CustomerNo]\r\n"
+			+ "      ,[CustomerMaterial]\r\n"
+			+ "      ,[SaleOrg]\r\n"
+			+ "      ,[SaleStatus] \r\n"
+			+ "      ,[SaleFullName]\r\n"
+			+ "      ,[DeliveryStatus]\r\n"
+			+ "      ,[SyncDate]\r\n"
+			+ "      ,CAST ( NULL AS DateTime ) [SyncDateHeader]\r\n";
+
 	@Override
-	public ArrayList<PCMSSecondTableDetail> getDivisionDetail() {
+	public ArrayList<SaleOrderLogDetail> getFromSapMainSaleDetailWithRangeOfChangeDate(String startLogDate,
+			String endLogDate, String saleOrder)
+	{
+		ArrayList<SaleOrderLogDetail> list = null;
+		String where = " WHERE 1 = 1 and ( DataStatus = 'O' )   ";
+		if ( ! startLogDate.equals("")) {
+//			String[] array = startLogDate.split(" - ");
+			where += " "
+					+ " and (  "
+					+ "	CAST(a.[ChangeDate] AS DATE) >= convert(date,'"
+					+ startLogDate
+					+ "', 103) AND \r\n"
+					+ "	CAST(a.[ChangeDate] AS DATE) <= convert(date,'"
+					+ endLogDate
+					+ "', 103) \r\n"
+					+ "	) \r\n";
+//			where += " CAST(a.[CreateDate] AS DATE) = convert(date, '"+createDate+"', 103)  \r\n" ;
+		}
+		if ( ! saleOrder.equals("")) {
+			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
+		}
+		String sql = " " + " SELECT DISTINCT \r\n" + this.selectForLog + " FROM [FromSapMainSale] a\r\n" + where;
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(MapperUtility.mapToObject(map, SaleOrderLogDetail.class));
+//			list.add(this.bcModel._genProductionOrderLogDetail(map));
+
+		}
+		return list;
+	}
+
+	@Override
+	public ArrayList<PCMSSecondTableDetail> getDivisionDetail()
+	{
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String sql = "SELECT distinct \r\n"
 				+ "		[Division] \r\n"
@@ -183,7 +251,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	{
 		PreparedStatement prepared = null;
 		Connection connection;
-		connection = this.database.getConnection(); 
+		connection = this.database.getConnection();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
@@ -232,7 +300,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				+ "    [OrderSheetPrintDate] = ?,\r\n"
 				+ "    [CustomerMaterialBase] = ?,\r\n"
 				+ "    [ChangeDate] = ?,\r\n"
-				+ "    [DataStatus] = ?, \r\n" 
+				+ "    [DataStatus] = ?, \r\n"
 				+ "    [SyncDate] =  ?\r\n"
 				+ "WHERE \r\n"
 				+ "    [SaleOrder] = ? and"
@@ -272,19 +340,20 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		try {
 
 			int index = 1;
+			int batchSize = 0;
 			prepared = connection.prepareStatement(sql);
 			for (FromErpMainSaleDetail bean : paList) {
 				index = 1;
 
-				prepared.setString(index++, bean.getDataStatus()   );
-				prepared.setString(index++, bean.getSaleOrder()    );
-				
+				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setString(index ++ , bean.getSaleOrder());
+
 				prepared.setString(index ++ , bean.getMaterialNo());
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleUnit());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
-				prepared.setString(index ++ , bean.getCustomerMaterial()); 
+				prepared.setString(index ++ , bean.getCustomerMaterial());
 				prepared.setString(index ++ , bean.getColor());
 				prepared.setString(index ++ , bean.getCustomerNo());
 				prepared.setString(index ++ , bean.getPurchaseOrder());
@@ -292,9 +361,10 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getDistChannel());
 				prepared.setString(index ++ , bean.getDivision());
 				prepared.setString(index ++ , bean.getCustomerName());
-				prepared.setString(index ++ , bean.getCustomerShortName()); 
+				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getColorCustomer());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
+				prepared.setString(index ++ , bean.getCustomerDue());
+//				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleStatus());
@@ -334,7 +404,8 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerName());
 				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getColorCustomer());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
+				prepared.setString(index ++ , bean.getCustomerDue());
+//				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
 				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleStatus());
@@ -356,6 +427,12 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.addBatch();
+				batchSize ++ ;
+				if (batchSize % 500 == 0) { // Execute batch every 500 records
+					prepared.executeBatch();
+					prepared.clearBatch();
+					batchSize = 0; // Reset batch size
+				}
 //				prepared.setString(index++, bean.get    );
 //				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
@@ -365,7 +442,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 			prepared.close();
 		} catch (SQLException e) {
 //			e.printStackTrace();
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

@@ -137,6 +137,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 		try {
 
 			int index = 1;
+			int batchSize = 0 ;
 			prepared = connection.prepareStatement(sql); 
 			for(FromErpSaleDetail bean : paList) {
 				index = 1; 
@@ -183,6 +184,12 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 //				prepared.setTimestamp(index++, new Timestamp(time));
 //				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 				prepared.addBatch();
+				batchSize++;
+	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
+	    			prepared.executeBatch();
+	    			prepared.clearBatch();
+	                batchSize = 0; // Reset batch size
+	            }
 			}
 			prepared.executeBatch();
 			prepared.close(); 

@@ -6,6 +6,7 @@ import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 
 public interface FromSapMainSaleDao {
@@ -23,4 +24,7 @@ public interface FromSapMainSaleDao {
 	ArrayList<PCMSAllDetail> getCustomerShortNameDetail(ArrayList<ConfigCustomerUserDetail> poList);
 
 	String upsertFromSapMainSaleDetail(ArrayList<FromErpMainSaleDetail> paList);
+
+	ArrayList<SaleOrderLogDetail> getFromSapMainSaleDetailWithRangeOfChangeDate(String startLogDate, String endLogDate,
+			String saleOrder);
 }

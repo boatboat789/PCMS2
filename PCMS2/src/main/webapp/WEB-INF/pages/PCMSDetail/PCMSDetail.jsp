@@ -293,9 +293,9 @@ $(document) .ready( function() {
 // 		    "paging": true,
 			colReorder: {            
 			   realtime: false,   
-			   enable: false
+			   enable: false           
 			},             
-// 			deferRender: true, // run again in column
+			deferRender: true, // run again in column
 		    lengthMenu: [[100, 250, 500, 1000, 2500],[100, 250, 500, 1000, 2500]],
 	 	   	columns :                    
 	 	   		[      
@@ -333,43 +333,16 @@ $(document) .ready( function() {
 				    {"data" : "saleUnit" ,        "title":"Unit" },                                      //10
 				    {"data" : "saleQuantity" ,    "title":"Order Qty.",'type': 'num' },                  //11
 				    {"data" : "remainQuantity" ,  "title":"Remain Qty." ,'type': 'num',                   
-					   	  render: function (data, type, row) {	               
-								var htmlEx = '';               
-//		 	   					console.log(" omg "+caseDupli+"  "+data+" row.saleLine "+row.lotNo+" "+row.grade+" "+row.saleLine+" "+row.saleOrder+" soLineTmp "+soLineTmp+" soTmp "+soTmp)
-					   			if(soLineTmp == '' && soTmp == ''  ){ 
-					   				soLineTmp = row.saleLine;     
-						   			soTmp = row.saleOrder;        
-						   			caseDupli = 0; 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-						   		}  
-					   			else if(soLineTmp == row.saleLine && soTmp == row.saleOrder  ){
-					   				caseDupli = 1;
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+
-//		 				   			row.remainQuantity
-						   			data+' </div>'; 
-						   		}   
-						   		else{       
-						   			soLineTmp = row.saleLine;     
-						   			soTmp = row.saleOrder;       
-						   			caseDupli = 2;
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-						   		}      
-//		 	   					console.log(htmlEx)
-								return  htmlEx
+					   	  render: function (data, type, row) {	                      
+					   	    return row.isDuplicate
+					        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+					        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }   },                 //12
 				    {"data" : "remainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num',        
 					   	  render: function (data, type, row) {	   
-			   					var htmlEx = '';   
-				   				if(caseDupli == 0  ){ 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}  
-					   			else if(caseDupli == 1  ){ 
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}   
-						   		else{          
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}  
-								return  htmlEx
+						   	    return row.isDuplicate
+						        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }     },            //13
 				    {"data" : "volumn" ,          "title":"Volume FG",'type': 'num' },                   //14
 				    {"data" : "volumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //15
@@ -389,17 +362,9 @@ $(document) .ready( function() {
 				    {"data" : "billSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},                    //19
 				    {"data" : "orderAmount" ,     "title":"Amt.(THB)",'type': 'num' ,        
 					   	  render: function (data, type, row) {	               
-						   		var htmlEx = '';  
-				   				if(caseDupli == 0  ){ 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}  
-					   			else if(caseDupli == 1  ){ 
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}      
-						   		else{          
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}   
-								return  htmlEx
+						   	    return row.isDuplicate
+						        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }    },                   //20
 				    {"data" : "customerDue" ,     "title":"Due Cus.",            
 					  	  className : 'dt-custom-td80',    	        
@@ -453,7 +418,7 @@ $(document) .ready( function() {
 				   			var htmlEx = ''     
 				   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
 			   					|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-									htmlEx = ''; 
+									htmlEx = '';     
 								}
 							else{
 								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
@@ -599,7 +564,7 @@ $(document) .ready( function() {
 								else{   
 									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								}
-						   		return  htmlEx          
+						   		return  htmlEx            
 								}    
 					},                             //46
 				    {"data" : "switchRemark","title":"SwitchRemark",         
@@ -981,10 +946,10 @@ $(document) .ready( function() {
 				} 
 // 				if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
 			},     
-			drawCallback: function( settings ){  },   
-			initComplete: function () { }  
+			drawCallback: function( settings ){  console.log('drawwwwwwwwww')},   
+			initComplete: function () { console.log('initcom')}  
 	 	 });      	
- 	// Filter event handler
+ 	// Filter event handler  	
     $( MainTable.table().container() ).on( 'keyup', 'tfoot input', function () {
     	let searchVal = this.value;         
 		soLineTmp = '';            
@@ -2478,6 +2443,19 @@ function searchByDetailToServer(arrayTmp) {
 		data: JSON.stringify(arrayTmp),      
 		url: ctx+"/Detail/searchByDetail",  
 		success: function(data) {    
+			let lastSo = "";
+			let lastLine = "";
+			data.forEach(function(row, i) {
+			    if (row.saleOrder === lastSo && row.saleLine === lastLine) {
+			        row.isDuplicate = true;
+			    } else {
+			        row.isDuplicate = false;
+			        lastSo = row.saleOrder;
+			        lastLine = row.saleLine;
+			    }
+			});
+			
+			
 			MainTable.clear();      
 			MainTable.rows.add(data);      
 			MainTable.columns.adjust().draw();     

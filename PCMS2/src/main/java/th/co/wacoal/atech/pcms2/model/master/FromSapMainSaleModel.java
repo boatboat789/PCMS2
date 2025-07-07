@@ -14,6 +14,7 @@ import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
@@ -103,5 +104,13 @@ public class FromSapMainSaleModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		String  iconStatus = this.dao.upsertFromSapMainSaleDetail(paList );
 		return iconStatus;
+	}
+
+	public ArrayList<SaleOrderLogDetail> getFromSapMainSaleDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String saleOrder)
+	{
+		ArrayList<SaleOrderLogDetail> list =
+				this.dao.getFromSapMainSaleDetailWithRangeOfChangeDate(changeDateStart, changeDateEnd, saleOrder);
+		return list;
 	}
 }

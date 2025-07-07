@@ -25,6 +25,7 @@ import th.co.wacoal.atech.pcms2.entities.PODetail;
 import th.co.wacoal.atech.pcms2.entities.PackingDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.PresetDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.ReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.ReplacedProdOrderDetail;
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
@@ -772,7 +773,7 @@ public class BeanCreateService   {
 		String WorkDate = "";
 		if (map.get("WorkDate") != null) {
 			java.util.Date dateValue = (Date) map.get("WorkDate");
-			WorkDate = sdfDateFullWithSlash.format(dateValue);
+			WorkDate = sdfDateFullWithSlash.format(dateValue);	
 		}
 		String WorkCenter = "";
 		if (map.get("WorkCenter") != null) {
@@ -1477,10 +1478,12 @@ public class BeanCreateService   {
 		String CustomerDue = "";
 		if (map.get("CustomerDue") != null) {
 			CustomerDue = (String) map.get("CustomerDue");
+//			java.util.Date dateValue = (Date) map.get("CustomerDue"); 
+//			CustomerDue = sdfDateFullWithSlash.format(dateValue);
 		}
 		String DueDate = "";
 		if (map.get("DueDate") != null) {
-			java.util.Date dateValue = (Date) map.get("DueDate");
+			java.util.Date dateValue = (Date) map.get("DueDate"); 
 			DueDate = sdfDateFullWithSlash.format(dateValue);
 		}
 		String LotNo = "";
@@ -2800,10 +2803,11 @@ public class BeanCreateService   {
 		}
 		String CustomerDue = "";
 		if (map.get("CustomerDue") != null) {
+			CustomerDue = (String) map.get("CustomerDue");
 //			java.util.Date dateValue = (Date) map.get("CustomerDue");
 //			CustomerDue = sdfDateFullWithSlash.format(dateValue);
-			Timestamp timestamp1 = (Timestamp) map.get("CustomerDue");
-			CustomerDue = sdfDateFullWithSlash.format(timestamp1);
+//			Timestamp timestamp1 = (Timestamp) map.get("CustomerDue");
+//			CustomerDue = sdfDateFullWithSlash.format(timestamp1);
 		}
 		String RemainQuantity = "";
 		if (map.get("RemainQuantity") != null) {
@@ -3414,8 +3418,7 @@ public class BeanCreateService   {
 	public PermitDetail _genPermitDetail(Map<String, Object> map)
 	{
 		int Id = 0;
-		if (map.get("Id") != null) {
-//			Id = Integer.toString((int) map.get("Id"));
+		if (map.get("Id") != null) { 
 			Id = (int) map.get("Id");
 		}
 		String PermitId = "";
@@ -3641,6 +3644,38 @@ public class BeanCreateService   {
 				CFML, CFMDa, CFMDb, CFMSt, CFMDeltaE, 
 				ColorCheckDate, ColorCheckStatus,
 				ColorCheckRemark, Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId,DataStatus);
+	}
+	public ProductionOrderLogDetail _genProductionOrderLogDetail(Map<String, Object> map)
+	{
+		Integer Id = null ; if (map.get("Id") != null) { Id = (Integer) map.get("Id");}
+		String ProductionOrder = "" ; if (map.get("ProductionOrder") != null) { ProductionOrder = (String) map.get("ProductionOrder");}
+		String SaleOrder = null ; if (map.get("SaleOrder") != null) { SaleOrder = (String) map.get("SaleOrder");}
+		String SaleLine = null ; if (map.get("SaleLine") != null) { SaleLine = (String) map.get("SaleLine");}
+		String OrderType = null ; if (map.get("OrderType") != null) { OrderType = (String) map.get("OrderType");}
+		Date GreigeInDate = null ; if (map.get("GreigeInDate") != null) { GreigeInDate = (Date) map.get("GreigeInDate");}
+		Date PrdCreateDate = null ; if (map.get("PrdCreateDate") != null) { PrdCreateDate = (Date) map.get("PrdCreateDate");}
+		String GreigeArticle = "" ; if (map.get("GreigeArticle") != null) { GreigeArticle = (String) map.get("GreigeArticle");}
+		String GreigeDesign = "" ; if (map.get("GreigeDesign") != null) { GreigeDesign = (String) map.get("GreigeDesign");}
+		String ArticleFG = "" ; if (map.get("ArticleFG") != null) { ArticleFG = (String) map.get("ArticleFG");}
+		String DesignFG = "" ; if (map.get("DesignFG") != null) { DesignFG = (String) map.get("DesignFG");}
+		BigDecimal TotalQuantity = null ; if (map.get("TotalQuantity") != null) { TotalQuantity = (BigDecimal) map.get("TotalQuantity");}
+		BigDecimal Volumn = null ; if (map.get("Volumn") != null) { Volumn = (BigDecimal) map.get("Volumn");}
+		String Unit = "" ; if (map.get("Unit") != null) { Unit = (String) map.get("Unit");}
+		String UserStatus = "" ; if (map.get("UserStatus") != null) { UserStatus = (String) map.get("UserStatus");}
+		String LabStatus = "" ; if (map.get("LabStatus") != null) { LabStatus = (String) map.get("LabStatus");}
+		String BookNo = "" ; if (map.get("BookNo") != null) { BookNo = (String) map.get("BookNo");}
+		String Center = "" ; if (map.get("Center") != null) { Center = (String) map.get("Center");}
+		String LotNo = "" ; if (map.get("LotNo") != null) { LotNo = (String) map.get("LotNo");}
+		String LabNo = "" ; if (map.get("LabNo") != null) { LabNo = (String) map.get("LabNo");}
+		String Shade = "" ; if (map.get("Shade") != null) { Shade = (String) map.get("Shade");}
+		Timestamp ChangeDate = null ; if (map.get("ChangeDate") != null) { ChangeDate = (Timestamp) map.get("ChangeDate");}
+		Timestamp SyncDate = null ; if (map.get("SyncDate") != null) { SyncDate = (Timestamp) map.get("SyncDate");}
+
+		return new ProductionOrderLogDetail(
+				Id, ProductionOrder, SaleOrder, SaleLine, OrderType, GreigeInDate, PrdCreateDate
+				, GreigeArticle, GreigeDesign, ArticleFG, DesignFG, TotalQuantity, Volumn, Unit
+				, UserStatus, LabStatus, BookNo, Center, LotNo, LabNo, Shade, ChangeDate, SyncDate)
+				;
 	}
 //	private Double parseDouble(Object obj) {
 //	    if (obj instanceof BigDecimal) {

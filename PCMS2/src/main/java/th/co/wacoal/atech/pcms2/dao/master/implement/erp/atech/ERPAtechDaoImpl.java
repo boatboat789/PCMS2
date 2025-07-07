@@ -1,14 +1,15 @@
 package th.co.wacoal.atech.pcms2.dao.master.implement.erp.atech;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.erp.atech.ERPAtechDao;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.CustomerDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpCFMDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpGoodReceiveDetail;
@@ -22,6 +23,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.utilities.MapperUtility;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -95,7 +97,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "    UNION\r\n"
 				+ "\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
-				+ "    FROM [FromErpPO] AS a\r\n"
+				+ "    FROM [FromErpCFM] AS a\r\n"
 				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "),\r\n"
 				+ "CFMData AS (\r\n"
@@ -164,8 +166,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			list.add(this.bcModel._genFromErpCFMDetail(map));
 		}
 		return list;
-	}
-
+	} 
 //	@Override
 //	public ArrayList<FromErpDyeingDetail> getFromErpDyeingDetail()
 //	{
@@ -311,7 +312,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "				         ELSE TRY_CAST( LotShipping AS DATETIME)  \r\n"
 				+ "				     END AS LotShipping,    \r\n"
 				+ "				  TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder, \r\n"
-				+ "				  TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrderCheck, \r\n"
+				+ "				  TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder , \r\n"
 				+ "				  TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine , \r\n"
 				+ "				  TRY_CAST(Grade AS NVARCHAR(20)) as Grade, \r\n"
 				+ "				  TRY_CAST(RollNumber AS NVARCHAR(20)) as RollNumber, \r\n"
@@ -357,7 +358,20 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		 * +
 		 * "				  TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG, \r\n"
 		 * +
-		 * "				  TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD, \r\n"
+		 * 
+      ,[SaleQuantity]
+      ,[SaleUnit]
+      ,[OrderAmount]
+      ,[RemainQuantity]
+      ,[RemainAmount]
+      ,[PurchaseOrder]
+      ,[CustomerNo]
+      ,[CustomerMaterial]
+      ,[SaleOrg]
+      ,[SaleStatus] 
+      ,[SaleFullName]
+      ,[DeliveryStatus]
+      ,[SyncDate] "				  TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD, \r\n"
 		 * +
 		 * "				  TRY_CAST(QuantityMR AS decimal(13, 3)) as QuantityMR,  	\r\n"
 		 * + "				  [SyncDate]   \r\n" +
@@ -650,6 +664,87 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	}
 
 	@Override
+	public ArrayList<ProductionOrderLogDetail> getFromErpMainProdDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String productionOrder)
+	{ 
+		ArrayList<ProductionOrderLogDetail> list = null;
+		String where = " WHERE 1 = 1  ";
+		if ( ! changeDateStart.equals("")) { 
+			where += " "
+					+ " and (  "
+					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'" + changeDateStart + "', 103) AND \r\n"
+					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'" + changeDateEnd + "', 103) \r\n"
+					+ "	) \r\n";     
+		}
+		if ( ! productionOrder.equals("")) { 
+			where += " "
+					+ " and (  "
+					+ " a.[ProductionOrder] = '" + productionOrder + "' \r\n" 
+					+ "	) \r\n";     
+		}
+		String sql = " "
+				+ " SELECT TOP (10000) \r\n"
+				+ "	      [ProductionOrder]\r\n"
+				+ "      ,[SaleOrder]\r\n"
+				+ "      ,[SaleLine]\r\n"
+				+ "      ,[TotalQuantity]\r\n"
+				+ "      ,[Volumn]\r\n" 
+				+ "      ,[Unit]\r\n" 
+				+ "      ,[LabStatus]\r\n"
+				+ "      ,[UserStatus]\r\n"
+				+ "      ,[DesignFG]\r\n"
+				+ "      ,[ArticleFG]\r\n"
+				+ "      ,[BookNo]\r\n"
+				+ "      ,[Center]\r\n"
+				+ "      ,[LotNo]\r\n" 
+				+ "      ,[LabNo] \r\n"  
+				+ "      ,CASE \r\n"
+				+ "        WHEN [GREIGEINDATE] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
+				+ "        WHEN [GREIGEINDATE] is null or \r\n"
+				+ "             [GREIGEINDATE] = '' THEN CAST( null AS Date )  \r\n"
+				+ "        ELSE CAST( [GREIGEINDATE] AS Date )   \r\n"
+				+ "		END AS GreigeInDate  \r\n"
+//				+ "      ,CASE \r\n"
+//				+ "        WHEN [BCDate] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
+//				+ "        WHEN [BCDate] is null or \r\n"
+//				+ "             [BCDate] = '' THEN CAST( null AS Date )  \r\n"
+//				+ "        ELSE CAST( [BCDate] AS Date )   \r\n"
+//				+ "		END AS [BCDate]    \r\n"
+//				+ "      ,CASE \r\n"
+//				+ "        WHEN [CFdate] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
+//				+ "        WHEN [CFdate] is null or \r\n"
+//				+ "             [CFdate] = '' THEN CAST( null AS Date )  \r\n"
+//				+ "        ELSE CAST( [CFdate] AS Date )   \r\n"
+//				+ "		END AS [CFdate]     \r\n"
+				+ "      ,[Shade]\r\n"
+//				+ "      ,CASE \r\n"
+//				+ "        WHEN [LotShipping] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
+//				+ "        WHEN [LotShipping] is null or \r\n"
+//				+ "             [LotShipping] = '' THEN CAST( null AS Date )  \r\n"
+//				+ "        ELSE CAST( [LotShipping] AS Date )   \r\n"
+//				+ "		END AS [LotShipping]    \r\n"  
+				+ "      ,CASE \r\n"
+				+ "        WHEN [PrdCreateDate] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
+				+ "        WHEN [PrdCreateDate] is null or \r\n"
+				+ "             [PrdCreateDate] = '' THEN CAST( null AS Date )  \r\n"
+				+ "        ELSE CAST( [PrdCreateDate] AS Date )   \r\n"
+				+ "		END AS [PrdCreateDate]    \r\n"
+				+ "      ,[GreigeArticle]\r\n"
+				+ "      ,[GreigeDesign]\r\n" 
+				+ "      ,[OrderType]\r\n"
+				+ "      ,[SyncDate]\r\n"
+				+ " FROM [FromErpMainProd] a\r\n"
+				+ where
+				+ " Order by SyncDate desc"  ;
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+//			list.add(this.bcModel._genProductionOrderLogDetail(map));
+			list.add(MapperUtility .mapToObject(map, ProductionOrderLogDetail.class));
+		}  
+		return list;
+	}
+	@Override
 	public ArrayList<FromErpMainSaleDetail> getFromErpMainSaleDetail()
 	{
 		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>();
@@ -699,10 +794,10 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "				  TRY_CAST(CustomerShortName AS NVARCHAR(100)) as CustomerShortName, \r\n"
 				+ "				  TRY_CAST(ColorCustomer AS NVARCHAR(50)) as ColorCustomer,  \r\n"
 				+ "				   CASE  \r\n"
-				+ "				         WHEN CustomerDue = '1900-01-01 00:00:00.000' THEN null \r\n"
+				+ "				         WHEN CustomerDue = '1900-01-01 00:00:00.000' THEN TRY_CAST( null as varchar) \r\n"
 				+ "				         WHEN CustomerDue is null or  \r\n"
-				+ "				              CustomerDue = '' THEN null  \r\n"
-				+ "				         ELSE CustomerDue   \r\n"
+				+ "				              CustomerDue = '' THEN  TRY_CAST( null as varchar)   \r\n"
+				+ "				         ELSE CONVERT(varchar,CustomerDue, 103)    \r\n"
 				+ "				     END AS CustomerDue,    \r\n"
 				+ "				  TRY_CAST(RemainQuantity AS decimal(13, 3)) as RemainQuantity,  \r\n"
 				+ "				   CASE  \r\n"
@@ -838,6 +933,82 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		return list;
 	}
 
+	@Override
+	public ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String productionOrder)
+	{ 
+		ArrayList<SaleOrderLogDetail> list = null;
+		String where = " WHERE 1 = 1  ";
+		if ( ! changeDateStart.equals("")) { 
+			where += " "
+					+ " and (  "
+					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'" + changeDateStart + "', 103) AND \r\n"
+					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'" + changeDateEnd + "', 103) \r\n"
+					+ "	) \r\n";     
+		}
+		if ( ! productionOrder.equals("")) { 
+			where += " "
+					+ " and (  "
+					+ " a.[ProductionOrder] = '" + productionOrder + "' \r\n" 
+					+ "	) \r\n";     
+		}
+		String sql = " "
+				+ " SELECT TOP (10000) [SaleOrder]\r\n"
+				+ "      ,[SaleLine]\r\n"
+				+ "      ,[Division]\r\n"
+				+ "      ,[MaterialNo]\r\n"
+				+ "      ,[ArticleFG]\r\n"
+				+ "      ,[DesignFG] \r\n"
+				+ "      ,[Color]\r\n"
+				+ "      ,[DistChannel]\r\n"
+				+ "      ,[CustomerName]\r\n"
+				+ "      ,[CustomerShortName]\r\n"
+				+ "      ,[ColorCustomer] \r\n"
+				+ "	  , CASE\r\n"
+				+ "	      WHEN [SaleCreateDate] = '1900-01-01 00:00:00.000' THEN NULL\r\n"
+				+ "	      WHEN [SaleCreateDate] IS NULL OR [SaleCreateDate] = '' THEN NULL\r\n"
+				+ "	      ELSE TRY_CAST([SaleCreateDate] as DATE )\r\n"
+				+ "	     END AS [SaleCreateDate] \r\n"
+				+ "	  ,CASE\r\n"
+				+ "	      WHEN [PlanGreigeDate] = '1900-01-01 00:00:00.000' THEN NULL\r\n"
+				+ "	      WHEN [PlanGreigeDate] IS NULL OR [PlanGreigeDate] = '' THEN NULL\r\n"
+				+ "	      ELSE TRY_CAST([PlanGreigeDate] as DATE )\r\n"
+				+ "	     END AS [PlanGreigeDate] \r\n"
+				+ "	  ,CASE\r\n"
+				+ "	      WHEN [DueDate] = '1900-01-01 00:00:00.000' THEN NULL\r\n"
+				+ "	      WHEN [DueDate] IS NULL OR [DueDate] = '' THEN NULL\r\n"
+				+ "	      ELSE TRY_CAST([DueDate] as DATE )\r\n"
+				+ "	     END AS [DueDate]\r\n"
+				+ "	  ,CASE\r\n"
+				+ "	      WHEN [CustomerDue] = '1900-01-01 00:00:00.000' THEN NULL\r\n"
+				+ "	      WHEN [CustomerDue] IS NULL OR [DueDate] = '' THEN NULL\r\n"
+				+ "	      ELSE CONVERT(varchar,CustomerDue, 103) \r\n"
+				+ "	     END AS [CustomerDue]     \r\n"
+				+ "      ,[SaleQuantity]\r\n"
+				+ "      ,[SaleUnit]\r\n"
+				+ "      ,[OrderAmount]\r\n"
+				+ "      ,[RemainQuantity]\r\n"
+				+ "      ,[RemainAmount]\r\n"
+				+ "      ,[PurchaseOrder]\r\n"
+				+ "      ,[CustomerNo]\r\n"
+				+ "      ,[CustomerMaterial]\r\n"
+				+ "      ,[SaleOrg]\r\n"
+				+ "      ,[SaleStatus] \r\n"
+				+ "      ,[SaleFullName]\r\n"
+				+ "      ,[DeliveryStatus]\r\n"
+				+ "      ,[SyncDate]\r\n"
+				+ "      ,[SyncDateHeader]\r\n"
+				+ "  FROM  [FromErpMainSale] a\r\n"
+				+ where 
+				+ " Order by SyncDate desc";
+		List<Map<String, Object>> datas = this.database.queryList(sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+//			list.add(this.bcModel._genProductionOrderLogDetail(map));
+			list.add(MapperUtility .mapToObject(map, SaleOrderLogDetail.class));
+		}  
+		return list;
+	}
 	@Override
 	public ArrayList<FromErpPackingDetail> getFromErpPackingDetail()
 	{
@@ -1352,5 +1523,6 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //		System.out.println("End : " + new Date());
 		return list;
 	}
+
 
 }

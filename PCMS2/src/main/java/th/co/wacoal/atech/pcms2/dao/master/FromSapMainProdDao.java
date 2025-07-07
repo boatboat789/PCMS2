@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdDetail;
 
 public interface FromSapMainProdDao {
@@ -13,6 +14,9 @@ public interface FromSapMainProdDao {
 	ArrayList<PCMSAllDetail> getUserStatusDetail();
 
 	String upsertFromSapMainProdDetail(ArrayList<FromErpMainProdDetail> paList);
+  
+	ArrayList<ProductionOrderLogDetail> getFromSapMainProdDetailWithRangeOfChangeDate(String startLogDate, String endLogDate,
+			String productionOrder);
 
 
 }
