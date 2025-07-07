@@ -103,6 +103,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 		try {
 
 			int index = 1;
+			int batchSize = 0;
 			prepared = connection.prepareStatement(sql); 
 			for (FromErpMainBillBatchDetail bean : paList) {
 				index = 1;
@@ -157,6 +158,12 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				
 				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch(); 
+				batchSize++;
+	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
+	    			prepared.executeBatch();
+	    			prepared.clearBatch();
+	                batchSize = 0; // Reset batch size
+	            } 
 			}
 //			System.out.println("here1");
 			prepared.executeBatch();

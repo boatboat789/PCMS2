@@ -79,6 +79,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToMainProdSale()
 	{
 		// TODO Auto-generated method stub
@@ -93,6 +94,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToPacking()
 	{
 		// TODO Auto-generated method stub
@@ -107,6 +109,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToSale()
 	{
 		// TODO Auto-generated method stub
@@ -121,6 +124,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToSubmitDate()
 	{
 		// TODO Auto-generated method stub
@@ -135,6 +139,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToGoodReceive()
 	{
 		// TODO Auto-generated method stub
@@ -149,6 +154,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	@Override
 	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder)
 	{
@@ -198,7 +204,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		}
 	}
 
- 
 	public void execUpsertToMainSale()
 	{
 		// TODO Auto-generated method stub
@@ -213,6 +218,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execUpsertToMainBillBatch()
 	{
 		// TODO Auto-generated method stub
@@ -228,6 +234,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	public void execHandlerCustomerDetail()
 	{
 		// TODO Auto-generated method stub
@@ -257,9 +264,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e1.printStackTrace();
 		}
 	}
+
 	@Override
 	public void handlerERPAtechToWebApp()
-	{ 
+	{
 
 	}
 
@@ -268,43 +276,110 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	{
 		ERPAtechModel erpaModel = new ERPAtechModel();
 
-		FromSapMainProdModel fsmpModel = new FromSapMainProdModel(); 
+		FromSapMainProdModel fsmpModel = new FromSapMainProdModel();
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
 		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
-		FromSapPackingModel fspModel = new FromSapPackingModel(); 
+		FromSapPackingModel fspModel = new FromSapPackingModel();
 //		RollFromSapModel rfsModel = new RollFromSapModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
 		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
 //		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
 
-		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
-		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
-		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
-		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
-//		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
-		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
-		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
-		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
-//		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
+//		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
+//		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
+//		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
+//		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
+////		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
+//		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
+//		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
+//		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
+////		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
 
-		fsmpModel.upsertFromSapMainProdDetail(frmpList);
-		this.execUpsertToMainProd();
-		fscfmModel.upsertFromSapCFMDetail(frcfmList);
-		this.execUpsertToCFM(); 
-		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
-		this.execUpsertToMainProdSale();
-		fspModel.upsertFromSapPackingDetail(frpList);
-		this.execUpsertToPacking();
-//		rfsModel.upsertRollFromSapFromERPPODetail(rollList); //  HANDLER FLAG ROLL NO IN METHOD ----- 
-		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
-		this.execUpsertToSubmitDate();
-		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
-		this.execUpsertToGoodReceive();
- 
-		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList); 
-		this.execUpsertToMainBillBatch();
-//		fsrModel.upsertFromSapReceipeDetail(ferdList);
+		// Handle FromSapMainProdDetail
+		try {
+			ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
+			fsmpModel.upsertFromSapMainProdDetail(frmpList);
+			this.execUpsertToMainProd();
+		} catch (Exception e) {
+			System.err.println("Error processing Main Production Order: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapCFMDetail
+		try {
+			ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
+			fscfmModel.upsertFromSapCFMDetail(frcfmList);
+			this.execUpsertToCFM();
+		} catch (Exception e) {
+			System.err.println("Error processing CFM Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapMainProdSaleDetail
+		try {
+			ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
+			fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
+			this.execUpsertToMainProdSale();
+		} catch (Exception e) {
+			System.err.println("Error processing Main Production Sale Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapPackingDetail
+		try {
+			ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
+			fspModel.upsertFromSapPackingDetail(frpList);
+			this.execUpsertToPacking();
+		} catch (Exception e) {
+			System.err.println("Error processing Packing Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapSubmitDateDetail
+		try {
+			ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
+			fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+			this.execUpsertToSubmitDate();
+		} catch (Exception e) {
+			System.err.println("Error processing Submit Date Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapGoodReceiveDetail
+		try {
+			ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
+			fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
+			this.execUpsertToGoodReceive();
+		} catch (Exception e) {
+			System.err.println("Error processing Good Receive Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Handle FromSapMainBillBatchDetail
+		try {
+			ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail();
+			fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList);
+			this.execUpsertToMainBillBatch();
+		} catch (Exception e) {
+			System.err.println("Error processing Main Bill Batch Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+//		fsmpModel.upsertFromSapMainProdDetail(frmpList);
+//		this.execUpsertToMainProd();
+//		fscfmModel.upsertFromSapCFMDetail(frcfmList);
+//		this.execUpsertToCFM(); 
+//		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
+//		this.execUpsertToMainProdSale();
+//		fspModel.upsertFromSapPackingDetail(frpList);
+//		this.execUpsertToPacking();  
+//		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
+//		this.execUpsertToSubmitDate();
+//		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
+//		this.execUpsertToGoodReceive(); 
+//		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList); 
+//		this.execUpsertToMainBillBatch();
+////		fsrModel.upsertFromSapReceipeDetail(ferdList);
 	}
 
 	@Override
@@ -314,15 +389,24 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 		ERPAtechModel erpaModel = new ERPAtechModel();
 		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		FromSapSaleModel fssModel = new FromSapSaleModel(); 
-		
-		ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
-		ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
-		
-		fsmsModel.upsertFromSapMainSaleDetail(frmsList);
-		this.execUpsertToMainSale();
-		fssModel.upsertFromSapSaleDetail(frsList);
-		this.execUpsertToSale();
+		FromSapSaleModel fssModel = new FromSapSaleModel();
+		try {
+			ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
+
+			fsmsModel.upsertFromSapMainSaleDetail(frmsList);
+			this.execUpsertToMainSale();
+		} catch (Exception e) {
+			System.err.println("Error processing Main Sale Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
+		try {
+			ArrayList<FromErpSaleDetail> frsList = erpaModel.getFromErpSaleDetail();
+			fssModel.upsertFromSapSaleDetail(frsList);
+			this.execUpsertToSale();
+		} catch (Exception e) {
+			System.err.println("Error processing Sale Detail: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -340,20 +424,30 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	@Override
 	public void handlerERPAtechToWebAppCustomer()
 	{
-		ERPAtechModel erpaModel = new ERPAtechModel();   
-		CustomerModel cusModel = new CustomerModel(); 
-		ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail(); 
-		cusModel.upsertCustomerDetail(cusList);
+		try {
+			ERPAtechModel erpaModel = new ERPAtechModel();
+			CustomerModel cusModel = new CustomerModel();
+			ArrayList<CustomerDetail> cusList = erpaModel.getCustomerDetail();
+			cusModel.upsertCustomerDetail(cusList);
+		} catch (Exception e) {
+			System.err.println("Error handlerERPAtechToWebAppCustomer: " + e.getMessage());
+			e.printStackTrace();
+		}
 //		this.execHandlerCustomerDetail();  
 	}
 
 	@Override
 	public void handlerBackGroundZ_ATT_CustomerConfirm2()
 	{
-		ERPAtechModel erpaModel = new ERPAtechModel();
-		Z_ATT_CustomerConfirm2Model zattCustModel = new Z_ATT_CustomerConfirm2Model();  
-		ArrayList<Z_ATT_CustomerConfirm2Detail> zCustList =erpaModel.getZ_ATT_CustomerConfirm2Detail(); 
-		zattCustModel.upsertZ_ATT_CustomerConfirm2Detail(zCustList); 
-		this.execHandlerCustomerConfirm2();
+		try {
+			ERPAtechModel erpaModel = new ERPAtechModel();
+			Z_ATT_CustomerConfirm2Model zattCustModel = new Z_ATT_CustomerConfirm2Model();
+			ArrayList<Z_ATT_CustomerConfirm2Detail> zCustList = erpaModel.getZ_ATT_CustomerConfirm2Detail();
+			zattCustModel.upsertZ_ATT_CustomerConfirm2Detail(zCustList);
+			this.execHandlerCustomerConfirm2();
+		} catch (Exception e) {
+			System.err.println("Error handlerBackGroundZ_ATT_CustomerConfirm2: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 }

@@ -442,7 +442,8 @@ $(document) .ready( function() {
 	 	  	scrollY: '55vh' , //ขนาดหน้าจอแนวตั้ง       
 	 	   	scrollCollapse: true,   
 		   	orderCellsTop : true,           
-			orderClasses : false,           
+			orderClasses : false,       
+		    deferRender: true, // ***** เปิดใช้งานตรงนี้ *****    
 //	 		lengthChange: false,              
 // 			deferRender: true,              	
 //	 		filter:false,       
@@ -453,7 +454,8 @@ $(document) .ready( function() {
 //	 		lengthMenu: [[1000, -1], [1000, "All"]],
 //	 		colReorder: {      
 //	             realtime: true       
-//	         },                       
+//	         },                     
+			deferRender: true, // run again in column     
 	 		colReorder: true,  
 			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
 	 	   	columns :    
@@ -1856,9 +1858,9 @@ function saveDefault( ){
 		contentType: "application/json",  
 		data: JSON.stringify(arrayTmp),      
 		url: ctx+"/Main/saveDefault", 
-		success: function(data) {   
-			if(data.length > 0){
-				var bean = data[0];   
+		success: function(response) {   
+			if(response.length > 0){
+				var bean = response[0];   
 				if(bean.iconStatus == 'I'){
 					swal({   
 						title: "Success",    
@@ -1867,7 +1869,7 @@ function saveDefault( ){
 						button: "confirm",
    					});  
 				}
-				else{  
+				else{  //E
 					swal({   
 						title: "Warning ",    
 					 	text: bean.systemStatus  , 

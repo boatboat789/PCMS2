@@ -59,9 +59,9 @@ public class PCMSDetailModel extends HttpServlet {
 		return list;
 	}
 
-	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList) {
+	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList ) {
 		// TODO Auto-generated method stub
-		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList);
+		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList );
 		return list;
 	}
 

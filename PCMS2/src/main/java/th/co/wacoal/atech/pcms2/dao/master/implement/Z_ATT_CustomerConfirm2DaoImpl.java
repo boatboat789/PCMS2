@@ -20,8 +20,7 @@ import th.in.totemplate.core.sql.Database;
 public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New 
-	@SuppressWarnings("unused")
+	// Sale - Lab-New  
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String cte = ""
 			+ " WITH OperationMax AS (\r\n"

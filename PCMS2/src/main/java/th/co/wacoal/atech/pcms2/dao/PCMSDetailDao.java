@@ -12,7 +12,7 @@ public interface PCMSDetailDao {
 	ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList);
 
 
-	ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList);
+	ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList );
 
 	ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList);
 	ArrayList<PCMSAllDetail> getUserStatusList();

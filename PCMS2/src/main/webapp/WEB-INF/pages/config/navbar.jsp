@@ -34,18 +34,21 @@
 						<h6 class="dropdown-header">CFM</h6>
 						<a id="ReportPage" class="dropdown-item" href="${contextpath}/Report/CFM/Detail">CFM Detail</a>
 						<hr class="dropdown-divider">
-<!-- 						<h6 class="dropdown-header">DataFromERP</h6> -->
-<%-- 						<a class="dropdown-item" href="${contextpath}/Log/ProdOperationLog/ATT">Log - Production Order / Operation</a> --%>
+						<hr class="dropdown-divider">
+						<h6 class="dropdown-header">DataFromERP</h6>
+						<a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ATT">Log - Production Order</a>
+						<a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ATT">Log - Sale Order</a>
 <%-- 						<a class="dropdown-item" href="${contextpath}/Log/RollNumberLog/ATT">Log - เบอร์ม้วน</a> --%>
-<!-- 						<hr class="dropdown-divider"> -->
-<!-- 						<h6 class="dropdown-header">ERP365</h6> -->
-<%-- 						<a class="dropdown-item" href="${contextpath}/Log/ProdOperationLog/ERP365">Log - Production Order / Operation</a> --%>
+						<hr class="dropdown-divider">
+						<h6 class="dropdown-header">ERP365</h6>
+						<a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ERP365">Log - Production Order</a>
+						<a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ERP365">Log - Sale Order</a>
 <%-- 						<a class="dropdown-item" href="${contextpath}/Log/RollNumberLog/ERP365">Log - เบอร์ม้วน</a> --%>
 					</div>
 				</li> 
 			</c:if>
 		</ul>
-	</div>         
+	</div>       
 	<ul class="nav navbar-nav navbar-right ml-auto">    
 				<li class="nav-item dropdown">
 					<a class="nav-item nav-link dropdown-toggle mr-md-2" 

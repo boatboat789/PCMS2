@@ -21,6 +21,7 @@ import th.co.wacoal.atech.pcms2.entities.PODetail;
 import th.co.wacoal.atech.pcms2.entities.PackingDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.PresetDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.ReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.ReplacedProdOrderDetail;
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
@@ -334,6 +335,12 @@ public class BeanCreateModel {
 	public Z_ATT_CustomerConfirm2Detail _genZ_ATT_CustomerConfirm2Detail(Map<String, Object> map)
 	{
 		Z_ATT_CustomerConfirm2Detail bean = this.dao._genZ_ATT_CustomerConfirm2Detail(map);
+		return bean;
+	}
+
+	public ProductionOrderLogDetail _genProductionOrderLogDetail(Map<String, Object> map)
+	{
+		ProductionOrderLogDetail bean = this.dao._genProductionOrderLogDetail(map);
 		return bean;
 	} 
 }

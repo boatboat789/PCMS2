@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.erp.atech.ERPAtechDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.erp.atech.ERPAtechDaoImpl;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.CustomerDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpCFMDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpGoodReceiveDetail;
@@ -22,7 +24,7 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
-import th.co.wacoal.atech.pcms2.info.SqlAtechERPInfo; 
+import th.co.wacoal.atech.pcms2.info.SqlAtechERPInfo;
 import th.in.totemplate.core.sql.Database;
 
 @Component
@@ -35,7 +37,7 @@ public class ERPAtechModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public ERPAtechModel() {
 		try {
 			this.database = new Database(SqlAtechERPInfo.getInstance());
@@ -151,6 +153,7 @@ public class ERPAtechModel extends HttpServlet {
 		ArrayList<FromErpSubmitDateDetail> list = this.dao.getFromErpSubmitDateDetail();
 		return list;
 	}
+
 	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail()
 
 	{
@@ -165,4 +168,20 @@ public class ERPAtechModel extends HttpServlet {
 //		ArrayList<FromErpReceipeDetail> list = this.dao.getFromErpReceipeDetail();
 //		return list;
 //	} 
+
+	public ArrayList<ProductionOrderLogDetail> getFromErpMainProdDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String productionOrder)
+	{
+		ArrayList<ProductionOrderLogDetail> list =
+				this.dao.getFromErpMainProdDetailWithRangeOfChangeDate(changeDateStart, changeDateEnd, productionOrder);
+		return list;
+	}
+
+	public ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String saleOrder)
+	{
+		ArrayList<SaleOrderLogDetail> list =
+				this.dao.getFromErpMainSaleDetailWithRangeOfChangeDate(changeDateStart, changeDateEnd, saleOrder);
+		return list;
+	}
 }

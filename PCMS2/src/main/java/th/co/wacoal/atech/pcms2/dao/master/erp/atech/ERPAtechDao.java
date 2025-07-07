@@ -2,6 +2,8 @@ package th.co.wacoal.atech.pcms2.dao.master.erp.atech;
 
 import java.util.ArrayList;
 
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.CustomerDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpCFMDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpGoodReceiveDetail;
@@ -45,6 +47,12 @@ public interface ERPAtechDao {
 	ArrayList<FromErpPODetail> getFromErpPODetail();
 
 	ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail();
+
+	ArrayList<ProductionOrderLogDetail> getFromErpMainProdDetailWithRangeOfChangeDate(String changeDateStart,
+			String changeDateEnd, String productionOrder);
+
+	ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart, String changeDateEnd,
+			String productionOrder);
  
 
 }

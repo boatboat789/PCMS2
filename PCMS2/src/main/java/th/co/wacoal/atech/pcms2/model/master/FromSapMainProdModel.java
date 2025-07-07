@@ -1,6 +1,7 @@
 package th.co.wacoal.atech.pcms2.model.master;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import th.co.wacoal.atech.pcms2.dao.master.FromSapMainProdDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.FromSapMainProdDaoImpl;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
+import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdDetail;
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
@@ -26,7 +28,7 @@ public class FromSapMainProdModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public FromSapMainProdModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -74,6 +76,15 @@ public class FromSapMainProdModel extends HttpServlet {
 		// TODO Auto-generated method stub
 		String iconStatus = this.dao.upsertFromSapMainProdDetail(paList);
 		return iconStatus;
+	}
+
+	public ArrayList<ProductionOrderLogDetail> getFromSapMainProdDetailWithRangeOfChangeDate(String startLogDate,
+			String endLogDate, String productionOrder)
+	{
+		// TODO Auto-generated method stub
+		ArrayList<ProductionOrderLogDetail> list =
+				this.dao.getFromSapMainProdDetailWithRangeOfChangeDate(startLogDate, endLogDate,productionOrder);
+		return list;
 	}
 
 }
