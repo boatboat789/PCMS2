@@ -66,9 +66,13 @@ public class ReportController {
 			} else {
 				if (permit.isReport()) {  
 					String OS = System.getProperty("os.name").toLowerCase();  
+					String headerName = "CFM Report";
+					if(reportType.equals("CFM")) {
+						headerName = "CFM Report";
+					}
 					mv.setViewName("Report/CFMReport"); 
 					mv.addObject("OS", g.toJson(OS));
-					mv.addObject("HeaderName", reportType);
+					mv.addObject("HeaderName", headerName);
 					mv.addObject("ReportType", reportType);
 					mv.addObject("UserID", g.toJson(user));
 				} else {

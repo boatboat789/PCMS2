@@ -15,18 +15,18 @@ public class SqlPPMMInfo implements DatabaseInfo {
 	private static final String _driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	//////////////////////////////////////////////////////////////////////////
 //  PRD
-//	private static final String _url =  "jdbc:sqlserver://10.11.44.101;database=PPMM;useUnicode=true;characterEncoding=UTF-8;";
-//	private static final String _username = "94687";
-//	private static final String _password = "Boat789";
+	private static final String _url =  "jdbc:sqlserver://10.11.44.101;database=PPMM;useUnicode=true;characterEncoding=UTF-8;";
+	private static final String _username = "94687";
+	private static final String _password = "Boat789";
 ////	
 //	private static final String _url = "jdbc:sqlserver://10.11.44.101;database=PPMM;useUnicode=true;characterEncoding=UTF-8;";
 //	private static final String _username = "ppmmpgm";
 //	private static final String _password = "1234";
 
 ////  DEV
-	private static final String _url = "jdbc:sqlserver://10.11.44.101\\PCMSDEV:1435;database=PPMM;useUnicode=true;characterEncoding=UTF-8;";
-	private static final String _username = "94687";
-	private static final String _password = "Atech123"; 
+//	private static final String _url = "jdbc:sqlserver://10.11.44.101\\PCMSDEV:1435;database=PPMM;useUnicode=true;characterEncoding=UTF-8;";
+//	private static final String _username = "94687";
+//	private static final String _password = "Atech123"; 
 	private static SqlPPMMInfo _info;
 
 	public static SqlPPMMInfo getInstance() {

@@ -18,7 +18,7 @@ public class SqlSORInfo implements DatabaseInfo {
 	private static final String _username = "sorpcms";
 	private static final String _password = "SorToPcms@2";
 
-
+ 
 	private static SqlSORInfo _info;
 	private SqlSORInfo() {  }
 
