@@ -47,6 +47,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	private String declareThirtyMinuteAgo = "" 
 	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
+//	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -3, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
@@ -935,7 +936,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 
 	@Override
 	public ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart,
-			String changeDateEnd, String productionOrder)
+			String changeDateEnd, String saleOrder)
 	{ 
 		ArrayList<SaleOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1  ";
@@ -946,10 +947,10 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'" + changeDateEnd + "', 103) \r\n"
 					+ "	) \r\n";     
 		}
-		if ( ! productionOrder.equals("")) { 
+		if ( ! saleOrder.equals("")) { 
 			where += " "
 					+ " and (  "
-					+ " a.[ProductionOrder] = '" + productionOrder + "' \r\n" 
+					+ " a.[SaleOrder] = '" + saleOrder + "' \r\n" 
 					+ "	) \r\n";     
 		}
 		String sql = " "

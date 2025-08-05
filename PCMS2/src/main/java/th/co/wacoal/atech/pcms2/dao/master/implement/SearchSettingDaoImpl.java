@@ -46,12 +46,12 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	{
 		ArrayList<PCMSTableDetail> list = null;
 		String sql = " SELECT \r\n"
-				+ "	[EmployeeID] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
+				+ "	[EmployeeId] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
 				+ "  ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
 				+ "  ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
 				+ "   ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[Division],[PurchaseOrder]\r\n"
 				+ " FROM [PCMS].[dbo].[SearchSetting]\r\n"
-				+ " where [EmployeeID] = '"
+				+ " where [EmployeeId] = '"
 				+ userId
 				+ "' and [ForPage] = '"
 				+ forPage
@@ -98,7 +98,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 		int no = 1;
 		try {
 			String sql = " INSERT INTO [dbo].[SearchSetting]\r\n"
-					+ "           ( [EmployeeID] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
+					+ "           ( [EmployeeId] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
 					+ "           ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
 					+ "           ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
 					+ "           ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[ForPage],[Division] \r\n"
@@ -189,7 +189,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 					+ "      ,[LabNo] = ? ,[DeliveryStatus] = ? ,[DistChannel] = ?\r\n"
 					+ "      ,[SaleStatus] = ? ,[DueDate] = ? ,[SaleCreateDate] = ? \r\n"
 					+ "      ,[PrdCreateDate] = ? ,[UserStatus] = ? , [Division] = ? , [PurchaseOrder] = ?\r\n"
-					+ "  where  [EmployeeID] = ? and [ForPage] = ?";
+					+ "  where  [EmployeeId] = ? and [ForPage] = ?";
 			prepared = connection.prepareStatement(sql);
 //				prepared.setString(1, userId);
 			int index = 1;

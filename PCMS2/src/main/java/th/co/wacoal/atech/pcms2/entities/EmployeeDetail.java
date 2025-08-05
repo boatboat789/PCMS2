@@ -7,7 +7,7 @@ public class EmployeeDetail {
 	private String id;
 	private String permitId;
 	private String responsible;
-	private String employeeID;
+	private String employeeId;
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -29,7 +29,7 @@ public class EmployeeDetail {
 
 	}
 
-	public EmployeeDetail(String employeeID, String permitId, String responsible, String password, String firstName,
+	public EmployeeDetail(String employeeId, String permitId, String responsible, String password, String firstName,
 			String lastName, String role, String department, String email, String Id, String ArrangedBy, String AuthorizedBy,
 			String changeBy, String changeDate, String createBy, String createDate) {
 		super();
@@ -39,7 +39,7 @@ public class EmployeeDetail {
 		this.changeDate = changeDate;
 		this.responsible = responsible;
 		this.permitId = permitId;
-		this.employeeID = employeeID;
+		this.employeeId = employeeId;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -156,9 +156,9 @@ public class EmployeeDetail {
 		return email;
 	}
 
-	public String getEmployeeID()
+	public String getEmployeeId()
 	{
-		return employeeID;
+		return employeeId;
 	}
 
 	public String getFirstName()
@@ -206,9 +206,9 @@ public class EmployeeDetail {
 		this.email = rmail;
 	}
 
-	public void setEmployeeID(String employeeID)
+	public void setEmployeeId(String employeeId)
 	{
-		this.employeeID = employeeID;
+		this.employeeId = employeeId;
 	}
 
 	public void setFirstName(String firstName)
@@ -241,8 +241,8 @@ public class EmployeeDetail {
 	{
 		return "EmployeeDetail [id="
 				+ id
-				+ ", employeeID="
-				+ employeeID
+				+ ", employeeId="
+				+ employeeId
 				+ ", firstName="
 				+ firstName
 				+ ", lastName="

@@ -3266,9 +3266,9 @@ public class BeanCreateService   {
 			int value = (int) map.get("Id");
 			Id = Integer.toString(value);
 		}
-		String EmployeeID = ""; // add
-		if (map.get("EmployeeID") != null) {
-			EmployeeID = (String) map.get("EmployeeID");
+		String EmployeeId = ""; // add
+		if (map.get("EmployeeId") != null) {
+			EmployeeId = (String) map.get("EmployeeId");
 		}
 		String PermitId = ""; // add
 		if (map.get("PermitId") != null) {
@@ -3313,7 +3313,7 @@ public class BeanCreateService   {
 		}
 		EmployeeDetail bean = new EmployeeDetail();
 		bean.setId(Id);
-		bean.setEmployeeID(EmployeeID);
+		bean.setEmployeeId(EmployeeId);
 		bean.setFirstName(FirstName);
 		bean.setLastName(LastName);
 		bean.setRole(Role);

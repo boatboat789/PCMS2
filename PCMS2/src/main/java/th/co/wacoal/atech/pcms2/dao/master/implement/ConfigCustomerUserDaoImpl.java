@@ -42,7 +42,7 @@ public class ConfigCustomerUserDaoImpl implements  ConfigCustomerUserDao{
 		ArrayList<ConfigCustomerUserDetail> list = null;
 		String sql =
 				  " SELECT [Id]\r\n"
-				  + "      ,[EmployeeID]\r\n"
+				  + "      ,[EmployeeId]\r\n"
 				  + "      ,[CustomerNo]\r\n"
 				  + "      ,[CustomerDivision]\r\n"
 //				  + "      ,[IsPCMSDetailPage]\r\n"
@@ -54,8 +54,8 @@ public class ConfigCustomerUserDaoImpl implements  ConfigCustomerUserDao{
 //				  + "      ,[IsSFCPathBtn]\r\n"
 				  + "      ,[DataStatus]\r\n"
 				  + "  FROM [PCMS].[dbo].[ConfigCustomerUser] as a\r\n"
-			  	+ " where a.[EmployeeID] = '" + userId+ "' \r\n"
-			  	+ " ORDER BY EmployeeID desc "; 
+			  	+ " where a.[EmployeeId] = '" + userId+ "' \r\n"
+			  	+ " ORDER BY EmployeeId desc "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

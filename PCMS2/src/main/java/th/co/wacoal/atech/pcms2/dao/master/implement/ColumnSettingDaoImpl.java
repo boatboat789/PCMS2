@@ -44,9 +44,9 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 		ArrayList<ColumnHiddenDetail> list = null;
 		String sql =
 				    " SELECT distinct \r\n"
-				  + "		[EmployeeID] ,[ColVisibleDetail] ,[ColVisibleSummary]\r\n"
+				  + "		[EmployeeId] ,[ColVisibleDetail] ,[ColVisibleSummary]\r\n"
 		 		  + " FROM [PCMS].[dbo].[ColumnSetting] \r\n "
-		 		  + " where [EmployeeID] = '" + user+ "' ";
+		 		  + " where [EmployeeId] = '" + user+ "' ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -68,13 +68,13 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 			String sql =
 					  " UPDATE [PCMS].[dbo].[ColumnSetting] "
 					+ " 	SET [ColVisibleDetail] = ?  "
-					+ " 	WHERE [EmployeeID]  = ? "
+					+ " 	WHERE [EmployeeId]  = ? "
 					+ " declare  @rc int = @@ROWCOUNT " // 56
 					+ " if @rc <> 0 "
 					+ " 	print @rc "
 					+ " else "
 					+ " 	INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
-					+ " 		([EmployeeID] ,[ColVisibleDetail])"//55
+					+ " 		([EmployeeId] ,[ColVisibleDetail])"//55
 					+ " 	values(? , ? )  ;"  ;
 				prepared = connection.prepareStatement(sql);
 				prepared.setString(1, colName);
@@ -110,13 +110,13 @@ public class ColumnSettingDaoImpl implements  ColumnSettingDao{
 			String sql =
 					  " UPDATE [PCMS].[dbo].[ColumnSetting] "
 					+ " 	SET [ColVisibleSummary] = ?  "
-					+ " 	WHERE [EmployeeID]  = ? "
+					+ " 	WHERE [EmployeeId]  = ? "
 					+ " declare  @rc int = @@ROWCOUNT " // 56
 					+ " if @rc <> 0 "
 					+ " 	print @rc "
 					+ " else "
 					+ " 	INSERT INTO [PCMS].[dbo].[ColumnSetting]	 "
-					+ " 		([EmployeeID] ,[ColVisibleSummary])"//55
+					+ " 		([EmployeeId] ,[ColVisibleSummary])"//55
 					+ " 	values(? , ? )  ;"  ;
 				prepared = connection.prepareStatement(sql);
 				prepared.setString(1, colName);

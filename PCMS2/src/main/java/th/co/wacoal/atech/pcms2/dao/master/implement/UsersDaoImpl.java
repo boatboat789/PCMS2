@@ -31,7 +31,7 @@ public class UsersDaoImpl implements UsersDao {
 
 	private String select = ""
 			+ "       A.[Id]\r\n"
-			+ "      ,A.[EmployeeID]\r\n"
+			+ "      ,A.[EmployeeId]\r\n"
 			+ "      ,B.[PermitId]\r\n"
 			+ "      ,B.[Responsible]\r\n"
 			+ "      ,A.[IsClosed]\r\n"

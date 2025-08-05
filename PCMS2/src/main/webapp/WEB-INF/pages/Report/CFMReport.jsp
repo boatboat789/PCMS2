@@ -96,10 +96,7 @@ tr.even td {
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
 <script src="<c:url value="/resources/js/General.js" />"></script>
 <script>    
-var preloader = document.getElementById('loader');  
-<%-- var userObj = <%= session.getAttribute("userObject")%>; --%>
-// var userFullName = userObj.firstName+' '+userObj.lastName;
-// var userId = userObj.employeeID;  
+var preloader = document.getElementById('loader');   
 var userStatusList ;  	 
 var labStatusList ;    
 var caseDupli = 0;

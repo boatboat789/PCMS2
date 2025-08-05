@@ -1,7 +1,6 @@
 package th.co.wacoal.atech.pcms2.model.master;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.SQLException; 
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServlet;

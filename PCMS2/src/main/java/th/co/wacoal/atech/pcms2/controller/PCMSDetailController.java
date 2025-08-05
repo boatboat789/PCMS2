@@ -264,6 +264,7 @@ public class PCMSDetailController {
 //			,@RequestBody String data
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList ) throws IOException {
 		PlanCFMDateModel model = new PlanCFMDateModel();
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -295,6 +296,7 @@ public class PCMSDetailController {
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList ) throws IOException {
 
 		PlanCFMLabDateModel pcfmldModel = new PlanCFMLabDateModel( );
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -324,6 +326,7 @@ public class PCMSDetailController {
 //			,@RequestBody String data
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException {
 		PCMSDetailModel model = new PCMSDetailModel();
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -352,6 +355,7 @@ public class PCMSDetailController {
 //			,@RequestBody String data
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException {
 		PlanSendCFMCusDateModel model = new PlanSendCFMCusDateModel();
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -468,6 +472,7 @@ public class PCMSDetailController {
 //			,@RequestBody String data
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException {
 		PCMSDetailModel model = new PCMSDetailModel();
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);
@@ -498,6 +503,7 @@ public class PCMSDetailController {
 			, @RequestBody ArrayList<PCMSSecondTableDetail> poList
 			) throws IOException {
 		PCMSDetailModel model = new PCMSDetailModel();
+	    @SuppressWarnings("unused")
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 //		PCMSSecondTableDetail[] userArray = g.fromJson(data, PCMSSecondTableDetail[].class);

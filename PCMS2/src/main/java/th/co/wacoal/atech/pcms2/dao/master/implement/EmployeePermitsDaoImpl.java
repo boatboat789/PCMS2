@@ -112,7 +112,7 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 				String dataStatus = bean.getDataStatus();
 				String responsible = bean.getResponsible() ;
 				changeBy = bean.getChangeBy(); 
-				String userId = bean.getEmployeeID(); 
+				String userId = bean.getEmployeeId(); 
 				changeBy = bean.getChangeBy(); 
 				int index = 1;
 				prepared.setString(index ++ , permitId);

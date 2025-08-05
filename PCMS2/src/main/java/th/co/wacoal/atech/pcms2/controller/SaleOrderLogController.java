@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import th.co.wacoal.atech.pcms2.entities.ApiResponse;
-import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
-import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
-import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdModel;
+import th.co.wacoal.atech.pcms2.entities.ApiResponse; 
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail; 
 import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
 import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel; 
  
