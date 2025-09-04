@@ -45,7 +45,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	}
 
 	private String declareThirtyMinuteAgo = "" 
-	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"; 
+	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -40, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
 //	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -3, GETDATE());"; 
 	@Override
@@ -756,6 +756,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "	FROM FromErpMainSale AS a \r\n"
 				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
 				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "	      OR [syncDateProdHeader] >= @dateTimeThirtyMinuteAgo\r\n"
 				+ "), \r\n"
 				+ "MainSale AS (   \r\n"
 				+ " SELECT distinct    \r\n"

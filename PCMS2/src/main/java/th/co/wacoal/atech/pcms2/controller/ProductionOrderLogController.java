@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod; 
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
@@ -50,40 +50,52 @@ public class ProductionOrderLogController {
 		mv.setViewName("LogInformation/ProductionOrderLog");
 		mv.addObject("UserID", g.toJson(user));
 		mv.addObject("titleName", g.toJson(titleName));
-		mv.addObject("dataType", g.toJson(dataType));
-//		mv.addObject("UserID", g.toJson());'Log - ข้อมูล Prod/Opertation ที่อัพเดทจาก ERP365'
+		mv.addObject("dataType", g.toJson(dataType)); 
 		return mv;
-	}  
-//	public class CarObject {
-//	    private String name;
-//	    private String color;
-//	    // getters/setters
-//	}
+	}   
 
-	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.GET )
+	// GET - JSON
+//	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.GET )
+//	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
+//			,@RequestParam("productionOrder") String productionOrder 
+//			,@RequestParam("changeDateStart") String changeDateStart 
+//			,@RequestParam("changeDateEnd") String changeDateEnd 
+////			, @RequestBody List<SearchCriteria> list 
+//			,@PathVariable("dataType") String dataType) throws IOException { 
+////		Gson g = new Gson();   
+//        ArrayList<ProductionOrderLogDetail> resultList;
+//		if(dataType.equals("ERP365")) { 
+//        	resultList = erpAttModel.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
+//        }
+//        else { 
+//        	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);
+//        }
+////	    boolean isSuccess = result.stream().allMatch(bean -> "I".equals(bean.getIconStatus()));
+//	    boolean isSuccess = true;
+//	    String status = isSuccess ? "success" : "error";
+//	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
+//
+//	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
+//	    return ResponseEntity.ok(apiResponse);
+//	}
+	
+// POST - JSON
+	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
 	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
-			,@RequestParam("productionOrder") String productionOrder 
-			,@RequestParam("changeDateStart") String changeDateStart 
-			,@RequestParam("changeDateEnd") String changeDateEnd 
-//			, @RequestBody List<SearchCriteria> list 
-			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson();  
-//		System.out.println(productionOrder);
-//		System.out.println(changeDateStart);    
-//		System.out.println(changeDateEnd);
-		
-//		// Define the Type for ArrayList of OrgatexDyeLotDetail
-//        Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-//        // Deserialize JSON directly to ArrayList
-//        ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType);  
-        ArrayList<ProductionOrderLogDetail> resultList;
+			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
+			 ,@RequestBody SearchCriteria bean  // Direct POJO mapping!
+			,@PathVariable("dataType") String dataType) throws IOException {  
+	    ArrayList<ProductionOrderLogDetail> resultList;    
+	    String changeDateStart = bean.getChangeDateStart() ;
+	    String changeDateEnd = bean.getChangeDateEnd();
+	    String productionOrder = bean.getProductionOrder();
 		if(dataType.equals("ERP365")) { 
-        	resultList = erpAttModel.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
-        }
-        else { 
-        	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);
-        }
-//	    boolean isSuccess = result.stream().allMatch(bean -> "I".equals(bean.getIconStatus()));
+	    	resultList = erpAttModel.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
+	    }
+	    else { 
+	    	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);
+	    }
+		response.setContentType("application/json");
 	    boolean isSuccess = true;
 	    String status = isSuccess ? "success" : "error";
 	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
@@ -91,32 +103,6 @@ public class ProductionOrderLogController {
 	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
 	    return ResponseEntity.ok(apiResponse);
 	}
-	
-// POST - JSON
-//	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
-//	public void doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
-//			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
-//			 ,@RequestBody SearchCriteria searchCriteria  // Direct POJO mapping!
-//			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson();
-//		System.out.println(searchCriteria.toString());
-////		// Define the Type for ArrayList of OrgatexDyeLotDetail
-////        Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-////        // Deserialize JSON directly to ArrayList
-////        ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType); 
-//        
-//        
-//        ArrayList<ProductionOrderLogDetail> list  = new ArrayList<ProductionOrderLogDetail>();;
-////        if(dataType.equals("ERP365")) { 
-////            list = erpAttModel.getDataFromERPDetail(poList.get(0).getProductionOrder(),poList.get(0).getChangeDate());
-////        }
-////        else { 
-////            list = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(poList.get(0).getProductionOrder(),poList.get(0).getChangeDate());
-////        }
-//		response.setContentType("application/json");
-//		PrintWriter out = response.getWriter();
-//		out.println(g.toJson(list ));
-//	}
 	
 //	//POST LIST
 //	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )

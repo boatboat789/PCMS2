@@ -151,8 +151,8 @@
 				{ data : "productionOrder", defaultContent: ""   }, 
 				{ data : "lotNo" , defaultContent: ""  }, 
 				{ data : "orderType", defaultContent: ""    }, 
-				{ data : "saleOrder", defaultContent: ""   }, 
-				{ data : "saleLine" }, 
+				{ data : "saleOrder", defaultContent: ""   },  
+				{ data : "saleLine" , defaultContent: "" }, 
 // 				{ data : "prdCreateDate", defaultContent: ""  , render : DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en') }, 
 // 				{ data : "greigeInDate", defaultContent: ""  , render : DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en') }, 
 				{ data : "prdCreateDate", defaultContent: "" ,
@@ -277,45 +277,41 @@
 	} 
 // GET - LIST JSONS  
 	function searchByDetail() {  
-		const query = createParam(); 
-	    getProductionOrderLogBySearch(query);
-// 		const json = createJson(); 
-// 	    getProductionOrderLogBySearch(json);
+// 		const query = createParam(); 
+// 	    getProductionOrderLogBySearch(query);
+		const json = createJson(); 
+	    getProductionOrderLogBySearch(json);
 	}     
-	function createParam() {    
+// 	function createParam() {    
+// 	    const prodOrder = document.getElementById("input_prodOrder").value.trim();
+// 	    const createDate = document.getElementById("input_createDate").value.trim();
+// 	    const words = createDate.split(" - ");       
+// 	    var query = "productionOrder=" + encodeURIComponent(prodOrder)
+// 	              + "&changeDateStart=" + encodeURIComponent( words[0])
+// 	              + "&changeDateEnd=" + encodeURIComponent( words[1]); 
+// 	    return query  ;
+// 	}
+
+	function createJson() {      
 	    const prodOrder = document.getElementById("input_prodOrder").value.trim();
 	    const createDate = document.getElementById("input_createDate").value.trim();
 	    const words = createDate.split(" - "); 
-	    var query = "productionOrder=" + encodeURIComponent(data.productionOrder)
-	              + "&changeDateStart=" + encodeURIComponent(data.changeDateStart)
-	              + "&changeDateEnd=" + encodeURIComponent(data.changeDateEnd); 
-	    return query  ;
+	    // Create an object and convert it to JSON
+	    const data = {  
+	        productionOrder: prodOrder,
+        	changeDateStart: words[0] ,
+        	changeDateEnd: words[1]   
+	    };                 
+	    return data  ;
 	}
-
-// 	function createJson() {    
-// 	    const prodOrder = document.getElementById("input_prodOrder").value.trim();
-// 	    const createDate = document.getElementById("input_createDate").value.trim();
-// 	    const words = createDate.split(" - "); 
-// 	    // Create an object and convert it to JSON
-// 	    const data = {  
-// 	        productionOrder: prodOrder,
-//         	changeDateStart: words[0] ,
-//         	changeDateEnd: words[1]   
-// 	    };             
-// 	    return query  ;
-// 	}
-	function getProductionOrderLogBySearch(query) {
-// 			console.log(query)        
+	function getProductionOrderLogBySearch(query) { 
 		$.ajax({    
-			type : "GET",        
+			type : "POST",           
 			dataType : "json", 
-			contentType : "application/json; charset=utf-8",
-			url : ctx + "/Log/ProductionOrderLog/"+dataType+"/getProductionOrderLogBySearch?"+ query,  
-// 			url : ctx + "/Log/ProductionOrderLog/"+dataType+"/getProductionOrderLogBySearch"  ,  
-// 		    data: {
-// 		        data: JSON.stringify(arr) // ส่ง JSON เป็น string ใน query param
-// 		      }
-			success : function(response) {
+			contentType : "application/json; charset=utf-8",            
+			url : ctx + "/Log/ProductionOrderLog/"+dataType+"/getProductionOrderLogBySearch"  ,     
+			data: JSON.stringify(query),  // แปลงเป็น JSON ตรงๆ
+			success : function(response) {           
 				reportTable.clear();
 				if(response.status === "success") {
 					if (response.data.length > 0) { 
@@ -348,6 +344,46 @@
 			}
 		});
 	}
+
+// 	function getProductionOrderLogBySearch(query) { 
+// 		$.ajax({    
+// 			type : "GET",        
+// 			dataType : "json", 
+// 			contentType : "application/json; charset=utf-8",
+// 			url : ctx + "/Log/ProductionOrderLog/"+dataType+"/getProductionOrderLogBySearch?"+ query,   
+// 			success : function(response) {       
+// 				reportTable.clear();
+// 				if(response.status === "success") {
+// 					if (response.data.length > 0) { 
+// 						reportTable.rows.add(response.data); 
+// 					} 
+// // 					swal({
+// // 						title: "Success",
+// // 						text: response.message,
+// // 						icon: "info",
+// // 						button: "confirm"
+// // 					});
+// 				} else {
+// // 					swal({
+// // 						title: "Warning",
+// // 						text: response.message,
+// // 						icon: "warning",
+// // 						timer: 1000,
+// // 						buttons: false
+// // 					});
+// 				}
+// 				reportTable.columns.adjust();
+// 				reportTable.draw(); 
+// 				setStickyToFilterColumn() ;       
+// 			},
+// 			error : function(e) {
+// 				swal("Fail", "Please contact to IT", "error");
+// 			},
+// 			done : function(e) {
+// 				console.log(data);
+// 			}
+// 		});
+// 	}
 
 
 // POST - JSONS 
