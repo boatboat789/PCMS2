@@ -32,31 +32,7 @@ public class TaskService {
 		this.sorModel = sorModel;
 		this.bgjModel = bgjModel;
 //		isCheck = true;
-	} 
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "30 8/10 * * * *")
-	public void sortBackGroundCustomer()
-	{
-		if(isCheck)System.out.println("Start sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
-		this.bgjModel.handlerERPAtechToWebAppCustomer();
-		if(isCheck)System.out.println("End sortBackGroundCustomer: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "30 8/10 * * * *")
-	public void sortBackGroundProductionOrder()
-	{
-		if(isCheck)System.out.println("Start sortBackGroundProductionOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.bgjModel.handlerERPAtechToWebAppProductionOrder();
-		if(isCheck)System.out.println("End sortBackGroundProductionOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "30 8/10 * * * *")
-	public void sortBackGroundSaleOrder()
-	{
-		if(isCheck)System.out.println("Start sortBackGroundSaleOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.bgjModel.handlerERPAtechToWebAppSaleOrder();
-		if(isCheck)System.out.println("End sortBackGroundSaleOrder: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}
+	}  
 //	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "30 4/10 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
@@ -64,9 +40,7 @@ public class TaskService {
 		if(isCheck)System.out.println("Start sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.bgjModel.sortBackGroundAfterGetERPDataProcedure();
 		if(isCheck)System.out.println("End sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}
-	
-
+	} 
 //	@Scheduled(fixedRate = 50000000)	
 	@Scheduled(cron = "0 0,30 * * * *")
 	public void handlerBackGroundZ_ATT_CustomerConfirm2()
@@ -74,7 +48,45 @@ public class TaskService {
 		if(isCheck)System.out.println("Start sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.bgjModel.handlerBackGroundZ_ATT_CustomerConfirm2();
 		if(isCheck)System.out.println("End sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+	} 
+//	@Scheduled(fixedRate = 50000000)	
+	@Scheduled(cron = "30 8/10 * * * *")
+	public void runAllSyncJobs() {
+	    if(isCheck)System.out.println("=== Start runAllSyncJobs: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+	    sortBackGroundCustomer();
+	    sortBackGroundProductionOrder();
+	    sortBackGroundSaleOrder();
+
+	    if(isCheck)System.out.println("=== End runAllSyncJobs: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
+
+	// ---- ย้ายเป็น private method ----
+	private void sortBackGroundCustomer() {
+	    if(isCheck)System.out.println("Start sortBackGroundCustomer: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));  
+	    this.bgjModel.handlerERPAtechToWebAppCustomer();
+	    if(isCheck)System.out.println("End sortBackGroundCustomer: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	}
+
+	private void sortBackGroundProductionOrder() {
+	    if(isCheck)System.out.println("Start sortBackGroundProductionOrder: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	    this.bgjModel.handlerERPAtechToWebAppProductionOrder();
+	    if(isCheck)System.out.println("End sortBackGroundProductionOrder: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	}
+
+	private void sortBackGroundSaleOrder() {
+	    if(isCheck)System.out.println("Start sortBackGroundSaleOrder: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	    this.bgjModel.handlerERPAtechToWebAppSaleOrder();
+	    if(isCheck)System.out.println("End sortBackGroundSaleOrder: " +  
+	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	} 
 	@Scheduled(cron = "0 0 1 * * *") 
 	public void bgJobHandlerDataFromOrgatex()
 	{
