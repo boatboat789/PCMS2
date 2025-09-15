@@ -51,76 +51,81 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 		long time = currentTime.getTime();
 		String iconStatus = "I";
 		String sql = "-- Update if the record exists\r\n"
+				+ "-- Update if the record exists\r\n"
 				+ "IF ? = 'X'\r\n"
 				+ "BEGIN\r\n"
 				+ "    UPDATE [dbo].[FromSapMainBillBatch]\r\n"
-				+ "    SET [DataStatus] = 'X'\r\n"
-				+ "    WHERE [ProductionOrder] = ? ;\r\n"
-//				+ "    WHERE [SaleOrder] = ? "
-//				+ "		AND [SaleLine] = ? ;\r\n"
+				+ "    SET\r\n"
+				+ "        [DataStatus] = 'X',\r\n"
+				+ "        [ChangeDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [ProductionOrder] = ? \r\n"
+				+ "      and [DataStatus] = 'O' ;\r\n"
 				+ "END\r\n"
-				+ "ELSE \r\n"
+				+ "ELSE\r\n"
 				+ "BEGIN\r\n"
-				+ "UPDATE [dbo].[FromSapMainBillBatch]\r\n"
-				+ "SET \r\n"
-				+ "    [LotShipping] = ?\r\n" 
-				+ "   , [Grade] = ?\r\n"
-				+ "   , [QuantityKG] = ?\r\n"
-				+ "   , [QuantityYD] = ?\r\n"
-				+ "   , [QuantityMR] = ?\r\n" 
-				+ "   , [LotNo] = ?\r\n"
-				+ "   , [DataStatus] = ?\r\n"
-				+ "   , [ChangeDate] = ? \r\n"
-				+ "   , [SyncDate] =  ?\r\n"
-				+ "WHERE \r\n"
-				+ "    [BillDoc] = ? and\r\n"
-				+ "    [BillItem] = ? and\r\n"
-				+ "    [SaleOrder] = ? and\r\n"
-				+ "    [SaleLine] = ? and\r\n"
-				+ "    [RollNumber] = ? and\r\n"
-				+ "    [ProductionOrder] = ? \r\n"
-				+ "    ;\r\n"
+				+ "    UPDATE [dbo].[FromSapMainBillBatch]\r\n"
+				+ "    SET\r\n"
+				+ "        [LotShipping] = ?,\r\n"
+				+ "        [Grade] = ?,\r\n"
+				+ "        [QuantityKG] = ?,\r\n"
+				+ "        [QuantityYD] = ?,\r\n"
+				+ "        [QuantityMR] = ?,\r\n"
+				+ "        [LotNo] = ?,\r\n"
+				+ "        [DataStatus] = ?,\r\n"
+				+ "        [ChangeDate] = ?,\r\n"
+				+ "        [SyncDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [BillDoc] = ?\r\n"
+				+ "        AND [BillItem] = ?\r\n"
+				+ "        AND [SaleOrder] = ?\r\n"
+				+ "        AND [SaleLine] = ?\r\n"
+				+ "        AND [RollNumber] = ?\r\n"
+				+ "        AND [ProductionOrder] = ?;\r\n"
 				+ "\r\n"
-				+ "END\r\n"
-				+ "-- Check if rows were updated\r\n"
-				+ "DECLARE @rc INT = @@ROWCOUNT;\r\n"
-				+ "IF @rc = 0\r\n" 
-				+ "BEGIN\r\n"
-				+ "    -- Insert if no rows were updated\r\n"
-				+ "    INSERT INTO [dbo].[FromSapMainBillBatch] (\r\n"
-				+ "     [BillDoc]  ,[BillItem] ,[LotShipping] ,[ProductionOrder] ,[SaleOrder]\r\n"
-				+ "    ,[SaleLine] ,[Grade] ,[RollNumber] ,[QuantityKG] ,[QuantityYD]\r\n"
-				+ "    ,[QuantityMR] ,[LotNo] ,[DataStatus] ,[ChangeDate],[CreateDate]\r\n"
-				+ "      ,[SyncDate] \r\n"
-				+ "    \r\n"
-				+ "    ) VALUES (\r\n"
-				+ "?, ?, ?, ?, ?, "
-				+ "?, ?, ?, ?, ?, " 
-				+ "?, ?, ?, ?, ?, "
-				+ "? " 
-				+ "    ); "
-				+ "END ";
+				+ "    -- Check if rows were updated\r\n"
+				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
+				+ "\r\n"
+				+ "    IF @rc = 0\r\n"
+				+ "    BEGIN\r\n"
+				+ "        -- Insert if no rows were updated\r\n"
+				+ "        INSERT INTO [dbo].[FromSapMainBillBatch] (\r\n"
+				+ "            [BillDoc],\r\n"
+				+ "            [BillItem],\r\n"
+				+ "            [LotShipping],\r\n"
+				+ "            [ProductionOrder],\r\n"
+				+ "            [SaleOrder],\r\n"
+				+ "            [SaleLine],\r\n"
+				+ "            [Grade],\r\n"
+				+ "            [RollNumber],\r\n"
+				+ "            [QuantityKG],\r\n"
+				+ "            [QuantityYD],\r\n"
+				+ "            [QuantityMR],\r\n"
+				+ "            [LotNo],\r\n"
+				+ "            [DataStatus],\r\n"
+				+ "            [ChangeDate],\r\n"
+				+ "            [CreateDate],\r\n"
+				+ "            [SyncDate]\r\n"
+				+ "        )\r\n"
+				+ "        VALUES (\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?\r\n"
+				+ "        );\r\n"
+				+ "    END\r\n"
+				+ "END";
 		try {
 
 			int index = 1;
 			int batchSize = 0;
 			prepared = connection.prepareStatement(sql); 
 			for (FromErpMainBillBatchDetail bean : paList) {
-				index = 1;
-//				if(bean.getSaleOrder().equals("1107014200")) {
-//					System.out.println(bean.getDataStatus());
-//					System.out.println(bean.getSaleOrder());
-//					System.out.println(bean.getSaleLine());
-//					System.out.println(bean.getRollNumber());
-//				}
+				index = 1; 
 				prepared.setString(index++, bean.getDataStatus()   );
-				prepared.setString(index++, bean.getProductionOrder()  ); 
-//				prepared.setString(index++, bean.getSaleOrder()    );
-//				prepared.setString(index++, bean.getSaleLine()   ); 
-				
-//				prepared.setString(index ++ , bean.getLotShipping());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ );
-//				prepared.setString(index ++ , bean.getProductionOrder());
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				prepared.setString(index++, bean.getProductionOrder()  );  
+				prepared = this.sshUtl.setSqlDate(prepared, bean.getLotShipping(), index ++ ); 
 				prepared.setString(index ++ , bean.getGrade());
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
 				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );

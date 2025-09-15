@@ -263,6 +263,7 @@ public class SqlStatementHandler {
 		return prepared;  
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public PreparedStatement setSqlTimeStamp(PreparedStatement prepared, Date dateStr, int index) throws SQLException
 	{
 		try {

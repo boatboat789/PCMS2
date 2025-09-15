@@ -103,9 +103,7 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				  + "    [No] = ? ;\r\n"
 				  + "-- Check if rows were updated\r\n"
 				  + "DECLARE @rc INT = @@ROWCOUNT;\r\n"
-				  + "IF @rc <> 0\r\n"
-				  + "   SELECT 1;\r\n"
-				  + "ELSE \r\n"
+				  + "IF @rc = 0\r\n" 
 				  + "    -- Insert if no rows were updated\r\n"
 				  + "    INSERT INTO [dbo].[FromSapSaleInput] (\r\n"
 				  + "        [ProductionOrder] ,[BillDate] ,[BillQtyPerSale] ,[SaleOrder] ,[SaleLine]\r\n"
@@ -118,9 +116,9 @@ public class FromSapSaleInputDaoImpl implements  FromSapSaleInputDao{
 				  + "		?, ?, ?, ?, ?, "
 				  + "		?, ?, ?, ?, "
 				  + "		? , " 
-					+ "		 ? "
+				  + "		 ? "
 				  + "    ); "
-				+ ";"  ;
+				  + ";"  ;
 		try {
 
 			int index = 1;

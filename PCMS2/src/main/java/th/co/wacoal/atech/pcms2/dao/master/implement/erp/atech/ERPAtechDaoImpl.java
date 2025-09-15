@@ -47,7 +47,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	private String declareThirtyMinuteAgo = "" 
 	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -40, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
-//	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -3, GETDATE());"; 
+//	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -1, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
