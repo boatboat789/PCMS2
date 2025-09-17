@@ -45,9 +45,9 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	}
 
 	private String declareThirtyMinuteAgo = "" 
-//	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -40, GETDATE());"; 
+	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -40, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
-	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
+//	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
@@ -136,7 +136,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A\r\n"
-				+ "LEFT JOIN CFMData AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck];"
+				+ "LEFT JOIN CFMData AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2');"
 //				+ " SELECT distinct   \r\n" 
 //				+ " TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder ,\r\n"
 //				+ " TRY_CAST(CFMNo AS NVARCHAR(2)) as CFMNo ,\r\n"
@@ -245,7 +246,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN GoodReceive AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck];"
+				+ "LEFT JOIN GoodReceive AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2');"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
 //				+ " TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder,\r\n"
@@ -331,7 +333,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ " FROM ProductionOrders AS A\r\n"
-				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrder] "
+				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrder]   \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2')"
 		/*
 		 * + this.declareThirtyMinuteAgo + "WITH SaleOrderLines AS (\r\n" +
 		 * "    SELECT DISTINCT a.[SaleOrder] \r\n" +
@@ -429,13 +432,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			ELSE TRY_CAST(LabStatus AS NVARCHAR(50)) "
 				+ "			END as LabStatus, \r\n"
 				+ "		TRY_CAST(UserStatus AS NVARCHAR(50)) as UserStatus, \r\n"
-				+ "		TRY_CAST(DesignFG AS NVARCHAR(50)) as DesignFG, \r\n"
-				+ "		TRY_CAST(ArticleFG AS NVARCHAR(50)) as ArticleFG, \r\n"
-				+ "		TRY_CAST(BookNo AS NVARCHAR(20)) as BookNo, \r\n"
-				+ "		TRY_CAST(Center AS NVARCHAR(20)) as Center, \r\n"
-				+ "		TRY_CAST(LotNo AS NVARCHAR(50)) as LotNo, \r\n"
-				+ "		TRY_CAST(Batch AS NVARCHAR(30)) as Batch, \r\n"
-				+ "		TRY_CAST(LabNo AS NVARCHAR(30)) as LabNo,  \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(DesignFG AS NVARCHAR(50)))) as DesignFG, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(ArticleFG AS NVARCHAR(50)))) as ArticleFG, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(BookNo AS NVARCHAR(20)))) as BookNo, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(Center AS NVARCHAR(20)))) as Center, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(LotNo AS NVARCHAR(50)))) as LotNo, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(Batch AS NVARCHAR(30)))) as Batch, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(LabNo AS NVARCHAR(30)))) as LabNo,  \r\n"
 				+ "			CASE  \r\n"
 				+ "				WHEN RemarkOne IS NULL OR LEN(RemarkOne) < 1 THEN NULL \r\n"
 				+ "				ELSE SUBSTRING(RemarkOne, 1, 100)  \r\n"
@@ -491,8 +494,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "					PrdCreateDate = '' THEN null  \r\n"
 				+ "				ELSE PrdCreateDate   \r\n"
 				+ "			END AS PrdCreateDate,    \r\n"
-				+ "		TRY_CAST(GreigeArticle AS NVARCHAR(50)) as GreigeArticle, \r\n"
-				+ "		TRY_CAST(GreigeDesign AS NVARCHAR(50)) as GreigeDesign,  \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(GreigeArticle AS NVARCHAR(50)))) as GreigeArticle, \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(GreigeDesign AS NVARCHAR(50)))) as GreigeDesign,  \r\n"
 				+ "		TRY_CAST(GreigeMR AS decimal(13, 3)) as GreigeMR, \r\n"
 				+ "		TRY_CAST(GreigeKG AS decimal(13, 3)) as GreigeKG, \r\n"
 				+ "		TRY_CAST(OrderType AS NVARCHAR(20)) as OrderType, \r\n"
@@ -506,7 +509,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN MainProd AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]; "
+				+ "LEFT JOIN MainProd AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
@@ -645,7 +649,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN MainProdSale AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]; "
+				+ "LEFT JOIN MainProdSale AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
@@ -1054,7 +1059,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN Packing AS B ON A.[ProductionOrder] = B.ProductionOrderCheck; \r\n"
+				+ "LEFT JOIN Packing AS B ON A.[ProductionOrder] = B.ProductionOrderCheck  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); \r\n"
 				+ " "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
@@ -1139,7 +1145,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN PO AS B ON A.[ProductionOrder] = B.ProductionOrderCheck; "
+				+ "LEFT JOIN PO AS B ON A.[ProductionOrder] = B.ProductionOrderCheck  \r\n"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
@@ -1229,7 +1236,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "					DueDate = '' THEN null  \r\n"
 				+ "				ELSE DueDate   \r\n"
 				+ "				END AS DueDate,     \r\n"
-				+ "		TRY_CAST(Color AS NVARCHAR(20)) as Color,  \r\n"
+				+ "		LTRIM(RTRIM(TRY_CAST(Color AS NVARCHAR(20)))) as Color,  \r\n"
 				+ "			[SyncDate]  \r\n"
 				+ "		from FromErpSale \r\n"
 				+ ") \r\n"
@@ -1320,7 +1327,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN SubmitDate AS B ON A.[ProductionOrder] = B.ProductionOrderCheck; "
+				+ "LEFT JOIN SubmitDate AS B ON A.[ProductionOrder] = B.ProductionOrderCheck"
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder  ,\r\n"
@@ -1513,7 +1521,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "   TRY_CAST([Qty] AS DECIMAL(13,3)) AS Qty, "
 				+ "   [UnitId], "
 				+ "   'O' AS DataStatus "
-				+ "  FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a\r\n"
+				+ "  FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a  \r\n"
+				+ " WHERE left(a.ProdId,2) Not in ('20' , 'WO' , 'Y2')\r\n"
 				+ "; \r\n"
 				+ "  ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
