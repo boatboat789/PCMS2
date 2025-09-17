@@ -127,7 +127,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				+ "    -- Check if rows were updated\r\n"
 				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "    \r\n"
-				+ "    IF @rc = 0\r\n"
+				+ "    IF @rc = 0 AND ? <> '' AND ? <> ''\r\n"
 				+ "    BEGIN\r\n"
 				+ "        -- Insert if no rows were updated\r\n"
 				+ "        INSERT INTO [dbo].[FromSapCFM] (\r\n"
@@ -191,6 +191,10 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getCfmNo());
 
+
+				prepared.setString(index ++ , bean.getCfmNo());// CHECK CFM NO <> ''	
+				prepared.setString(index ++ , bean.getCfmNumber());// CHECK CFM NUMBER <> ''	
+				
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getCfmNo());
 				prepared.setString(index ++ , bean.getCfmNumber());

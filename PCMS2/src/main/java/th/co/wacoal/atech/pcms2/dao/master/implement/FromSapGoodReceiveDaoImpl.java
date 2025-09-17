@@ -79,12 +79,11 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "        [SyncDate] = ?\r\n"
 				+ "    WHERE\r\n"
 				+ "        [ProductionOrder] = ?\r\n"
-				+ "        AND [RollNumber] = ?;\r\n"
-				+ "\r\n"
+				+ "        AND [RollNumber] = ?;\r\n" 
 				+ "    -- Check if rows were updated\r\n"
 				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "\r\n"
-				+ "    IF @rc = 0\r\n"
+				+ "    IF @rc = 0  AND ? <> ''\r\n"
 				+ "    BEGIN\r\n"
 				+ "        -- Insert if no rows were updated\r\n"
 				+ "        INSERT INTO [dbo].[FromSapGoodReceive] (\r\n"
@@ -138,6 +137,8 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getRollNumber());
 
+				prepared.setString(index ++ , bean.getRollNumber());// CHECK ROLL NUMBER <> ''	
+				
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());

@@ -86,7 +86,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				+ "    -- Check if rows were updated\r\n"
 				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "\r\n"
-				+ "    IF @rc = 0\r\n"
+				+ "    IF @rc = 0  AND ? <> ''\r\n"
 				+ "    BEGIN\r\n"
 				+ "        -- Insert if no rows were updated\r\n"
 				+ "        INSERT INTO [dbo].[FromSapMainBillBatch] (\r\n"
@@ -142,6 +142,8 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getRollNumber());
 				prepared.setString(index ++ , bean.getProductionOrder());
+
+				prepared.setString(index ++ , bean.getBillDoc());// CHECK BILL NUMBER <> ''	
 
 				prepared.setString(index ++ , bean.getBillDoc());
 				prepared.setString(index ++ , bean.getBillItem());
