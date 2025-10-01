@@ -24,7 +24,7 @@ public class FromSORCFMModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public FromSORCFMModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -33,7 +33,6 @@ public class FromSORCFMModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()

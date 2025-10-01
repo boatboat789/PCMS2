@@ -38,7 +38,6 @@ public class SaleOrderLogController {
     	this.fsmpModel = new FromSapMainSaleModel();
     	this.erpAttModel = new ERPAtechModel();
     }
-//	@RequestMapping(method = { RequestMethod.GET })
 	@RequestMapping(  value = "/{dataType}",  method = RequestMethod.GET )
 	public ModelAndView getModelAndView(HttpSession session,@PathVariable("dataType") String dataType) {
 		ModelAndView mv = new ModelAndView();
@@ -54,28 +53,13 @@ public class SaleOrderLogController {
 //		mv.addObject("UserID", g.toJson());'Log - ข้อมูล Prod/Opertation ที่อัพเดทจาก ERP365'
 		return mv;
 	}  
-//	public class CarObject {
-//	    private String name;
-//	    private String color;
-//	    // getters/setters
-//	}
-
 	@RequestMapping(  value = "/{dataType}/getSaleOrderLogBySearch",  method = RequestMethod.GET )
 	public ResponseEntity<ApiResponse<List<SaleOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
 			,@RequestParam("saleOrder") String saleOrder 
 			,@RequestParam("changeDateStart") String changeDateStart 
 			,@RequestParam("changeDateEnd") String changeDateEnd 
 //			, @RequestBody List<SearchCriteria> list 
-			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson();  
-//		System.out.println(productionOrder);
-//		System.out.println(changeDateStart);    
-//		System.out.println(changeDateEnd);
-		
-//		// Define the Type for ArrayList of OrgatexDyeLotDetail
-//        Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-//        // Deserialize JSON directly to ArrayList
-//        ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType);  
+			,@PathVariable("dataType") String dataType) throws IOException {  
         ArrayList<SaleOrderLogDetail> resultList;
 		if(dataType.equals("ERP365")) { 
         	resultList = erpAttModel.getFromErpMainSaleDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,saleOrder);

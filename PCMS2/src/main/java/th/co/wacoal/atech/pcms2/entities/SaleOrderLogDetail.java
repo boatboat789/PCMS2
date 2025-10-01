@@ -7,42 +7,71 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table; 
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "FromSapMainProd") // กำหนดชื่อตาราง
 public class SaleOrderLogDetail {
 	@Id
-	private Integer id ; 
-	@Column(name = "SaleOrder")private String saleOrder ; 
-	@Column(name = "SaleLine")private String saleLine ; 
-	@Column(name = "Division")private String division ; 
-	@Column(name = "MaterialNo")private String materialNo ; 
-	@Column(name = "ArticleFG")private String articleFG ; 
-	@Column(name = "DesignFG")private String designFG ; 
-	@Column(name = "Color")private String color ; 
-	@Column(name = "DistChannel")private String distChannel ; 
-	@Column(name = "CustomerName")private String customerName ; 
-	@Column(name = "CustomerShortName")private String customerShortName ; 
-	@Column(name = "ColorCustomer")private String colorCustomer  ; 
-	@Column(name = "SaleCreateDate")private Date saleCreateDate  ; 
-	@Column(name = "PlanGreigeDate")private Date planGreigeDate  ; 
-	@Column(name = "DueDate")private Date dueDate ; 
-	@Column(name = "CustomerDue")private String customerDue       ; 
-	@Column(name = "SaleQuantity")private BigDecimal saleQuantity ; 
-	@Column(name = "SaleUnit")private String saleUnit ; 
-	@Column(name = "OrderAmount")private BigDecimal orderAmount ; 
-	@Column(name = "RemainQuantity")private BigDecimal remainQuantity ; 
-	@Column(name = "RemainAmount")private BigDecimal remainAmount ; 
-	@Column(name = "PurchaseOrder")private String purchaseOrder ; 
-	@Column(name = "CustomerNo")private String customerNo ; 
-	@Column(name = "CustomerMaterial")private String customerMaterial ; 
-	@Column(name = "SaleOrg")private String saleOrg ; 
-	@Column(name = "SaleStatus ")private String saleStatus  ; 
-	@Column(name = "SaleFullName")private String saleFullName ; 
-	@Column(name = "DeliveryStatus")private String deliveryStatus ; 
-	@Column(name = "SyncDate")private Timestamp syncDate ; 
-	@Column(name = "SyncDateHeader")private Timestamp syncDateHeader ; 
+	private Integer id;
+	@Column(name = "SaleOrder")
+	private String saleOrder;
+	@Column(name = "SaleLine")
+	private String saleLine;
+	@Column(name = "Division")
+	private String division;
+	@Column(name = "MaterialNo")
+	private String materialNo;
+	@Column(name = "ArticleFG")
+	private String articleFG;
+	@Column(name = "DesignFG")
+	private String designFG;
+	@Column(name = "Color")
+	private String color;
+	@Column(name = "DistChannel")
+	private String distChannel;
+	@Column(name = "CustomerName")
+	private String customerName;
+	@Column(name = "CustomerShortName")
+	private String customerShortName;
+	@Column(name = "ColorCustomer")
+	private String colorCustomer;
+	@Column(name = "SaleCreateDate")
+	private Date saleCreateDate;
+	@Column(name = "PlanGreigeDate")
+	private Date planGreigeDate;
+	@Column(name = "DueDate")
+	private Date dueDate;
+	@Column(name = "CustomerDue")
+	private String customerDue;
+	@Column(name = "SaleQuantity")
+	private BigDecimal saleQuantity;
+	@Column(name = "SaleUnit")
+	private String saleUnit;
+	@Column(name = "OrderAmount")
+	private BigDecimal orderAmount;
+	@Column(name = "RemainQuantity")
+	private BigDecimal remainQuantity;
+	@Column(name = "RemainAmount")
+	private BigDecimal remainAmount;
+	@Column(name = "PurchaseOrder")
+	private String purchaseOrder;
+	@Column(name = "CustomerNo")
+	private String customerNo;
+	@Column(name = "CustomerMaterial")
+	private String customerMaterial;
+	@Column(name = "SaleOrg")
+	private String saleOrg;
+	@Column(name = "SaleStatus ")
+	private String saleStatus;
+	@Column(name = "SaleFullName")
+	private String saleFullName;
+	@Column(name = "DeliveryStatus")
+	private String deliveryStatus;
+	@Column(name = "SyncDate")
+	private Timestamp syncDate;
+	@Column(name = "SyncDateHeader")
+	private Timestamp syncDateHeader;
 
 	public SaleOrderLogDetail() {
 		super();
@@ -385,5 +414,5 @@ public class SaleOrderLogDetail {
 	public void setSyncDateHeader(Timestamp syncDateHeader)
 	{
 		this.syncDateHeader = syncDateHeader;
-	} 
+	}
 }

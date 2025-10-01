@@ -46,7 +46,6 @@ public class ERPAtechModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()
@@ -77,7 +76,6 @@ public class ERPAtechModel extends HttpServlet {
 	{
 		// TODO Auto-generated method stub
 		ArrayList<FromErpCFMDetail> list = this.dao.getFromErpCFMDetail();
-
 		return list;
 	}
 
@@ -161,13 +159,6 @@ public class ERPAtechModel extends HttpServlet {
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = this.dao.getZ_ATT_CustomerConfirm2Detail();
 		return list;
 	}
-//	public ArrayList<FromErpReceipeDetail> getFromErpReceipeDetai()
-// 
-//	{
-//		// TODO Auto-generated method stub
-//		ArrayList<FromErpReceipeDetail> list = this.dao.getFromErpReceipeDetail();
-//		return list;
-//	} 
 
 	public ArrayList<ProductionOrderLogDetail> getFromErpMainProdDetailWithRangeOfChangeDate(String changeDateStart,
 			String changeDateEnd, String productionOrder)

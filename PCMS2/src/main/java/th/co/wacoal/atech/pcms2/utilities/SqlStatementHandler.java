@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class SqlStatementHandler { 
+public class SqlStatementHandler {
 	public SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("yyyyMMdd");
@@ -24,21 +24,24 @@ public class SqlStatementHandler {
 	public SimpleDateFormat sdf12 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public SimpleDateFormat sdfFullDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-	public String addStringAndIfNotEmpty(String where) {
+	public String addStringAndIfNotEmpty(String where)
+	{
 		if ( ! where.equals("")) {
 			where += " and \r\n";
 		}
 		return where;
 	}
 
-	public String addStringOrIfNotEmpty(String where) {
+	public String addStringOrIfNotEmpty(String where)
+	{
 		if ( ! where.equals("")) {
 			where += " or \r\n";
 		}
 		return where;
 	}
 
-	public boolean checkIsValidDate(String date) {
+	public boolean checkIsValidDate(String date)
+	{
 		boolean bl_isDate = true;
 		if (date == null) {
 			bl_isDate = false;
@@ -47,7 +50,9 @@ public class SqlStatementHandler {
 		}
 		return bl_isDate;
 	}
-	public boolean isValidDate(String inDate) {
+
+	public boolean isValidDate(String inDate)
+	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		dateFormat.setLenient(false);
 		try {
@@ -57,7 +62,9 @@ public class SqlStatementHandler {
 		}
 		return true;
 	}
-	public static boolean isValidDate(String inDate, SimpleDateFormat dateFormat) {
+
+	public static boolean isValidDate(String inDate, SimpleDateFormat dateFormat)
+	{
 		dateFormat.setLenient(false);
 		try {
 			dateFormat.parse(inDate.trim());
@@ -67,15 +74,18 @@ public class SqlStatementHandler {
 		return true;
 	}
 
-	public java.sql.Date convertJavaDateToSqlDate(java.util.Date date) {
+	public java.sql.Date convertJavaDateToSqlDate(java.util.Date date)
+	{
 		return new java.sql.Date(date.getTime());
 	}
 
-	public java.sql.Timestamp convertJavaDateToSqlTimestamp(Date date) {
+	public java.sql.Timestamp convertJavaDateToSqlTimestamp(Date date)
+	{
 		return new java.sql.Timestamp(date.getTime());
 	}
 
-	public Date formatDate(String date, String initDateFormat, String endDateFormat) throws ParseException {
+	public Date formatDate(String date, String initDateFormat, String endDateFormat) throws ParseException
+	{
 		Date initDate = new SimpleDateFormat(initDateFormat).parse(date);
 		SimpleDateFormat formatter = new SimpleDateFormat(endDateFormat);
 		String parsedDate = formatter.format(initDate);
@@ -83,7 +93,8 @@ public class SqlStatementHandler {
 		return dateCheck;
 	}
 
-	public boolean isNumeric(String str) {
+	public boolean isNumeric(String str)
+	{
 		if (str == null) {
 			return false;
 		}
@@ -93,11 +104,11 @@ public class SqlStatementHandler {
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
-	} 
+	}
 
 	@SuppressWarnings("unlikely-arg-type")
-	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, BigDecimal val, int index)
-			throws SQLException {
+	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, BigDecimal val, int index) throws SQLException
+	{
 		try {
 			if (val == null) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
@@ -112,7 +123,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, double val, int index) throws SQLException {
+	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, double val, int index) throws SQLException
+	{
 		try {
 			prepared.setDouble(index, val);
 		} catch (Exception e) {
@@ -121,28 +133,31 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlDouble(PreparedStatement prepared, String val, int index) throws SQLException {
+	public PreparedStatement setSqlDouble(PreparedStatement prepared, String val, int index) throws SQLException
+	{
 		try {
 //			System.out.println(val);
-			if (val != null && !val.trim().isEmpty()) {
-	            double doubleValue = Double.parseDouble(val.replace(",", "").trim()); // Remove commas and convert to double 
-	            prepared.setDouble(index, doubleValue);
-	        } else {
-	            prepared.setNull(index, java.sql.Types.FLOAT); // Set NULL if value is empty
-	        }
+			if (val != null && ! val.trim().isEmpty()) {
+				double doubleValue = Double.parseDouble(val.replace(",", "").trim()); // Remove commas and convert to double
+				prepared.setDouble(index, doubleValue);
+			} else {
+				prepared.setNull(index, java.sql.Types.FLOAT); // Set NULL if value is empty
+			}
 		} catch (Exception e) {
-			 prepared.setNull(index, java.sql.Types.FLOAT); // Set NULL if conversion fails
+			prepared.setNull(index, java.sql.Types.FLOAT); // Set NULL if conversion fails
 		}
 		return prepared;
 	}
-	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, String val, int index) throws SQLException {
+
+	public PreparedStatement setSqlBigDecimal(PreparedStatement prepared, String val, int index) throws SQLException
+	{
 		try {
 			if (val == null) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
 			} else if (val.equals("undefined") || val.equals("")) {
 				prepared.setNull(index, java.sql.Types.DECIMAL);
 			} else {
-				BigDecimal bigDecimal = new BigDecimal(val.replace(",", "").trim() );
+				BigDecimal bigDecimal = new BigDecimal(val.replace(",", "").trim());
 				prepared.setBigDecimal(index, bigDecimal);
 			}
 		} catch (Exception e) {
@@ -151,7 +166,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlDate(PreparedStatement prepared, Date dateStr, int index) throws SQLException {
+	public PreparedStatement setSqlDate(PreparedStatement prepared, Date dateStr, int index) throws SQLException
+	{
 		try {
 			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
@@ -165,7 +181,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlDate(PreparedStatement prepared, String dateStr, int index) throws SQLException {
+	public PreparedStatement setSqlDate(PreparedStatement prepared, String dateStr, int index) throws SQLException
+	{
 		try {
 			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
@@ -192,7 +209,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlInt(PreparedStatement prepared, int value, int index) throws SQLException {
+	public PreparedStatement setSqlInt(PreparedStatement prepared, int value, int index) throws SQLException
+	{
 		try {
 			if (value == 0) {
 				prepared.setNull(index, java.sql.Types.INTEGER);
@@ -205,7 +223,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlString(PreparedStatement prepared, String value, int index) throws SQLException {
+	public PreparedStatement setSqlString(PreparedStatement prepared, String value, int index) throws SQLException
+	{
 		try {
 			if (value == null) {
 				prepared.setNull(index, java.sql.Types.VARCHAR);
@@ -221,7 +240,8 @@ public class SqlStatementHandler {
 	}
 
 	public PreparedStatement setSqlTime(PreparedStatement prepared, String timeString, int index)
-			throws SQLException, ParseException {
+			throws SQLException, ParseException
+	{
 
 		if (timeString == null || timeString.equals("undefined") || timeString.equals("")) {
 			prepared.setNull(index, java.sql.Types.TIME);
@@ -232,8 +252,8 @@ public class SqlStatementHandler {
 		return prepared;
 	}
 
-	public PreparedStatement setSqlTimeStamp(PreparedStatement prepared, String dateStr, int index)
-			throws SQLException {
+	public PreparedStatement setSqlTimeStamp(PreparedStatement prepared, String dateStr, int index) throws SQLException
+	{
 		try {
 			if (dateStr == null) {
 				prepared.setNull(index, java.sql.Types.DATE);
@@ -244,23 +264,22 @@ public class SqlStatementHandler {
 			} else if (isValidDate(dateStr, this.sdf10)) {
 				Date date = this.sdf10.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			}else if (isValidDate(dateStr, this.sdf11)) {
+			} else if (isValidDate(dateStr, this.sdf11)) {
 				Date date = this.sdf11.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			}else if (isValidDate(dateStr, this.sdf12)) {
+			} else if (isValidDate(dateStr, this.sdf12)) {
 				Date date = this.sdf12.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			}else if (isValidDate(dateStr, this.sdfFullDatetime)) {
+			} else if (isValidDate(dateStr, this.sdfFullDatetime)) {
 				Date date = this.sdfFullDatetime.parse(dateStr);
 				prepared.setTimestamp(index, this.convertJavaDateToSqlTimestamp(date));
-			}
-			else {
+			} else {
 				prepared.setNull(index, java.sql.Types.DATE);
 			}
 		} catch (Exception e) {
-			prepared.setNull(index, java.sql.Types.DATE); 
+			prepared.setNull(index, java.sql.Types.DATE);
 		}
-		return prepared;  
+		return prepared;
 	}
 
 	@SuppressWarnings("unlikely-arg-type")
@@ -279,10 +298,12 @@ public class SqlStatementHandler {
 		}
 		return prepared;
 	}
-	public String formatDateTime(Timestamp timestamp1) { // Convert Timestamp to LocalDateTime
-        LocalDateTime localDateTime = timestamp1.toLocalDateTime();
-        // Convert LocalDateTime to UTC (Z) format
-        return localDateTime.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
-    }
+
+	public String formatDateTime(Timestamp timestamp1)
+	{ // Convert Timestamp to LocalDateTime
+		LocalDateTime localDateTime = timestamp1.toLocalDateTime();
+		// Convert LocalDateTime to UTC (Z) format
+		return localDateTime.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+	}
 
 }

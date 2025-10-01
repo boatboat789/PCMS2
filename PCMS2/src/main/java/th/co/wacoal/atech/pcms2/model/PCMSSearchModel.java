@@ -32,7 +32,6 @@ public class PCMSSearchModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn() {
@@ -57,8 +56,7 @@ public class PCMSSearchModel extends HttpServlet {
 
 	public void handlerCloseTempTableCustomerSearchList(){
 		// TODO Auto-generated method stub
-		 this.dao.handlerCloseTempTableCustomerSearchList( );
-		return;
+		 this.dao.handlerCloseTempTableCustomerSearchList( ); 
 	} 
 
 }

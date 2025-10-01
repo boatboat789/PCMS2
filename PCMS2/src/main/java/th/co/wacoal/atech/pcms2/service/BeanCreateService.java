@@ -131,10 +131,6 @@ public class BeanCreateService   {
 			Double doubleVal = value.doubleValue();
 			TotalQuantity = formatter.format(doubleVal);
 		}
-//		if (map.get("GreigeInDate") != null) {
-//			java.util.Date dateValue = (Date) map.get("GreigeInDate");
-//			GreigeInDate = sdfDateFullWithSlash.format(dateValue);
-//		}
 		String UserStatus = "";
 		if (map.get("UserStatus") != null) {
 			UserStatus = (String) map.get("UserStatus");
@@ -3677,20 +3673,4 @@ public class BeanCreateService   {
 				, UserStatus, LabStatus, BookNo, Center, LotNo, LabNo, Shade, ChangeDate, SyncDate)
 				;
 	}
-//	private Double parseDouble(Object obj) {
-//	    if (obj instanceof BigDecimal) {
-//	        return ((BigDecimal) obj).doubleValue();
-//	    }
-//	    if (obj instanceof Number) {
-//	        return ((Number) obj).doubleValue();
-//	    }
-//	    if (obj instanceof String) {
-//	        try {
-//	            return Double.parseDouble((String) obj);
-//	        } catch (NumberFormatException e) {
-//	            System.out.println("Invalid number format: " + obj);
-//	        }
-//	    }
-//	    return null;
-//	}
 }

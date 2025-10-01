@@ -35,7 +35,7 @@ public class DatabaseConfig {
 //    }
     @Bean
     @Qualifier("ppmmDatabase")
-    public Database ppmmUatDatabase()  throws ClassNotFoundException, SQLException {
+    public Database ppmmDatabase()  throws ClassNotFoundException, SQLException {
         return new Database(SqlPPMMInfo.getInstance()); // Return the Test SQL configuration
     }
     @Bean

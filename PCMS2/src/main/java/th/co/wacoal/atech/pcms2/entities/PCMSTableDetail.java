@@ -11,7 +11,7 @@ public class PCMSTableDetail {
 
 	private String articleFG;
 	private String designFG;
-	private String distChannel ;
+	private String distChannel;
 	private String color;
 	private String colorCustomer;
 	private String saleQuantity;
@@ -33,11 +33,11 @@ public class PCMSTableDetail {
 	private String dryer;
 	private String finishing;
 	private String inspectation;
-	private String cfmPlanDate;    // Input on web
-	private String cfmDateActual;  //
-	private String cfmDetailAll ;
-	private String rollNoRemarkAll ;
-	private String deliveryDate;   // Input on web
+	private String cfmPlanDate; // Input on web
+	private String cfmDateActual; //
+	private String cfmDetailAll;
+	private String rollNoRemarkAll;
+	private String deliveryDate; // Input on web
 	private String lotShipping;
 
 	private String labNo;
@@ -50,10 +50,10 @@ public class PCMSTableDetail {
 	private String productionOrderCreateDate;
 	private String materialNo;
 	private String deliveryStatus;
-	private String saleStatus ;
+	private String saleStatus;
 	private String lotNo;
-	private String shipDate ;
-	private String userId ;
+	private String shipDate;
+	private String userId;
 	private List<String> userStatusList;
 	private List<String> customerNameList;
 	private List<String> customerShortNameList;
@@ -64,36 +64,35 @@ public class PCMSTableDetail {
 	private int no;
 	private String division;
 	private String typePrd;
-	private String typePrdRemark ;
+	private String typePrdRemark;
 	private String sendCFMCusDate;
 	private String purchaseOrder;
 	private String customerType;
 	private String customerDivision;
-	private String forPage ;
-	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel,
-			String color, String colorCustomer, String saleQuantity, String billQuantity, String saleUnit,
-			String productionOrder, String totalQuantity, String greigeInDate, String userStatus, String LabStatus,
-			String dueDate, String prepare, String preset, String dyePlan, String dyeActual, String Dryer,
-			String finishing, String inspectation, String CFMPlanDate, String cFMDateActual, String DeliveryDate,
-			String lotShipping, String labNo, String CustomerShortName, String saleNumber, String saleFullName,
-			String saleOrderCreateDate, String productionOrderCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus,String LotNo,String ShipDate,String Relax, String customerName,String Division,
-			String dyeStatus,String typePrd,String typePrdRemark,String SendCFMCusDate,String PurchaseOrder,
+	private String forPage;
 
-			String CustomerType,
-			String CustomerDivision,String PlanGreigeDate,
+	public PCMSTableDetail(String saleOrder, String saleLine, String designFG, String articleFG, String distChannel, String color,
+			String colorCustomer, String saleQuantity, String billQuantity, String saleUnit, String productionOrder,
+			String totalQuantity, String greigeInDate, String userStatus, String LabStatus, String dueDate, String prepare,
+			String preset, String dyePlan, String dyeActual, String Dryer, String finishing, String inspectation,
+			String CFMPlanDate, String cFMDateActual, String DeliveryDate, String lotShipping, String labNo,
+			String CustomerShortName, String saleNumber, String saleFullName, String saleOrderCreateDate,
+			String productionOrderCreateDate, String materialNo, String deliveryStatus, String saleStatus, String LotNo,
+			String ShipDate, String Relax, String customerName, String Division, String dyeStatus, String typePrd,
+			String typePrdRemark, String SendCFMCusDate, String PurchaseOrder,
 
-			String cfmDetailAll,
-			String rollNoRemarkAll  ) {
+			String CustomerType, String CustomerDivision, String PlanGreigeDate,
+
+			String cfmDetailAll, String rollNoRemarkAll) {
 		super();
 
 		this.customerType = CustomerType;
-		this. cfmDetailAll = cfmDetailAll;
-		this. rollNoRemarkAll = rollNoRemarkAll;
+		this.cfmDetailAll = cfmDetailAll;
+		this.rollNoRemarkAll = rollNoRemarkAll;
 		this.planGreigeDate = PlanGreigeDate;
 		this.customerDivision = CustomerDivision;
-		this.purchaseOrder  =PurchaseOrder;
-		this.sendCFMCusDate  =SendCFMCusDate;
+		this.purchaseOrder = PurchaseOrder;
+		this.sendCFMCusDate = SendCFMCusDate;
 		this.shipDate = ShipDate;
 		this.saleOrder = saleOrder;
 		this.saleLine = saleLine;
@@ -139,15 +138,17 @@ public class PCMSTableDetail {
 		this.typePrd = typePrd;
 		this.typePrdRemark = typePrdRemark;
 	}
+
 	public PCMSTableDetail() {
 		// TODO Auto-generated constructor stub
 	}
-	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel,
-			String productionOrder, String userStatus, String dueDate, String labNo, String customerShortName,
-			String saleNumber, String saleCreateDate, String prdCreateDate, String materialNo, String deliveryStatus,
-			String saleStatus, String customerName,int no,String userId, String division,String PurchaseOrder) {
+
+	public PCMSTableDetail(String saleOrder, String designFG, String articleFG, String distChannel, String productionOrder,
+			String userStatus, String dueDate, String labNo, String customerShortName, String saleNumber, String saleCreateDate,
+			String prdCreateDate, String materialNo, String deliveryStatus, String saleStatus, String customerName, int no,
+			String userId, String division, String PurchaseOrder) {
 		this.no = no;
-		this.purchaseOrder  =PurchaseOrder;
+		this.purchaseOrder = PurchaseOrder;
 		this.userId = userId;
 		this.saleOrder = saleOrder;
 		this.designFG = designFG;
@@ -167,369 +168,605 @@ public class PCMSTableDetail {
 		this.saleStatus = saleStatus;
 		this.division = division;
 	}
+
 	public String getCustomerType()
 	{
 		return customerType;
 	}
+
 	public void setCustomerType(String customerType)
 	{
 		this.customerType = customerType;
 	}
-	public String getCfmDetailAll() {
+
+	public String getCfmDetailAll()
+	{
 		return cfmDetailAll;
 	}
-	public void setCfmDetailAll(String cfmDetailAll) {
+
+	public void setCfmDetailAll(String cfmDetailAll)
+	{
 		this.cfmDetailAll = cfmDetailAll;
 	}
-	public String getRollNoRemarkAll() {
+
+	public String getRollNoRemarkAll()
+	{
 		return rollNoRemarkAll;
 	}
-	public void setRollNoRemarkAll(String rollNoRemarkAll) {
+
+	public void setRollNoRemarkAll(String rollNoRemarkAll)
+	{
 		this.rollNoRemarkAll = rollNoRemarkAll;
 	}
-	public String getForPage() {
+
+	public String getForPage()
+	{
 		return forPage;
 	}
-	public void setForPage(String forPage) {
+
+	public void setForPage(String forPage)
+	{
 		this.forPage = forPage;
 	}
-	public String getSaleOrder() {
+
+	public String getSaleOrder()
+	{
 		return saleOrder;
 	}
-	public void setSaleOrder(String saleOrder) {
+
+	public void setSaleOrder(String saleOrder)
+	{
 		this.saleOrder = saleOrder;
 	}
-	public String getSaleLine() {
+
+	public String getSaleLine()
+	{
 		return saleLine;
 	}
-	public void setSaleLine(String saleLine) {
+
+	public void setSaleLine(String saleLine)
+	{
 		this.saleLine = saleLine;
 	}
-	public String getArticleFG() {
+
+	public String getArticleFG()
+	{
 		return articleFG;
 	}
-	public void setArticleFG(String articleFG) {
+
+	public void setArticleFG(String articleFG)
+	{
 		this.articleFG = articleFG;
 	}
-	public String getDesignFG() {
+
+	public String getDesignFG()
+	{
 		return designFG;
 	}
-	public void setDesignFG(String designFG) {
+
+	public void setDesignFG(String designFG)
+	{
 		this.designFG = designFG;
 	}
-	public String getDistChannel() {
+
+	public String getDistChannel()
+	{
 		return distChannel;
 	}
-	public void setDistChannel(String distChannel) {
+
+	public void setDistChannel(String distChannel)
+	{
 		this.distChannel = distChannel;
 	}
-	public String getColor() {
+
+	public String getColor()
+	{
 		return color;
 	}
-	public void setColor(String color) {
+
+	public void setColor(String color)
+	{
 		this.color = color;
 	}
-	public String getColorCustomer() {
+
+	public String getColorCustomer()
+	{
 		return colorCustomer;
 	}
-	public void setColorCustomer(String colorCustomer) {
+
+	public void setColorCustomer(String colorCustomer)
+	{
 		this.colorCustomer = colorCustomer;
 	}
-	public String getSaleQuantity() {
+
+	public String getSaleQuantity()
+	{
 		return saleQuantity;
 	}
-	public void setSaleQuantity(String saleQuantity) {
+
+	public void setSaleQuantity(String saleQuantity)
+	{
 		this.saleQuantity = saleQuantity;
 	}
-	public String getBillQuantity() {
+
+	public String getBillQuantity()
+	{
 		return billQuantity;
 	}
-	public void setBillQuantity(String billQuantity) {
+
+	public void setBillQuantity(String billQuantity)
+	{
 		this.billQuantity = billQuantity;
 	}
-	public String getSaleUnit() {
+
+	public String getSaleUnit()
+	{
 		return saleUnit;
 	}
-	public void setSaleUnit(String saleUnit) {
+
+	public void setSaleUnit(String saleUnit)
+	{
 		this.saleUnit = saleUnit;
 	}
-	public String getProductionOrder() {
+
+	public String getProductionOrder()
+	{
 		return productionOrder;
 	}
-	public void setProductionOrder(String productionOrder) {
+
+	public void setProductionOrder(String productionOrder)
+	{
 		this.productionOrder = productionOrder;
 	}
-	public String getTotalQuantity() {
+
+	public String getTotalQuantity()
+	{
 		return totalQuantity;
 	}
-	public void setTotalQuantity(String totalQuantity) {
+
+	public void setTotalQuantity(String totalQuantity)
+	{
 		this.totalQuantity = totalQuantity;
 	}
-	public String getPlanGreigeDate() {
+
+	public String getPlanGreigeDate()
+	{
 		return planGreigeDate;
 	}
-	public void setPlanGreigeDate(String planGreigeDate) {
+
+	public void setPlanGreigeDate(String planGreigeDate)
+	{
 		this.planGreigeDate = planGreigeDate;
 	}
-	public String getGreigeInDate() {
+
+	public String getGreigeInDate()
+	{
 		return greigeInDate;
 	}
-	public void setGreigeInDate(String greigeInDate) {
+
+	public void setGreigeInDate(String greigeInDate)
+	{
 		this.greigeInDate = greigeInDate;
 	}
-	public String getUserStatus() {
+
+	public String getUserStatus()
+	{
 		return userStatus;
 	}
-	public void setUserStatus(String userStatus) {
+
+	public void setUserStatus(String userStatus)
+	{
 		this.userStatus = userStatus;
 	}
-	public String getLabStatus() {
+
+	public String getLabStatus()
+	{
 		return labStatus;
 	}
-	public void setLabStatus(String labStatus) {
+
+	public void setLabStatus(String labStatus)
+	{
 		this.labStatus = labStatus;
 	}
-	public String getDueDate() {
+
+	public String getDueDate()
+	{
 		return dueDate;
 	}
-	public void setDueDate(String dueDate) {
+
+	public void setDueDate(String dueDate)
+	{
 		this.dueDate = dueDate;
 	}
-	public String getPrepare() {
+
+	public String getPrepare()
+	{
 		return prepare;
 	}
-	public void setPrepare(String prepare) {
+
+	public void setPrepare(String prepare)
+	{
 		this.prepare = prepare;
 	}
-	public String getPreset() {
+
+	public String getPreset()
+	{
 		return preset;
 	}
-	public void setPreset(String preset) {
+
+	public void setPreset(String preset)
+	{
 		this.preset = preset;
 	}
-	public String getDyePlan() {
+
+	public String getDyePlan()
+	{
 		return dyePlan;
 	}
-	public void setDyePlan(String dyePlan) {
+
+	public void setDyePlan(String dyePlan)
+	{
 		this.dyePlan = dyePlan;
 	}
-	public String getDyeActual() {
+
+	public String getDyeActual()
+	{
 		return dyeActual;
 	}
-	public void setDyeActual(String dyeActual) {
+
+	public void setDyeActual(String dyeActual)
+	{
 		this.dyeActual = dyeActual;
 	}
-	public String getDyeStatus() {
+
+	public String getDyeStatus()
+	{
 		return dyeStatus;
 	}
-	public void setDyeStatus(String dyeStatus) {
+
+	public void setDyeStatus(String dyeStatus)
+	{
 		this.dyeStatus = dyeStatus;
 	}
-	public String getDryer() {
+
+	public String getDryer()
+	{
 		return dryer;
 	}
-	public void setDryer(String dryer) {
+
+	public void setDryer(String dryer)
+	{
 		this.dryer = dryer;
 	}
-	public String getFinishing() {
+
+	public String getFinishing()
+	{
 		return finishing;
 	}
-	public void setFinishing(String finishing) {
+
+	public void setFinishing(String finishing)
+	{
 		this.finishing = finishing;
 	}
-	public String getInspectation() {
+
+	public String getInspectation()
+	{
 		return inspectation;
 	}
-	public void setInspectation(String inspectation) {
+
+	public void setInspectation(String inspectation)
+	{
 		this.inspectation = inspectation;
 	}
-	public String getCfmPlanDate() {
+
+	public String getCfmPlanDate()
+	{
 		return cfmPlanDate;
 	}
-	public void setCfmPlanDate(String cfmPlanDate) {
+
+	public void setCfmPlanDate(String cfmPlanDate)
+	{
 		this.cfmPlanDate = cfmPlanDate;
 	}
-	public String getCfmDateActual() {
+
+	public String getCfmDateActual()
+	{
 		return cfmDateActual;
 	}
-	public void setCfmDateActual(String cfmDateActual) {
+
+	public void setCfmDateActual(String cfmDateActual)
+	{
 		this.cfmDateActual = cfmDateActual;
 	}
-	public String getDeliveryDate() {
+
+	public String getDeliveryDate()
+	{
 		return deliveryDate;
 	}
-	public void setDeliveryDate(String deliveryDate) {
+
+	public void setDeliveryDate(String deliveryDate)
+	{
 		this.deliveryDate = deliveryDate;
 	}
-	public String getLotShipping() {
+
+	public String getLotShipping()
+	{
 		return lotShipping;
 	}
-	public void setLotShipping(String lotShipping) {
+
+	public void setLotShipping(String lotShipping)
+	{
 		this.lotShipping = lotShipping;
 	}
-	public String getLabNo() {
+
+	public String getLabNo()
+	{
 		return labNo;
 	}
-	public void setLabNo(String labNo) {
+
+	public void setLabNo(String labNo)
+	{
 		this.labNo = labNo;
 	}
-	public String getCustomerName() {
+
+	public String getCustomerName()
+	{
 		return customerName;
 	}
-	public void setCustomerName(String customerName) {
+
+	public void setCustomerName(String customerName)
+	{
 		this.customerName = customerName;
 	}
-	public String getCustomerShortName() {
+
+	public String getCustomerShortName()
+	{
 		return customerShortName;
 	}
-	public void setCustomerShortName(String customerShortName) {
+
+	public void setCustomerShortName(String customerShortName)
+	{
 		this.customerShortName = customerShortName;
 	}
-	public String getSaleNumber() {
+
+	public String getSaleNumber()
+	{
 		return saleNumber;
 	}
-	public void setSaleNumber(String saleNumber) {
+
+	public void setSaleNumber(String saleNumber)
+	{
 		this.saleNumber = saleNumber;
 	}
-	public String getSaleFullName() {
+
+	public String getSaleFullName()
+	{
 		return saleFullName;
 	}
-	public void setSaleFullName(String saleFullName) {
+
+	public void setSaleFullName(String saleFullName)
+	{
 		this.saleFullName = saleFullName;
 	}
-	public String getSaleOrderCreateDate() {
+
+	public String getSaleOrderCreateDate()
+	{
 		return saleOrderCreateDate;
 	}
-	public void setSaleOrderCreateDate(String saleOrderCreateDate) {
+
+	public void setSaleOrderCreateDate(String saleOrderCreateDate)
+	{
 		this.saleOrderCreateDate = saleOrderCreateDate;
 	}
-	public String getProductionOrderCreateDate() {
+
+	public String getProductionOrderCreateDate()
+	{
 		return productionOrderCreateDate;
 	}
-	public void setProductionOrderCreateDate(String productionOrderCreateDate) {
+
+	public void setProductionOrderCreateDate(String productionOrderCreateDate)
+	{
 		this.productionOrderCreateDate = productionOrderCreateDate;
 	}
-	public String getMaterialNo() {
+
+	public String getMaterialNo()
+	{
 		return materialNo;
 	}
-	public void setMaterialNo(String materialNo) {
+
+	public void setMaterialNo(String materialNo)
+	{
 		this.materialNo = materialNo;
 	}
-	public String getDeliveryStatus() {
+
+	public String getDeliveryStatus()
+	{
 		return deliveryStatus;
 	}
-	public void setDeliveryStatus(String deliveryStatus) {
+
+	public void setDeliveryStatus(String deliveryStatus)
+	{
 		this.deliveryStatus = deliveryStatus;
 	}
-	public String getSaleStatus() {
+
+	public String getSaleStatus()
+	{
 		return saleStatus;
 	}
-	public void setSaleStatus(String saleStatus) {
+
+	public void setSaleStatus(String saleStatus)
+	{
 		this.saleStatus = saleStatus;
 	}
-	public String getLotNo() {
+
+	public String getLotNo()
+	{
 		return lotNo;
 	}
-	public void setLotNo(String lotNo) {
+
+	public void setLotNo(String lotNo)
+	{
 		this.lotNo = lotNo;
 	}
-	public String getShipDate() {
+
+	public String getShipDate()
+	{
 		return shipDate;
 	}
-	public void setShipDate(String shipDate) {
+
+	public void setShipDate(String shipDate)
+	{
 		this.shipDate = shipDate;
 	}
-	public String getUserId() {
+
+	public String getUserId()
+	{
 		return userId;
 	}
-	public void setUserId(String userId) {
+
+	public void setUserId(String userId)
+	{
 		this.userId = userId;
 	}
-	public List<String> getUserStatusList() {
+
+	public List<String> getUserStatusList()
+	{
 		return userStatusList;
 	}
-	public void setUserStatusList(List<String> userStatusList) {
+
+	public void setUserStatusList(List<String> userStatusList)
+	{
 		this.userStatusList = userStatusList;
 	}
-	public List<String> getCustomerNameList() {
+
+	public List<String> getCustomerNameList()
+	{
 		return customerNameList;
 	}
-	public void setCustomerNameList(List<String> customerNameList) {
+
+	public void setCustomerNameList(List<String> customerNameList)
+	{
 		this.customerNameList = customerNameList;
 	}
-	public List<String> getCustomerShortNameList() {
+
+	public List<String> getCustomerShortNameList()
+	{
 		return customerShortNameList;
 	}
-	public void setCustomerShortNameList(List<String> customerShortNameList) {
+
+	public void setCustomerShortNameList(List<String> customerShortNameList)
+	{
 		this.customerShortNameList = customerShortNameList;
 	}
-	public List<String> getDivisionList() {
+
+	public List<String> getDivisionList()
+	{
 		return divisionList;
 	}
-	public void setDivisionList(List<String> divisionList) {
+
+	public void setDivisionList(List<String> divisionList)
+	{
 		this.divisionList = divisionList;
 	}
-	public String getIconStatus() {
+
+	public String getIconStatus()
+	{
 		return iconStatus;
 	}
-	public void setIconStatus(String iconStatus) {
+
+	public void setIconStatus(String iconStatus)
+	{
 		this.iconStatus = iconStatus;
 	}
-	public String getSystemStatus() {
+
+	public String getSystemStatus()
+	{
 		return systemStatus;
 	}
-	public void setSystemStatus(String systemStatus) {
+
+	public void setSystemStatus(String systemStatus)
+	{
 		this.systemStatus = systemStatus;
 	}
-	public String getRelax() {
+
+	public String getRelax()
+	{
 		return relax;
 	}
-	public void setRelax(String relax) {
+
+	public void setRelax(String relax)
+	{
 		this.relax = relax;
 	}
-	public int getNo() {
+
+	public int getNo()
+	{
 		return no;
 	}
-	public void setNo(int no) {
+
+	public void setNo(int no)
+	{
 		this.no = no;
 	}
-	public String getDivision() {
+
+	public String getDivision()
+	{
 		return division;
 	}
-	public void setDivision(String division) {
+
+	public void setDivision(String division)
+	{
 		this.division = division;
 	}
-	public String getTypePrd() {
+
+	public String getTypePrd()
+	{
 		return typePrd;
 	}
-	public void setTypePrd(String typePrd) {
+
+	public void setTypePrd(String typePrd)
+	{
 		this.typePrd = typePrd;
 	}
-	public String getTypePrdRemark() {
+
+	public String getTypePrdRemark()
+	{
 		return typePrdRemark;
 	}
-	public void setTypePrdRemark(String typePrdRemark) {
+
+	public void setTypePrdRemark(String typePrdRemark)
+	{
 		this.typePrdRemark = typePrdRemark;
 	}
-	public String getSendCFMCusDate() {
+
+	public String getSendCFMCusDate()
+	{
 		return sendCFMCusDate;
 	}
-	public void setSendCFMCusDate(String sendCFMCusDate) {
+
+	public void setSendCFMCusDate(String sendCFMCusDate)
+	{
 		this.sendCFMCusDate = sendCFMCusDate;
 	}
-	public String getPurchaseOrder() {
+
+	public String getPurchaseOrder()
+	{
 		return purchaseOrder;
 	}
-	public void setPurchaseOrder(String purchaseOrder) {
+
+	public void setPurchaseOrder(String purchaseOrder)
+	{
 		this.purchaseOrder = purchaseOrder;
 	}
-	public String getCustomerDivision() {
+
+	public String getCustomerDivision()
+	{
 		return customerDivision;
 	}
-	public void setCustomerDivision(String customerDivision) {
+
+	public void setCustomerDivision(String customerDivision)
+	{
 		this.customerDivision = customerDivision;
 	}
-
-
 
 }

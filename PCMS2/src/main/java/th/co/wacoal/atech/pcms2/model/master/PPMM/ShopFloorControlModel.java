@@ -24,7 +24,7 @@ public class ShopFloorControlModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public ShopFloorControlModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -33,7 +33,6 @@ public class ShopFloorControlModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()

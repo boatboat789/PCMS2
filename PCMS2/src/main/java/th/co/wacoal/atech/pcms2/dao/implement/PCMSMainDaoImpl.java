@@ -637,6 +637,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ fromMainB   
 				+ this.pss.getLeftJoinCRP("b") 
 				+ this.pss.getLeftJoinSwitchProdOrder("b") 
+				+ this.pss.buildLeftJoinViewUSM_SPE("b",0) 
 				+ " where ( b.SumVol Is not null\r\n" //20230911 FIX HERE
 //				+ "			 b.SumVol >= 0 or\r\n" //20230911 FIX HERE
 //				+ "			 b.SumVol <> 0 or\r\n" //20230911 FIX HERE
@@ -647,7 +648,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "		     	and ( CRP.SaleOrder is null )  \r\n"
 				+ "          ) or\r\n"
 				+ "     	 RealVolumn = 0 or\r\n"
-				+ "     	 ( b.UserStatus in ( 'ยกเลิก' ,'ตัดเกรดZ' ) ) \r\n"
+				+ "     	 ( viewUSM_SPE.[Special] = 0 ) \r\n"
 				+ "      )\r\n"
 				+ "    AND SPO.ProductionOrderSW IS NULL " 
 				;
@@ -748,7 +749,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		  		    + " INTO #tempOP  \r\n"
 					+ " from #tempPrdOP as a \r\n" 
 					+ this.pss.getLeftJoinSwitchProdOrder("A") 
-					+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' ) ) \r\n"
+					+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+					+ " where 1 = 1 "
 					+ "    AND SPO.ProductionOrderSW IS NULL " 
 					+ whereCaseTry ;
 //				//// Order PuangSwitch 
@@ -819,6 +821,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "                   a.SaleLine = b.SaleLine   \r\n"
 				+ "		 	where b.DataStatus = 'O' and b.SaleLine <> '' ) as a  \r\n " 
 				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
+				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
 				+ this.pss.buildLeftJoinTempProdWorkDate("b")
 				+ this.pss.buildLeftJoinSCC("b")  
 				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
@@ -832,7 +835,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.selectAll
 	  		    + " INTO #tempOPSW  \r\n"
 				+ " from #tempPrdOPSW as a \r\n"
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 " 
 				+ whereCaseTry ;
 //////			// Switch 
 		String createTempSWFromA = ""
@@ -911,6 +915,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "		 	) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
 				+ "		 	where b.DataStatus = 'O') as a  \r\n " 
 				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
+				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
 				+ this.pss.buildLeftJoinTempProdWorkDate("b") 
 				+ this.pss.buildLeftJoinSCC("b") 
 				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
@@ -951,6 +956,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ "			b.[PrdCreateDate]\r\n"
 		  		    + "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"  
 					+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrderRP")
+					+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
 		  		    + "		WHERE a.[DataStatus] = 'O'  \r\n" 
 		  		    + " )  as b on a.SaleOrder = b.SaleOrder \r\n"
 		  		    + "		  and a.SaleLine = b.SaleLine \r\n" 

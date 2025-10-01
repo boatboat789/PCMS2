@@ -27,7 +27,7 @@ public class PCMSDetailModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public PCMSDetailModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -36,70 +36,83 @@ public class PCMSDetailModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
-	public static String stringColumn() {
+	public static String stringColumn()
+	{
 		return "[]";
 	}
 
-	public static String[] arrayColumn() {
+	public static String[] arrayColumn()
+	{
 		return "".replaceAll("'", "").split(",");
 	}
 
 	@Override
-	public void destroy() {
+	public void destroy()
+	{
 		this.database.close();
 		super.destroy();
 	}
 
-	public ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList) {
+	public ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.searchByDetail(poList);
 		return list;
 	}
 
-	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList ) {
+	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
-		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList );
+		ArrayList<InputDateDetail> list = this.dao.saveInputDate(poList);
 		return list;
 	}
 
-	public ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
+	public ArrayList<InputDateDetail> getDeliveryPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<InputDateDetail> list = this.dao.getDeliveryPlanDateDetail(poList);
 		return list;
 	}
 
-
-	public ArrayList<PCMSAllDetail> getUserStatusList() {
+	public ArrayList<PCMSAllDetail> getUserStatusList()
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
 		return list;
 	}
-	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
+
+	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
 		return list;
 	}
-	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList) {
+
+	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
 		return list;
 	}
 
-	public ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList) {
+	public ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.saveInputDetail(poList);
 		return list;
 	}
-	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList) {
+
+	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByPrd(poList);
 		return list;
 	}
 
-	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList) {
+	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList)
+	{
 		// TODO Auto-generated method stub
 		ArrayList<PCMSSecondTableDetail> list = this.dao.getSwitchProdOrderListByRowProd(poList);
 		return list;

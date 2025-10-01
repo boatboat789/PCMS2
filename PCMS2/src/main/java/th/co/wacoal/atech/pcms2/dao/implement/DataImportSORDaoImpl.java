@@ -14,6 +14,7 @@ import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
 import th.co.wacoal.atech.pcms2.model.master.FromSORCFMModel;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
+
 @Repository // Spring annotation to mark this as a DAO component
 public class DataImportSORDaoImpl implements DataImportSORDao {
 	private Database database;
@@ -22,7 +23,7 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 	private String message;
 	private BeanCreateModel bcModel = new BeanCreateModel();
 
-    @Autowired
+	@Autowired
 	public DataImportSORDaoImpl(Database database) {
 		this.database = database;
 		this.message = "";
@@ -50,7 +51,7 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 				+ " SELECT DISTINCT  	"
 				+ "	viewPCMS2.[SO_NO]\r\n"
 				+ " ,viewPCMS2.[SO_Line]  \r\n"
-				+ "	,viewPCMS2.CFM_DATE\r\n" 
+				+ "	,viewPCMS2.CFM_DATE\r\n"
 				+ " ,POLI.[LastUpdateCFM]  as [LastUpdateCFM]  \r\n"
 				+ " FROM [SOR_PRODUCTION].[dbo].[V_PCMS2]  as viewPCMS2   \r\n"
 				+ " inner join [SOR_PRODUCTION].[dbo].[PurchaseOrders] as PO on PO.[No] = viewPCMS2.PO_NO\r\n"

@@ -24,7 +24,7 @@ public class Z_ATT_CustomerConfirm2Model extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public Z_ATT_CustomerConfirm2Model() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -33,7 +33,6 @@ public class Z_ATT_CustomerConfirm2Model extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()
@@ -42,7 +41,7 @@ public class Z_ATT_CustomerConfirm2Model extends HttpServlet {
 	}
 
 	public static String[] arrayColumn()
-	{ 
+	{
 		return "".replaceAll("'", "").split(",");
 	}
 
@@ -53,36 +52,27 @@ public class Z_ATT_CustomerConfirm2Model extends HttpServlet {
 		super.destroy();
 	}
 
-	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailByProductionOrder(
-			String prodOrder
-			,String lotNubmer 
-			,String replyDate
-			,String custName 
-			,String so 
-			,String sendDate ) 
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailByProductionOrder(String prodOrder,
+			String lotNubmer, String replyDate, String custName, String so, String sendDate)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<Z_ATT_CustomerConfirm2Detail> list = this.dao.getZ_ATT_CustomerConfirm2Detail(
-				  prodOrder
-				,  lotNubmer 
-				,  replyDate
-				,  custName 
-				,  so 
-				,  sendDate);
+		ArrayList<Z_ATT_CustomerConfirm2Detail> list =
+				this.dao.getZ_ATT_CustomerConfirm2Detail(prodOrder, lotNubmer, replyDate, custName, so, sendDate);
 		return list;
-	} 
-	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailById(ArrayList<Z_ATT_CustomerConfirm2Detail> poList) 
+	}
+
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailById(
+			ArrayList<Z_ATT_CustomerConfirm2Detail> poList)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<Z_ATT_CustomerConfirm2Detail> list = 
-				this.dao.getZ_ATT_CustomerConfirm2DetailById( poList); 
+		ArrayList<Z_ATT_CustomerConfirm2Detail> list = this.dao.getZ_ATT_CustomerConfirm2DetailById(poList);
 		return list;
 	}
 
 	public String upsertZ_ATT_CustomerConfirm2Detail(ArrayList<Z_ATT_CustomerConfirm2Detail> zCustList)
 	{
 		// TODO Auto-generated method stub
-		 String iconStatus = this.dao.upsertZ_ATT_CustomerConfirm2Detail(zCustList);
-		 return iconStatus;
-	} 
+		String iconStatus = this.dao.upsertZ_ATT_CustomerConfirm2Detail(zCustList);
+		return iconStatus;
+	}
 }

@@ -578,10 +578,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,a.DeliveryStatus\r\n"
 			+ "                ,a.SaleStatus\r\n"
 			+ ""; 
-//	private String leftJoinH = ""
-//			+ " left join #tempPlandeliveryDate as h on h.ProductionOrder = a.ProductionOrder and \r\n"
-//			+ "                                         h.SaleOrder = a.SaleOrder and\r\n"
-//			+ "                                         h.SaleLine = a.SaleLine \r\n"; 
 	private String createTempMainFirst = ""
 			+ " SELECT DISTINCT \r\n"
 			+ this.selectMainV2
@@ -611,6 +607,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ this.pss.getLeftJoinInputStockLoad("b", "b") 
 			+ this.pss.getLeftJoinSwitchProdOrder("b") 
 			+ this.pss.getLeftJoinCRP("b") 
+			+ this.pss.buildLeftJoinViewUSM_SPE("b",0) 
 			+ " where \r\n"
 			+ "		( \r\n"
 			+ "        b.SumVol Is not null or\r\n" // 20230911 FIX HERE
@@ -622,7 +619,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "		     ( CRP.SaleOrder is null )  \r\n"	
 			+ "        ) or\r\n"
 			+ "        RealVolumn = 0 or\r\n"
-			+ "     	 ( b.UserStatus in ( 'ยกเลิก' ,'ตัดเกรดZ' ) ) \r\n"
+			+ "     	 ( viewUSM_SPE.[Special] = 0 ) \r\n"
 			+ "     )\r\n"
 			+ "    AND SPO.ProductionOrderSW IS NULL " 
 ;
@@ -991,6 +988,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			b.[PrdCreateDate]\r\n"
 			+ "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
 			+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrderRP") 
+			+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
 			+ "		WHERE a.[DataStatus] = 'O'  \r\n" 
 			;
 	private String createTempPrdReplacedSecond = ""
@@ -1093,7 +1091,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " INTO #tempOP  \r\n"
 				+ " from #tempPrdOP as a \r\n"
 				+ this.pss.getLeftJoinSwitchProdOrder("A") 
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 "
 				+ "    AND SPO.ProductionOrderSW IS NULL " 
 				+ whereCaseTry;
 		String sqlOPSW = ""
@@ -1101,14 +1100,16 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " INTO #tempOPSW  \r\n"
 				+ " from #tempPrdOPSW as a \r\n"
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 "
 				+ whereCaseTry;
 		String sqlSW = ""
 				+ " select \r\n"
 				+ this.selectAll
 				+ " INTO #tempSW  \r\n"
 				+ " from #tempPrdSW as a \r\n"
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 "
 				+ whereCaseTry; 
 //////				// สวม
 		String createTempRP = "" + this.createTempPrdReplacedFirst + this.createTempPrdReplacedSecond + whereCaseTryRP;
@@ -1117,7 +1118,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " INTO #tempRP  \r\n"
 				+ " from #tempPrdReplaced as a \r\n"
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 "
 				+ whereCaseTry;
 		String sql = ""
 				+ " SET NOCOUNT ON; ;\r\n"
@@ -1238,7 +1240,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String saleLine = bean.getSaleLine();
 		ArrayList<InputDateDetail> listInput = new ArrayList<>();
-//		java.util.Date date ;
 		InputDateDetail beanInput = new InputDateDetail();
 		if (check > 0) {
 			beanInput.setIconStatus("I");
@@ -1381,9 +1382,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<>();
 		ArrayList<PCMSSecondTableDetail> poListOld = new ArrayList<>();
 		ArrayList<PCMSSecondTableDetail> poListOldNormal = new ArrayList<>();
-//		ArrayList<PCMSSecondTableDetail> poListTmp = new ArrayList<PCMSSecondTableDetail>();
 		ArrayList<PCMSSecondTableDetail> listRP = new ArrayList<>();
-//		ArrayList<PCMSSecondTableDetail> listOPMainTwo   = new ArrayList<PCMSSecondTableDetail>();
 		String repRemark = bean.getReplacedRemark().trim();
 		String volume = "";
 		String prdOrder = bean.getProductionOrder().trim();
@@ -1441,9 +1440,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			bean.setSystemStatus("Prod.Order already switch between " + prdOrder + " and " + prodOrderCheck + ".");
 			poList.add(bean);
 		} else if (newRPSplit.length > 0) {
-//			list.add(bean);
 			prdOrder = bean.getProductionOrder().trim();
-//			ArrayList<ReplacedProdOrderDetail> listRPOld = rpoModel.getReplacedProdOrderDetailByPrdMain(prdOrder);
 			ArrayList<ReplacedProdOrderDetail> listRPOld =
 					rpoModel.getReplacedProdOrderDetailByPrdMainAndSO(prdOrder, saleOrder, saleLine);
 			bean = rpoModel.updateReplacedProdOrder(bean, "X");
@@ -1543,9 +1540,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String where = " where  1 = 1 \r\n";
-//		String whereTempUCAL = " where  ";
 		if (listRP.size() > 0) {
-//			whereTempUCAL += " ( ";
 			String saleOrder = "";
 			String saleLine = "";
 			int sizeList = listRP.size();
@@ -1623,8 +1618,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		} else {
 
 			list = spoModel.getSwitchProdOrderDetailByProdOrderForHandlerSwitchProd(prdOrderSW);
-//			List<Map<String, Object>> datas = this.database.queryList(sql);
-//			for (Map<String, Object> map : datas) { list.add(this.bcModel._genPCMSSecondTableDetail(map)); }
 			if (list.size() > 0) {
 				PCMSSecondTableDetail beanL = list.get(0);
 				ArrayList<ReplacedProdOrderDetail> listRPSubOne = rpoModel.getReplacedProdOrderDetailByPrdRP(prdOrder);
@@ -2047,7 +2040,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " select distinct\r\n"
 				+ this.selectAll
 				+ " from #tempPrdSW as a \r\n"
-				+ " where ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n";
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				;
 		List<Map<String, Object>> datas = this.database.queryList(sqlSW);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -2079,7 +2073,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " from #tempPrdOP as a \r\n"
 				+ this.pss.getLeftJoinSwitchProdOrder("A") 
-				+ " WHERE ( a.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ " where 1 = 1 "
 				+ "    AND SPO.ProductionOrderSW IS NULL " 
 				;
 		List<Map<String, Object>> datas = this.database.queryList(sqlOP);
@@ -2113,7 +2108,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ where
 				+ " \r\n" 
 				+ this.createTempOPSWSecond
-				+ " where ( b.UserStatus not in ( 'ยกเลิก' , 'ตัดเกรดZ' )) \r\n"
+				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
 				+ " SELECT * \r\n"
 				+ "	FROM #tempPrdOPSW \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);

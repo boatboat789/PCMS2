@@ -280,20 +280,10 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		FromSapCFMModel fscfmModel = new FromSapCFMModel();
 		FromSapMainProdSaleModel fsmpsModel = new FromSapMainProdSaleModel();
 		FromSapPackingModel fspModel = new FromSapPackingModel();
-//		RollFromSapModel rfsModel = new RollFromSapModel();
 		FromSapSubmitDateModel fssdModel = new FromSapSubmitDateModel();
 		FromSapGoodReceiveModel fsgrModel = new FromSapGoodReceiveModel();
 		FromSapMainBillBatchModel fsmbbModel = new FromSapMainBillBatchModel();
-//		FromSapReceipeModel fsrModel = new FromSapReceipeModel();
-
-//		ArrayList<FromErpMainProdDetail> frmpList = erpaModel.getFromErpMainProdDetail();
-//		ArrayList<FromErpCFMDetail> frcfmList = erpaModel.getFromErpCFMDetail();
-//		ArrayList<FromErpMainProdSaleDetail> frmpsList = erpaModel.getFromErpMainProdSaleDetail();
-//		ArrayList<FromErpPackingDetail> frpList = erpaModel.getFromErpPackingDetail();
-////		ArrayList<FromErpPODetail> rollList = erpaModel.getFromErpPODetail();
-//		ArrayList<FromErpSubmitDateDetail> fesdList = erpaModel.getFromErpSubmitDateDetail();
-//		ArrayList<FromErpGoodReceiveDetail> frgrList = erpaModel.getFromErpGoodReceiveDetail();
-//		ArrayList<FromErpMainBillBatchDetail> frmbbList = erpaModel.getFromErpMainBillBatchDetail(); 
+//		FromSapReceipeModel fsrModel = new FromSapReceipeModel();x
 ////		ArrayList<FromErpReceipeDetail> ferdList = erpaModel.getFromErpReceipeDetai();
 
 		// Handle FromSapMainProdDetail
@@ -365,21 +355,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			System.err.println("Error processing Main Bill Batch Detail: " + e.getMessage());
 			e.printStackTrace();
 		}
-//		fsmpModel.upsertFromSapMainProdDetail(frmpList);
-//		this.execUpsertToMainProd();
-//		fscfmModel.upsertFromSapCFMDetail(frcfmList);
-//		this.execUpsertToCFM(); 
-//		fsmpsModel.upsertFromSapMainProdSaleDetail(frmpsList);
-//		this.execUpsertToMainProdSale();
-//		fspModel.upsertFromSapPackingDetail(frpList);
-//		this.execUpsertToPacking();  
-//		fssdModel.upsertFromSapSubmitDateDetail(fesdList);
-//		this.execUpsertToSubmitDate();
-//		fsgrModel.upsertFromSapGoodReceiveDetail(frgrList);
-//		this.execUpsertToGoodReceive(); 
-//		fsmbbModel.upsertFromSapMainBillBatchDetail(frmbbList); 
-//		this.execUpsertToMainBillBatch();
-////		fsrModel.upsertFromSapReceipeDetail(ferdList);
 	}
 
 	@Override
@@ -392,7 +367,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		FromSapSaleModel fssModel = new FromSapSaleModel();
 		try {
 			ArrayList<FromErpMainSaleDetail> frmsList = erpaModel.getFromErpMainSaleDetail();
-
 			fsmsModel.upsertFromSapMainSaleDetail(frmsList);
 			this.execUpsertToMainSale();
 		} catch (Exception e) {

@@ -37,12 +37,7 @@ public class LogInDaoImpl implements LogInDao {
 	@Override
 	public UserDetail getUserDetail(String userId) {
 		UserDetail user = null;
-//		int Id = 0;
-		String Firstname ,UserId
-//		,PermitId ,Responsible ,ChangeBy ,RegistBy,Password
-		;
-//		Date LastSignDate,ChangeDate,RegistDate ;
-//		Boolean IsAdminSystem,IsAdminUser;
+		String Firstname ,UserId;
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ?  ";
 
@@ -127,12 +122,7 @@ public class LogInDaoImpl implements LogInDao {
 	@Override
 	public UserDetail getUserDetail(String userId,String passWord) {
 		UserDetail user = null;
-//		int Id = 0;
-		String Firstname ,UserId
-//		,PermitId ,Responsible ,ChangeBy ,RegistBy,Password
-		;
-//		Date LastSignDate,ChangeDate,RegistDate ;
-//		Boolean IsAdminSystem,IsAdminUser;
+		String Firstname ,UserId;
          try {
              String sql = "SELECT * FROM [Users] WHERE UserId = ? and Password = ? ";
 

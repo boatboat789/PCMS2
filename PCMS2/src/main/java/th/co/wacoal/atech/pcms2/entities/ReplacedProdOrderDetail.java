@@ -15,9 +15,11 @@ public class ReplacedProdOrderDetail {
 
 	private String iconStatus;
 	private String systemStatus;
+
 	public ReplacedProdOrderDetail() {
 		super();
 	}
+
 	public ReplacedProdOrderDetail(String saleOrder, String saleLine, String productionOrder, String productionOrderRP,
 			String volume, String changeBy, String changeDate) {
 		super();
@@ -29,58 +31,94 @@ public class ReplacedProdOrderDetail {
 		this.changeBy = changeBy;
 		this.changeDate = changeDate;
 	}
-	public String getSaleOrder() {
+
+	public String getSaleOrder()
+	{
 		return saleOrder;
 	}
-	public void setSaleOrder(String aleOrder) {
+
+	public void setSaleOrder(String aleOrder)
+	{
 		this.saleOrder = aleOrder;
 	}
-	public String getSaleLine() {
+
+	public String getSaleLine()
+	{
 		return saleLine;
 	}
-	public void setSaleLine(String saleLine) {
+
+	public void setSaleLine(String saleLine)
+	{
 		this.saleLine = saleLine;
 	}
-	public String getProductionOrder() {
+
+	public String getProductionOrder()
+	{
 		return productionOrder;
 	}
-	public void setProductionOrder(String productionOrder) {
+
+	public void setProductionOrder(String productionOrder)
+	{
 		this.productionOrder = productionOrder;
 	}
-	public String getProductionOrderRP() {
+
+	public String getProductionOrderRP()
+	{
 		return productionOrderRP;
 	}
-	public void setProductionOrderRP(String productionOrderRP) {
+
+	public void setProductionOrderRP(String productionOrderRP)
+	{
 		this.productionOrderRP = productionOrderRP;
 	}
-	public String getVolume() {
+
+	public String getVolume()
+	{
 		return volume;
 	}
-	public void setVolume(String volume) {
+
+	public void setVolume(String volume)
+	{
 		this.volume = volume;
 	}
-	public String getChangeBy() {
+
+	public String getChangeBy()
+	{
 		return changeBy;
 	}
-	public void setChangeBy(String changeBy) {
+
+	public void setChangeBy(String changeBy)
+	{
 		this.changeBy = changeBy;
 	}
-	public String getChangeDate() {
+
+	public String getChangeDate()
+	{
 		return changeDate;
 	}
-	public void setChangeDate(String changeDate) {
+
+	public void setChangeDate(String changeDate)
+	{
 		this.changeDate = changeDate;
 	}
-	public String getIconStatus() {
+
+	public String getIconStatus()
+	{
 		return iconStatus;
 	}
-	public void setIconStatus(String iconStatus) {
+
+	public void setIconStatus(String iconStatus)
+	{
 		this.iconStatus = iconStatus;
 	}
-	public String getSystemStatus() {
+
+	public String getSystemStatus()
+	{
 		return systemStatus;
 	}
-	public void setSystemStatus(String systemStatus) {
+
+	public void setSystemStatus(String systemStatus)
+	{
 		this.systemStatus = systemStatus;
 	}
 

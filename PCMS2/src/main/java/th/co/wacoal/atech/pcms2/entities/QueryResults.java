@@ -9,18 +9,16 @@ public class QueryResults {
 	private String whereSale;
 	private String whereWaitLot;
 
-	public QueryResults(String whereCaseTry, String whereCaseTryRP, String tmpWhereNoLotUCAL, String where
-			, String whereBMainUserStatus
-			, String whereSale
-			, String whereWaitLot) {
-        this.whereCaseTry = whereCaseTry;
-        this.whereCaseTryRP = whereCaseTryRP;
-        this.tmpWhereNoLotUCAL = tmpWhereNoLotUCAL;
-        this.where = where;
-        this.whereBMainUserStatus = whereBMainUserStatus;
-        this.whereSale = whereSale;
-        this.whereWaitLot = whereWaitLot;
-    }
+	public QueryResults(String whereCaseTry, String whereCaseTryRP, String tmpWhereNoLotUCAL, String where,
+			String whereBMainUserStatus, String whereSale, String whereWaitLot) {
+		this.whereCaseTry = whereCaseTry;
+		this.whereCaseTryRP = whereCaseTryRP;
+		this.tmpWhereNoLotUCAL = tmpWhereNoLotUCAL;
+		this.where = where;
+		this.whereBMainUserStatus = whereBMainUserStatus;
+		this.whereSale = whereSale;
+		this.whereWaitLot = whereWaitLot;
+	}
 
 	// Getters
 	public String getWhereCaseTry()

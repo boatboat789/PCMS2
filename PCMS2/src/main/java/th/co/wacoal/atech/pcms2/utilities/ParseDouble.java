@@ -2,7 +2,8 @@ package th.co.wacoal.atech.pcms2.utilities;
 
 public class ParseDouble {
 
-	public static Double tryParseDouble(String doubleVal) {
+	public static Double tryParseDouble(String doubleVal)
+	{
 		double dbVal = 0;
 		try {
 			dbVal = Double.parseDouble(doubleVal.replace(",", ""));

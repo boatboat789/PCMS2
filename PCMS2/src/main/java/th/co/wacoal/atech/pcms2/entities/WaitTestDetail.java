@@ -9,6 +9,7 @@ public class WaitTestDetail {
 	private String dateOutTest;
 	private String status;
 	private String remark;
+
 	public WaitTestDetail(String no, String dateInTest, String dateOutTest, String status, String remark) {
 		super();
 		this.no = no;
@@ -17,34 +18,54 @@ public class WaitTestDetail {
 		this.status = status;
 		this.remark = remark;
 	}
-	public String getNo() {
+
+	public String getNo()
+	{
 		return no;
 	}
-	public void setNo(String no) {
+
+	public void setNo(String no)
+	{
 		this.no = no;
 	}
-	public String getDateInTest() {
+
+	public String getDateInTest()
+	{
 		return dateInTest;
 	}
-	public void setDateInTest(String dateInTest) {
+
+	public void setDateInTest(String dateInTest)
+	{
 		this.dateInTest = dateInTest;
 	}
-	public String getDateOutTest() {
+
+	public String getDateOutTest()
+	{
 		return dateOutTest;
 	}
-	public void setDateOutTest(String dateOutTest) {
+
+	public void setDateOutTest(String dateOutTest)
+	{
 		this.dateOutTest = dateOutTest;
 	}
-	public String getStatus() {
+
+	public String getStatus()
+	{
 		return status;
 	}
-	public void setStatus(String status) {
+
+	public void setStatus(String status)
+	{
 		this.status = status;
 	}
-	public String getRemark() {
+
+	public String getRemark()
+	{
 		return remark;
 	}
-	public void setRemark(String remark) {
+
+	public void setRemark(String remark)
+	{
 		this.remark = remark;
 	}
 }

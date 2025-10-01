@@ -58,23 +58,17 @@ public class PCMSSecondTableDetail {
 	private String iconStatus;
 	private String systemStatus;
 	private String stockRemark;
-
 	private String grQuantityKG;
 	private String grQuantityMR;
 	private String grQuantityYD;
-	
 	private String grQuantity;
 	private String volumnFGAmount;
-
 	private String dyePlan;
 	private String dyeActual;
 	private String dyeStatus;
-
-
 	private String sendCFMCusDate;
 	private String causeOfDelay;
 	private String delayedDepartment;
-
 	private String pcRemark;
 	private String switchRemark ;
 	private String typePrd ;

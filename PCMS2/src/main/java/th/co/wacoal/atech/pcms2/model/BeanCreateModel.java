@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
- 
+
 import th.co.wacoal.atech.pcms2.entities.CFMDetail;
 import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
@@ -342,5 +342,5 @@ public class BeanCreateModel {
 	{
 		ProductionOrderLogDetail bean = this.dao._genProductionOrderLogDetail(map);
 		return bean;
-	} 
+	}
 }

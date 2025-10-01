@@ -25,23 +25,11 @@ public class UserDetail {
 	private String registDate;
 	private String userType;
 	private boolean isCustomer;
-	// ต้องตัวเล็กไม่งั้นเรียก parameter ไม่ได้
-//    private boolean isDog = false;
 
-//	public boolean getIsDog() {
-//		return isDog;
-//	}
-//
-//	public void setIsDog(boolean isDog) {
-//		this.isDog = isDog;
-//	}
-
-	public UserDetail(int id, String userId, String password, String firstName, String lastName, String role,
-			String department, String email, 
-			String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin,
-			String permitId, String lastSignDate, String responsible
-			, String changeBy, String changeDate, String registBy,
-			String registDate, String UserType, boolean IsCustomer) {
+	public UserDetail(int id, String userId, String password, String firstName, String lastName, String role, String department,
+			String email, String arrangedBy, String authorizedBy, boolean isSystem, boolean isAdmin, String permitId,
+			String lastSignDate, String responsible, String changeBy, String changeDate, String registBy, String registDate,
+			String UserType, boolean IsCustomer) {
 		super();
 		this.lastSignDate = lastSignDate;
 		this.userType = UserType;
@@ -85,131 +73,151 @@ public class UserDetail {
 		this.responsible = "";
 		this.changeBy = "";
 		this.isCustomer = false;
-//		ChangeDate =;
 		this.registBy = "";
-//		RegistDate = registDate;
 	}
-//	@Override
-//	public String toString() {
-//		return this.UserId ;
-//	}
-
 	public UserDetail() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getId() {
+	public int getId()
+	{
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(int id)
+	{
 		this.id = id;
 	}
 
-	public String getUserId() {
+	public String getUserId()
+	{
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(String userId)
+	{
 		this.userId = userId;
 	}
 
-	public String getPassword() {
+	public String getPassword()
+	{
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(String password)
+	{
 		this.password = password;
 	}
 
-	public String getFirstName() {
+	public String getFirstName()
+	{
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
+	public void setFirstName(String firstName)
+	{
 		this.firstName = firstName;
 	}
 
-	public String getLastName() {
+	public String getLastName()
+	{
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
+	public void setLastName(String lastName)
+	{
 		this.lastName = lastName;
 	}
 
-	public String getRole() {
+	public String getRole()
+	{
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(String role)
+	{
 		this.role = role;
 	}
 
-	public String getDepartment() {
+	public String getDepartment()
+	{
 		return department;
 	}
 
-	public void setDepartment(String department) {
+	public void setDepartment(String department)
+	{
 		this.department = department;
 	}
 
-	public String getEmail() {
+	public String getEmail()
+	{
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(String email)
+	{
 		this.email = email;
 	}
 
-	public String getArrangedBy() {
+	public String getArrangedBy()
+	{
 		return arrangedBy;
 	}
 
-	public void setArrangedBy(String arrangedBy) {
+	public void setArrangedBy(String arrangedBy)
+	{
 		this.arrangedBy = arrangedBy;
 	}
 
-	public String getAuthorizedBy() {
+	public String getAuthorizedBy()
+	{
 		return authorizedBy;
 	}
 
-	public void setAuthorizedBy(String authorizedBy) {
+	public void setAuthorizedBy(String authorizedBy)
+	{
 		this.authorizedBy = authorizedBy;
 	}
 
-	public boolean getIsSystem() {
+	public boolean getIsSystem()
+	{
 		return isSystem;
 	}
 
-	public void setIsSystem(boolean isSystem) {
+	public void setIsSystem(boolean isSystem)
+	{
 		this.isSystem = isSystem;
 	}
 
-	public boolean getIsAdmin() {
+	public boolean getIsAdmin()
+	{
 		return isAdmin;
 	}
 
-	public void setIsAdmin(boolean isAdmin) {
+	public void setIsAdmin(boolean isAdmin)
+	{
 		this.isAdmin = isAdmin;
 	}
 
-	public String getPermitId() {
+	public String getPermitId()
+	{
 		return permitId;
 	}
 
-	public void setPermitId(String permitId) {
+	public void setPermitId(String permitId)
+	{
 		this.permitId = permitId;
 	}
 
-	public String getResponsible() {
+	public String getResponsible()
+	{
 		return responsible;
 	}
 
-	public void setResponsible(String responsible) {
+	public void setResponsible(String responsible)
+	{
 		this.responsible = responsible;
 	}
- 
 
 	public String getLastSignDate()
 	{
@@ -292,13 +300,51 @@ public class UserDetail {
 	}
 
 	@Override
-	public String toString() {
-		return "UserDetail [id=" + id + ", userId=" + userId + ", password=" + password + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", role=" + role + ", department=" + department + ", email=" + email
-				+ ", arrangedBy=" + arrangedBy + ", authorizedBy=" + authorizedBy + ", isSystem=" + isSystem
-				+ ", isAdmin=" + isAdmin + ", permitId=" + permitId + ", responsible=" + responsible + ", lastSignDate="
-				+ lastSignDate + ", changeBy=" + changeBy + ", changeDate=" + changeDate + ", registBy=" + registBy
-				+ ", registDate=" + registDate + ", userType=" + userType + ", isCustomer=" + isCustomer + "]";
+	public String toString()
+	{
+		return "UserDetail [id="
+				+ id
+				+ ", userId="
+				+ userId
+				+ ", password="
+				+ password
+				+ ", firstName="
+				+ firstName
+				+ ", lastName="
+				+ lastName
+				+ ", role="
+				+ role
+				+ ", department="
+				+ department
+				+ ", email="
+				+ email
+				+ ", arrangedBy="
+				+ arrangedBy
+				+ ", authorizedBy="
+				+ authorizedBy
+				+ ", isSystem="
+				+ isSystem
+				+ ", isAdmin="
+				+ isAdmin
+				+ ", permitId="
+				+ permitId
+				+ ", responsible="
+				+ responsible
+				+ ", lastSignDate="
+				+ lastSignDate
+				+ ", changeBy="
+				+ changeBy
+				+ ", changeDate="
+				+ changeDate
+				+ ", registBy="
+				+ registBy
+				+ ", registDate="
+				+ registDate
+				+ ", userType="
+				+ userType
+				+ ", isCustomer="
+				+ isCustomer
+				+ "]";
 	}
 
 }

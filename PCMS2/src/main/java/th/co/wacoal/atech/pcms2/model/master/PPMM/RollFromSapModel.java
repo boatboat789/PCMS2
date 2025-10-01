@@ -33,7 +33,6 @@ public class RollFromSapModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()
@@ -59,12 +58,4 @@ public class RollFromSapModel extends HttpServlet {
 		ArrayList<PODetail> list = this.dao.getRollFromSapDetailByProductionOrder(prodOrder);
 		return list;
 	}
-
-//	public String upsertRollFromSapFromERPPODetail(ArrayList<FromErpPODetail> list)
-//	{
-//		// TODO Auto-generated method stub
-//		String iconStatus = this.dao.upsertRollFromSapFromERPPODetail(list);
-//		return iconStatus;
-//	}
-
 }

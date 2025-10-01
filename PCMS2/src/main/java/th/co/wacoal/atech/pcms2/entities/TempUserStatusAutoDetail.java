@@ -15,11 +15,13 @@ public class TempUserStatusAutoDetail {
 
 	private String iconStatus;
 	private String systemStatus;
+
 	public TempUserStatusAutoDetail() {
 		super();
 	}
-	public TempUserStatusAutoDetail(String productionOrder, String saleOrder, String saleLine,
-			String productionOrderRPM, String volume, String grade, String userStatusCal, String userStatusCalRP ) {
+
+	public TempUserStatusAutoDetail(String productionOrder, String saleOrder, String saleLine, String productionOrderRPM,
+			String volume, String grade, String userStatusCal, String userStatusCalRP) {
 		super();
 		this.productionOrder = productionOrder;
 		this.saleOrder = saleOrder;
@@ -30,64 +32,104 @@ public class TempUserStatusAutoDetail {
 		this.userStatusCal = userStatusCal;
 		this.userStatusCalRP = userStatusCalRP;
 	}
-	public String getProductionOrder() {
+
+	public String getProductionOrder()
+	{
 		return productionOrder;
 	}
-	public void setProductionOrder(String productionOrder) {
+
+	public void setProductionOrder(String productionOrder)
+	{
 		this.productionOrder = productionOrder;
 	}
-	public String getSaleOrder() {
+
+	public String getSaleOrder()
+	{
 		return saleOrder;
 	}
-	public void setSaleOrder(String saleOrder) {
+
+	public void setSaleOrder(String saleOrder)
+	{
 		this.saleOrder = saleOrder;
 	}
-	public String getSaleLine() {
+
+	public String getSaleLine()
+	{
 		return saleLine;
 	}
-	public void setSaleLine(String saleLine) {
+
+	public void setSaleLine(String saleLine)
+	{
 		this.saleLine = saleLine;
 	}
-	public String getProductionOrderRPM() {
+
+	public String getProductionOrderRPM()
+	{
 		return productionOrderRPM;
 	}
-	public void setProductionOrderRPM(String productionOrderRPM) {
+
+	public void setProductionOrderRPM(String productionOrderRPM)
+	{
 		this.productionOrderRPM = productionOrderRPM;
 	}
-	public String getVolume() {
+
+	public String getVolume()
+	{
 		return volume;
 	}
-	public void setVolume(String volume) {
+
+	public void setVolume(String volume)
+	{
 		this.volume = volume;
 	}
-	public String getGrade() {
+
+	public String getGrade()
+	{
 		return grade;
 	}
-	public void setGrade(String grade) {
+
+	public void setGrade(String grade)
+	{
 		this.grade = grade;
 	}
-	public String getUserStatusCal() {
+
+	public String getUserStatusCal()
+	{
 		return userStatusCal;
 	}
-	public void setUserStatusCal(String userStatusCal) {
+
+	public void setUserStatusCal(String userStatusCal)
+	{
 		this.userStatusCal = userStatusCal;
 	}
-	public String getUserStatusCalRP() {
+
+	public String getUserStatusCalRP()
+	{
 		return userStatusCalRP;
 	}
-	public void setUserStatusCalRP(String userStatusCalRP) {
+
+	public void setUserStatusCalRP(String userStatusCalRP)
+	{
 		this.userStatusCalRP = userStatusCalRP;
 	}
-	public String getIconStatus() {
+
+	public String getIconStatus()
+	{
 		return iconStatus;
 	}
-	public void setIconStatus(String iconStatus) {
+
+	public void setIconStatus(String iconStatus)
+	{
 		this.iconStatus = iconStatus;
 	}
-	public String getSystemStatus() {
+
+	public String getSystemStatus()
+	{
 		return systemStatus;
 	}
-	public void setSystemStatus(String systemStatus) {
+
+	public void setSystemStatus(String systemStatus)
+	{
 		this.systemStatus = systemStatus;
 	}
 

@@ -189,48 +189,10 @@ public class PCMSMainController {
     }
 	@RequestMapping(  value = "/searchByDetail",  method = RequestMethod.POST )
 	public void doGetSearchByDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response 
-//			, @RequestBody String data
 			, @RequestBody ArrayList<PCMSTableDetail> poList 
-////			, @RequestParam("data") String data
 			) throws IOException {
 		PCMSMainModel model = new PCMSMainModel(); 
 		Gson g = new Gson();
-//		// Define the Type for ArrayList of OrgatexDyeLotDetail
-//      Type listType = new TypeToken<ArrayList<PCMSTableDetail>>(){}.getType(); 
-//      // Deserialize JSON directly to ArrayList
-//      ArrayList<PCMSTableDetail> poList = g.fromJson(data, listType);  
-		
-		
-//		PCMSTableDetail[] userArray = g.fromJson(data, PCMSTableDetail[].class);
-//		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
-//		int i = 0;
-//		for (i = 0; i < userArray.length; i++) {
-//			PCMSTableDetail pd = new PCMSTableDetail();
-//			pd.setCustomerName(userArray[i].getCustomerName());
-//			pd.setCustomerShortName(userArray[i].getCustomerShortName());
-//			pd.setSaleNumber(userArray[i].getSaleNumber());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setProductionOrder(userArray[i].getProductionOrder());
-//			pd.setArticleFG(userArray[i].getArticleFG());
-//			pd.setDesignFG(userArray[i].getDesignFG());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
-//			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
-//			pd.setMaterialNo(userArray[i].getMaterialNo());
-//			pd.setLabNo(userArray[i].getLabNo());
-////			pd.setUserStatus(userArray[i].getUserStatus());
-//			pd.setUserStatusList(userArray[i].getUserStatusList());
-//			pd.setCustomerNameList(userArray[i].getCustomerNameList());
-//			pd.setDivisionList(userArray[i].getDivisionList());
-//			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
-//			pd.setDeliveryStatus(userArray[i].getDeliveryStatus()); 
-//			pd.setDistChannel(userArray[i].getDistChannel());
-//			pd.setSaleStatus(userArray[i].getSaleStatus());
-//			pd.setDueDate(userArray[i].getDueDate());
-//			pd.setCustomerDivision(userArray[i].getCustomerDivision());
-//			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
-//			poList.add(pd);
-//		}
 		UserDetail userObject = (UserDetail) session.getAttribute("userObject");
 		boolean isCustomer = false ;
 		if(userObject != null) {
@@ -244,40 +206,13 @@ public class PCMSMainController {
 	public void doGetPrdDetailByRow(HttpSession session
 			,HttpServletRequest request
 			, HttpServletResponse response
-//			, @RequestBody String data
 			, @RequestBody ArrayList<PCMSTableDetail> poList 
-//			, @RequestParam("data") String data
 			) throws IOException {
 		PCMSMainModel model = new PCMSMainModel();
 		Gson g = new Gson();
-//		PCMSTableDetail[] userArray = g.fromJson(data, PCMSTableDetail[].class);
-//		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
-//
-//		int i = 0;
-//		for (i = 0; i < userArray.length; i++) {
-//			PCMSTableDetail pd = new PCMSTableDetail();
-//			pd.setCustomerShortName(userArray[i].getCustomerShortName());
-//			pd.setSaleNumber(userArray[i].getSaleNumber());
-//			pd.setSaleOrder(userArray[i].getSaleOrder()); 
-//			pd.setProductionOrder(userArray[i].getProductionOrder());
-//			pd.setArticleFG(userArray[i].getArticleFG());
-//			pd.setDesignFG(userArray[i].getDesignFG());
-//			pd.setSaleLine(userArray[i].getSaleLine());
-//			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
-//			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
-//			pd.setMaterialNo(userArray[i].getMaterialNo());
-//			pd.setLabNo(userArray[i].getLabNo());
-//			pd.setUserStatus(userArray[i].getUserStatus());
-//			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
-//			pd.setDistChannel(userArray[i].getDistChannel());
-//			pd.setCustomerDivision(userArray[i].getCustomerDivision());
-//			pd.setSaleStatus(userArray[i].getSaleStatus());
-//			poList.add(pd);
-//		}
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println(g.toJson(model.getPrdDetailByRow( poList)));
-//		out.println(g.toJson(null ));
 	}
 	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
 	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
@@ -305,41 +240,9 @@ public class PCMSMainController {
 	}
 	@RequestMapping(  value = "/saveDefault",  method = RequestMethod.POST )
 	public void doGetSaveDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response 
-//			,@RequestBody String data
 			, @RequestBody ArrayList<PCMSTableDetail> poList  ) throws IOException {
 		PCMSMainModel model = new PCMSMainModel();
 		Gson g = new Gson();
-//		PCMSTableDetail[] userArray = g.fromJson(data, PCMSTableDetail[].class);
-//		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
-//		int i = 0;
-//		String user = (String) session.getAttribute("user");
-//		for (i = 0; i < userArray.length; i++) {
-//			PCMSTableDetail pd = new PCMSTableDetail();
-//			pd.setCustomerName(userArray[i].getCustomerName());
-//			pd.setCustomerShortName(userArray[i].getCustomerShortName());
-//			pd.setSaleNumber(userArray[i].getSaleNumber());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setProductionOrder(userArray[i].getProductionOrder());
-//			pd.setArticleFG(userArray[i].getArticleFG());
-//			pd.setDesignFG(userArray[i].getDesignFG());
-//			pd.setSaleOrder(userArray[i].getSaleOrder());
-//			pd.setSaleOrderCreateDate(userArray[i].getSaleOrderCreateDate()) ;
-//			pd.setProductionOrderCreateDate(userArray[i].getProductionOrderCreateDate());
-//			pd.setMaterialNo(userArray[i].getMaterialNo());
-//			pd.setLabNo(userArray[i].getLabNo());
-//			pd.setUserStatus(userArray[i].getUserStatus());
-//			pd.setUserStatusList(userArray[i].getUserStatusList());
-//			pd.setCustomerNameList(userArray[i].getCustomerNameList());
-//			pd.setCustomerShortNameList(userArray[i].getCustomerShortNameList());
-//			pd.setDeliveryStatus(userArray[i].getDeliveryStatus());
-//			pd.setDistChannel(userArray[i].getDistChannel());
-//			pd.setSaleStatus(userArray[i].getSaleStatus());
-//			pd.setDueDate(userArray[i].getDueDate());
-//			pd.setDivisionList(userArray[i].getDivisionList());
-//			pd.setPurchaseOrder(userArray[i].getPurchaseOrder());
-//			pd.setUserId(user);
-//			poList.add(pd);
-//		} 
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println(g.toJson(model.saveDefault( poList)));
@@ -348,7 +251,6 @@ public class PCMSMainController {
 	public void doGetLoadDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {
 		PCMSMainModel model = new PCMSMainModel();
 		Gson g = new Gson();
-//		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
 		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
 		String user = (String) session.getAttribute("user");
 //		int i = 0;
@@ -365,32 +267,6 @@ public class PCMSMainController {
 	public void doGetEncrypted(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data ,@PathVariable(value="userId") String id ) throws Exception {
 		Gson g = new Gson();
-//		PCMSTableDetail[] userArray = (PCMSTableDetail[]) g.fromJson(data, PCMSTableDetail[].class);
-//		ArrayList<PCMSTableDetail> poList = new ArrayList<PCMSTableDetail>();
-//		int i = 0;
-//
-//        String ciphertextFromJavascript = "";
-//		for (i = 0; i < userArray.length; i++) {
-//			PCMSTableDetail pd = new PCMSTableDetail();
-//			pd.setSaleOrder(userArray[i].getSaleOrder()); 
-//	         ciphertextFromJavascript = userArray[i].getSaleOrder();
-//
-//		}
-//		String secret = "PCMSDISPLAY";
-//		byte[] cipherData = Base64.getDecoder().decode(ciphertextFromJavascript);
-//		byte[] saltData = Arrays.copyOfRange(cipherData, 8, 16);
-//
-//		MessageDigest md5 = MessageDigest.getInstance("MD5");
-//		final byte[][] keyAndIV = GenerateKeyAndIV(32, 16, 1, saltData, secret.getBytes(StandardCharsets.UTF_8), md5);
-//		SecretKeySpec key = new SecretKeySpec(keyAndIV[0], "AES");
-//		IvParameterSpec iv = new IvParameterSpec(keyAndIV[1]);
-//
-//		byte[] encrypted = Arrays.copyOfRange(cipherData, 16, cipherData.length);
-//		Cipher aesCBC = Cipher.getInstance("AES/CBC/PKCS5Padding");
-//		aesCBC.init(Cipher.DECRYPT_MODE, key, iv);
-//		byte[] decryptedData = aesCBC.doFinal(encrypted);
-//		String decryptedText = new String(decryptedData, StandardCharsets.UTF_8);
-// 
 	    String toEncrypt = id;
 		if(toEncrypt != null) {
             if(toEncrypt.length() > 0) {
@@ -418,80 +294,10 @@ public class PCMSMainController {
                 }
             }
         }  
-//		 String secretPass = "PCMSDISPLAY";
-//         String secretSalt = "OHSHIT";
-//         String plaintext = "";
-//         try {
-//             byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0,
-//                           0, 0, 0, 0, 0, 0, 0, 0 };
-//             IvParameterSpec ivspec = new IvParameterSpec(iv);
-//             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-//             KeySpec keySpec = new PBEKeySpec(secretPass.toCharArray(), secretSalt.getBytes(), 65536, 256);
-//             SecretKey secretTemp = factory.generateSecret(keySpec);
-//             SecretKeySpec secretKey = new SecretKeySpec(secretTemp.getEncoded(), "AES");
-//             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-//             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
-//             plaintext = new String(cipher.doFinal(Base64.getDecoder().decode(toEncrypt)));
-//             plaintext = plaintext.substring(0, plaintext.length() - 1);
-//             plaintext = new String(Base64.getDecoder().decode(plaintext));
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//         } 
-
-
 		EncryptedDetail bean = new EncryptedDetail();
 		bean.setEncrypted(toEncrypt);
-
-
-
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println(g.toJson(bean));
-//		out.println( toEncrypt );
 	}
-//	public byte[][] GenerateKeyAndIV(int keyLength, int ivLength, int iterations, byte[] salt, byte[] password, MessageDigest md) {
-//
-//	    int digestLength = md.getDigestLength();
-//	    int requiredLength = (keyLength + ivLength + digestLength - 1) / digestLength * digestLength;
-//	    byte[] generatedData = new byte[requiredLength];
-//	    int generatedLength = 0;
-//	    try {
-//	        md.reset();
-//
-//	        // Repeat process until sufficient data has been generated
-//	        while (generatedLength < keyLength + ivLength) {
-//
-//	            // Digest data (last digest if available, password data, salt if available)
-//	            if (generatedLength > 0)
-//	                md.update(generatedData, generatedLength - digestLength, digestLength);
-//	            md.update(password);
-//	            if (salt != null)
-//	                md.update(salt, 0, 8);
-//	            md.digest(generatedData, generatedLength, digestLength);
-//
-//	            // additional rounds
-//	            for (int i = 1; i < iterations; i++) {
-//	                md.update(generatedData, generatedLength, digestLength);
-//	                md.digest(generatedData, generatedLength, digestLength);
-//	            }
-//
-//	            generatedLength += digestLength;
-//	        }
-//
-//	        // Copy key and IV into separate byte arrays
-//	        byte[][] result = new byte[2][];
-//	        result[0] = Arrays.copyOfRange(generatedData, 0, keyLength);
-//	        if (ivLength > 0)
-//	            result[1] = Arrays.copyOfRange(generatedData, keyLength, keyLength + ivLength);
-//
-//	        return result;
-//
-//	    } catch (DigestException e) {
-//	        throw new RuntimeException(e);
-//
-//	    } finally {
-//	        // Clean out temporary data
-//	        Arrays.fill(generatedData, (byte)0);
-//	    }
-//	}
 }

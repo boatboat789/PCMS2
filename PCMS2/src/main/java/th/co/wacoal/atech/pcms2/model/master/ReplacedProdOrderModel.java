@@ -17,71 +17,75 @@ import th.in.totemplate.core.sql.Database;
 
 @Component
 public class ReplacedProdOrderModel extends HttpServlet {
-	   private static final long serialVersionUID = 1L;
-	   private Database database;
-	   private ReplacedProdOrderDao dao;
-	   @SuppressWarnings("unused")
-	   private String[] uiColumns;
-	   @SuppressWarnings("unused")
-	   private static final String columns = "";
+	private static final long serialVersionUID = 1L;
+	private Database database;
+	private ReplacedProdOrderDao dao;
+	@SuppressWarnings("unused")
+	private String[] uiColumns;
+	@SuppressWarnings("unused")
+	private static final String columns = "";
 
-	    @Autowired
-	   public ReplacedProdOrderModel() {
-	      try {
-	         this.database = new Database(SqlPCMSInfo.getInstance());
-	         this.dao = new ReplacedProdOrderDaoImpl(this.database );
-	         this.uiColumns = arrayColumn();
-	      } catch (SQLException | ClassNotFoundException var2) {
-	         var2.printStackTrace();
-	      }
-
-	   }
-
-	   public static String stringColumn() {
-	      return "[]";
-	   }
-
-	   public static String[] arrayColumn() {
-	      return "".replaceAll("'", "").split(",");
-	   }
-
-	   @Override
-	public void destroy() {
-	      this.database.close();
-	      super.destroy();
-	   }
-
-	   public ReplacedProdOrderDetail upsertReplacedProdOrder(ReplacedProdOrderDetail bean, String dataStatus) {
-			// TODO Auto-generated method stub
-		   ReplacedProdOrderDetail list = this.dao.upsertReplacedProdOrder(bean,dataStatus);
-			return list;
+	@Autowired
+	public ReplacedProdOrderModel() {
+		try {
+			this.database = new Database(SqlPCMSInfo.getInstance());
+			this.dao = new ReplacedProdOrderDaoImpl(this.database);
+			this.uiColumns = arrayColumn();
+		} catch (SQLException | ClassNotFoundException var2) {
+			var2.printStackTrace();
 		}
+	}
 
-		public PCMSSecondTableDetail updateReplacedProdOrder(PCMSSecondTableDetail bean, String dataStatus){
-			// TODO Auto-generated method stub
-			PCMSSecondTableDetail list = this.dao.updateReplacedProdOrder(  bean,   dataStatus);
-					return list;
-		}
-		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdRP(String prodOrder){
-			// TODO Auto-generated method stub
-			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdRP(  prodOrder);
-					return list;
-		}
-		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrd(String prodOrder){
-			// TODO Auto-generated method stub
-			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrd(  prodOrder);
-					return list;
-		}
-//		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder){
-//			// TODO Auto-generated method stub
-//			ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdMain(  prodOrder);
-//					return list;
-//		}
+	public static String stringColumn()
+	{
+		return "[]";
+	}
 
-		public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMainAndSO(String prdOrder, String saleOrder,
-				String saleLine){
+	public static String[] arrayColumn()
+	{
+		return "".replaceAll("'", "").split(",");
+	}
+
+	@Override
+	public void destroy()
+	{
+		this.database.close();
+		super.destroy();
+	}
+
+	public ReplacedProdOrderDetail upsertReplacedProdOrder(ReplacedProdOrderDetail bean, String dataStatus)
+	{
 		// TODO Auto-generated method stub
-		ArrayList<ReplacedProdOrderDetail>  list = this.dao.getReplacedProdOrderDetailByPrdMainAndSO(  prdOrder,saleOrder,saleLine);
-				return list;
+		ReplacedProdOrderDetail list = this.dao.upsertReplacedProdOrder(bean, dataStatus);
+		return list;
+	}
+
+	public PCMSSecondTableDetail updateReplacedProdOrder(PCMSSecondTableDetail bean, String dataStatus)
+	{
+		// TODO Auto-generated method stub
+		PCMSSecondTableDetail list = this.dao.updateReplacedProdOrder(bean, dataStatus);
+		return list;
+	}
+
+	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdRP(String prodOrder)
+	{
+		// TODO Auto-generated method stub
+		ArrayList<ReplacedProdOrderDetail> list = this.dao.getReplacedProdOrderDetailByPrdRP(prodOrder);
+		return list;
+	}
+
+	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrd(String prodOrder)
+	{
+		// TODO Auto-generated method stub
+		ArrayList<ReplacedProdOrderDetail> list = this.dao.getReplacedProdOrderDetailByPrd(prodOrder);
+		return list;
+	}
+	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMainAndSO(String prdOrder, String saleOrder,
+			String saleLine)
+	{
+		// TODO Auto-generated method stub
+		ArrayList<ReplacedProdOrderDetail> list =
+				this.dao.getReplacedProdOrderDetailByPrdMainAndSO(prdOrder, saleOrder, saleLine);
+		return list;
 	}
 }

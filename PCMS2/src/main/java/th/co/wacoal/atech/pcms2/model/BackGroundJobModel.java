@@ -16,13 +16,13 @@ import th.in.totemplate.core.sql.Database;
 public class BackGroundJobModel extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Database database;
-	private BackGroundJobDao  dao;
+	private BackGroundJobDao dao;
 	@SuppressWarnings("unused")
 	private String[] uiColumns;
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public BackGroundJobModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -32,66 +32,83 @@ public class BackGroundJobModel extends HttpServlet {
 			var2.printStackTrace();
 		}
 	}
-	public static String stringColumn() {
-	   return "[]";
-	}
-   	public static String[] arrayColumn() {
-   		return "".replaceAll("'", "").split(",");
-   	}
-   	@Override
-	public void destroy() {
-   		this.database.close();
-   		super.destroy();
-   	}
-   	public void handlerERPAtechToWebApp() {
-   		this.dao.handlerERPAtechToWebApp();
-   	}
-	public void execUpsertToMainProd() {
-		// TODO Auto-generated method stub
-		 this.dao.execUpsertToMainProd();
-	}
-	public void execUpsertToTEMPProdWorkDate( ) {
-		// TODO Auto-generated method stub
-		 this.dao.execUpsertToTEMPProdWorkDate( );
-	}
-	public void execUpsertToTEMPUserStatusOnWeb( ) {
-		// TODO Auto-generated method stub
-		 this.dao.execUpsertToTEMPUserStatusOnWeb( );
-	}
-	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String productionOrder) {
-		// TODO Auto-generated method stub
-		 this.dao.execUpsertToTEMPUserStatusOnWebWithProdOrder( productionOrder);
 
+	public static String stringColumn()
+	{
+		return "[]";
 	}
+
+	public static String[] arrayColumn()
+	{
+		return "".replaceAll("'", "").split(",");
+	}
+
+	@Override
+	public void destroy()
+	{
+		this.database.close();
+		super.destroy();
+	}
+
+	public void handlerERPAtechToWebApp()
+	{
+		this.dao.handlerERPAtechToWebApp();
+	}
+
+	public void execUpsertToMainProd()
+	{
+		// TODO Auto-generated method stub
+		this.dao.execUpsertToMainProd();
+	}
+
+	public void execUpsertToTEMPProdWorkDate()
+	{
+		// TODO Auto-generated method stub
+		this.dao.execUpsertToTEMPProdWorkDate();
+	}
+
+	public void execUpsertToTEMPUserStatusOnWeb()
+	{
+		// TODO Auto-generated method stub
+		this.dao.execUpsertToTEMPUserStatusOnWeb();
+	}
+
+	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String productionOrder)
+	{
+		// TODO Auto-generated method stub
+		this.dao.execUpsertToTEMPUserStatusOnWebWithProdOrder(productionOrder);
+	}
+
 	public void handlerERPAtechToWebAppProductionOrder()
 	{
-   		this.dao.handlerERPAtechToWebAppProductionOrder();
+		this.dao.handlerERPAtechToWebAppProductionOrder();
 		// TODO Auto-generated method stub
-		
 	}
+
 	public void handlerERPAtechToWebAppSaleOrder()
 	{
-   		this.dao.handlerERPAtechToWebAppSaleOrder();
+		this.dao.handlerERPAtechToWebAppSaleOrder();
 		// TODO Auto-generated method stub
-		
 	}
+
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
 		// TODO Auto-generated method stub
-   		this.dao.sortBackGroundAfterGetERPDataProcedure();
-		
+		this.dao.sortBackGroundAfterGetERPDataProcedure();
 	}
+
 	public void handlerERPAtechToWebAppCustomer()
 	{
 		// TODO Auto-generated method stub
-   		this.dao.handlerERPAtechToWebAppCustomer();
-		
+		this.dao.handlerERPAtechToWebAppCustomer();
+
 	}
+
 	public void handlerBackGroundZ_ATT_CustomerConfirm2()
 	{
 		// TODO Auto-generated method stub
-   		this.dao.handlerBackGroundZ_ATT_CustomerConfirm2();
-		
+		this.dao.handlerBackGroundZ_ATT_CustomerConfirm2();
+
 	}
 
 }

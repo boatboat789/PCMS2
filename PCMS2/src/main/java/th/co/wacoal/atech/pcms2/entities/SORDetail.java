@@ -8,6 +8,7 @@ public class SORDetail {
 	private String saleLine;
 	private String cfmDate;
 	private String lastUpdate;
+
 	public SORDetail(String saleOrder, String saleLine, String cFMDate, String lastUpdate) {
 		super();
 		this.saleOrder = saleOrder;
@@ -15,28 +16,44 @@ public class SORDetail {
 		this.cfmDate = cFMDate;
 		this.lastUpdate = lastUpdate;
 	}
-	public String getSaleOrder() {
+
+	public String getSaleOrder()
+	{
 		return saleOrder;
 	}
-	public void setSaleOrder(String saleOrder) {
+
+	public void setSaleOrder(String saleOrder)
+	{
 		this.saleOrder = saleOrder;
 	}
-	public String getSaleLine() {
+
+	public String getSaleLine()
+	{
 		return saleLine;
 	}
-	public void setSaleLine(String saleLine) {
+
+	public void setSaleLine(String saleLine)
+	{
 		this.saleLine = saleLine;
 	}
-	public String getCfmDate() {
+
+	public String getCfmDate()
+	{
 		return cfmDate;
 	}
-	public void setCfmDate(String cfmDate) {
+
+	public void setCfmDate(String cfmDate)
+	{
 		this.cfmDate = cfmDate;
 	}
-	public String getLastUpdate() {
+
+	public String getLastUpdate()
+	{
 		return lastUpdate;
 	}
-	public void setLastUpdate(String lastUpdate) {
+
+	public void setLastUpdate(String lastUpdate)
+	{
 		this.lastUpdate = lastUpdate;
 	}
 

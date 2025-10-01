@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.UserStatusDetailDao;
 import th.co.wacoal.atech.pcms2.dao.master.implement.PPMM.UserStatusDetailDaoImpl;
-import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail; 
+import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.info.SqlPCMSInfo;
 import th.in.totemplate.core.sql.Database;
 
@@ -24,8 +24,8 @@ public class UserStatusDetailModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
-	public UserStatusDetailModel () {
+	@Autowired
+	public UserStatusDetailModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
 			this.dao = new UserStatusDetailDaoImpl(this.database);
@@ -33,7 +33,6 @@ public class UserStatusDetailModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()
@@ -53,10 +52,10 @@ public class UserStatusDetailModel extends HttpServlet {
 		super.destroy();
 	}
 
-	public ArrayList<PCMSAllDetail> getUserStatusDetail( )
+	public ArrayList<PCMSAllDetail> getUserStatusDetail()
 	{
 		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusDetail( );
+		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusDetail();
 		return list;
 	}
 }

@@ -20,15 +20,6 @@ public class PermitsModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-	public static String[] arrayColumn()
-	{
-		return "".replaceAll("'", "").split(",");
-	}
-
-	public static String stringColumn()
-	{
-		return "[]";
-	}
 
 	private Database database;
 
@@ -46,7 +37,15 @@ public class PermitsModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
+	}
+	public static String[] arrayColumn()
+	{
+		return "".replaceAll("'", "").split(",");
+	}
 
+	public static String stringColumn()
+	{
+		return "[]";
 	}
 
 	@Override

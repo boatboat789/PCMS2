@@ -24,7 +24,7 @@ public class CustomerModel extends HttpServlet {
 	@SuppressWarnings("unused")
 	private static final String columns = "";
 
-    @Autowired
+	@Autowired
 	public CustomerModel() {
 		try {
 			this.database = new Database(SqlPCMSInfo.getInstance());
@@ -33,7 +33,6 @@ public class CustomerModel extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException var2) {
 			var2.printStackTrace();
 		}
-
 	}
 
 	public static String stringColumn()
@@ -51,10 +50,12 @@ public class CustomerModel extends HttpServlet {
 	{
 		this.database.close();
 		super.destroy();
-	} 
-	public  String upsertCustomerDetail( ArrayList<CustomerDetail> paList ){
+	}
+
+	public String upsertCustomerDetail(ArrayList<CustomerDetail> paList)
+	{
 		// TODO Auto-generated method stub
-		String  iconStatus = this.dao.upsertCustomerDetail(paList );
+		String iconStatus = this.dao.upsertCustomerDetail(paList);
 		return iconStatus;
 	}
 }
