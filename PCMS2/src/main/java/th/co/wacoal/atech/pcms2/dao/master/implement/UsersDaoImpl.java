@@ -7,17 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.UsersDao;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class UsersDaoImpl implements UsersDao {
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtil = new SqlStatementHandler();
 	private Database database;
@@ -48,7 +49,7 @@ public class UsersDaoImpl implements UsersDao {
 			+ "      ,A.[CreateBy]\r\n"
 			+ "      ,A.[CreateDate]\r\n";
     @Autowired
-	public UsersDaoImpl(Database database ) {
+	public UsersDaoImpl(@Qualifier("pcmsDatabase")Database database ) {
 		this.database = database ;
 		this.message = "";
 	}

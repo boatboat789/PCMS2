@@ -18,10 +18,11 @@ xsi:schemaLocation="
     <!-- Enable autowire -->
 	<ctx:annotation-config ></ctx:annotation-config>
 	<ctx:component-scan base-package="  
-	th.co.wacoal.atech.pcms2.controller 
 	,th.co.wacoal.atech.pcms2.config
+	 th.co.wacoal.atech.pcms2.controller  
 	,th.co.wacoal.atech.pcms2.model
-	,th.co.wacoal.atech.pcms2.service " />
+	,th.co.wacoal.atech.pcms2.service 
+	,th.co.wacoal.atech.pcms2.dao " /> 
 	<mvc:annotation-driven ></mvc:annotation-driven> 
 	<mvc:resources mapping="/resources/**" location="/resources/" ></mvc:resources> 
     <bean id = "view" class = "org.springframework.web.servlet.view.InternalResourceViewResolver">

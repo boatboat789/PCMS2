@@ -11,18 +11,19 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.EmployeePermitsDao;
 import th.co.wacoal.atech.pcms2.entities.EmployeeDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtil = new SqlStatementHandler();
 	private Database database;
@@ -35,7 +36,7 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     @Autowired
-	public EmployeePermitsDaoImpl(Database database ) {
+	public EmployeePermitsDaoImpl(@Qualifier("pcmsDatabase")Database database ) {
 		this.database = database ;
 		this.message = "";
 	}

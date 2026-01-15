@@ -33,7 +33,7 @@
 	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  ">
 		<div class="row" style="justify-content: right;">
 			<div class="col-12  col-sm-4 col-md-4 col-lg-4 col-xl-4  " style="text-align: -webkit-right; margin-bottom: 5px;">
-				<button id="btn_download" class="btn btn-primary" type="button">
+				<button id="btn_download" class="btn btn-outline-success csv-button mr-2" type="button">
 					<i class="fa fa-download"></i> Download Excel
 				</button>
 			</div>

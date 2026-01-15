@@ -21,8 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import th.co.wacoal.atech.pcms2.entities.ApiResponse;
 import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
-import th.co.wacoal.atech.pcms2.model.master.FromSapMainProdModel;
-import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel; 
+import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
+import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService; 
  
     
 @Controller
@@ -31,12 +31,12 @@ import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 public class ProductionOrderLogController {
 	@SuppressWarnings("unused") 
 	private ServletContext context;
-	private FromSapMainProdModel fsmpModel; 
-	private ERPAtechModel erpAttModel;  
+	private FromSapMainProdService fsmpModel;  
+	private ERPAtechService erpService;  
     @Autowired
-    public ProductionOrderLogController( ) { 
-    	this.fsmpModel = new FromSapMainProdModel();
-    	this.erpAttModel = new ERPAtechModel();
+    public ProductionOrderLogController(ERPAtechService erpService,FromSapMainProdService fsmpModel ) { 
+    	this.fsmpModel = fsmpModel;
+    	this.erpService = erpService;
     }
 //	@RequestMapping(method = { RequestMethod.GET })
 	@RequestMapping(  value = "/{dataType}",  method = RequestMethod.GET )
@@ -90,7 +90,7 @@ public class ProductionOrderLogController {
 	    String changeDateEnd = bean.getChangeDateEnd();
 	    String productionOrder = bean.getProductionOrder();
 		if(dataType.equals("ERP365")) { 
-	    	resultList = erpAttModel.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
+	    	resultList = erpService.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
 	    }
 	    else { 
 	    	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);

@@ -1835,15 +1835,15 @@ public class BeanCreateService   {
 		String SaleLine = "";
 		if (map.get("SO_Line") != null) {
 			SaleLine = (String) map.get("SO_Line");
-		}
+		} 
 		String CFMDate = "";
-		if (map.get("CFM") != null) {
-			java.util.Date dateValue = (Date) map.get("CFM");
+		if (map.get("CFM_DATE") != null) { 
+			java.util.Date dateValue = (Date) map.get("CFM_DATE"); 
 			CFMDate = sdfDateFullWithSlash.format(dateValue);
-		}
+		} 
 		String LastUpdate = "";
-		if (map.get("LastUpdateCFM") != null) {
-			Timestamp timestamp1 = (Timestamp) map.get("LastUpdateCFM");
+		if (map.get("LAST_UPDATE_CFM") != null) {
+			Timestamp timestamp1 = (Timestamp) map.get("LAST_UPDATE_CFM");
 			LastUpdate = this.sdf4.format(timestamp1);
 		}
 		return new SORDetail(SaleOrder, SaleLine, CFMDate, LastUpdate);

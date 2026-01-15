@@ -9,14 +9,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
- 
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
 import th.co.wacoal.atech.pcms2.dao.master.Z_ATT_CustomerConfirm2Dao; 
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
-import th.co.wacoal.atech.pcms2.service.PCMSSearchService;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
+import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler; 
 import th.in.totemplate.core.sql.Database; 
-
+@Repository
 public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
@@ -110,13 +114,13 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 				+ "    a.[ChangeDate],\r\n"
 				+ "    a.[CreateDate]\r\n";
 	
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
 	private String message; 
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
-
-	public Z_ATT_CustomerConfirm2DaoImpl (Database database) {
+@Autowired
+	public Z_ATT_CustomerConfirm2DaoImpl (@Qualifier("pcmsDatabase")Database database) {
 		this.database = database;
 		this.message = "";  
 	}
@@ -139,8 +143,8 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 		if(!so.equals("")) { where += " and a.[SO] like '"+so+"%' \r\n";}
 		if(!prodOrder.equals("")) { where += " and a.[ProdId] like '"+prodOrder+"%' \r\n";} 
 		if(!lotNubmer.equals("")) { where += " and a.LotNo like '"+lotNubmer+"%' \r\n";} 
-		where += PCMSSearchService.buildDateClause("SendDate", sendDate,"a");
-		where += PCMSSearchService.buildDateClause("ReplyDate", replyDate,"a");
+		where += PCMSSqlService.buildDateClause("SendDate", sendDate,"a");
+		where += PCMSSqlService.buildDateClause("ReplyDate", replyDate,"a");
 //		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = ""
 				+ this.cte

@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.InspectSystem.InspectOrdersDao;
 import th.co.wacoal.atech.pcms2.entities.PPMM.InspectOrdersDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
@@ -21,14 +22,14 @@ public class InspectOrdersDaoImpl implements  InspectOrdersDao{
 	// Sale - Lab-New 
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
     @Autowired
-	public InspectOrdersDaoImpl (Database database) {
+	public InspectOrdersDaoImpl ( @Qualifier("pcmsDatabase")Database database) {
 		this.database = database;
 		this.message = "";
 	}

@@ -8,32 +8,34 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSORCFMDao;
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSORCFMDaoImpl implements  FromSORCFMDao{
+ 
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	@SuppressWarnings("unused")
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public FromSORCFMDaoImpl(Database database) {
+    public FromSORCFMDaoImpl(@Qualifier("pcmsDatabase")Database database  ) {
 		this.database = database;
-		this.message = "";
+		this.message = ""; 
 	}
 
 	public String getMessage() {
@@ -57,9 +59,7 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 					+ "     ,[ChangeDate] = ?\n"
 					+ " WHERE [SaleOrder] = ? and [SaleLine]  = ? "
 					+ " declare  @rc int = @@ROWCOUNT "
-					+ "  if @rc <> 0 "
-					+ " print @rc "
-					+ " else "
+					+ "  if @rc = 0 " 
 					+ " INSERT INTO [PCMS].[dbo].[FromSORCFM]	 "
 					+ " ([SaleOrder] ,[SaleLine] ,[CFMDate] ,[ChangeDate] )"
 					+ " values(? , ? , ? , ?  )  ;"  ;
@@ -67,19 +67,18 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 		try {
 			prepared = connection.prepareStatement(sql);
 			for (i = 0; i < list.size(); i++) {
-				SORDetail bean = list.get(i);
-//				saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
-			 saleLine = bean.getSaleLine() ; 
-				cfmDate = bean.getCfmDate();
+				SORDetail bean = list.get(i); 
+				saleLine = bean.getSaleLine() ; 
+				cfmDate = bean.getCfmDate(); 
 				int index = 1;
-				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index); 
-				prepared.setTimestamp(index, dateTime); 
-				prepared.setString(index, bean.getSaleOrder()); 
-				prepared.setString(index, saleLine); 
-				prepared.setString(index, bean.getSaleOrder()); 
-				prepared.setString(index, saleLine); 
-				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index); 
-				prepared.setTimestamp(index, dateTime); 
+				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index++); 
+				prepared.setTimestamp(index++, dateTime); 
+				prepared.setString(index++, bean.getSaleOrder()); 
+				prepared.setString(index++, saleLine); 
+				prepared.setString(index++, bean.getSaleOrder()); 
+				prepared.setString(index++, saleLine); 
+				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index++); 
+				prepared.setTimestamp(index++, dateTime); 
 				prepared.addBatch();
 			}
 			prepared.executeBatch();

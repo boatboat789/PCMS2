@@ -20,9 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import th.co.wacoal.atech.pcms2.entities.ApiResponse; 
-import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail; 
-import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
-import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel; 
+import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
+import th.co.wacoal.atech.pcms2.service.master.FromSapMainSaleService;
+import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService;  
  
     
 @Controller
@@ -31,12 +31,13 @@ import th.co.wacoal.atech.pcms2.model.master.erp.atech.ERPAtechModel;
 public class SaleOrderLogController {
 	@SuppressWarnings("unused") 
 	private ServletContext context;
-	private FromSapMainSaleModel fsmpModel; 
-	private ERPAtechModel erpAttModel;  
+	private FromSapMainSaleService fsmpModel;  
+	private ERPAtechService erpService;  
     @Autowired
-    public SaleOrderLogController( ) { 
-    	this.fsmpModel = new FromSapMainSaleModel();
-    	this.erpAttModel = new ERPAtechModel();
+    public SaleOrderLogController(ERPAtechService erpService
+    		,FromSapMainSaleService fsmpModel) { 
+    	this.fsmpModel = fsmpModel;
+    	this.erpService = erpService;
     }
 	@RequestMapping(  value = "/{dataType}",  method = RequestMethod.GET )
 	public ModelAndView getModelAndView(HttpSession session,@PathVariable("dataType") String dataType) {
@@ -62,7 +63,7 @@ public class SaleOrderLogController {
 			,@PathVariable("dataType") String dataType) throws IOException {  
         ArrayList<SaleOrderLogDetail> resultList;
 		if(dataType.equals("ERP365")) { 
-        	resultList = erpAttModel.getFromErpMainSaleDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,saleOrder);
+        	resultList = erpService.getFromErpMainSaleDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,saleOrder);
         }
         else { 
         	resultList = fsmpModel.getFromSapMainSaleDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,saleOrder);
@@ -75,97 +76,5 @@ public class SaleOrderLogController {
 	    ApiResponse<List<SaleOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
 	    return ResponseEntity.ok(apiResponse);
 	}
-	
-// POST - JSON
-//	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
-//	public void doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
-//			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
-//			 ,@RequestBody SearchCriteria searchCriteria  // Direct POJO mapping!
-//			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson();
-//		System.out.println(searchCriteria.toString());
-////		// Define the Type for ArrayList of OrgatexDyeLotDetail
-////        Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-////        // Deserialize JSON directly to ArrayList
-////        ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType); 
-//        
-//        
-//        ArrayList<ProductionOrderLogDetail> list  = new ArrayList<ProductionOrderLogDetail>();;
-////        if(dataType.equals("ERP365")) { 
-////            list = erpAttModel.getDataFromERPDetail(poList.get(0).getProductionOrder(),poList.get(0).getChangeDate());
-////        }
-////        else { 
-////            list = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(poList.get(0).getProductionOrder(),poList.get(0).getChangeDate());
-////        }
-//		response.setContentType("application/json");
-//		PrintWriter out = response.getWriter();
-//		out.println(g.toJson(list ));
-//	}
-	
-//	//POST LIST
-//	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
-//	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
-//			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
-//			, @RequestBody List<SearchCriteria> list 
-//			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson(); 
-//		// Define the Type for ArrayList of OrgatexDyeLotDetail
-////		Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-////		// Deserialize JSON directly to ArrayList
-////		ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType); 
-//	    for (SearchCriteria sc : list) {
-//	        System.out.println(sc.getProductionOrder());
-//	    }
-//
-////	    boolean isSuccess = result.stream().allMatch(bean -> "I".equals(bean.getIconStatus()));
-//	    boolean isSuccess = true;
-//	    String status = isSuccess ? "success" : "error";
-//	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
-//
-//	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, result);
-//	    return ResponseEntity.ok(apiResponse);
-//	}
-	
-//	public class SearchCriteria   {
-//		private String productionOrder ;
-//	    private String changeDateStart;
-//	    private String changeDateEnd; 
-//
-////	    private List<String> typeCarList;
-////	    private List<CarObject> carList;
-//		public SearchCriteria() {
-//			super();
-//		}
-//		public String getProductionOrder()
-//		{
-//			return productionOrder;
-//		}
-//		public void setProductionOrder(String productionOrder)
-//		{
-//			this.productionOrder = productionOrder;
-//		}
-//		public String getChangeDateStart()
-//		{
-//			return changeDateStart;
-//		}
-//		public void setChangeDateStart(String changeDateStart)
-//		{
-//			this.changeDateStart = changeDateStart;
-//		}
-//		public String getChangeDateEnd()
-//		{
-//			return changeDateEnd;
-//		}
-//		public void setChangeDateEnd(String changeDateEnd)
-//		{
-//			this.changeDateEnd = changeDateEnd;
-//		}
-//		@Override
-//		public String toString()
-//		{
-//			return "SearchCriteria [changeDateStart=" + changeDateStart + ", changeDateEnd=" + changeDateEnd + "]";
-//		}
-//	    
-//	    // getters and setters  
-//	}
+	 
 }

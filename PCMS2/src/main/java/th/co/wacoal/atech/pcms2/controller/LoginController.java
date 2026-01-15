@@ -20,9 +20,9 @@ import th.co.wacoal.atech.pcms2.entities.EmployeeDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
 import th.co.wacoal.atech.pcms2.info.AdInfo;
-import th.co.wacoal.atech.pcms2.model.LogInModel; 
-import th.co.wacoal.atech.pcms2.model.master.EmployeePermitsModel;
-import th.co.wacoal.atech.pcms2.model.master.PermitsModel; 
+import th.co.wacoal.atech.pcms2.service.LogInService;
+import th.co.wacoal.atech.pcms2.service.master.EmployeePermitsService;
+import th.co.wacoal.atech.pcms2.service.master.PermitsService;
 import th.in.totemplate.core.authen.ActiveDirectory;
 import th.in.totemplate.core.authen.AuthenAttributes;
 
@@ -31,9 +31,19 @@ public class LoginController {
 //	private String wrongUP = "Username	 or Password is incorrect.";
 	private String alertmsgText = "";
 	private String alerttypText = "";
-
+	private PermitsService permitsService;
+	private EmployeePermitsService employeePermitsService;
+	private LogInService logInService;
+  
     @Autowired
-	public LoginController(HttpSession session) throws ParseException {
+	public LoginController(HttpSession session
+			,PermitsService permitsService
+			,EmployeePermitsService employeePermitsService 
+			,LogInService logInService
+			) throws ParseException {
+    	this.logInService = logInService;
+    	this.permitsService = permitsService;
+    	this.employeePermitsService = employeePermitsService;
 	}
 
 	@RequestMapping(value = { "/login" }, method = { RequestMethod.GET })
@@ -68,11 +78,7 @@ public class LoginController {
 	@RequestMapping(value = { "/login/loginAuth" }, method = { RequestMethod.POST })
 	public String getLoginAuthen(Model model, final String userId, String userPassword, final HttpSession session,
 			RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response)
-	{
-		LogInModel logInModel = new LogInModel();
-		PermitsModel permitsModel = new PermitsModel();
-		EmployeePermitsModel employeePermitsModel = new EmployeePermitsModel( ); 
-//		final Gson g = new Gson();
+	{ 
 		final UserDetail user = new UserDetail();
 		final TempLogin temp = new TempLogin();
 		String redirect = ""; 
@@ -130,7 +136,7 @@ public class LoginController {
 			}
 			// if authen pass
 			if ( ! temp.getStatus()) {
-				UserDetail userTMP = logInModel.getUserDetail(userId, userPassword);
+				UserDetail userTMP = logInService.getUserDetail(userId, userPassword);
 				if (userTMP != null) {
 					user.setId(userTMP.getId());
 					user.setFirstName(userTMP.getFirstName().trim());
@@ -150,7 +156,7 @@ public class LoginController {
 					session.setAttribute("userObject", user);
 				}
 			} else {
-				UserDetail userTMP = logInModel.getUserDetail(userId);
+				UserDetail userTMP = logInService.getUserDetail(userId);
 				if (userTMP != null) {
 					user.setId(userTMP.getId());
 					user.setUserId(userTMP.getUserId().trim());
@@ -172,17 +178,14 @@ public class LoginController {
 		} 
 		if (user.getFirstName() != null || user.getUserType() != null) {
 			String permitId = "VIEWONLY";
-			empList = employeePermitsModel.getEmployeePermitsDetailByUserId(userId); 
+			empList = employeePermitsService.getEmployeePermitsDetailByUserId(userId); 
 			if(!empList.isEmpty()) {
 				EmployeeDetail empBean = empList.get(0);
 				permitId = empBean.getPermitId();
-				pmList = permitsModel.getEmployeePermitsDetailByPermitId(userId,permitId); 
+				pmList = permitsService.getEmployeePermitsDetailByPermitId(userId,permitId); 
 			}   
 			if(pmList.isEmpty()) {
-				pmList = permitsModel.getPermitsDetailByPermitId(permitId); 
-//				PermitDetail bean = new PermitDetail();
-//				bean.setPermitId("VIEWONLY");
-//				pmList.add(bean);
+				pmList = permitsService.getPermitsDetailByPermitId(permitId);  
 			}
 			alertmsgText = "";
 			alerttypText = ""; 
@@ -206,16 +209,10 @@ public class LoginController {
 			redirect = "redirect:/login"; 
 			if (temp.getStatus()) {
 				alertmsgText = "Unauthorized Access Prohibited";
-				alerttypText = "error";
-//	        	model.addAttribute("alerttyp",  "error"  );
-//	        	model.addAttribute("alertmsg", "Username or Password is incorrect."  ); 
+				alerttypText = "error"; 
 			} else {
 				alertmsgText = "Username or Password is incorrect";
-				alerttypText = "warning";
-//	            model.addObject("alerttyp", g.toJson("warning") );
-//	        	model.addObject("alertmsg", g.toJson("Username or Password is incorrect") );
-//	        	model.addAttribute("alerttyp", "warning"  );
-//	        	model.addAttribute("alertmsg", "Username or Password is incorrect"  );
+				alerttypText = "warning"; 
 			}
 		}
 		return redirect;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapMainBillBatchDao;
@@ -30,7 +31,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapMainBillBatchDaoImpl(Database database) {
+	public FromSapMainBillBatchDaoImpl(@Qualifier("pcmsDatabase")Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -50,7 +51,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 		String iconStatus = "I";
-		String sql = "-- Update if the record exists\r\n"
+		String sql = " "
 				+ "-- Update if the record exists\r\n"
 				+ "IF ? = 'X'\r\n"
 				+ "BEGIN\r\n"

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapMainProdSaleDao;
@@ -30,7 +31,7 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapMainProdSaleDaoImpl(Database database) {
+	public FromSapMainProdSaleDaoImpl(@Qualifier("pcmsDatabase")Database database) {
 		this.database = database;
 		this.message = "";
 	}

@@ -26,12 +26,5 @@ public class SapToWebController {
 		mv.setViewName("Test/SapToWeb");
 		return mv;
 	}
-
-	@RequestMapping(value = { "/test3" }, method = { RequestMethod.GET })
-	public void testGoPPMM(HttpSession session, HttpServletRequest req) {
-//		ModelAndView mv = new ModelAndView();
-//		mv.setViewName("redirect:"+"http://pcms.a-tech.co.th:8080/PPMM/PlanningDyeing");
-//		mv.setViewName("redirect:"+"http://localhost:8080/InspectSystem/search/home.html");
-//		return mv;
-	}
+ 
 }

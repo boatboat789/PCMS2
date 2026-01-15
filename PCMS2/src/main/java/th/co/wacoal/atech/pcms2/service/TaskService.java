@@ -1,6 +1,7 @@
 package th.co.wacoal.atech.pcms2.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.ServletContext;
@@ -10,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import th.co.wacoal.atech.pcms2.model.BackGroundJobModel;
-import th.co.wacoal.atech.pcms2.model.SORModel;
+import th.co.wacoal.atech.pcms2.entities.SORDetail;
+import th.co.wacoal.atech.pcms2.service.master.FromSORCFMService;
 
 @Configuration
 @EnableScheduling
@@ -22,35 +23,35 @@ public class TaskService {
 	private String FTP_DIRECTORY;
 	@SuppressWarnings("unused") 
 	private ServletContext context;
-	private SORModel sorModel;
-	private BackGroundJobModel bgjModel;
+	private DataImportSORService sorModel;
+	private BackGroundJobService bgjModel;
 	private boolean isCheck = false;
+	private FromSORCFMService fscModel;
 	@Autowired
-	public TaskService(SORModel sorModel
-			, BackGroundJobModel bgjModel
-			) {
+	public TaskService(DataImportSORService sorModel
+			, BackGroundJobService bgjModel
+			, FromSORCFMService fscModel			) {
 		this.sorModel = sorModel;
 		this.bgjModel = bgjModel;
+		this.fscModel = fscModel; 
 //		isCheck = true;
 	}  
 //	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "30 4/10 * * * *")
+	@Scheduled(cron = "0 6/10 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
+		this.handlerBackGroundZATTCustomerConfirm2();
 		if(isCheck)System.out.println("Start sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.bgjModel.sortBackGroundAfterGetERPDataProcedure();
+		this.runAllSyncJobs();
 		if(isCheck)System.out.println("End sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	} 
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "0 0,30 * * * *")
-	public void handlerBackGroundZ_ATT_CustomerConfirm2()
+	}  
+	public void handlerBackGroundZATTCustomerConfirm2()
 	{
 		if(isCheck)System.out.println("Start sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
 		this.bgjModel.handlerBackGroundZ_ATT_CustomerConfirm2();
 		if(isCheck)System.out.println("End sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	} 
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "30 8/10 * * * *")
+	}  
 	public void runAllSyncJobs() {
 	    if(isCheck)System.out.println("=== Start runAllSyncJobs: " +  
 	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
@@ -88,8 +89,10 @@ public class TaskService {
 	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
 	} 
 	@Scheduled(cron = "0 0 1 * * *") 
+//	@Scheduled(fixedRate = 50000000)	
 	public void bgJobHandlerDataFromOrgatex()
-	{
-		this.sorModel.upSertSORToPCMS();
+	{ 
+		ArrayList<SORDetail> list = sorModel.getList();
+		fscModel.upSertFromSORCFMDetail(list);  
 	}  
 }

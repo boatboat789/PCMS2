@@ -62,7 +62,7 @@
 					</div>
 				</div>
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="text-align: -webkit-right; margin-bottom: 5px;">
-					<button id="btn_download" class="btn btn-primary" type="button" style="padding: 1% 0; width: -webkit-fill-available;">
+					<button id="btn_download" class="btn btn-outline-success csv-button mr-2" type="button" style="padding: 1% 0; width: -webkit-fill-available;">
 						<i class="fa fa-download"></i> Download Excel
 					</button>
 				</div>

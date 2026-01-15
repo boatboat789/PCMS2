@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.RollFromSapDao;
 import th.co.wacoal.atech.pcms2.entities.PODetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler; 
 import th.in.totemplate.core.sql.Database;
 
@@ -36,13 +37,13 @@ public class RollFromSapDaoImpl implements RollFromSapDao {
 			+ "   , a.[DataStatus] \r\n"; 
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
-	public RollFromSapDaoImpl(Database database ) {
+	public RollFromSapDaoImpl( @Qualifier("ppmmDatabase")Database database ) {
 		this.database = database;
 		this.message = "";
 	}

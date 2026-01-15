@@ -6,25 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.DataImportSORDao;
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
-import th.co.wacoal.atech.pcms2.model.master.FromSORCFMModel;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class DataImportSORDaoImpl implements DataImportSORDao {
-	private Database database;
-	@SuppressWarnings("unused")
-	private SqlStatementHandler sshUtl = new SqlStatementHandler();
+	private Database database; 
 	private String message;
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 
 	@Autowired
-	public DataImportSORDaoImpl(Database database) {
+	public DataImportSORDaoImpl(@Qualifier("sorDatabase")Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -35,37 +32,30 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 	}
 
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+ 
 
 	@Override
-	public void upSertSORToPCMS()
-	{
-		FromSORCFMModel fscModel = new FromSORCFMModel();
-		ArrayList<SORDetail> list = this.getSORdetail();
-		@SuppressWarnings("unused") String value = fscModel.upSertFromSORCFMDetail(list);
-	}
-
-	private ArrayList<SORDetail> getSORdetail()
+	public ArrayList<SORDetail> getList()
 	{
 		ArrayList<SORDetail> list = null;
 		String sql = ""
 				+ " SELECT DISTINCT  	"
 				+ "	viewPCMS2.[SO_NO]\r\n"
 				+ " ,viewPCMS2.[SO_Line]  \r\n"
-				+ "	,viewPCMS2.CFM_DATE\r\n"
-				+ " ,POLI.[LastUpdateCFM]  as [LastUpdateCFM]  \r\n"
+				+ "	,CAST(viewPCMS2.[CFM_DATE] AS DATE) AS [CFM_DATE]\r\n"
+				+ " ,POLI.[LastUpdateCFM]  as [LAST_UPDATE_CFM]  \r\n"
 				+ " FROM [SOR_PRODUCTION].[dbo].[V_PCMS2]  as viewPCMS2   \r\n"
 				+ " inner join [SOR_PRODUCTION].[dbo].[PurchaseOrders] as PO on PO.[No] = viewPCMS2.PO_NO\r\n"
 				+ " inner join [SOR_PRODUCTION].[dbo].[POLineItems] as POLI on PO.Id = POLI.[POId] and viewPCMS2.MaterialCode = POLI.MaterialCode\r\n"
 				+ " where [SaleOrderId] is not null and "
 				+ "		  POLI.[IsActive] = 1 and  \r\n"
-				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n"
-				+ " "
-				+ "  ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+//				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > '2025-01-01'  )\r\n" ;
+				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n" ; 
+		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genSORDetail(map));
-		}
+		} 
 		return list;
 	}
 

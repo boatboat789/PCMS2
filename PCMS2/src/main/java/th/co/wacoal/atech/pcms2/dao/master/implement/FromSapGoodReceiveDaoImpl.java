@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapGoodReceiveDao;
@@ -30,7 +31,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapGoodReceiveDaoImpl(Database database) {
+	public FromSapGoodReceiveDaoImpl(@Qualifier("pcmsDatabase")Database database) {
 		this.database = database;
 		this.message = "";
 	}

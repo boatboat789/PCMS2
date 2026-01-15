@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.LogInDao;
@@ -26,7 +27,7 @@ public class LogInDaoImpl implements LogInDao {
 
 	public SimpleDateFormat sdfDateTime1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     @Autowired
-	public LogInDaoImpl(Database database) {
+	public LogInDaoImpl(@Qualifier("pcmsDatabase")Database database) {
 		this.message = "";
 	}
 

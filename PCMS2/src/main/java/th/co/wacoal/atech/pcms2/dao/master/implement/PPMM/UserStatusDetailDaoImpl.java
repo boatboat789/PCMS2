@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.UserStatusDetailDao;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
-import th.co.wacoal.atech.pcms2.model.BeanCreateModel;
+import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler; 
 import th.in.totemplate.core.sql.Database;
 
@@ -25,7 +25,7 @@ public class UserStatusDetailDaoImpl implements UserStatusDetailDao {
 			+ "      ,[DataStatus]\r\n"; 
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
-	private BeanCreateModel bcModel = new BeanCreateModel();
+	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");

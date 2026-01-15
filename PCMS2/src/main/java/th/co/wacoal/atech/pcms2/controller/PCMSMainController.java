@@ -38,12 +38,12 @@ import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.model.PCMSMainModel;
-import th.co.wacoal.atech.pcms2.model.master.ColumnSettingModel;
-import th.co.wacoal.atech.pcms2.model.master.ConfigCustomerUserModel;
-import th.co.wacoal.atech.pcms2.model.master.FromSapMainSaleModel;
-import th.co.wacoal.atech.pcms2.model.master.PermitsModel;
-import th.co.wacoal.atech.pcms2.model.master.PPMM.UserStatusDetailModel; 
+import th.co.wacoal.atech.pcms2.service.PCMSMainService;
+import th.co.wacoal.atech.pcms2.service.master.ColumnSettingService;
+import th.co.wacoal.atech.pcms2.service.master.ConfigCustomerUserService;
+import th.co.wacoal.atech.pcms2.service.master.FromSapMainSaleService;
+import th.co.wacoal.atech.pcms2.service.master.PermitsService;
+import th.co.wacoal.atech.pcms2.service.master.PPMM.UserStatusDetailService; 
 @Controller
 @RequestMapping(value = { "/Main", "/" ,"" })
 public class PCMSMainController {
@@ -55,19 +55,33 @@ public class PCMSMainController {
 	private String LOCAL_DIRECTORY;
 	@SuppressWarnings("unused")
 	private String FTP_DIRECTORY;
+	private PCMSMainService pcmsMainService;
+	private UserStatusDetailService usdService;
+	
+
+	private ConfigCustomerUserService configCustomerUserService  ;
+	private ColumnSettingService columnSettingService  ;
+	private FromSapMainSaleService fromSapMainSaleService  ;  
+	private PermitsService permitsService ;  
+	private ModelAndView mv = new ModelAndView();
     @Autowired
-	public PCMSMainController( ) { 
-	}
+	public PCMSMainController(PCMSMainService pcmsMainService 
+			,UserStatusDetailService usdService
+			,ConfigCustomerUserService configCustomerUserService  
+			, ColumnSettingService columnSettingService  
+			, FromSapMainSaleService fromSapMainSaleService  
+			, PermitsService permitsService) { 
+    	this.pcmsMainService = pcmsMainService;
+		this.usdService = usdService;
+
+		this.configCustomerUserService = configCustomerUserService;
+		this.columnSettingService = columnSettingService;
+		this.fromSapMainSaleService = fromSapMainSaleService;
+		this.permitsService = permitsService; 
+    }
 
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView getModelAndView(HttpSession session) {  
-		ConfigCustomerUserModel ccuModel = new ConfigCustomerUserModel();
-		ColumnSettingModel csModel = new ColumnSettingModel();
-		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		UserStatusDetailModel usdModel = new UserStatusDetailModel();  
-	 
-		PermitsModel permitsModel = new PermitsModel(); 
-		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		if (user != null) {
@@ -84,25 +98,25 @@ public class PCMSMainController {
 					
 					UserDetail userObject = (UserDetail) session.getAttribute("userObject");
 					String OS = System.getProperty("os.name").toLowerCase();
-					ArrayList<ConfigCustomerUserDetail> listConfigCus = ccuModel.getConfigCustomerUserDetail(user); 
+					ArrayList<ConfigCustomerUserDetail> listConfigCus = configCustomerUserService.getConfigCustomerUserDetail(user); 
 					if(listConfigCus.isEmpty()) {
 						ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
 						ccuDetail.setUserId(user);
 						listConfigCus.add(ccuDetail);
 						
-						cusNameList = fsmsModel.getCustomerNameDetail();
-						cusShortNameList = fsmsModel.getCustomerShortNameDetail();
+						cusNameList = fromSapMainSaleService.getCustomerNameDetail();
+						cusShortNameList = fromSapMainSaleService.getCustomerShortNameDetail();
 					}
 					else {
-						cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
-						cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
+						cusNameList = fromSapMainSaleService.getCustomerNameDetail(listConfigCus);
+						cusShortNameList = fromSapMainSaleService.getCustomerShortNameDetail(listConfigCus);
 					}
 					boolean isCustomer = false ;
 					if(userObject != null) {
 						isCustomer = userObject.isCustomer();
 					}
 
-					ArrayList<ColumnHiddenDetail> list = csModel.getColumnVisibleDetail(user);
+					ArrayList<ColumnHiddenDetail> list = columnSettingService.getColumnVisibleDetail(user);
 					if(list.size() == 0) { arrayCol = null  ;}
 					else {
 						arrayCol = list.get(0).getColVisibleSummary().split(",");
@@ -110,16 +124,16 @@ public class PCMSMainController {
 					
 					
 					mv.setViewName("PCMSMain/PCMSMain");
-					mv.addObject("PermitIdList", g.toJson(permitsModel.getPermitsDetail()));
+					mv.addObject("PermitIdList", g.toJson(permitsService.getPermitsDetail()));
 					mv.addObject("OS", g.toJson(OS));
 					mv.addObject("UserID", g.toJson(user));
 					mv.addObject("IsCustomer", g.toJson(isCustomer ));
 					mv.addObject("ColList", g.toJson(arrayCol));
 					mv.addObject("ConfigCusListTest", listConfigCus );
 					mv.addObject("ConfigCusList", g.toJson(listConfigCus));
-					mv.addObject("DivisionList", g.toJson(fsmsModel.getDivisionDetail()));
-					mv.addObject("SaleNumberList", g.toJson(fsmsModel.getSaleNumberDetail()));
-					mv.addObject("UserStatusList", g.toJson(usdModel.getUserStatusDetail()));
+					mv.addObject("DivisionList", g.toJson(fromSapMainSaleService.getDivisionDetail()));
+					mv.addObject("SaleNumberList", g.toJson(fromSapMainSaleService.getSaleNumberDetail()));
+					mv.addObject("UserStatusList", g.toJson(usdService.getUserStatusDetail()));
 					mv.addObject("CusNameList", g.toJson(cusNameList));
 					mv.addObject("CusShortNameList", g.toJson(cusShortNameList));
 					mv.addObject("UserID", g.toJson(user));
@@ -134,45 +148,7 @@ public class PCMSMainController {
 			mv.addObject("alerttyp", "User Session Not Found.");
 		}
 		return mv;
-	}
-	@RequestMapping(  value = "/getCustomerNameList",  method = RequestMethod.POST )
-	public void doGetCustomerNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response  ) throws IOException {
-		Gson g = new Gson();
-		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		ConfigCustomerUserModel ccuModel = new ConfigCustomerUserModel();
-		ArrayList<PCMSAllDetail> cusNameList = null ;
-		String user = (String) session.getAttribute("user"); 
-		ArrayList<ConfigCustomerUserDetail> listConfigCus = ccuModel.getConfigCustomerUserDetail(user);
-		if(listConfigCus.size() > 0) {
-			cusNameList = fsmsModel.getCustomerNameDetail(listConfigCus);
-		}
-		else {
-			cusNameList = fsmsModel.getCustomerNameDetail();
-		}
-
-
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		out.println(g.toJson(cusNameList));
-	}
-	@RequestMapping(  value = "/getCustomerShortNameList",  method = RequestMethod.POST )
-	public void doGetCustomerShortNameList(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {
-		Gson g = new Gson();
-		ConfigCustomerUserModel ccuModel = new ConfigCustomerUserModel();
-		FromSapMainSaleModel fsmsModel = new FromSapMainSaleModel();
-		ArrayList<PCMSAllDetail> cusShortNameList = null ;
-		String user = (String) session.getAttribute("user"); 
-		ArrayList<ConfigCustomerUserDetail> listConfigCus = ccuModel.getConfigCustomerUserDetail(user);
-		if(listConfigCus.size() > 0) {
-			cusShortNameList = fsmsModel.getCustomerShortNameDetail(listConfigCus);
-		}
-		else {
-			cusShortNameList = fsmsModel.getCustomerShortNameDetail();
-		}
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		out.println(g.toJson(cusShortNameList));
-	}
+	} 
 	@RequestMapping(value ="/fakeSubmit",  method = RequestMethod.POST)
     public void submitForm(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
     		@Validated @ModelAttribute("PCMSTable") PCMSTableDetail pd, BindingResult br) throws IOException
@@ -190,8 +166,7 @@ public class PCMSMainController {
 	@RequestMapping(  value = "/searchByDetail",  method = RequestMethod.POST )
 	public void doGetSearchByDetail(HttpSession session,HttpServletRequest request, HttpServletResponse response 
 			, @RequestBody ArrayList<PCMSTableDetail> poList 
-			) throws IOException {
-		PCMSMainModel model = new PCMSMainModel(); 
+			) throws IOException { 
 		Gson g = new Gson();
 		UserDetail userObject = (UserDetail) session.getAttribute("userObject");
 		boolean isCustomer = false ;
@@ -200,24 +175,22 @@ public class PCMSMainController {
 		} 
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter(); 
-		out.println(g.toJson(model.searchByDetail( poList,isCustomer)));
+		out.println(g.toJson(pcmsMainService.searchByDetail( poList,isCustomer)));
 	}
 	@RequestMapping(  value = "/getPrdDetailByRow",  method = RequestMethod.POST )
 	public void doGetPrdDetailByRow(HttpSession session
 			,HttpServletRequest request
 			, HttpServletResponse response
 			, @RequestBody ArrayList<PCMSTableDetail> poList 
-			) throws IOException {
-		PCMSMainModel model = new PCMSMainModel();
+			) throws IOException { 
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(model.getPrdDetailByRow( poList)));
+		out.println(g.toJson(pcmsMainService.getPrdDetailByRow( poList)));
 	}
 	@RequestMapping(  value = "/saveColSettingToServer",  method = RequestMethod.POST )
 	public void doSaveColSettingToServer(HttpSession session,HttpServletRequest request, HttpServletResponse response ,
 			@RequestBody String data) throws IOException {
-		ColumnSettingModel model = new ColumnSettingModel();
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		String [] userArray = g.fromJson(data, String[].class);
@@ -236,32 +209,28 @@ public class PCMSMainController {
 		poList.add(pd);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(model.upsertColumnVisibleSummary( pd)));
+		out.println(g.toJson(columnSettingService.upsertColumnVisibleSummary( pd)));
 	}
 	@RequestMapping(  value = "/saveDefault",  method = RequestMethod.POST )
 	public void doGetSaveDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response 
 			, @RequestBody ArrayList<PCMSTableDetail> poList  ) throws IOException {
-		PCMSMainModel model = new PCMSMainModel();
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(model.saveDefault( poList)));
+		out.println(g.toJson(pcmsMainService.saveDefault( poList)));
 	}
 	@RequestMapping(  value = "/loadDefault",  method = RequestMethod.POST )
 	public void doGetLoadDefault(HttpSession session,HttpServletRequest request, HttpServletResponse response ) throws IOException {
-		PCMSMainModel model = new PCMSMainModel();
 		Gson g = new Gson();
 		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
-		String user = (String) session.getAttribute("user");
-//		int i = 0;
-//		for (i = 0; i < userArray.length; i++) {
+		String user = (String) session.getAttribute("user"); 
 			PCMSTableDetail pd = new PCMSTableDetail(); 
 			pd.setUserId(user);
 			poList.add(pd);
 //		}
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(model.loadDefault( poList)));
+		out.println(g.toJson(pcmsMainService.loadDefault( poList)));
 	}
 	@RequestMapping(  value = "/getEncrypted/{userId}",  method = RequestMethod.POST )
 	public void doGetEncrypted(HttpSession session,HttpServletRequest request, HttpServletResponse response ,

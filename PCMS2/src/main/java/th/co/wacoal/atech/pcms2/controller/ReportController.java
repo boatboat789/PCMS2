@@ -26,29 +26,21 @@ import com.google.gson.reflect.TypeToken;
 
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
-import th.co.wacoal.atech.pcms2.model.master.Z_ATT_CustomerConfirm2Model;
-import th.co.wacoal.atech.pcms2.service.CustomDateDeserializer;
-import th.co.wacoal.atech.pcms2.service.ExportExcelCFMReportService; 
+import th.co.wacoal.atech.pcms2.service.ExportExcelCFMReportService;
+import th.co.wacoal.atech.pcms2.service.master.Z_ATT_CustomerConfirm2Service;
+import th.co.wacoal.atech.pcms2.utilities.CustomDateDeserializer; 
 
 @Controller
 @RequestMapping({ "/Report" })
 public class ReportController {
 	@SuppressWarnings("unused") 
 	private ApplicationContext appContext;
-//	private ReportSplitWorkModel rswModel;
-//	private UserStatusDetailModel usModel;
-//	private LabStatusDetailModel lsModel;
-//    @Autowired
-//    public ReportController(
-//    		ReportSplitWorkModel rswModel,
-//    		UserStatusDetailModel usModel,
-//    		LabStatusDetailModel lsModel) {
-//        this.rswModel = rswModel;
-//        this.usModel = usModel;
-//        this.lsModel = lsModel;
-//    } 
+	private Z_ATT_CustomerConfirm2Service zccService; 
     @Autowired
-	public ReportController( ) { 
+	public ReportController(
+			Z_ATT_CustomerConfirm2Service zccService   ) { 
+    	
+    	this.zccService = zccService;
 	}
 	@RequestMapping(value = "/{ReportType}/Detail", method = { RequestMethod.GET })
 	public ModelAndView createReportModel(
@@ -102,13 +94,12 @@ public class ReportController {
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
 		ArrayList<Z_ATT_CustomerConfirm2Detail> resultList = null;
 		if(reportType.equals("CFM")) { 
-			Z_ATT_CustomerConfirm2Model zccModel = new Z_ATT_CustomerConfirm2Model();
 	        // กำหนด Type สำหรับ ArrayList
 	        Type listType = new TypeToken<ArrayList<Z_ATT_CustomerConfirm2Detail>>() {}.getType(); 
 	        // แปลง JSON Array เป็น ArrayList
 	        list = new Gson().fromJson(data, listType); 
 	        Z_ATT_CustomerConfirm2Detail bean = list.get(0);
-	        resultList = zccModel.getZ_ATT_CustomerConfirm2DetailByProductionOrder(
+	        resultList = zccService.getZ_ATT_CustomerConfirm2DetailByProductionOrder(
 	        				bean.getProdID()
 	        				, bean.getLotNo()
 	        				, bean.getReplyDateRange()
