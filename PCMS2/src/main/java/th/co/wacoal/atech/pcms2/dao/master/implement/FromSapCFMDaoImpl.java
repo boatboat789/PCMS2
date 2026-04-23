@@ -34,7 +34,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapCFMDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapCFMDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -80,9 +80,6 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 	@Override
 	public String upsertFromSapCFMDetail(ArrayList<FromErpCFMDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
@@ -160,13 +157,12 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				+ "            ?, ?, ?\r\n"
 				+ "        );\r\n"
 				+ "    END\r\n"
-				+ "END\r\n"
-				;
-		try {
+				+ "END\r\n";
 
-			int index = 1;
-			int batchSize = 0;
-			prepared = connection.prepareStatement(sql);
+		int index = 1;
+		int batchSize = 0;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			for (FromErpCFMDetail bean : paList) {
 				index = 1;
 				prepared.setString(index ++ , bean.getDataStatus());
@@ -174,33 +170,32 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getProductionOrder());
 
 				prepared.setString(index ++ , bean.getCfmNumber());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate(), index ++ );
 				prepared.setString(index ++ , bean.getCfmStatus());
 				prepared.setString(index ++ , bean.getCfmRemark());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getNextLot());
 				prepared.setString(index ++ , bean.getSoChange());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty(), index ++ );
 				prepared.setString(index ++ , bean.getSoChangeUnit());
 				prepared.setString(index ++ , bean.getRollNo());
 				prepared.setString(index ++ , bean.getRollNoRemark());
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getCfmNo());
 
+				prepared.setString(index ++ , bean.getCfmNo());// CHECK CFM NO <> ''
+				prepared.setString(index ++ , bean.getCfmNumber());// CHECK CFM NUMBER <> ''
 
-				prepared.setString(index ++ , bean.getCfmNo());// CHECK CFM NO <> ''	
-				prepared.setString(index ++ , bean.getCfmNumber());// CHECK CFM NUMBER <> ''	
-				
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getCfmNo());
 				prepared.setString(index ++ , bean.getCfmNumber());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getCfmSendDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getCfmAnswerDate(), index ++ );
 
 				prepared.setString(index ++ , bean.getCfmStatus());
 				prepared.setString(index ++ , bean.getCfmRemark());
@@ -209,7 +204,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getNextLot());
 
 				prepared.setString(index ++ , bean.getSoChange());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getSoChangeQty(), index ++ );
 				prepared.setString(index ++ , bean.getSoChangeUnit());
 				prepared.setString(index ++ , bean.getRollNo());
 				prepared.setString(index ++ , bean.getRollNoRemark());
@@ -217,21 +212,21 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch();
-				batchSize++;
-	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
-	    			prepared.executeBatch();
-	    			prepared.clearBatch();
-	                batchSize = 0; // Reset batch size
-	            }
+				batchSize ++ ;
+				if (batchSize % 500 == 0) { // Execute batch every 500 records
+					prepared.executeBatch();
+					prepared.clearBatch();
+					batchSize = 0; // Reset batch size
+				}
 //				prepa
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
 //			e.printStackTrace();
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

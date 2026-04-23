@@ -1,7 +1,7 @@
 package th.co.wacoal.atech.pcms2.dao.master.implement.erp.atech;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	private Database database;
 
 	@Autowired
-	public ERPAtechDaoImpl(@Qualifier("erpDatabase")Database database) {
+	public ERPAtechDaoImpl(@Qualifier("erpDatabase") Database database) {
 		this.message = "";
 		this.database = database;
 	}
@@ -47,10 +47,10 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		return this.message;
 	}
 
-	private String declareThirtyMinuteAgo = "" 
-	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -40, GETDATE());"; 
+	private String declareThirtyMinuteAgo = "" + " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
+
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -2, GETDATE());"; 
+//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
 //	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
@@ -61,8 +61,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
-				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n" 
-				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n" 
+				+ "		WHEN TRY_CAST([CustomerNo] AS INT ) IS NULL  THEN [CustomerNo]\r\n"
+				+ "		ELSE RIGHT('0000000000'+ISNULL([CustomerNo],''),10) \r\n"
 				+ "	END as [CustomerNo] ,"
 				+ " TRY_CAST( CustomerNo AS NVARCHAR(50)) as CustomerNoWOZero  ,\r\n"
 				+ " TRY_CAST( CustomerName AS NVARCHAR(500)) as CustomerName  ,\r\n"
@@ -79,7 +79,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " [SyncDate] "
 				+ " from CustomerDetail "
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
-				+ "       SyncDate >= @dateTimeThirtyMinuteAgo " ; 
+				+ "       SyncDate >= @dateTimeThirtyMinuteAgo ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -172,7 +172,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			list.add(this.bcModel._genFromErpCFMDetail(map));
 		}
 		return list;
-	} 
+	}
 //	@Override
 //	public ArrayList<FromErpDyeingDetail> getFromErpDyeingDetail()
 //	{
@@ -338,9 +338,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ " FROM ProductionOrders AS A\r\n"
 				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrder]   \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2')" 
-		; 
-		List<Map<String, Object>> datas = this.database.queryList(sql); 
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2')";
+		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainBillBatchDetail(map));
@@ -463,8 +462,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN MainProd AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); " 
-		;
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -509,8 +507,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN MainProdSale AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); " 
-		;
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -522,21 +519,22 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	@Override
 	public ArrayList<ProductionOrderLogDetail> getFromErpMainProdDetailWithRangeOfChangeDate(String changeDateStart,
 			String changeDateEnd, String productionOrder)
-	{ 
+	{
 		ArrayList<ProductionOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1  ";
-		if ( ! changeDateStart.equals("")) { 
+		if ( ! changeDateStart.equals("")) {
 			where += " "
 					+ " and (  "
-					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'" + changeDateStart + "', 103) AND \r\n"
-					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'" + changeDateEnd + "', 103) \r\n"
-					+ "	) \r\n";     
+					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
+					+ changeDateStart
+					+ "', 103) AND \r\n"
+					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
+					+ changeDateEnd
+					+ "', 103) \r\n"
+					+ "	) \r\n";
 		}
-		if ( ! productionOrder.equals("")) { 
-			where += " "
-					+ " and (  "
-					+ " a.[ProductionOrder] = '" + productionOrder + "' \r\n" 
-					+ "	) \r\n";     
+		if ( ! productionOrder.equals("")) {
+			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrder + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT TOP (10000) \r\n"
@@ -544,23 +542,23 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "      ,[SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
 				+ "      ,[TotalQuantity]\r\n"
-				+ "      ,[Volumn]\r\n" 
-				+ "      ,[Unit]\r\n" 
+				+ "      ,[Volumn]\r\n"
+				+ "      ,[Unit]\r\n"
 				+ "      ,[LabStatus]\r\n"
 				+ "      ,[UserStatus]\r\n"
 				+ "      ,[DesignFG]\r\n"
 				+ "      ,[ArticleFG]\r\n"
 				+ "      ,[BookNo]\r\n"
 				+ "      ,[Center]\r\n"
-				+ "      ,[LotNo]\r\n" 
-				+ "      ,[LabNo] \r\n"  
+				+ "      ,[LotNo]\r\n"
+				+ "      ,[LabNo] \r\n"
 				+ "      ,CASE \r\n"
 				+ "        WHEN [GREIGEINDATE] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
 				+ "        WHEN [GREIGEINDATE] is null or \r\n"
 				+ "             [GREIGEINDATE] = '' THEN CAST( null AS Date )  \r\n"
 				+ "        ELSE CAST( [GREIGEINDATE] AS Date )   \r\n"
-				+ "		END AS GreigeInDate  \r\n" 
-				+ "      ,[Shade]\r\n" 
+				+ "		END AS GreigeInDate  \r\n"
+				+ "      ,[Shade]\r\n"
 				+ "      ,CASE \r\n"
 				+ "        WHEN [PrdCreateDate] = '1900-01-01 00:00:00.000' THEN CAST( null AS Date )   \r\n"
 				+ "        WHEN [PrdCreateDate] is null or \r\n"
@@ -568,20 +566,21 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "        ELSE CAST( [PrdCreateDate] AS Date )   \r\n"
 				+ "		END AS [PrdCreateDate]    \r\n"
 				+ "      ,[GreigeArticle]\r\n"
-				+ "      ,[GreigeDesign]\r\n" 
+				+ "      ,[GreigeDesign]\r\n"
 				+ "      ,[OrderType]\r\n"
 				+ "      ,[SyncDate]\r\n"
 				+ " FROM [FromErpMainProd] a\r\n"
 				+ where
-				+ " Order by SyncDate desc"  ;
+				+ " Order by SyncDate desc";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genProductionOrderLogDetail(map));
-			list.add(MapperUtility .mapToObject(map, ProductionOrderLogDetail.class));
-		}  
+			list.add(MapperUtility.mapToObject(map, ProductionOrderLogDetail.class));
+		}
 		return list;
 	}
+
 	@Override
 	public ArrayList<FromErpMainSaleDetail> getFromErpMainSaleDetail()
 	{
@@ -691,7 +690,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
-				+ "LEFT JOIN MainSale AS B ON A.[SaleOrder] = B.SaleOrderCheck " 
+				+ "LEFT JOIN MainSale AS B ON A.[SaleOrder] = B.SaleOrderCheck "
 
 		;
 //		System.out.println(sql);
@@ -706,21 +705,22 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	@Override
 	public ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart,
 			String changeDateEnd, String saleOrder)
-	{ 
+	{
 		ArrayList<SaleOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1  ";
-		if ( ! changeDateStart.equals("")) { 
+		if ( ! changeDateStart.equals("")) {
 			where += " "
 					+ " and (  "
-					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'" + changeDateStart + "', 103) AND \r\n"
-					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'" + changeDateEnd + "', 103) \r\n"
-					+ "	) \r\n";     
+					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
+					+ changeDateStart
+					+ "', 103) AND \r\n"
+					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
+					+ changeDateEnd
+					+ "', 103) \r\n"
+					+ "	) \r\n";
 		}
-		if ( ! saleOrder.equals("")) { 
-			where += " "
-					+ " and (  "
-					+ " a.[SaleOrder] = '" + saleOrder + "' \r\n" 
-					+ "	) \r\n";     
+		if ( ! saleOrder.equals("")) {
+			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT TOP (10000) [SaleOrder]\r\n"
@@ -769,16 +769,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "      ,[SyncDate]\r\n"
 				+ "      ,[SyncDateHeader]\r\n"
 				+ "  FROM  [FromErpMainSale] a\r\n"
-				+ where 
+				+ where
 				+ " Order by SyncDate desc";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genProductionOrderLogDetail(map));
-			list.add(MapperUtility .mapToObject(map, SaleOrderLogDetail.class));
-		}  
+			list.add(MapperUtility.mapToObject(map, SaleOrderLogDetail.class));
+		}
 		return list;
 	}
+
 	@Override
 	public ArrayList<FromErpPackingDetail> getFromErpPackingDetail()
 	{
@@ -909,7 +910,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN PO AS B ON A.[ProductionOrder] = B.ProductionOrderCheck  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); " 
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
 
 		;
 //		System.out.println(sql);
@@ -980,8 +981,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			END AS DataStatus \r\n"
 				+ "		,B.*\r\n"
 				+ "FROM SaleOrderLines AS A \r\n"
-				+ "LEFT JOIN Sale AS B ON A.[SaleOrder] = B.SaleOrderCheck; \r\n" 
-		;
+				+ "LEFT JOIN Sale AS B ON A.[SaleOrder] = B.SaleOrderCheck; \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1032,8 +1032,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN SubmitDate AS B ON A.[ProductionOrder] = B.ProductionOrderCheck"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); " 
-		;
+				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -1041,7 +1040,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			list.add(this.bcModel._genFromErpSubmitDateDetail(map));
 		}
 		return list;
-	} 
+	}
+
 	@Override
 	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail()
 	{
@@ -1081,12 +1081,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "; \r\n"
 				+ "  ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
-		list = new ArrayList<>(); 
+		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
-		} 
+		}
 		return list;
 	}
-
 
 }

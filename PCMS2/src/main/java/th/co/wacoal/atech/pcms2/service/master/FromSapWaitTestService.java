@@ -3,12 +3,12 @@ package th.co.wacoal.atech.pcms2.service.master;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapWaitTestDao;
 import th.co.wacoal.atech.pcms2.entities.WaitTestDetail;
 
-@Component
+@Service
 public class FromSapWaitTestService { 
 	private FromSapWaitTestDao dao; 
     @Autowired

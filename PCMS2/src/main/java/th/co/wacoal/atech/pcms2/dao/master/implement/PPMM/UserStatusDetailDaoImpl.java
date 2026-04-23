@@ -10,36 +10,23 @@ import org.springframework.stereotype.Repository;
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.UserStatusDetailDao;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler; 
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class UserStatusDetailDaoImpl implements UserStatusDetailDao {
-	// PC - Lab-ReLab
-	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New
 	private String select = ""
 			+ "     [Id]\r\n"
 			+ "      ,[UserStatusSapId]\r\n"
 			+ "      ,[UserStatus]\r\n"
 			+ "      ,[DataStatus]\r\n"; 
-	@SuppressWarnings("unused")
-	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
-	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	public UserStatusDetailDaoImpl(Database database ) {
 		this.database = database;
-		this.message = "";
-	}
-
-	public String getMessage()
-	{
-		return this.message;
-	}
+	} 
 	@Override
 	public  ArrayList<PCMSAllDetail> getUserStatusDetail( ){
 		ArrayList<PCMSAllDetail> list = null;

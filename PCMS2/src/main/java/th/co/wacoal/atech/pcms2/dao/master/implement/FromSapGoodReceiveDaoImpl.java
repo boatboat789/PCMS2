@@ -31,7 +31,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapGoodReceiveDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapGoodReceiveDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -44,9 +44,6 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 	@Override
 	public String upsertFromSapGoodReceiveDetail(ArrayList<FromErpGoodReceiveDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
@@ -80,7 +77,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "        [SyncDate] = ?\r\n"
 				+ "    WHERE\r\n"
 				+ "        [ProductionOrder] = ?\r\n"
-				+ "        AND [RollNumber] = ?;\r\n" 
+				+ "        AND [RollNumber] = ?;\r\n"
 				+ "    -- Check if rows were updated\r\n"
 				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "\r\n"
@@ -111,61 +108,60 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 				+ "            ?\r\n"
 				+ "        );\r\n"
 				+ "    END\r\n"
-				+ "END"
-				;
-		try {
+				+ "END";
 
-			int index = 1;
-			prepared = connection.prepareStatement(sql);
+		int index = 1;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			for (FromErpGoodReceiveDetail bean : paList) {
 				index = 1;
-				prepared.setString(index++, bean.getDataStatus()   );
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index++, bean.getProductionOrder()    );
+				prepared.setString(index ++ , bean.getProductionOrder());
 
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getGrade());
 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getRollNumber());
 
-				prepared.setString(index ++ , bean.getRollNumber());// CHECK ROLL NUMBER <> ''	
-				
+				prepared.setString(index ++ , bean.getRollNumber());// CHECK ROLL NUMBER <> ''
+
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getGrade());
 				prepared.setString(index ++ , bean.getRollNumber());
 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityMR(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getPriceSTD(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch();
 //				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
 //			e.printStackTrace();
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

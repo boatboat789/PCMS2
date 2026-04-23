@@ -32,7 +32,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public SearchSettingDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public SearchSettingDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -56,7 +56,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ userId
 				+ "' and [ForPage] = '"
 				+ forPage
-				+ "' "; 
+				+ "' ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -66,18 +66,15 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	}
 
 	@Override
-	public ArrayList<PCMSTableDetail> insertSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage)
+	public ArrayList<PCMSTableDetail> insertSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage)
 	{
 		// TODO Auto-generated method stub
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		ArrayList<PCMSTableDetail> list = new ArrayList<>();
 		String customerShortName = "",saleNumber = "",materialNo = "",saleOrder = "",saleCreateDate = "",labNo = "",
 				articleFG = "",designFG = "",userStatus = "",prdOrder = "",prdCreateDate = "",deliveryStatus = "",saleStatus = "",
-				dist = "",customerName = "",dueDate = "",userId = "",division = "";
+				dist = "",customerName = "",dueDate = "",division = "";
 		PCMSTableDetail bean = poList.get(0);
-		userId = bean.getUserId();
 		materialNo = bean.getMaterialNo();
 		saleOrder = bean.getSaleOrder();
 		saleCreateDate = bean.getSaleOrderCreateDate();
@@ -97,25 +94,25 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 		division = bean.getDivision();
 		String po = bean.getPurchaseOrder();
 		int no = 1;
-		try {
-			String sql = " INSERT INTO [dbo].[SearchSetting]\r\n"
-					+ "           ( [EmployeeId] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
-					+ "           ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
-					+ "           ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
-					+ "           ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[ForPage],[Division] \r\n"
-					+ "           ,[PurchaseOrder] \r\n"
-					+ "           )\r\n"
-					+ " VALUES\r\n"
-					+ "           ( "
-					+ "            ? , ? , ? , ? , ?, "
-					+ "            ? , ? , ? , ? , ?,"
-					+ "            ? , ? , ? , ? , ?,"
-					+ "            ? , ? , ? , ? , ?,"
-					+ "            ?"
-					+ "           )";
-			int index = 1;
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(index ++ , userId);
+		String sql = " INSERT INTO [dbo].[SearchSetting]\r\n"
+				+ "           ( [EmployeeId] ,[No] ,[CustomerName] ,[CustomerShortName] ,[SaleOrder]\r\n"
+				+ "           ,[ArticleFG] ,[DesignFG] ,[ProductionOrder] ,[SaleNumber] ,[MaterialNo]\r\n"
+				+ "           ,[LabNo] ,[DeliveryStatus] ,[DistChannel] ,[SaleStatus] ,[DueDate]\r\n"
+				+ "           ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[ForPage],[Division] \r\n"
+				+ "           ,[PurchaseOrder] \r\n"
+				+ "           )\r\n"
+				+ " VALUES\r\n"
+				+ "           ( "
+				+ "            ? , ? , ? , ? , ?, "
+				+ "            ? , ? , ? , ? , ?,"
+				+ "            ? , ? , ? , ? , ?,"
+				+ "            ? , ? , ? , ? , ?,"
+				+ "            ?"
+				+ "           )";
+		int index = 1;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+			prepared.setString(index ++ , user);
 			prepared.setInt(index ++ , no);
 			prepared.setString(index ++ , customerName);
 			prepared.setString(index ++ , customerShortName);
@@ -140,7 +137,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 			prepared.close();
 			bean.setIconStatus("I");
 			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) { 
+		} catch (SQLException e) {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
@@ -151,18 +148,15 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	}
 
 	@Override
-	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage)
+	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage)
 	{
 		// TODO Auto-generated method stub
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		ArrayList<PCMSTableDetail> list = new ArrayList<>();
 		String customerShortName = "",saleNumber = "",materialNo = "",saleOrder = "",saleCreateDate = "",labNo = "",
 				articleFG = "",designFG = "",userStatus = "",prdOrder = "",prdCreateDate = "",deliveryStatus = "",saleStatus = "",
-				dist = "",customerName = "",dueDate = "",userId = "",division = "";
+				dist = "",customerName = "",dueDate = "",division = "";
 		PCMSTableDetail bean = poList.get(0);
-		userId = bean.getUserId();
 		materialNo = bean.getMaterialNo();
 		saleOrder = bean.getSaleOrder();
 		saleCreateDate = bean.getSaleOrderCreateDate();
@@ -182,17 +176,17 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 		division = bean.getDivision();
 		String po = bean.getPurchaseOrder();
 		int no = 1;
-		try {
-			String sql = " UPDATE [dbo].[SearchSetting]\r\n"
-					+ "  SET [No] = ?  ,[CustomerName] = ?,[CustomerShortName] = ?\r\n"
-					+ "      ,[SaleOrder] = ? ,[ArticleFG] = ? ,[DesignFG] =  ? \r\n"
-					+ "      ,[ProductionOrder] = ? ,[SaleNumber] = ? ,[MaterialNo] = ?\r\n"
-					+ "      ,[LabNo] = ? ,[DeliveryStatus] = ? ,[DistChannel] = ?\r\n"
-					+ "      ,[SaleStatus] = ? ,[DueDate] = ? ,[SaleCreateDate] = ? \r\n"
-					+ "      ,[PrdCreateDate] = ? ,[UserStatus] = ? , [Division] = ? , [PurchaseOrder] = ?\r\n"
-					+ "  where  [EmployeeId] = ? and [ForPage] = ?";
-			prepared = connection.prepareStatement(sql);
+		String sql = " UPDATE [dbo].[SearchSetting]\r\n"
+				+ "  SET [No] = ?  ,[CustomerName] = ?,[CustomerShortName] = ?\r\n"
+				+ "      ,[SaleOrder] = ? ,[ArticleFG] = ? ,[DesignFG] =  ? \r\n"
+				+ "      ,[ProductionOrder] = ? ,[SaleNumber] = ? ,[MaterialNo] = ?\r\n"
+				+ "      ,[LabNo] = ? ,[DeliveryStatus] = ? ,[DistChannel] = ?\r\n"
+				+ "      ,[SaleStatus] = ? ,[DueDate] = ? ,[SaleCreateDate] = ? \r\n"
+				+ "      ,[PrdCreateDate] = ? ,[UserStatus] = ? , [Division] = ? , [PurchaseOrder] = ?\r\n"
+				+ "  where  [EmployeeId] = ? and [ForPage] = ?";
+
 //				prepared.setString(1, userId);
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			int index = 1;
 			prepared.setInt(index ++ , no);
 			prepared.setString(index ++ , customerName);
@@ -213,13 +207,13 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 			prepared.setString(index ++ , userStatus);
 			prepared.setString(index ++ , division);
 			prepared.setString(index ++ , po);
-			prepared.setString(index ++ , userId);
+			prepared.setString(index ++ , user);
 			prepared.setString(index ++ , forPage);
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
 			bean.setSystemStatus("Save Success.");
-		} catch (SQLException e) { 
+		} catch (SQLException e) {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {

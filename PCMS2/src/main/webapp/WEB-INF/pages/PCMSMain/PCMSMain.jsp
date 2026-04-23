@@ -1,84 +1,97 @@
-	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ page isELIgnored="false"%> 
+<%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
-<head>   
-	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  
-	<title>PCMS - Summary</title>            	    
-	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>       
-	<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
-	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
-</head>      
-<body>       	         	
-	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>      
-	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>    
-    <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>    
-		<div id="wrapper-center" class="row" style="margin: 0px 5px;">     
-			<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px;margin: 0px 0px;" >                
-				<div class="table-responsive ">        
-					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%;   font-size: 12.5px;width:100%">
-				        <thead>          
-				            <tr>
-				                <th class="row-table" style="vertical-align: middle;">SO No. </th>
-				                <th class="row-table" style="vertical-align: middle;">SO Line</th> 
-				                <th class="row-table" style="vertical-align: middle;">PO</th>
-				                <th class="row-table" style="vertical-align: middle;">Article No</th>
-				                <th class="row-table" style="vertical-align: middle;">Design No </th>
-				                <th class="row-table" style="vertical-align: middle;">ATT<span class="c"style="display: block;"> Color</span> </th>  
-				                <th class="row-table" style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Color</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Order<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Shipped	<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Unit </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Plan<span class="c"style="display: block;"> Greige Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prepare	 </th>  
-				                <th class="row-table" style="vertical-align: middle;">Relax	 </th>  
-				                <th class="row-table" style="vertical-align: middle;">PS </th>      
-				                <th class="row-table" style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> Status</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">FN  </th> 
-				                <th class="row-table" style="vertical-align: middle;">Inspect </th>  
-				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
-								<th class="row-table" style="vertical-align: middle;">CFM Detail   </th>  
-				                <th class="row-table" style="vertical-align: middle;">CFM Remark </th>  
-				                <th class="row-table" style="vertical-align: middle;">Delivery Date </th> 
-				                <th class="row-table" style="vertical-align: middle;">Shipping </th>   
-				        	</tr>      
-				        </thead>          	         
-<!-- 				        <tbody>     -->
-<!-- 				        </tbody>        --> 
-				    </table>            
-				</div>                
-			</div>   	
-		</div>               
-<!-- 		<div id="wrapper-bot" class="row">   -->
-		 
-<!-- 		</div>        -->   
-    <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
-	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include> 
-	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
-</body>                  
-<script src="<c:url value="/resources/js/DatatableSort.js" />"></script>   
-<script src="<c:url value="/resources/js/General.js" />"></script>     
-<%-- <script src="<c:url value="/resources/js/Encrypt.js" />"></script>    --%>
-  <style>
-  .p-r-15 {padding-right: 15px !important; }
-  </style>
-<!-- <script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>    -->
+<head>
+<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>
+<title>PCMS - Summary</title>
+<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
+<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/pcms-style.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
+	<div id="wrapper-center" class="row" style="margin: 0px 5px;">
+		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px; margin: 0px 0px;">
+			<div class="table-responsive ">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%; font-size: 12.5px; width: 100%">
+					<thead>
+						<tr>
+							<th class="row-table" style="vertical-align: middle;">SO No.</th>
+							<th class="row-table" style="vertical-align: middle;">SO Line</th>
+							<th class="row-table" style="vertical-align: middle;">PO</th>
+							<th class="row-table" style="vertical-align: middle;">Article No</th>
+							<th class="row-table" style="vertical-align: middle;">Design No</th>
+							<th class="row-table" style="vertical-align: middle;">ATT<span class="c" style="display: block;"> Color</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Cust.<span class="c" style="display: block;"> Color</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Order<span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Shipped <span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Unit</th>
+							<th class="row-table" style="vertical-align: middle;">Prod.<span class="c" style="display: block;"> No.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Prod.<span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Plan<span class="c" style="display: block;"> Greige Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Greige<span class="c" style="display: block;"> In</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">User<span class="c" style="display: block;"> Status</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Due<span class="c" style="display: block;"> Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Prepare</th>
+							<th class="row-table" style="vertical-align: middle;">Relax</th>
+							<th class="row-table" style="vertical-align: middle;">PS</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span class="c" style="display: block;"> [Actual]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span class="c" style="display: block;"> Status</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dryer<span class="c" style="display: block;"> Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">FN</th>
+							<th class="row-table" style="vertical-align: middle;">Inspect</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Date<span class="c" style="display: block;"> [Plan]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Date<span class="c" style="display: block;"> [Actual]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Detail</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Remark</th>
+							<th class="row-table" style="vertical-align: middle;">Delivery Date</th>
+							<th class="row-table" style="vertical-align: middle;">Shipping</th>
+						</tr>
+					</thead> 
+				</table>
+			</div>
+		</div>
+	</div> 
+	<jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include>
+</body>
+<script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
+<script src="<c:url value="/resources/js/General.js" />"></script>
+<script src="<c:url value="/resources/js/web-app.js" />"></script> 
+<style>
+.p-r-15 {
+	padding-right: 15px !important;
+}
+</style>  
 <script>              	   
 var userId = '' ;   
-var isCustomer = false  ;
-<%-- JSON.stringify(<%= session.getAttribute("user")%> ) --%>
+var isCustomer = false  ; 
 var preloader = document.getElementById('loader');  
 var today = new Date();        //modalForm
 var dd = String('0' + today.getDate()).slice(-2); 
@@ -90,25 +103,20 @@ var poTable ;
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
-var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;
-// var sendTestQCTable;
+var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable; 
 var columnsHeader  = [];
 var colList ;
 var userStatusList ;  	
 var cusNameList ; 
-var divisionList ; 
-var configCusList;
+var divisionList ;  
 var cusShortNameList ;  
 var isCustomer = 0 ;  	
-var workInLabTable ;
-// var waitTestTable;
-var cfmTable;var saleTable;
-// var saleInputTable;
+var workInLabTable ; 
+var cfmTable;
+var saleTable; 
 var submitDateTable;
-var ncTable;
-// var receipeTable;
-var collapsedGroups = {};        
-// var domain = "http://"+window.location.hostname+":8080";
+var ncTable; 
+var collapsedGroups = {};         
 var domain ;
 var urlLBMS ;     
 var urlLBMSObj ; 
@@ -121,10 +129,7 @@ var urlQCMSObj ;
  
 var soTmpExcel ;   
 var soLineTmpExcel;
-var colMap = new Map();
-// console.log(window.location.host)
-// console.log(window.location.hostname)
-// console.log(window.location.origin)   
+var colMap = new Map(); 
 $(document).on('show.bs.modal', '.modal', function (event) {
     var zIndex = 1040 + (10 * $('.modal:visible').length);
     $(this).css('z-index', zIndex);
@@ -194,38 +199,8 @@ $(document) .ready( function() {
 
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
-<%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
-// 		var ctx = "${pageContext.request.contextPath}";   
-// 		console.log(ctx2)       ;               
-<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%> 
-// 	var saleNumberList = JSON.parse('${SaleNumberList}');
-// 	userStatusList = JSON.parse('${UserStatusList}');  
-// 	$('#SL_userStatus').selectpicker();             
-// 	addUserStatusOption(userStatusList );        
-// 	$('#SL_userStatus').selectpicker('val', userStatusList);     
-//   	addSelectOption(saleNumberList)
-// 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-// 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-// 	  });               
-	
   	DataTable.render.datetime('DD/MM/YYYY HH:mm:ss', 'DD/MM/YYYY HH:mm:ss', 'en')
-  	DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en')
-	// ---------------------------------------- set---------------------------------------------
-	let os = JSON.parse('${OS}');   
-	let result = os.includes("win"); 
-	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
-	else{ domain = "https://"+window.location.hostname;  } 
-// 	domain = domain+window.location.hostname+:"8080";
-	urlLBMS = domain+"/LBMS/";     
-	urlLBMSObj = domain+"/LBMS/LabHistory"; 
-	urlSFC = domain+"/SFC/"; 
-	urlSFCObj = domain+"/SFC/HistoryWork"; 
-	urlInspect = domain+"/InspectSystem/search/home.html"; 	
-	urlInspectObj = domain+"/InspectSystem/search/home.html"; 
-	urlQCMS = domain+"/QCMS/first.html"; 
-	urlQCMSObj = domain+"/QCMS/request/search.html"; 
-	// ---------------------------------------- set---------------------------------------------
-	userId = JSON.parse('${UserID}' );        
+  	DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en')  
 	isCustomer = JSON.parse('${IsCustomer}' );    
 	if(isCustomer  == true){  
 		isCustomer = 1
@@ -272,36 +247,6 @@ $(document) .ready( function() {
 		handlerIsCustomer();
 		getVisibleColumnsTable()
  	} ); 
-	//--------------------------------------- SEARCH ----------------------------------------------
-    $('#btn_lbms').on( 'click', function () {       
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false, 
-		   		})
-			}      
-			else { 
-				  var arrayTmp = [];        
-					arrayTmp.push();      
-					getEncrypted('LBMS',tblData,userId,arrayTmp);   
-			}   
-		} 
- 	} ); 
     $('#btn_prdDetail').on( 'click', function () {    
     	var tblData = MainTable.rows( '.selected').data();    
 		if(tblData.length == 0 ){
@@ -334,97 +279,6 @@ $(document) .ready( function() {
 				 $('#modalForm').modal('show');  
 			}   
 		}  
- 	} ); 
-    $('#btn_inspect').on( 'click', function () {    
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else {
-					
-				var arrayTmp = [];        
-				arrayTmp.push();      
-				getEncrypted('INSPECT',tblData,userId,arrayTmp);     
-			}   
-		}  
- 	} ); 
-    $('#btn_sfc').on( 'click', function () {      
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else { 
-				var arrayTmp = [];        
-				arrayTmp.push();      
-				getEncrypted('SFC',tblData,userId,arrayTmp);       
-					
-			}   
-		}
-			 
- 	} ); 
-    $('#btn_qcms').on( 'click', function () {      
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder 
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else {
-				 
-				 var arrayTmp = [];        
-					arrayTmp.push();     
-					getEncrypted('QCMS',tblData,userId,arrayTmp);     
-			}   
-		} 
  	} );  
 //     var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
 // 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
@@ -509,46 +363,17 @@ $(document) .ready( function() {
 				   		return  htmlEx      
 					}         
 				}  ,             
-			 	{  			    
-// 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
+			 	{  			     
 				  targets : [12,13,16,17,18,19,20,22,23,24,26,29,30],             
-				  render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM', 'en')  
-// 				  render: function (data, type, row) {	 
-// 				   		var htmlEx = data;                                      
-// 	   					htmlEx = ''      
-// 	   					+ '<div data-search="' + data + '" '         
-// // 	   					+ ' class="form-control DateInput" '    
-// 	   					+ ' name="DateInput" type="text" '
-// 	   					+ ' value = "' + data   + "' "                 
-// 	   					+ ' autocomplete="off" >'   
-// 	   					+ dateDDMMYYYToDDMM(data) 
-// 	   					+ '</div>';       
-// 				   		return  htmlEx     ;         
-// 					}                          
+				  render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM', 'en')                      
 				} ,          
 						
-			], 
-//	 		 order: [[2, 'asc'], [1, 'asc']],  
-//	 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
+			],  
 		 	select : {              
 				style: 'os',         
 			 	selector: 'td:not(.status)'  // .status is class        
 	  		},    
-	  		createdRow : function(row, data, index) {
-//	 			$('td', row).eq(16).addClass('bg-color-azure');
-//	   	        $('td', row).eq(21).addClass('bg-color-azure');    
-//	   	        $('td', row).eq(23).addClass('bg-color-azure');   
-//	   			console.log(data.DueDate, index )                   
-// 	  			if(mapsDataHeader.size != 0){     
-// //	   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
-// 	  				if(data["DueDate"] != "") {      
-// 		 	    		var datearray = data["DueDate"].split("/");
-// 			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;    
-// 				  	    if (sevenDayAgo >= dueDate   ){             
-// 				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
-// 				        }
-// 	  	    		}        
-// 	  			}   
+	  		createdRow : function(row, data, index) { 
 	  			if(mapsDataHeader.size != 0){       
 					if (data["typePrd"] == "OrderPuang" ) { 	         	 
 						$('td', row).eq(mapsDataHeader.get("productionOrder")).addClass('bg-orderpuang'); 
@@ -591,17 +416,11 @@ $(document) .ready( function() {
     var startdate = moment();
     var subDate = startdate.add(7, "days");
     subDate = startdate.format("MM/DD/YYYY");      
-    var sevenDayAgo = new Date(subDate) ;   
- 
- 
+    var sevenDayAgo = new Date(subDate) ;  
     poTable = $('#poTable').DataTable({  
     	scrollY: '400px',        
     	scrollX: true,      
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,           	
 		lengthChange: false,         	  
  	   	columns : 
  		[      
@@ -733,38 +552,10 @@ $(document) .ready( function() {
 				} ,                         
 		],  order: [[ 0, "desc" ]]     
  	 });   
-//     sendTestQCTable = $('#sendTestQCTable').DataTable({   
-//     	scrollY:        '190px',    
-//     	scrollX: true,      
-//     	paging: false,     
-// //  	 	scrollCollapse: true,                  
-// //  	   	orderCellsTop : true,
-// // 		orderClasses : false, 
-// 		lengthChange: false,         	  
-//  	   	columns : 
-//  		[           
-// 		    {"data" : "sendDate"} ,         //0
-// 		    {"data" : "rollNo"},  
-// 		    {"data" : "status"},  
-// 		    {"data" : "checkColorDate"},  
-// 		    {"data" : "deltaE"},  
-// 		    {"data" : "color"},  
-// 		    {"data" : "remark"},            //6
-// 		],  	          
-// 		columnDefs :  [	   	
-// 			{ targets : [ 0,1,2,3,4,5,6 ],                
-// 			  	  className : 'data-custom-padding0505',    
-// // 		  	 	  type: 'string'      
-// 				} ,           
-// 		],     order: [[ 0, "desc" ]]        
-//  	 });  
     workInLabTable = $('#workInLabTable').DataTable({   
     	scrollY:       '175px',    
     	scrollX: true,               
     	paging: false,
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
 		lengthChange: false,         	  
 	   	columns :      
 				[                   
@@ -889,27 +680,7 @@ $(document) .ready( function() {
 //	 		  	 	  type: 'string'      
 					} ,           
 			],     order: [[ 0, "desc" ]]        
-	 	 });    
-// 	    receipeTable = $('#receipeTable').DataTable({   
-// 	    	scrollY:        '175px',         
-// 	    	scrollX: true,      
-// 	    	paging: false,      
-// //	 		orderClasses : false,         
-// 			lengthChange: false,         	  
-// 	 	   	columns :   
-// 	 		[               
-// 			    {"data" : "no"} ,         //0
-// 			    {"data" : "lotNo"},     
-// 			    {"data" : "postingDate"},  
-// 			    {"data" : "receipe"},   
-// 			],  	          
-// 			columnDefs :  [	   	
-// 				{ targets : [ 0,1,2,3 ],                
-// 				  	  className : 'data-custom-padding0505',    
-// //	 		  	 	  type: 'string'      
-// 					} ,               
-// 			],     order: [[ 0, "desc" ]]        
-// 	 	 });      
+	 	 });        
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
 		let searchVal = this.value;      
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
@@ -986,12 +757,11 @@ $(document) .ready( function() {
 	$('#multi_division').selectpicker();   
 	colList = JSON.parse('${ColList}');  
 	columnsHeader = MainTable.settings().init().columns;   
-	cusNameList = JSON.parse('${CusNameList}');   	
-	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
+	cusNameList = JSON.parse('${CusNameList}');   	 
+ 	cusShortNameList  = JSON.parse('${CusShortNameList}');
 	userStatusList = JSON.parse('${UserStatusList}');       
 	divisionList = JSON.parse('${DivisionList}');        
-	var saleNumberList = JSON.parse('${SaleNumberList}');
-	configCusList = JSON.parse('${ConfigCusList}');      
+	var saleNumberList = JSON.parse('${SaleNumberList}'); 
 	handlerIsCustomer(); 
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
@@ -1084,8 +854,7 @@ function searchByDetail(){
    		})
 	}
 	else{
-		var json = createJsonData();        
-// 		console.log(json)
+		var json = createJsonData();         
 	    var  obj = JSON.parse(json);    
 		var arrayTmp = [];   
 		arrayTmp.push(obj);      
@@ -1114,15 +883,11 @@ function createJsonData(){
 	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 
-	 var cusDiv = "";  
-	 if(configCusList.length > 0 ){ 
-// 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
-// 	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
-	 }     
-		var distChannel = "";  
-		 if( dmCheck ){ distChannel = "DM";}
-		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
-		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
+	 var cusDiv = "";   
+	var distChannel = "";  
+	if( dmCheck ){ distChannel = "DM";}
+	if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+	if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	var json = '{'+    
 	    '"saleOrder":'+JSON.stringify(saleOrder)+      
 	   ',"articleFG":'+JSON.stringify(article)+  
@@ -1200,10 +965,7 @@ function exportCSV(data){
 					if (colType === undefined){   
 						if(isCustomer == true && data == 'cfmPlanDate'   ){   
 							val = value.sendCFMCusDate;    
-						} 
-						else{   
-// 							innerRowData[indexArray] = val;             
-						}   
+						}    
 						innerRowData[indexArray] = val;   
 					}
 					else if (colType == 'num'){   
@@ -1318,11 +1080,7 @@ function searchByDetailToServer(arrayTmp) {
 	$.ajax({
 		type: "POST",  
 		contentType: "application/json",   
-		data: JSON.stringify(arrayTmp),      
-// 	       data :{   
-// //	     	   data:encodeURI(value)
-// 	    	   data:JSON.stringify( arrayTmp 	)
-// 	       },       
+		data: JSON.stringify(arrayTmp),    
 		url: ctx+"/Main/searchByDetail", 
 		success: function(data) {   
 			MainTable.clear();        
@@ -1340,7 +1098,6 @@ function setModalDetail(data){
     
    	var innnerText = data[0];             
    	poTable.clear();    
-//    	console.log(innnerText)
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
@@ -1438,133 +1195,8 @@ function setModalDetail(data){
 	document.getElementById("input_remarkCM").value = innnerText.remarkOne+" "+innnerText.remarkTwo+" "+innnerText.remarkThree;   
 	document.getElementById("input_remarkAfterCloseCM").value = innnerText.remAfterCloseOne+" "+innnerText.remAfterCloseTwo+" "+innnerText.remAfterCloseThree;    
 }    
-function goToLBMS(tblData,pUserId,data){     
-// 	let obj = createEncryptObj(pUserId);      
-	var prdOrder = tblData[0].productionOrder
-	var article = tblData[0].articleFG 
-	var color = tblData[0].color 
-	$.ajax({   
-  	    url: urlLBMS,
-  	    type : 'GET',   
-  	    data : { 
-  	    	"comeFrom": data.encrypted  ,   
-  	        "isCustomer": isCustomer
-	    	},   
-  	    success : function(data) {   
-//   	    	var url = "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory"; 
-  	  		var url = urlLBMSObj; 
-  	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {    
-				tab.document.getElementById('input_article').value = article;     
-			 	tab.document.getElementById('input_color').value = color  ;  //'S2A001'  
-				tab.searchHistory();     
-				tab.document.getElementById('nav-prd-tab').click();  
-// 				setTimeout(function(){
-// 					tab.document.getElementById('input_prdMS0').value = "ddddddddd"  ;    
-// 					}, 2000);   
-				setTimeout(function(){     
-// 					tab.document.getElementById('prodOrderTable_filter').value = prdOrder  ;
-// 					tab.$("#prodOrderTable_filter input").value(prdOrder);     
-					tab.$('#prodOrderTable').DataTable().search(prdOrder).draw();
-					},500);                      
-// 				console.log( tab.$('#prodOrderTable').DataTable()  )  
-   	    	};     
-	   		tab.addEventListener('load', (event) => { 
 
-   	    	});        
-   	    } ,	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   
-   	}); 
-}    
-function goToSFC(tblData,pUserId,data){          
-	var prdOrder = tblData[0].productionOrder  
-	$.ajax({    
-	    url: urlSFC,
-	    type : 'GET',      
-	    data : {     
-			"comeFrom": data.encrypted  ,   
-  	        "isCustomer": isCustomer
-// 		    "comeFrom":"PCMS"
-	    },               
-	    success : function(data) {     
-  	    	var url = urlSFCObj; 
-  	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {                
-					tab.document.getElementById('input_searchProductionOrder').value = prdOrder;       
-					tab.searchByPrdOrder(prdOrder);                
-   	    	};        
-	    },	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   	
-	});       
-} 
-function goToInspect(tblData,pUserId,data){  
-	var prdOrder = tblData[0].productionOrder 
-	$.ajax({ 
-	    url: urlInspect,
-	    type : 'GET',      
-// 	    async : false,
-	    data : {
-	    	"comeFrom": data.encrypted  ,
-  	        "isCustomer": isCustomer      	
-// 	    	"comeFrom": "PCMS"
-	    },    
-	    success : function(data) {  
-	    	var url = urlInspectObj; 
-	    	var tab = window.open(url );
-	    	tab.onload = function() {    
-	    	      tab.document.getElementById('prdNumber').value = prdOrder  ;  //'S2A001'
-	    	      tab.document.getElementById('btnSearch').click();     
-    	    };      
-	    },	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   
-	});      
-// 	test3T(); 
-}  
-function goToQCMS(tblData,pUserId,data){  
-		var article = tblData[0].articleFG
-		var lotNo = tblData[0].lotNo
-		var color = tblData[0].color 
-		$.ajax({ 
-		    url: urlQCMSObj,
-		    type : 'GET',      
-//	 	    async : false,
-		    data : {    
-		    	"comeFrom": data.encrypted  ,   
-	  	        "isCustomer": isCustomer 
-		    },    
-		    success : function(data) {   
-		    	var url = urlQCMSObj; 
-		    	var tab = window.open(url );
-		    	tab.onload = function() {    
-		    	      tab.document.getElementById('article').value = article  ;  //'S2A001'
-		    	      tab.document.getElementById('lotNumber').value = lotNo  ;  //'S2A001'
-		    	      tab.document.getElementById('color').value = color  ;  //'S2A001' 
-		    	      if(isCustomer != 1){
-			    	      setTimeout(function(){      
-			    	      	 tab.document.getElementById('btnSearchRequest').click();  
-						 }, 500);         
-		    	      }   
-	    	    };          
-		    }    
-		});      
-//	 	test3T(); 
-	} 
-</script>      
+</script>
 <script type="text/javascript">  
 function formatDate(date) {
     var d = new Date(date),
@@ -1786,9 +1418,9 @@ function addCusNameOption(data ){
 // 		 console.log(resultData)
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.customerName;  
+		 opt.text  = resultData.customerName ;  
 		 opt.value = resultData.customerName;
-		 sel.appendChild(opt);          
+		 sel.appendChild(opt);           
 	}             
 	$("#multi_cusName").selectpicker("refresh");
 } 
@@ -1890,8 +1522,7 @@ function saveDefault( ){
 function loadDefault(){  
 	$.ajax({     
 		type: "POST",  
-		contentType: "application/json",  
-// 		data: JSON.stringify(arrayTmp),      
+		contentType: "application/json",     
 		url: ctx+"/Main/loadDefault", 
 		success: function(data) {   
 			if(data.length > 0){
@@ -1983,29 +1614,6 @@ function setSearchDefault(data){
 	$('#multi_userStatus').selectpicker('refresh');      
 	$('#multi_division').selectpicker('refresh');  
 }       
-function getEncrypted(webApp,tblData,userId,arrayTmp){
-	$.ajax({
-	   type: "POST",     
-		contentType: "application/json",         
-		url: ctx+"/Main/getEncrypted/"+userId,        
-	    data : JSON.stringify(arrayTmp),             
-	    success : function(data) {   
-	    	if(webApp == 'LBMS'){
-	    		goToLBMS(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'SFC'){
-	    		goToSFC(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'INSPECT'){
-	    		goToInspect(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'QCMS'){
-	    		goToQCMS(tblData,userId,data);
-	    	}
-	    	
-	    }   	
-	});    
-}
 function handlerIsCustomer(){
 
 	if(isCustomer == 1 ){ 

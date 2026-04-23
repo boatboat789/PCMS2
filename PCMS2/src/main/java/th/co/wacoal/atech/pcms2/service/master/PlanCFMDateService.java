@@ -10,13 +10,14 @@ import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 
 @Service
-public class PlanCFMDateService { 
-	private PlanCFMDateDao dao; 
+public class PlanCFMDateService {
+	private PlanCFMDateDao dao;
+
 	@Autowired
 	public PlanCFMDateService(PlanCFMDateDao dao) {
-		this.dao = dao; 
+		this.dao = dao;
 	}
- 
+
 	public ArrayList<InputDateDetail> getCFMPlanDateDetail(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		// TODO Auto-generated method stub

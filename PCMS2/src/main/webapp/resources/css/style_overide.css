@@ -1,14 +1,7 @@
 /* ID */
 #wrapper {
 	min-height: 100vh;
-}
-/*.dataTables_scrollHeadInner{
-	    width: 100% !important;
-}         */
-/* .table.table.table-bordered.table-striped.text-center.dataTable.no-footer{ */
-/* 	width: 100% !important; */
-/* } */
-/* CLASS */
+} 
 .bg-orderpuang {
 	background-color: #b3d8ff !important;
 }
@@ -37,11 +30,7 @@
 
 .font-weight-900 {
 	font-weight: 900;
-}
-/* .form-control:disabled, .form-control[readonly] { */
-/*     background-color: #f9f9f9; */
-/*     opacity: 1; */
-/* }  */
+} 
 .header-border {
 	/* 	margin-left: 10px; */
 	padding: 10px;

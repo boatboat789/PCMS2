@@ -14,17 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import th.co.wacoal.atech.pcms2.dao.master.Z_ATT_CustomerConfirm2Dao; 
+import th.co.wacoal.atech.pcms2.dao.master.Z_ATT_CustomerConfirm2Dao;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler; 
-import th.in.totemplate.core.sql.Database; 
+import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
+import th.in.totemplate.core.sql.Database;
+
 @Repository
-public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao{
+public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New  
+	// Sale - Lab-New
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String cte = ""
 			+ " WITH OperationMax AS (\r\n"
@@ -70,81 +71,88 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 			+ ")\r\n";
 	private String select = ""
 
-				+ "    a.[Id],"
-				+ "    a.[SendDate],\r\n"
-				+ "    TRY_CAST( a.[NoPerDay] AS INT ) AS NoPerDay,\r\n"
-				+ "    a.[ReplyDate],\r\n"
-				+ "    a.[CFMNo],\r\n"
-				+ "    a.[CustomerName],\r\n"
-				+ "    a.[SO],\r\n"
-				+ "    a.[SOLine] AS SOLine,\r\n"
-				+ "    a.[DueDate],\r\n"
-				+ "    a.[PO],\r\n"
-				+ "    a.[Material],\r\n"
-				+ "    a.[ProductName],\r\n"
-				+ "    a.[LabNo],\r\n"
-				+ "    a.[Color],\r\n"
-				+ "    a.[ProdId],\r\n"
-				+ "    a.[LotNo],\r\n"
-				+ "    TRY_CAST( b.[Dye_L] AS DECIMAL(13,3) ) AS Dye_L,\r\n"
-				+ "    TRY_CAST( b.[Dye_Da] AS DECIMAL(13,3) ) AS Dye_Da ,\r\n"
-				+ "    TRY_CAST( b.[Dye_Db] AS DECIMAL(13,3) ) AS Dye_Db,\r\n"
-				+ "    TRY_CAST( b.[Dye_St] AS DECIMAL(13,3) ) AS Dye_St,\r\n"
-				+ "    TRY_CAST( b.[Dye_DeltaE] AS DECIMAL(13,3) ) AS Dye_DeltaE,\r\n"
-				+ "    TRY_CAST( b.[ColorCheck_L] AS DECIMAL(13,3) ) AS ColorCheck_L,\r\n"
-				+ "    TRY_CAST( b.[ColorCheck_Da] AS DECIMAL(13,3) ) AS ColorCheck_Da,\r\n"
-				+ "    TRY_CAST( b.[ColorCheck_Db] AS DECIMAL(13,3) ) AS ColorCheck_Db,\r\n"
-				+ "    TRY_CAST( b.[ColorCheck_St] AS DECIMAL(13,3) ) AS ColorCheck_St,\r\n"
-				+ "    TRY_CAST( b.[ColorCheck_DeltaE] AS DECIMAL(13,3) ) AS ColorCheck_DeltaE,\r\n"
-				+ "    a.[CFM_L],\r\n"
-				+ "    a.[CFM_Da],\r\n"
-				+ "    a.[CFM_Db],\r\n"
-				+ "    a.[CFM_St],\r\n"
-				+ "    a.[CFM_DeltaE],\r\n"
-				+ "    a.[Result],\r\n"
-				+ "    a.[QCComment],\r\n"
-				+ "    a.[RemarkFromSubmit],\r\n"
-				+ "    a.[NextLot],\r\n"
-				+ "    b.ColorCheckDate,\r\n"
-				+ "    b.ColorCheckStatus,\r\n"
-				+ "    b.ColorCheckRemark,\r\n"
-				+ "    TRY_CAST(a.[Qty] AS Decimal(13,3) ) as Qty,\r\n"
-				+ "    a.[UnitId],\r\n"
-				+ "    a.[DataStatus],\r\n"
-				+ "    a.[ChangeDate],\r\n"
-				+ "    a.[CreateDate]\r\n";
-	
+			+ "    a.[Id],"
+			+ "    a.[SendDate],\r\n"
+			+ "    TRY_CAST( a.[NoPerDay] AS INT ) AS NoPerDay,\r\n"
+			+ "    a.[ReplyDate],\r\n"
+			+ "    a.[CFMNo],\r\n"
+			+ "    a.[CustomerName],\r\n"
+			+ "    a.[SO],\r\n"
+			+ "    a.[SOLine] AS SOLine,\r\n"
+			+ "    a.[DueDate],\r\n"
+			+ "    a.[PO],\r\n"
+			+ "    a.[Material],\r\n"
+			+ "    a.[ProductName],\r\n"
+			+ "    a.[LabNo],\r\n"
+			+ "    a.[Color],\r\n"
+			+ "    a.[ProdId],\r\n"
+			+ "    a.[LotNo],\r\n"
+			+ "    TRY_CAST( b.[Dye_L] AS DECIMAL(13,3) ) AS Dye_L,\r\n"
+			+ "    TRY_CAST( b.[Dye_Da] AS DECIMAL(13,3) ) AS Dye_Da ,\r\n"
+			+ "    TRY_CAST( b.[Dye_Db] AS DECIMAL(13,3) ) AS Dye_Db,\r\n"
+			+ "    TRY_CAST( b.[Dye_St] AS DECIMAL(13,3) ) AS Dye_St,\r\n"
+			+ "    TRY_CAST( b.[Dye_DeltaE] AS DECIMAL(13,3) ) AS Dye_DeltaE,\r\n"
+			+ "    TRY_CAST( b.[ColorCheck_L] AS DECIMAL(13,3) ) AS ColorCheck_L,\r\n"
+			+ "    TRY_CAST( b.[ColorCheck_Da] AS DECIMAL(13,3) ) AS ColorCheck_Da,\r\n"
+			+ "    TRY_CAST( b.[ColorCheck_Db] AS DECIMAL(13,3) ) AS ColorCheck_Db,\r\n"
+			+ "    TRY_CAST( b.[ColorCheck_St] AS DECIMAL(13,3) ) AS ColorCheck_St,\r\n"
+			+ "    TRY_CAST( b.[ColorCheck_DeltaE] AS DECIMAL(13,3) ) AS ColorCheck_DeltaE,\r\n"
+			+ "    a.[CFM_L],\r\n"
+			+ "    a.[CFM_Da],\r\n"
+			+ "    a.[CFM_Db],\r\n"
+			+ "    a.[CFM_St],\r\n"
+			+ "    a.[CFM_DeltaE],\r\n"
+			+ "    a.[Result],\r\n"
+			+ "    a.[QCComment],\r\n"
+			+ "    a.[RemarkFromSubmit],\r\n"
+			+ "    a.[NextLot],\r\n"
+			+ "    b.ColorCheckDate,\r\n"
+			+ "    b.ColorCheckStatus,\r\n"
+			+ "    b.ColorCheckRemark,\r\n"
+			+ "    TRY_CAST(a.[Qty] AS Decimal(13,3) ) as Qty,\r\n"
+			+ "    a.[UnitId],\r\n"
+			+ "    a.[DataStatus],\r\n"
+			+ "    a.[ChangeDate],\r\n"
+			+ "    a.[CreateDate]\r\n";
+
 	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
-	private String message; 
+	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
-@Autowired
-	public Z_ATT_CustomerConfirm2DaoImpl (@Qualifier("pcmsDatabase")Database database) {
+
+	@Autowired
+	public Z_ATT_CustomerConfirm2DaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
-		this.message = "";  
+		this.message = "";
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return this.message;
 	}
+
 	@Override
-	public  ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail(
-			String prodOrder
-			,String lotNubmer 
-			,String replyDate
-			,String custName 
-			,String so 
-			,String sendDate  ){
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail(String prodOrder, String lotNubmer,
+			String replyDate, String custName, String so, String sendDate)
+	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
-		String where = " where DataStatus = 'O' "; 
+		String where = " where DataStatus = 'O' ";
 //		String where = " where 1 = 1 "; 
-		if(!custName.equals("")) { where += " and a.[CustomerName] like '"+custName+"%' \r\n";}
-		if(!so.equals("")) { where += " and a.[SO] like '"+so+"%' \r\n";}
-		if(!prodOrder.equals("")) { where += " and a.[ProdId] like '"+prodOrder+"%' \r\n";} 
-		if(!lotNubmer.equals("")) { where += " and a.LotNo like '"+lotNubmer+"%' \r\n";} 
-		where += PCMSSqlService.buildDateClause("SendDate", sendDate,"a");
-		where += PCMSSqlService.buildDateClause("ReplyDate", replyDate,"a");
+		if ( ! custName.equals("")) {
+			where += " and a.[CustomerName] like '" + custName + "%' \r\n";
+		}
+		if ( ! so.equals("")) {
+			where += " and a.[SO] like '" + so + "%' \r\n";
+		}
+		if ( ! prodOrder.equals("")) {
+			where += " and a.[ProdId] like '" + prodOrder + "%' \r\n";
+		}
+		if ( ! lotNubmer.equals("")) {
+			where += " and a.LotNo like '" + lotNubmer + "%' \r\n";
+		}
+		where += PCMSSqlService.buildDateClause("SendDate", sendDate, "a");
+		where += PCMSSqlService.buildDateClause("ReplyDate", replyDate, "a");
 //		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = ""
 				+ this.cte
@@ -152,41 +160,42 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 				+ this.select
 				+ "FROM [PCMS].[dbo].[Z_ATT_CustomerConfirm2] AS a\r\n"
 				+ "LEFT JOIN CTE_Data AS b ON a.[ProdId] = b.[ProductionOrder]\r\n"
-				+ where;  
+				+ where;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
 		}
 		return list;
-	} 
+	}
 
 	@Override
-	public  ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailById(
-			ArrayList<Z_ATT_CustomerConfirm2Detail> poList  ){
+	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2DetailById(
+			ArrayList<Z_ATT_CustomerConfirm2Detail> poList)
+	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
-		String where = " where DataStatus = 'O' "; 
+		String where = " where DataStatus = 'O' ";
 //		String where = " where 1 = 1 ";  
-		if(!poList.isEmpty()) {
-			where += " AND a.Id in ( " ;
+		if ( ! poList.isEmpty()) {
+			where += " AND a.Id in ( ";
 			for (int i = 0; i < poList.size(); i ++ ) {
 				Z_ATT_CustomerConfirm2Detail beanTmp = poList.get(i);
 				int poId = beanTmp.getId();
 				where += " " + poId + " ";
-				if (i < poList.size() -1) {
+				if (i < poList.size()-1) {
 					where += " , ";
 				}
 			}
 			where += " ) \r\n";
 		}
 //		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
-		String sql = "" 
+		String sql = ""
 				+ this.cte
 				+ "SELECT \r\n"
 				+ this.select
 				+ "FROM [PCMS].[dbo].[Z_ATT_CustomerConfirm2] AS a\r\n"
 				+ "LEFT JOIN CTE_Data AS b ON a.[ProdId] = b.[ProductionOrder]\r\n"
-				+ where; 
+				+ where;
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -194,13 +203,12 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
 		}
 		return list;
-	} 
+	}
+
 	@Override
 	public String upsertZ_ATT_CustomerConfirm2Detail(ArrayList<Z_ATT_CustomerConfirm2Detail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection(); 
+
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
@@ -220,7 +228,7 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 				+ "SET \r\n"
 				+ "    [SendDate] = ?,\r\n"
 				+ "    [NoPerDay] = ?,\r\n"
-				+ "    [ReplyDate] = ?,\r\n" 
+				+ "    [ReplyDate] = ?,\r\n"
 				+ "    [CustomerName] = ?,\r\n"
 				+ "    [SO] = ?,\r\n"
 				+ "    [SOLine] = ?,\r\n"
@@ -241,9 +249,9 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 				+ "    [RemarkFromSubmit] = ?,\r\n"
 				+ "    [NextLot] = ?,\r\n"
 				+ "    [Qty] = ?,\r\n"
-				+ "    [UnitId] = ?,\r\n" 
+				+ "    [UnitId] = ?,\r\n"
 				+ "    [DataStatus] = ?,\r\n"
-				+ "    [ChangeDate] = ? \r\n" 
+				+ "    [ChangeDate] = ? \r\n"
 				+ "WHERE \r\n"
 				+ "    [ProdId] = ? and"
 				+ "    [CFMNo] = ? \r\n"
@@ -320,91 +328,90 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements  Z_ATT_CustomerConfirm2Dao
 				+ ",?\r\n"
 				+ " ); "
 				+ "END\r\n";
-		try {
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 
 			int index = 1;
-			prepared = connection.prepareStatement(sql);
+
 			for (Z_ATT_CustomerConfirm2Detail bean : paList) {
-				index = 1; 
+				index = 1;
 //				prepared.setString(index++, bean.getProdID()) ;
 
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getSendDate(), index ++ );
-				prepared = this.sshUtl.setSqlInt(prepared, bean.getNoPerDay(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getReplyDate(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getCustomerName(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getSo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getSoLine(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getPo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getMaterial(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getProductName(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getLabNo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getColor(), index ++ ); 
-				prepared = this.sshUtl.setSqlString(prepared, bean.getLotNo() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmL() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDa() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDb() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmSt() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDeltaE() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getResult() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getQcComment() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getRemarkFromSubmit() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getNextLot() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQty(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getUnitId() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getDataStatus() , index ++ );
-				prepared.setTimestamp(index ++ , new Timestamp(time)); 
-				
-				prepared.setString(index++, bean.getProdID()    );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getCfmNo(), index ++ );
-				 
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getSendDate(), index ++ );
-				prepared = this.sshUtl.setSqlInt(prepared, bean.getNoPerDay(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getReplyDate(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getCfmNo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getCustomerName(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getSo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getSoLine(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getPo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getMaterial(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getProductName(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getLabNo(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getColor(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getProdID() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getLotNo() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmL() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDa() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDb() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmSt() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDeltaE() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getResult() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getQcComment() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getRemarkFromSubmit() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getNextLot() , index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getQty(), index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getUnitId() , index ++ );
-				prepared = this.sshUtl.setSqlString(prepared, bean.getDataStatus() , index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getSendDate(), index ++ );
+				this.sshUtl.setSqlInt(prepared, bean.getNoPerDay(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getReplyDate(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getCustomerName(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getSo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getSoLine(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getPo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getMaterial(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getProductName(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getLabNo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getColor(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getLotNo(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmL(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDa(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDb(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmSt(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDeltaE(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getResult(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getQcComment(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getRemarkFromSubmit(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getNextLot(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQty(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getUnitId(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getDataStatus(), index ++ );
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+
+				prepared.setString(index ++ , bean.getProdID());
+				this.sshUtl.setSqlString(prepared, bean.getCfmNo(), index ++ );
+
+				this.sshUtl.setSqlDate(prepared, bean.getSendDate(), index ++ );
+				this.sshUtl.setSqlInt(prepared, bean.getNoPerDay(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getReplyDate(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getCfmNo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getCustomerName(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getSo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getSoLine(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getPo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getMaterial(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getProductName(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getLabNo(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getColor(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getProdID(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getLotNo(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmL(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDa(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDb(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmSt(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getCfmDeltaE(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getResult(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getQcComment(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getRemarkFromSubmit(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getNextLot(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getQty(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getUnitId(), index ++ );
+				this.sshUtl.setSqlString(prepared, bean.getDataStatus(), index ++ );
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
- 
+
 				prepared.addBatch();
 //				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
 //			e.printStackTrace();
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();
-		} 
+		}
 		return iconStatus;
 	}
-} 
-
-
+}

@@ -1,6 +1,6 @@
 	package th.co.wacoal.atech.pcms2.dao.master.implement.PPMM;
 
-import java.text.SimpleDateFormat; 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,30 +12,18 @@ import org.springframework.stereotype.Component;
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.ShopFloorControlDao;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
 @Component
 public class ShopFloorControlDaoImpl implements  ShopFloorControlDao{
-	// PC - Lab-ReLab
-	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New 
-	@SuppressWarnings("unused")
-	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
 	private Database database;
-	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
     public ShopFloorControlDaoImpl( @Qualifier("ppmmDatabase")Database database) {
 		this.database = database;
-		this.message = "";
-	}
-
-	public String getMessage() {
-		return this.message;
 	}
 	@Override
 	public  ArrayList<ShopFloorControlDetail> getShopFloorControlDetailByProductionOrder(String prodOrder){

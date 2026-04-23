@@ -7,6 +7,5 @@ import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 public interface ImportDetailDao {
 
 	ArrayList<ImportDetail> getImportDetailByProductionOrder(String prodOrder);
- 
 
 }

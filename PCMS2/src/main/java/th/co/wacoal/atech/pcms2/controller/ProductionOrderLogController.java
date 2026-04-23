@@ -15,10 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod; 
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+
 import th.co.wacoal.atech.pcms2.entities.ApiResponse;
 import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
@@ -26,8 +27,7 @@ import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService;
  
     
 @Controller
-@RequestMapping(value = { "/Log/ProductionOrderLog"  })
-//@RequestMapping(value = { "/Log/ATT/ProdOperationLog" })
+@RequestMapping(value = { "/Log/ProductionOrderLog"  }) 
 public class ProductionOrderLogController {
 	@SuppressWarnings("unused") 
 	private ServletContext context;

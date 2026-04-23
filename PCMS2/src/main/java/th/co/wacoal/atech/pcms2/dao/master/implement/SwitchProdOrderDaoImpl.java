@@ -35,7 +35,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public SwitchProdOrderDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public SwitchProdOrderDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -183,20 +183,19 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 	@Override
 	public PCMSSecondTableDetail updateSwitchProdOrderDetail(PCMSSecondTableDetail bean, String dataStatus)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		try {
-			String sql = " UPDATE [PCMS].[dbo].[SwitchProdOrder]"
-					+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? "
-					+ " declare  @rc int = @@ROWCOUNT "
-					+ ";";
-			prepared = connection.prepareStatement(sql);
+
+		String sql = " UPDATE [PCMS].[dbo].[SwitchProdOrder]"
+				+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ? "
+				+ " declare  @rc int = @@ROWCOUNT "
+				+ ";";
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			int index = 1;
 			prepared.setString(index ++ , dataStatus);
 			prepared.setString(index ++ , bean.getUserId());
@@ -220,37 +219,36 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 	@Override
 	public PCMSSecondTableDetail upsertSwitchProdOrder(PCMSSecondTableDetail bean, String dataStatus)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
-		String saleLine = bean.getSaleLine() ;
+		String saleLine = bean.getSaleLine();
 		String prdOrderSW = bean.getProductionOrderSW();
 		String saleOrderSW = bean.getSaleOrderSW();
-		String saleLineSW = bean.getSaleLineSW() ;
+		String saleLineSW = bean.getSaleLineSW();
 		String userID = bean.getUserId();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		try {
-			String sql = " UPDATE [PCMS].[dbo].[SwitchProdOrder]"
-					+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? AND"
-					+ "       [ProductionOrderSW]  = ? and [SaleOrderSW] = ?  and [SaleLineSW] = ?  "
-					+ " declare  @rc int = @@ROWCOUNT " // 56
-					+ " if @rc <> 0 "
-					+ " 	print @rc "
-					+ " else "
-					+ " 	INSERT INTO [PCMS].[dbo].[SwitchProdOrder]"
-					+ " 	([ProductionOrder]  ,[SaleOrder]   ,[SaleLine],"
-					+ " 	 [ProductionOrderSW],[SaleOrderSW] ,[SaleLineSW],"
-					+ "  	[ChangeBy] ,[ChangeDate] )"// 55
-					+ " 	values(? , ? , ? , ? , ? "
-					+ "    	     , ? , ? , ?  "
-					+ "     )  "
-					+ ";";
-			prepared = connection.prepareStatement(sql);
+
+		String sql = " UPDATE [PCMS].[dbo].[SwitchProdOrder]"
+				+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? AND"
+				+ "       [ProductionOrderSW]  = ? and [SaleOrderSW] = ?  and [SaleLineSW] = ?  "
+				+ " declare  @rc int = @@ROWCOUNT " // 56
+				+ " if @rc <> 0 "
+				+ " 	print @rc "
+				+ " else "
+				+ " 	INSERT INTO [PCMS].[dbo].[SwitchProdOrder]"
+				+ " 	([ProductionOrder]  ,[SaleOrder]   ,[SaleLine],"
+				+ " 	 [ProductionOrderSW],[SaleOrderSW] ,[SaleLineSW],"
+				+ "  	[ChangeBy] ,[ChangeDate] )"// 55
+				+ " 	values(? , ? , ? , ? , ? "
+				+ "    	     , ? , ? , ?  "
+				+ "     )  "
+				+ ";";
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			int index = 1;
 			prepared.setString(index ++ , dataStatus);
 			prepared.setString(index ++ , bean.getUserId());

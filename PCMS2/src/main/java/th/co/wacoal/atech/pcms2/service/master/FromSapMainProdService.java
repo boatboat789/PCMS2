@@ -12,13 +12,14 @@ import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainProdDetail;
 
 @Service
-public class FromSapMainProdService  { 
-	private FromSapMainProdDao dao; 
+public class FromSapMainProdService {
+	private FromSapMainProdDao dao;
+
 	@Autowired
 	public FromSapMainProdService(FromSapMainProdDao dao) {
-		this.dao = dao; 
+		this.dao = dao;
 	}
- 
+
 	public ArrayList<PCMSSecondTableDetail> getFromSapMainProdDetail(String prdOrderRP)
 	{
 		// TODO Auto-generated method stub
@@ -45,7 +46,7 @@ public class FromSapMainProdService  {
 	{
 		// TODO Auto-generated method stub
 		ArrayList<ProductionOrderLogDetail> list =
-				this.dao.getFromSapMainProdDetailWithRangeOfChangeDate(startLogDate, endLogDate,productionOrder);
+				this.dao.getFromSapMainProdDetailWithRangeOfChangeDate(startLogDate, endLogDate, productionOrder);
 		return list;
 	}
 

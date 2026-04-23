@@ -1,4 +1,4 @@
-	package th.co.wacoal.atech.pcms2.dao.master.implement;
+package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,8 +19,8 @@ import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
-public class FromSORCFMDaoImpl implements  FromSORCFMDao{
- 
+public class FromSORCFMDaoImpl implements FromSORCFMDao {
+
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
@@ -33,52 +33,51 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public FromSORCFMDaoImpl(@Qualifier("pcmsDatabase")Database database  ) {
+	public FromSORCFMDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
-		this.message = ""; 
+		this.message = "";
 	}
 
-	public String getMessage() {
+	public String getMessage()
+	{
 		return this.message;
 	}
 
 	@Override
-	public String upSertFromSORCFMDetail(ArrayList<SORDetail> list) {
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+	public String upSertFromSORCFMDetail(ArrayList<SORDetail> list)
+	{
+
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 		Timestamp dateTime = new Timestamp(time);
-		String saleLine = "", cfmDate = "";
+		String saleLine = "",cfmDate = "";
 		String iconStatus = "I";
-		String sql =
-					"UPDATE [PCMS].[dbo].[FromSORCFM] "
-					+ " SET [CFMDate] = ?\n"
-					+ "     ,[ChangeDate] = ?\n"
-					+ " WHERE [SaleOrder] = ? and [SaleLine]  = ? "
-					+ " declare  @rc int = @@ROWCOUNT "
-					+ "  if @rc = 0 " 
-					+ " INSERT INTO [PCMS].[dbo].[FromSORCFM]	 "
-					+ " ([SaleOrder] ,[SaleLine] ,[CFMDate] ,[ChangeDate] )"
-					+ " values(? , ? , ? , ?  )  ;"  ;
+		String sql = "UPDATE [PCMS].[dbo].[FromSORCFM] "
+				+ " SET [CFMDate] = ?\n"
+				+ "     ,[ChangeDate] = ?\n"
+				+ " WHERE [SaleOrder] = ? and [SaleLine]  = ? "
+				+ " declare  @rc int = @@ROWCOUNT "
+				+ "  if @rc = 0 "
+				+ " INSERT INTO [PCMS].[dbo].[FromSORCFM]	 "
+				+ " ([SaleOrder] ,[SaleLine] ,[CFMDate] ,[ChangeDate] )"
+				+ " values(? , ? , ? , ?  )  ;";
 		int i = 0;
-		try {
-			prepared = connection.prepareStatement(sql);
-			for (i = 0; i < list.size(); i++) {
-				SORDetail bean = list.get(i); 
-				saleLine = bean.getSaleLine() ; 
-				cfmDate = bean.getCfmDate(); 
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+			for (i = 0; i < list.size(); i ++ ) {
+				SORDetail bean = list.get(i);
+				saleLine = bean.getSaleLine();
+				cfmDate = bean.getCfmDate();
 				int index = 1;
-				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index++); 
-				prepared.setTimestamp(index++, dateTime); 
-				prepared.setString(index++, bean.getSaleOrder()); 
-				prepared.setString(index++, saleLine); 
-				prepared.setString(index++, bean.getSaleOrder()); 
-				prepared.setString(index++, saleLine); 
-				prepared = this.sshUtl.setSqlDate(prepared, cfmDate, index++); 
-				prepared.setTimestamp(index++, dateTime); 
+				this.sshUtl.setSqlDate(prepared, cfmDate, index ++ );
+				prepared.setTimestamp(index ++ , dateTime);
+				prepared.setString(index ++ , bean.getSaleOrder());
+				prepared.setString(index ++ , saleLine);
+				prepared.setString(index ++ , bean.getSaleOrder());
+				prepared.setString(index ++ , saleLine);
+				this.sshUtl.setSqlDate(prepared, cfmDate, index ++ );
+				prepared.setTimestamp(index ++ , dateTime);
 				prepared.addBatch();
 			}
 			prepared.executeBatch();
@@ -87,8 +86,8 @@ public class FromSORCFMDaoImpl implements  FromSORCFMDao{
 			e.printStackTrace();
 //			System.err.println("insertLabNoDetail" + e.getMessage());
 			iconStatus = "E";
-		}finally {
-			//this.database.close();
+		} finally {
+			// this.database.close();
 		}
 		return iconStatus;
 	}

@@ -34,7 +34,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public FromSapSaleDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapSaleDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -63,7 +63,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				+ "  "
 				+ " from [PCMS].[dbo].[FromSapSale] as a \r\n "
 				+ where
-				+ " Order by [No]"; 
+				+ " Order by [No]";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -71,151 +71,148 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 		}
 		return list;
 	}
+
 	@Override
 	public String upsertFromSapSaleDetail(ArrayList<FromErpSaleDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();  
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-		
+
 		String iconStatus = "I";
-		String sql =
-				  "-- Update if the record exists\r\n"
-				  + "IF ? = 'X'\r\n"
-				  + "BEGIN\r\n"
-				  + "    UPDATE [dbo].[FromSapSale]\r\n"
-				  + "    SET\r\n"
-				  + "        [DataStatus] = 'X',\r\n"
-				  + "        [ChangeDate] = ?\r\n"
-				  + "    WHERE\r\n"
-				  + "        [SaleOrder] = ?\r\n"
-				  + "        AND [DataStatus] = 'O';\r\n"
-				  + "END\r\n"
-				  + "ELSE\r\n"
-				  + "BEGIN\r\n"
-				  + "    UPDATE [dbo].[FromSapSale]\r\n"
-				  + "    SET\r\n"
-				  + "        [BillDate] = ?,\r\n"
-				  + "        [BillQtyPerSale] = ?,\r\n"
-				  + "        [SaleOrder] = ?,\r\n"
-				  + "        [SaleLine] = ?,\r\n"
-				  + "        [BillQtyPerStock] = ?,\r\n"
-				  + "        [Remark] = ?,\r\n"
-				  + "        [CustomerNo] = ?,\r\n"
-				  + "        [CustomerName1] = ?,\r\n"
-				  + "        [CustomerPO] = ?,\r\n"
-				  + "        [DueDate] = ?,\r\n"
-				  + "        [Color] = ?,\r\n"
-				  + "        [DataStatus] = ?,\r\n"
-				  + "        [ChangeDate] = ?,\r\n"
-				  + "        [SyncDate] = ?\r\n"
-				  + "    WHERE\r\n"
-				  + "        [ProductionOrder] = ?\r\n"
-				  + "        AND [No] = ?;\r\n"
-				  + "    \r\n"
-				  + "    -- Check if rows were updated\r\n"
-				  + "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
-				  + "\r\n"
-				  + "    IF @rc = 0\r\n"
-				  + "    BEGIN\r\n"
-				  + "        -- Insert if no rows were updated\r\n"
-				  + "        INSERT INTO [dbo].[FromSapSale] (\r\n"
-				  + "            [ProductionOrder],\r\n"
-				  + "            [BillDate],\r\n"
-				  + "            [BillQtyPerSale],\r\n"
-				  + "            [SaleOrder],\r\n"
-				  + "            [SaleLine],\r\n"
-				  + "            [BillQtyPerStock],\r\n"
-				  + "            [Remark],\r\n"
-				  + "            [CustomerNo],\r\n"
-				  + "            [CustomerName1],\r\n"
-				  + "            [CustomerPO],\r\n"
-				  + "            [DueDate],\r\n"
-				  + "            [Color],\r\n"
-				  + "            [No],\r\n"
-				  + "            [DataStatus],\r\n"
-				  + "            [ChangeDate],\r\n"
-				  + "            [CreateDate],\r\n"
-				  + "            [SyncDate]\r\n"
-				  + "        )\r\n"
-				  + "        VALUES (\r\n"
-				  + "            ?, ?, ?, ?, ?,\r\n"
-				  + "            ?, ?, ?, ?, ?,\r\n"
-				  + "            ?, ?, ?, ?, ?,\r\n"
-				  + "            ?,\r\n"
-				  + "            ?\r\n"
-				  + "        );\r\n"
-				  + "    END\r\n"
-				  + "END"  ;
-		try {
+		String sql = "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapSale]\r\n"
+				+ "    SET\r\n"
+				+ "        [DataStatus] = 'X',\r\n"
+				+ "        [ChangeDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [SaleOrder] = ?\r\n"
+				+ "        AND [DataStatus] = 'O';\r\n"
+				+ "END\r\n"
+				+ "ELSE\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapSale]\r\n"
+				+ "    SET\r\n"
+				+ "        [BillDate] = ?,\r\n"
+				+ "        [BillQtyPerSale] = ?,\r\n"
+				+ "        [SaleOrder] = ?,\r\n"
+				+ "        [SaleLine] = ?,\r\n"
+				+ "        [BillQtyPerStock] = ?,\r\n"
+				+ "        [Remark] = ?,\r\n"
+				+ "        [CustomerNo] = ?,\r\n"
+				+ "        [CustomerName1] = ?,\r\n"
+				+ "        [CustomerPO] = ?,\r\n"
+				+ "        [DueDate] = ?,\r\n"
+				+ "        [Color] = ?,\r\n"
+				+ "        [DataStatus] = ?,\r\n"
+				+ "        [ChangeDate] = ?,\r\n"
+				+ "        [SyncDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [ProductionOrder] = ?\r\n"
+				+ "        AND [No] = ?;\r\n"
+				+ "    \r\n"
+				+ "    -- Check if rows were updated\r\n"
+				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
+				+ "\r\n"
+				+ "    IF @rc = 0\r\n"
+				+ "    BEGIN\r\n"
+				+ "        -- Insert if no rows were updated\r\n"
+				+ "        INSERT INTO [dbo].[FromSapSale] (\r\n"
+				+ "            [ProductionOrder],\r\n"
+				+ "            [BillDate],\r\n"
+				+ "            [BillQtyPerSale],\r\n"
+				+ "            [SaleOrder],\r\n"
+				+ "            [SaleLine],\r\n"
+				+ "            [BillQtyPerStock],\r\n"
+				+ "            [Remark],\r\n"
+				+ "            [CustomerNo],\r\n"
+				+ "            [CustomerName1],\r\n"
+				+ "            [CustomerPO],\r\n"
+				+ "            [DueDate],\r\n"
+				+ "            [Color],\r\n"
+				+ "            [No],\r\n"
+				+ "            [DataStatus],\r\n"
+				+ "            [ChangeDate],\r\n"
+				+ "            [CreateDate],\r\n"
+				+ "            [SyncDate]\r\n"
+				+ "        )\r\n"
+				+ "        VALUES (\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?,\r\n"
+				+ "            ?\r\n"
+				+ "        );\r\n"
+				+ "    END\r\n"
+				+ "END";
 
-			int index = 1;
-			int batchSize = 0 ;
-			prepared = connection.prepareStatement(sql); 
-			for(FromErpSaleDetail bean : paList) {
-				index = 1; 
-				prepared.setString(index++, bean.getDataStatus()   );
-				prepared.setTimestamp(index++, new Timestamp(time));
-				prepared.setString(index++, bean.getSaleOrder()    );
-				
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getBillDate() , index++); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerSale() , index++); 
-				prepared.setString(index++, bean.getSaleOrder()    );
-				prepared.setString(index++, bean.getSaleLine()    );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerStock() , index++); 
-				prepared.setString(index++, bean.getRemark()    );
-				prepared.setString(index++, bean.getCustomerNo()    );
-				prepared.setString(index++, bean.getCustomerName1()    );
-				prepared.setString(index++, bean.getCustomErpO()    );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
-				prepared.setString(index++, bean.getColor()    );
-				prepared.setString(index++, bean.getDataStatus()   ); 
-				prepared.setTimestamp(index++, new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
-				
-				prepared.setString(index++, bean.getProductionOrder()    );
-				prepared.setString(index++, bean.getNo()    ); 
+		int index = 1;
+		int batchSize = 0;
 
-				prepared.setString(index++, bean.getProductionOrder()    );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getBillDate() , index++); 
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerSale() , index++); 
-				prepared.setString(index++, bean.getSaleOrder()    );
-				prepared.setString(index++, bean.getSaleLine()    );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerStock() , index++); 
-				prepared.setString(index++, bean.getRemark()    );
-				prepared.setString(index++, bean.getCustomerNo()    );
-				prepared.setString(index++, bean.getCustomerName1()    );
-				prepared.setString(index++, bean.getCustomErpO()    );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate() , index++); 
-				prepared.setString(index++, bean.getColor()    );
-				prepared.setString(index++, bean.getNo()    ); 
-				prepared.setString(index++, bean.getDataStatus()   ); 
-				prepared.setTimestamp(index++, new Timestamp(time));
-				prepared.setTimestamp(index++, new Timestamp(time));   
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index++);
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+			for (FromErpSaleDetail bean : paList) {
+				index = 1;
+				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				prepared.setString(index ++ , bean.getSaleOrder());
+
+				this.sshUtl.setSqlDate(prepared, bean.getBillDate(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerSale(), index ++ );
+				prepared.setString(index ++ , bean.getSaleOrder());
+				prepared.setString(index ++ , bean.getSaleLine());
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerStock(), index ++ );
+				prepared.setString(index ++ , bean.getRemark());
+				prepared.setString(index ++ , bean.getCustomerNo());
+				prepared.setString(index ++ , bean.getCustomerName1());
+				prepared.setString(index ++ , bean.getCustomErpO());
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				prepared.setString(index ++ , bean.getColor());
+				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+
+				prepared.setString(index ++ , bean.getProductionOrder());
+				prepared.setString(index ++ , bean.getNo());
+
+				prepared.setString(index ++ , bean.getProductionOrder());
+				this.sshUtl.setSqlDate(prepared, bean.getBillDate(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerSale(), index ++ );
+				prepared.setString(index ++ , bean.getSaleOrder());
+				prepared.setString(index ++ , bean.getSaleLine());
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getBillQtyPerStock(), index ++ );
+				prepared.setString(index ++ , bean.getRemark());
+				prepared.setString(index ++ , bean.getCustomerNo());
+				prepared.setString(index ++ , bean.getCustomerName1());
+				prepared.setString(index ++ , bean.getCustomErpO());
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				prepared.setString(index ++ , bean.getColor());
+				prepared.setString(index ++ , bean.getNo());
+				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 //				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 				prepared.addBatch();
-				batchSize++;
-	            if (batchSize % 500 == 0) { // Execute batch every 500 records 
-	    			prepared.executeBatch();
-	    			prepared.clearBatch();
-	                batchSize = 0; // Reset batch size
-	            }
+				batchSize ++ ;
+				if (batchSize % 500 == 0) { // Execute batch every 500 records
+					prepared.executeBatch();
+					prepared.clearBatch();
+					batchSize = 0; // Reset batch size
+				}
 			}
 			prepared.executeBatch();
-			prepared.close(); 
+			prepared.close();
 		} catch (SQLException e) {
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
-		}finally {
-			//this.database.close();
+		} finally {
+			// this.database.close();
 		}
 		return iconStatus;
-	} 
+	}
 }

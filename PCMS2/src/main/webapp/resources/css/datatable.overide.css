@@ -152,18 +152,8 @@ th.data-custom-main {
 }
 
 td.data-custom-main {
-	padding: 7px 3px 7px 3px !important;
-	/* 	 width: 230px !important; */
-	/* 	min-width: 230px !important; */
-	/* 	max-width: 230px !important; */
-	/* 	word-wrap: break-word;              */
+	padding: 7px 3px 7px 3px !important; 
 }
-/* .data-custom-padding0505 td { */
-/*     padding: 5px !important;      */
-/* }              */
-/* td .data-custom-padding0505 { */
-/*     padding: 5px !important;           */
-/* }    */
 .table-bordered tbody tr td, .table-bordered tbody tr th {
 	text-align: center;
 	vertical-align: middle;
@@ -214,7 +204,6 @@ table.dataTable tbody tr.odd.selected {
 }
 
 table.dataTable tbody tr.selected td {
-	/*    background-color: #B0BED9 !important;*/
 	background-color: #b0c4de !important;
 	color: white;
 }

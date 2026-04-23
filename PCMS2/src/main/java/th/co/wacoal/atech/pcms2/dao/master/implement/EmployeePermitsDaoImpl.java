@@ -35,9 +35,9 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-    @Autowired
-	public EmployeePermitsDaoImpl(@Qualifier("pcmsDatabase")Database database ) {
-		this.database = database ;
+	@Autowired
+	public EmployeePermitsDaoImpl(@Qualifier("pcmsDatabase") Database database) {
+		this.database = database;
 		this.message = "";
 	}
 
@@ -50,31 +50,34 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 	public ArrayList<EmployeeDetail> getEmployeePermitsDetailByUserId(String userId)
 	{
 		ArrayList<EmployeeDetail> list = null;
-		String sql =
-				""
-						+ " SELECT"
-						+ "		   [Id]"
-						+ "      , [EmployeeId]"
-						+ "      , [WebApp]"
-						+ "      , [PermitId]" 
-						+ "      ,[DataStatus]\r\n"
-						+ "      ,[ChangeBy]\r\n"
-						+ "      ,[ChangeDate]\r\n"
-						+ "      ,[CreateBy]\r\n"
-						+ "      ,[CreateDate]\r\n"
-						+ " FROM [PCMS].[dbo].[EmployeePermits] as a\r\n"
-						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
-						+ "       A.DataStatus = 'O' and \r\n"
-						+ "		  a.[EmployeeId] = '"+userId+"' \r\n";  
+		String sql = ""
+				+ " SELECT"
+				+ "		   [Id]"
+				+ "      , [EmployeeId]"
+				+ "      , [WebApp]"
+				+ "      , [PermitId]"
+				+ "      ,[DataStatus]\r\n"
+				+ "      ,[ChangeBy]\r\n"
+				+ "      ,[ChangeDate]\r\n"
+				+ "      ,[CreateBy]\r\n"
+				+ "      ,[CreateDate]\r\n"
+				+ " FROM [PCMS].[dbo].[EmployeePermits] as a\r\n"
+				+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
+				+ "       A.DataStatus = 'O' and \r\n"
+				+ "		  a.[EmployeeId] = '"
+				+ userId
+				+ "' \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genEmployeeDetail(map));
 		}
-		return list;		
+		return list;
 	}
+
 	@Override
-	public String upsertEmployeePermits(ArrayList<EmployeeDetail> poList,String webApp) {
+	public String upsertEmployeePermits(ArrayList<EmployeeDetail> poList, String webApp)
+	{
 
 		EmployeeDetail bean = new EmployeeDetail();
 		Calendar calendar = Calendar.getInstance();
@@ -84,13 +87,13 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 		String iconStatus = "I";
 		String sql = ""
 				+ " UPDATE [PCMS].[dbo].[EmployeePermits] "
-				+ " 	SET [PermitId] = ? ,[Responsible] = ? ,[DataStatus] = ?, [ChangeBy] = ? ,[ChangeDate] = ?  " 
+				+ " 	SET [PermitId] = ? ,[Responsible] = ? ,[DataStatus] = ?, [ChangeBy] = ? ,[ChangeDate] = ?  "
 				+ " 	WHERE [EmployeeId] = ? and "// 12
 				+ "			  [WebApp] = ?  "// 14
 				+ " declare  @rc int = @@ROWCOUNT " // 56
-				
-				+ " if @rc = 0 " 
-				+ "  BEGIN " 
+
+				+ " if @rc = 0 "
+				+ "  BEGIN "
 				+ " 	INSERT INTO [PCMS].[dbo].[EmployeePermits] \r\n"
 				+ " 		("
 				+ " 		[EmployeeId] ,[WebApp] ,[PermitId],[Responsible] ,[DataStatus] , "// 15,16,17,18,19
@@ -99,36 +102,33 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 				+ " 	values \r\n"
 				+ "			("
 				+ "			? , ? , ? , ? , ? , "
-				+ "			? , ? , ? , ?  " 
-				+ "			)  ; END "; 
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
-		try {
-			prepared = connection.prepareStatement(sql);
-			for (EmployeeDetail  element : poList) { 
+				+ "			? , ? , ? , ?  "
+				+ "			)  ; END ";
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+
+			for (EmployeeDetail element : poList) {
 
 				bean = element;
 				String permitId = bean.getPermitId();
 				String dataStatus = bean.getDataStatus();
-				String responsible = bean.getResponsible() ;
-				changeBy = bean.getChangeBy(); 
-				String userId = bean.getEmployeeId(); 
-				changeBy = bean.getChangeBy(); 
+				String responsible = bean.getResponsible();
+				changeBy = bean.getChangeBy();
+				String userId = bean.getEmployeeId();
+				changeBy = bean.getChangeBy();
 				int index = 1;
 				prepared.setString(index ++ , permitId);
-				prepared.setString(index ++ , responsible); 
+				prepared.setString(index ++ , responsible);
 				prepared.setString(index ++ , dataStatus);
 				prepared.setString(index ++ , changeBy);
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , userId); 
+				prepared.setString(index ++ , userId);
 				prepared.setString(index ++ , webApp);
 
-
-				prepared.setString(index ++ , userId); 
+				prepared.setString(index ++ , userId);
 				prepared.setString(index ++ , webApp);
 				prepared.setString(index ++ , permitId);
-				prepared.setString(index ++ , responsible); 
+				prepared.setString(index ++ , responsible);
 				prepared.setString(index ++ , dataStatus);
 				prepared.setString(index ++ , changeBy);
 				prepared.setTimestamp(index ++ , new Timestamp(time));
@@ -143,8 +143,8 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 //			System.err.println("upsertEmployeePermits " + e.getMessage());
 			iconStatus = "E";
 		} finally {
-			//this.database.close();
+			// this.database.close();
 		}
 		return iconStatus;
-	} 
+	}
 }

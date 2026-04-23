@@ -9,8 +9,6 @@ public interface BackGroundJobDao {
 
 	void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder);
 
-	void handlerERPAtechToWebApp();
-
 	void handlerERPAtechToWebAppProductionOrder();
 
 	void handlerERPAtechToWebAppSaleOrder();
@@ -20,4 +18,6 @@ public interface BackGroundJobDao {
 	void handlerBackGroundZ_ATT_CustomerConfirm2();
 
 	void handlerERPAtechToWebAppCustomer();
+
+	void execSumBillAndGoodReceive();
 }

@@ -1,6 +1,4 @@
-<%-- <%@ page language="java" contentType="text/html; charset=UTF-8" --%>
-<%--     pageEncoding="UTF-8"%> --%> 
- <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@ page isELIgnored="false"%>              	               
@@ -145,8 +143,7 @@
 		<div class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2  "  >      
 			<div class="row">                           
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12 " style="  display: inline-flex;  text-align: -webkit-right;    margin-bottom: 5px;" >  
-	              	<div class="btn-group d-flex" style="    width: inherit; ">         
-	<!-- w-100 -->         
+	              	<div class="btn-group d-flex" style="    width: inherit; ">     
 		              	<button id="btn_search" class="btn btn-primary w-100"  type="button" 
 		              		style=" width: -webkit-fill-available;
 				              		white-space: nowrap;
@@ -233,41 +230,53 @@
 					</div> 
 				</div>     
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   
-					<div class="row">          
-						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  > 
-<%-- 						<p>${permit.isPCMSMainToProd()  == true}${permit.isPCMSMainToProd()}</p>      --%>
-							<c:if test="${permit.isPCMSMainToProd()  == true}">      
-				              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
-				                    Production Detail 
-				              	</button>     
-			              	</c:if>       	
-			              	<c:if test="${permit.isPCMSMainToLBMS()  == true}">  
-				              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
-				                   LBMS Detail            
-				              	</button>                    
-			              	</c:if>     
-							<c:if test="${permit.isPCMSMainToQCMS()  == true}">  
-				              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
-				                    QCMS Result                
-<%-- 				                    ${permit.getIsQCMSPathBtn()}    --%>
-				              	</button>         
-			              	</c:if>     
-			              	<c:if test="${permit.isPCMSMainToInspect()  == true}">  
-				              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
-				                    Inspect Result     
-				              	</button>             
-			              	</c:if>    
-			              	<c:if test="${permit.isPCMSMainToSFC()  == true}">    
-<%-- 							<c:if test="${userObject.isCustomer  == false }">   --%>
-				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >         
-				                    SFC Detail
-				              	</button>          
-			              	</c:if>   
-			              	<button	 id="btn_lockColumn" class="btn btn-primary" type="button"  >
-			                    Lock Column
-			              	</button>      
-						</div>       
-					</div>    
+					<div class="row mb-3">
+					  <div class="col-12">
+					    <div class="btn-toolbar gap-2 gap-md-3 flex-wrap" role="toolbar" aria-label="PCMS Action Buttons">
+					
+					      <!-- กลุ่มปุ่มระบบหลัก -->
+					      <div class="btn-group flex-wrap" role="group">
+					        <c:if test="${permit.isPCMSMainToProd() == true}">
+					          <button id="btn_prdDetail" class="btn btn-primary" type="button">
+					            <i class="bi bi-gear-wide-connected me-1"></i> Production Detail
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToLBMS() == true}">
+					          <button id="btn_lbms" class="btn btn-success" type="button">
+					            <i class="bi bi-box-seam me-1"></i> LBMS Detail
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToQCMS() == true}">
+					          <button id="btn_qcms" class="btn btn-info" type="button">
+					            <i class="bi bi-check-circle me-1"></i> QCMS Result
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToInspect() == true}">
+					          <button id="btn_inspect" class="btn btn-secondary" type="button">
+					            <i class="bi bi-search me-1"></i> Inspect Result
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToSFC() == true}">
+					          <button id="btn_sfc" class="btn btn-dark" type="button">
+					            <i class="bi bi-diagram-3 me-1"></i> SFC Detail
+					          </button>
+					        </c:if>
+					      </div>
+					
+					      <!-- ปุ่ม Lock Column แยกออกมา (อยู่ขวาสุดบนจอใหญ่) -->
+					      <div class="btn-group ms-md-auto" role="group">
+					        <button id="btn_lockColumn" class="btn btn-outline-secondary" type="button">
+					          <i class="bi bi-lock me-1"></i> Lock Column
+					        </button>
+					      </div>
+					
+					    </div>
+					  </div>
+					</div>
 				</div>      
 			</div>    
 		</div>                  

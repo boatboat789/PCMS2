@@ -1,6 +1,5 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,24 +15,13 @@ import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class DataImportSORDaoImpl implements DataImportSORDao {
-	private Database database; 
-	private String message;
+	private Database database;  
 	private BeanCreateService bcModel = new BeanCreateService();
 
 	@Autowired
 	public DataImportSORDaoImpl(@Qualifier("sorDatabase")Database database) {
-		this.database = database;
-		this.message = "";
-	}
-
-	public String getMessage()
-	{
-		return this.message;
-	}
-
-	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
- 
-
+		this.database = database; 
+	}  
 	@Override
 	public ArrayList<SORDetail> getList()
 	{
@@ -49,7 +37,6 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 				+ " inner join [SOR_PRODUCTION].[dbo].[POLineItems] as POLI on PO.Id = POLI.[POId] and viewPCMS2.MaterialCode = POLI.MaterialCode\r\n"
 				+ " where [SaleOrderId] is not null and "
 				+ "		  POLI.[IsActive] = 1 and  \r\n"
-//				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > '2025-01-01'  )\r\n" ;
 				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n" ; 
 		List<Map<String, Object>> datas = this.database.queryList(sql); 
 		list = new ArrayList<>();

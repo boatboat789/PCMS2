@@ -1,5 +1,8 @@
 package th.co.wacoal.atech.pcms2.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ApiResponse<T> {
     private String status;     // "success" หรือ "error"
     private String message;    // รายละเอียดข้อความ

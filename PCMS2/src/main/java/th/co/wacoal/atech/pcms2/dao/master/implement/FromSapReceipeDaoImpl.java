@@ -31,7 +31,7 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public FromSapReceipeDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapReceipeDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -59,19 +59,17 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 		}
 		return list;
 	}
+
 	@Override
 	public String upsertFromSapReceipeDetail(ArrayList<FromErpReceipeDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 
 		String iconStatus = "I";
 		String sql = ""
-				+ "-- Update if the record exists\r\n" 
+				+ "-- Update if the record exists\r\n"
 				+ "UPDATE [dbo].[FromSapReceipe]\r\n"
 				+ "SET\r\n"
 				+ "    [LotNo] = ?,\r\n"
@@ -100,26 +98,26 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 				+ "        ?\r\n"
 				+ "    );\r\n"
 				+ "END";
-		try {
 
-			int index = 1;
-			prepared = connection.prepareStatement(sql);
+		int index = 1;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			for (FromErpReceipeDetail bean : paList) {
 				index = 1;
 				prepared.setString(index ++ , bean.getLotNo());
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
-				prepared.setString(index ++ , bean.getProductionOrder()); 
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				prepared.setString(index ++ , bean.getProductionOrder());
 
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getLotNo());
-				prepared.setString(index ++ , bean.getDataStatus()); 
+				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
-				prepared.addBatch(); 
+				prepared.addBatch();
 			}
 			prepared.executeBatch();
 			prepared.close();

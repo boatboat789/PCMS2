@@ -49,14 +49,15 @@ public class TEMP_UserStatusAutoDaoImpl implements TEMP_UserStatusAutoDao {
 		String saleOrder = bean.getSaleOrder();
 		String saleLine = bean.getSaleLine();
 		String sql = String.format(""
-				+ "SELECT DISTINCT [Id], [ProductionOrder], [SaleOrder], [SaleLine], [ProductionOrderRPM], "
-				+ "[Volumn], [Grade], [UserStatusCal], [UserStatusCalRP], [DataStatus], [ChangeDate], [CreateDate] "
+				+ "SELECT DISTINCT "
+				+ "		[Id], [ProductionOrder], [SaleOrder], [SaleLine], [ProductionOrderRPM], "
+				+ "		[Volumn], [Grade], [UserStatusCal], [UserStatusCalRP], [DataStatus], [ChangeDate], [CreateDate] "
 				+ "FROM [PCMS].[dbo].[TEMP_UserStatusAuto] "
 				+ "WHERE (GRADE IS NULL OR GRADE = '') "
-				+ "AND ProductionOrder = '%s' "
-				+ "AND SaleOrder = '%s' "
-				+ "AND SaleLine = '%s' "
-				+ "AND DataStatus = 'O'", prdOrder, saleOrder, saleLine);
+				+ "	AND ProductionOrder = '%s' "
+				+ "	AND SaleOrder = '%s' "
+				+ "	AND SaleLine = '%s' "
+				+ "	AND DataStatus = 'O'", prdOrder, saleOrder, saleLine);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

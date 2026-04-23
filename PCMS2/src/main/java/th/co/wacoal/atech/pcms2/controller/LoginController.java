@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
- 
+
 import th.co.wacoal.atech.pcms2.entities.EmployeeDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
@@ -28,7 +28,6 @@ import th.in.totemplate.core.authen.AuthenAttributes;
 
 @Controller
 public class LoginController {
-//	private String wrongUP = "Username	 or Password is incorrect.";
 	private String alertmsgText = "";
 	private String alerttypText = "";
 	private PermitsService permitsService;
@@ -63,7 +62,6 @@ public class LoginController {
 	@RequestMapping(value = { "/logout" }, method = { RequestMethod.GET })
 	public String getLogout(HttpSession session, HttpServletRequest req)
 	{
-//		HttpSession ses = req.getSession(false);
 		if (session != null) {
 			session.removeAttribute("user");
 			session.removeAttribute("userName");

@@ -10,45 +10,48 @@
 		<img src="${contextpath}/resources/images/icons/logo.png" style="width: 50px; height: auto;" />
 	</a>
 
-	<div class="navbar-nav-scroll" id="navbarNavDropdown">
-		<!-- Links -->
-		<ul class="navbar-nav mr-auto">
-			<c:if test="${permit.isPCMSMain()  == true }">
-				<li class="nav-item">
-					<a id="PCMSSummaryPage" class="nav-link" href="${contextpath}/Main">PCMS - Summary</a>
-				</li>
-			</c:if>
-			<c:if test="${permit.isPCMSDetail()  == true }">
-				<li class="nav-item">
-					<a id="PCMSDetailPage" class="nav-link" href="${contextpath}/Detail">PCMS - Detail</a>
-				</li>
-			</c:if>
-			<c:if test="${permit.isReport()  == true }">
-<!-- 				<li class="nav-item"> -->
-<%-- 					<a id="ReportPage" class="nav-link" href="${contextpath}/Report/CFM/getReportDetail">Report - CFM Report</a> --%>
-<!-- 				</li> -->
-				<li class="dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarReportSplitWorkDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Report </a>
-     
-					<div class="dropdown-menu">   
-						<h6 class="dropdown-header">CFM</h6>
-						<a id="ReportPage" class="dropdown-item" href="${contextpath}/Report/CFM/Detail">CFM Detail</a>
-						<hr class="dropdown-divider">
-						<hr class="dropdown-divider">
-						<h6 class="dropdown-header">DataFromERP</h6>
-						<a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ATT">Log - Production Order</a>
-						<a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ATT">Log - Sale Order</a>
-<%-- 						<a class="dropdown-item" href="${contextpath}/Log/RollNumberLog/ATT">Log - เบอร์ม้วน</a> --%>
-						<hr class="dropdown-divider">
-						<h6 class="dropdown-header">ERP365</h6>
-						<a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ERP365">Log - Production Order</a>
-						<a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ERP365">Log - Sale Order</a>
-<%-- 						<a class="dropdown-item" href="${contextpath}/Log/RollNumberLog/ERP365">Log - เบอร์ม้วน</a> --%>
-					</div>
-				</li> 
-			</c:if>
-		</ul>
-	</div>       
+<div class="navbar-nav-scroll" id="navbarNavDropdown">
+    <ul class="navbar-nav mr-auto">
+        <%-- ส่วนของ Summary --%>
+        <c:if test="${permit.isPCMSMain() == true}">
+            <li class="nav-item">
+                <a id="PCMSSummaryPage" class="nav-link" href="${contextpath}/Main">PCMS - Summary</a>
+            </li>
+        </c:if>
+
+        <%-- ปรับส่วน Detail ให้เป็น Dropdown --%>
+        <c:if test="${permit.isPCMSDetail() == true}">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDetailDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    PCMS - Detail
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDetailDropdown"> 
+                    <a id="PCMSDetailPage" class="dropdown-item" href="${contextpath}/Detail">PCMS - Detail</a> 
+                    <a id="PCMSDetailV2Page" class="dropdown-item" href="${contextpath}/DetailV2">PCMS - Detail (ViewOnly)</a>
+                </div>
+            </li>
+        </c:if>
+
+        <%-- ส่วนของ Report (คงเดิมไว้) --%>
+        <c:if test="${permit.isReport() == true}">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarReportSplitWorkDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Report </a>
+                <div class="dropdown-menu">   
+                    <h6 class="dropdown-header">CFM</h6>
+                    <a id="ReportPage" class="dropdown-item" href="${contextpath}/Report/CFM/Detail">CFM Detail</a>
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">DataFromERP</h6>
+                    <a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ATT">Log - Production Order</a>
+                    <a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ATT">Log - Sale Order</a>
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">ERP365</h6>
+                    <a class="dropdown-item" href="${contextpath}/Log/ProductionOrderLog/ERP365">Log - Production Order</a>
+                    <a class="dropdown-item" href="${contextpath}/Log/SaleOrderLog/ERP365">Log - Sale Order</a>
+                </div>
+            </li> 
+        </c:if>
+    </ul>
+</div>   
 	<ul class="nav navbar-nav navbar-right ml-auto">    
 				<li class="nav-item dropdown">
 					<a class="nav-item nav-link dropdown-toggle mr-md-2" 

@@ -31,7 +31,7 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapMainProdSaleDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapMainProdSaleDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -44,9 +44,6 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 	@Override
 	public String upsertFromSapMainProdSaleDetail(ArrayList<FromErpMainProdSaleDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection(); 
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
@@ -68,15 +65,15 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 				+ "    		[Volumn] = ?\r\n"
 				+ "    		,[DataStatus] = ?\r\n"
 				+ "    		,[ChangeDate] = ? \r\n"
-				+ "    		,[SyncDate] =  ?\r\n" 
+				+ "    		,[SyncDate] =  ?\r\n"
 				+ "		WHERE \r\n"
 				+ "    		[ProductionOrder] = ? and"
 				+ "    		[SaleOrder] = ? and\r\n"
 				+ "    		[SaleLine] = ?  ;\r\n"
 				+ "		-- Check if rows were updated\r\n"
-				+ "		DECLARE @rc INT = @@ROWCOUNT;\r\n" 
+				+ "		DECLARE @rc INT = @@ROWCOUNT;\r\n"
 				+ "		IF @rc = 0\r\n"
-				+ "			BEGIN\r\n"	
+				+ "			BEGIN\r\n"
 				+ "    		-- Insert if no rows were updated\r\n"
 				+ "    		-- Add a condition to prevent insert if SaleOrder or SaleLine are blank\r\n"
 				+ "    		IF ? <> '' AND ? <> ''\r\n"
@@ -93,49 +90,48 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 				+ "        			); "
 				+ "    			END\r\n"
 				+ "			END "
-				+ "	END\r\n"
-				;
-		try {
+				+ "	END\r\n";
 
-			int index = 1;
-			prepared = connection.prepareStatement(sql);
+		int index = 1;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			for (FromErpMainProdSaleDetail bean : paList) {
 				index = 1;
-				prepared.setString(index++, bean.getDataStatus()   );
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index++, bean.getProductionOrder()    );
-				
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getVolumn(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				prepared.setString(index ++ , bean.getProductionOrder());
+
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getVolumn(), index ++ );
+				prepared.setString(index ++ , bean.getDataStatus());
+				prepared.setTimestamp(index ++ , new Timestamp(time));
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
-				
+
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getVolumn(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getVolumn(), index ++ );
 				prepared.setString(index ++ , bean.getDataStatus());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.addBatch();
 //				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
 //			e.printStackTrace();
-			 e.printStackTrace();
+			e.printStackTrace();
 			iconStatus = "E";
 		} finally {
 			// this.database.close();

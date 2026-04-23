@@ -10,13 +10,13 @@ import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 
 @Service
-public class PlanSendCFMCusDateService { 
-	private PlanSendCFMCusDateDao dao;  
+public class PlanSendCFMCusDateService {
+	private PlanSendCFMCusDateDao dao;
 
 	@Autowired
 	public PlanSendCFMCusDateService(PlanSendCFMCusDateDao dao) {
-		this.dao = dao; 
-	} 
+		this.dao = dao;
+	}
 
 	public ArrayList<InputDateDetail> getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList)
 	{

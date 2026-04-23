@@ -26,7 +26,7 @@
 		<springframework.retry.version>2.0.4</springframework.retry.version>
 	</properties>
 	<dependencies>
- 
+
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -80,11 +80,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--		<dependency>-->
-		<!--			<groupId>com.mashape.unirest</groupId>-->
-		<!--			<artifactId>unirest-java</artifactId>-->
-		<!--			<version>1.4.9</version>-->
-		<!--		</dependency>-->
 		<dependency>
 			<groupId>com.konghq</groupId>
 			<artifactId>unirest-java</artifactId>
@@ -128,8 +123,6 @@
 			<artifactId>standard</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-
-
 		<!--
 		https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
 		<dependency>
@@ -184,20 +177,6 @@
 			<artifactId>jtds</artifactId>
 			<version>1.2.4</version>
 		</dependency>
-
-<!-- Spring Data JPA 2.7.x -->
-<!--<dependency>-->
-<!--    <groupId>org.springframework.data</groupId>-->
-<!--    <artifactId>spring-data-jpa</artifactId>-->
-<!--    <version>2.7.18</version>-->
-<!--</dependency>-->
-
-<!-- Hibernate as JPA provider -->
-<!--<dependency>-->
-<!--    <groupId>org.hibernate</groupId>-->
-<!--    <artifactId>hibernate-core</artifactId>-->
-<!--    <version>5.6.15.Final</version>  Last Hibernate 5.x version -->
-<!--</dependency>-->
 	</dependencies>
 	<build>
 		<finalName>PCMS2</finalName>

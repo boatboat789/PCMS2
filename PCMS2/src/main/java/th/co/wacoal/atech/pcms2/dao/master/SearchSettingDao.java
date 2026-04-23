@@ -8,8 +8,8 @@ public interface SearchSettingDao {
 	ArrayList<PCMSTableDetail> getSearchSettingDetail(String userId, String forPage);
 
 
-	ArrayList<PCMSTableDetail> insertSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage);
-	ArrayList<PCMSTableDetail> updateSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage);
+	ArrayList<PCMSTableDetail> insertSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage);
+	ArrayList<PCMSTableDetail> updateSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage);
 
 
 

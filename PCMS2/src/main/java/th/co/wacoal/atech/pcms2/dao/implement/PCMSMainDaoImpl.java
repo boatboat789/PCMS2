@@ -26,11 +26,9 @@ import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSearchService;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapCFMService;
-import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapPackingService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapSaleService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapSubmitDateService;
-import th.co.wacoal.atech.pcms2.service.master.SearchSettingService;
 import th.co.wacoal.atech.pcms2.service.master.InspectSystem.InspectNcService;
 import th.co.wacoal.atech.pcms2.service.master.InspectSystem.InspectOrdersService;
 import th.co.wacoal.atech.pcms2.service.master.LBMS.ImportDetailService;
@@ -38,14 +36,10 @@ import th.co.wacoal.atech.pcms2.service.master.PPMM.RollFromSapService;
 import th.co.wacoal.atech.pcms2.service.master.PPMM.ShopFloorControlService;
 import th.in.totemplate.core.sql.Database;
 @Repository // Spring annotation to mark this as a DAO component
-public class PCMSMainDaoImpl implements PCMSMainDao {
-	// PC - Lab-ReLab
-	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New
+public class PCMSMainDaoImpl implements PCMSMainDao { 
 	private PCMSSqlService pss = new PCMSSqlService();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
-	private String message;
+	private Database database; 
 	private String selectOPSWA =
 			    "   "
 		      + "     a.SaleOrder \r\n"
@@ -484,10 +478,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.[GreigeKG]\r\n"
 	 		  + "                ,a.[ProductionOrder]\r\n"
 	 		  + "                ,a.[LotNo]\r\n"
-			  + "			     , volCalc.adjVol AS SumVol\r\n"
-			  + "				 , a.Price * volCalc.adjVol AS SumVolFGAmount" 
-	 		  + "                ,s.SumVolRP\r\n"
-	 		  + "                ,t.SumVolOP\r\n"
+			  + "			     , adjVol AS SumVol\r\n"
+			  + "				 , a.Price * adjVol AS SumVolFGAmount"  
 	 		  + "                ,a.Volumn           as RealVolumn\r\n"
 	 		  + "                ,g.[DyePlan]\r\n"
 	 		  + "                ,g.[DyeActual]\r\n"
@@ -532,7 +524,15 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.ColorCustomer\r\n"
 	 		  + "                ,a.CustomerName\r\n"
 	 		  + "                ,a.DeliveryStatus\r\n"
-	 		  + "                ,a.SaleStatus\r\n"  ;
+	 		  + "                ,a.SaleStatus\r\n"
+	 		  + "				,CASE \r\n"
+	 		  + "				  WHEN adjVol IS NOT NULL THEN 1\r\n"
+	 		  + "				  WHEN a.LotNo IN ('รอจัด Lot','ขาย stock','รับจ้างถัก','Lot ขายแล้ว','พ่วงแล้วรอสวม','รอสวมเคยมี Lot')\r\n"
+	 		  + "					   AND adjVol = 0 AND CRP.SaleOrder IS NULL THEN 1\r\n"
+	 		  + "				  WHEN a.Volumn = 0 THEN 1\r\n"
+	 		  + "				  WHEN viewUSM_SPE.Special = 0 THEN 1\r\n"
+	 		  + "				  ELSE 0\r\n"
+	 		  + "				 END AS PassFilter\r\n"  ;
 	    private final PCMSSearchService psService;
 	    private final ShopFloorControlService sfcService;
 	    private final RollFromSapService rfsService;
@@ -544,9 +544,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	    private final FromSapSaleService fromSapSaleService;
 	    private final FromSapCFMService fromSapCFMService;
 	    private final FromSapPackingService fromSapPackingService;
-	    private final FromSapSubmitDateService fromSapSubmitDateService;
-	    private final FromSapMainProdService fromSapMainProdService;
-	    private final SearchSettingService searchSettingService;
+	    private final FromSapSubmitDateService fromSapSubmitDateService; 
  
 	    @Autowired
 	    public PCMSMainDaoImpl(
@@ -556,15 +554,11 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	            RollFromSapService rfsService,
 	            ImportDetailService idService,
 	            InspectOrdersService insOrderService,
-	            InspectNcService insNCService,
-	            
-	            // Services เพิ่มเติม
+	            InspectNcService insNCService, 
 	            FromSapSaleService fromSapSaleService,
 	            FromSapCFMService fromSapCFMService,
 	            FromSapPackingService fromSapPackingService,
-	            FromSapSubmitDateService fromSapSubmitDateService,
-	            FromSapMainProdService fromSapMainProdService,
-	            SearchSettingService searchSettingService) {
+	            FromSapSubmitDateService fromSapSubmitDateService ) {
 
 	        this.database = database;
 	        this.psService = psService;
@@ -577,50 +571,37 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	        this.fromSapSaleService = fromSapSaleService;
 	        this.fromSapCFMService = fromSapCFMService;
 	        this.fromSapPackingService = fromSapPackingService;
-	        this.fromSapSubmitDateService = fromSapSubmitDateService;
-	        this.fromSapMainProdService = fromSapMainProdService;
-	        this.searchSettingService = searchSettingService;
-
-	        this.message = "";
-	    }
-	public String getMessage() {
-		return this.message;
-	}
-
-	@Override
-	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList, boolean isCustomer) {
-		ArrayList<PCMSTableDetail> list = this.getPCMSSumaryDetail(poList );
-
-		if(isCustomer) {
-			for (PCMSTableDetail element : list) {
-				element.setCfmDetailAll("");
-				element.setRollNoRemarkAll("");
-			}
-		}
-		return list;
-	}
+	        this.fromSapSubmitDateService = fromSapSubmitDateService; 
+ 
+	    } 
+    @Override
 	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList ) {
 		 
 		ArrayList<PCMSTableDetail> list = null;
 		PCMSTableDetail bean = poList.get(0); 
+		List<String> userStatusList = bean.getUserStatusList();
 		Map<String, String> results = pss.buildWhereClauses(bean);
 		String whereCaseTry = results.get("whereCaseTry");
 		String whereCaseTryRP = results.get("whereCaseTryRP");
 		String tmpWhereNoLotUCAL = results.get("tmpWhereNoLotUCAL");
-		String where = results.get("where");
-		String whereBMainUserStatus = results.get("whereBMainUserStatus");
+		String whereBase = results.get("whereBase"); 
+//		String whereBMainUserStatus = results.get("whereBMainUserStatus");
 		String whereSale = results.get("whereSale");
 		String whereWaitLot = results.get("whereWaitLot");
+		String createTempTableUserStatus = ""
+				+ psService.handlerTempTableUserStatusList(userStatusList);
 		String createCusListSearch = ""
 				+ psService.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
 			String createTempMainSale = ""
+				+ createTempTableUserStatus
 				+ createCusListSearch
 				+ this.pss.createTempMainSaleWithJoinCustomer 
 				+ whereSale 
-//				+ this.pss.createClusteredIndexTempMainSale
 				; 
 		String sqlWaitLot =
-				  " SELECT DISTINCT  \r\n"
+				  ""
+				+ this.pss.createTempPrepWaitLot
+				+ " SELECT    \r\n"
 				+ this.selectWaitLot
 	  		    + " INTO #tempWaitLot  \r\n"
 				+ " FROM #tempMainSale as a \r\n "
@@ -629,19 +610,20 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ whereWaitLot
 				+ " and ( SumVol = 'B' OR countProdRP > 0 ) \r\n"; 
 		String fromMainB = ""
-				  +	" from ( \r\n"
-				  + "	SELECT   \r\n"
-				  + this.leftJoinBSelect  
-  		    	  + this.pss.fromProdA  
-				  + this.pss.leftJoinBPartOneT_A
-				  + this.pss.leftJoinBPartOneS_A  
-				  + this.pss.getLeftJoinTempPlandeliveryDate("a","a") 
-				  + this.pss.buildLeftJoinTempProdWorkDate("a")
-				  + this.pss.buildLeftJoinSCC("a")
-				  + this.pss.buildLeftJoinTempSumGR("a") 
-				  + this.pss.buildLeftJoinUserStatusAuto("UCAL","A","m") 
-					+ this.pss.crossApplyVolCalc
-				  + " ) as b \r\n";
+				+ " from ( \r\n"
+				+ "	SELECT   \r\n"
+				+ this.leftJoinBSelect
+				+ this.pss.fromProdA
+				+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
+				+ this.pss.buildLeftJoinTempProdWorkDate("a")
+				+ this.pss.buildLeftJoinSCC("a") 
+				+ this.pss.buildLeftJoinTempSumGR("a")
+				+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "A", "m")
+				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
+				+ this.pss.getLeftJoinCRP("a")
+				+ whereBase.replace("b.", "a.")
+//				+ this.pss.crossApplyVolCalc
+				+ " ) as b \r\n";
 		String sqlMain = ""
 	  		    + this.pss.withProdData
 				+ " SELECT DISTINCT \r\n "
@@ -650,19 +632,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ fromMainB   
 				+ this.pss.getLeftJoinCRP("b") 
 				+ this.pss.getLeftJoinSwitchProdOrder("b") 
-				+ this.pss.buildLeftJoinViewUSM_SPE("b",0) 
-				+ " where ( b.SumVol Is not null\r\n" //20230911 FIX HERE
-//				+ "			 b.SumVol >= 0 or\r\n" //20230911 FIX HERE
-//				+ "			 b.SumVol <> 0 or\r\n" //20230911 FIX HERE
-				+ "			or ( \r\n"
-				+ "				(\r\n"
-				+ "					 b.LotNo in ( 'รอจัด Lot','ขาย stock','รับจ้างถัก','Lot ขายแล้ว','พ่วงแล้วรอสวม','รอสวมเคยมี Lot' ) \r\n"
-				+ "				)  and b.SumVol = 0 \r\n"
-				+ "		     	and ( CRP.SaleOrder is null )  \r\n"
-				+ "          ) or\r\n"
-				+ "     	 RealVolumn = 0 or\r\n"
-				+ "     	 ( viewUSM_SPE.[Special] = 0 ) \r\n"
-				+ "      )\r\n"
+				+ " where b.PassFilter = 1\r\n" 
 				+ "    AND SPO.ProductionOrderSW IS NULL " 
 				;
 				// Order Puang
@@ -672,7 +642,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "	begin\r\n"
 				+ "		Drop Table #tempPrdOPA\r\n"
 				+ "	end ; \r\n"
-    			+ "       SELECT DISTINCT\r\n"
+    			+ "       SELECT  \r\n"
     			+ "             a.SaleOrder\r\n"
     			+ "                ,a.[SaleLine]\r\n"
     			+ "                ,a.DistChannel\r\n"
@@ -744,7 +714,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "       "+this.pss.buildLeftJoinSCC("b")
 				+ "       "+this.pss.buildLeftJoinTempSumGR("b")
 				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ "       where b.DataStatus = 'O' \r\n"
+				+ "       where 1 = 1  \r\n"
 				+ "             "+tmpWhereNoLotUCAL+" \r\n"
 				+ " If(OBJECT_ID('tempdb..#tempPrdOP') Is Not Null)\r\n"
 				+ "	begin\r\n"
@@ -763,7 +733,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		  		    + " INTO #tempOP  \r\n"
 					+ " from #tempPrdOP as a \r\n" 
 					+ this.pss.getLeftJoinSwitchProdOrder("A") 
-					+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+					+ this.pss.buildInnerJoinViewUSM_SPE("a",1,"UserStatus")
 					+ " where 1 = 1 "
 					+ "    AND SPO.ProductionOrderSW IS NULL " 
 					+ whereCaseTry ;
@@ -835,21 +805,21 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "                   a.SaleLine = b.SaleLine   \r\n"
 				+ "		 	where b.DataStatus = 'O' and b.SaleLine <> '' ) as a  \r\n " 
 				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
-				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
+				+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
 				+ this.pss.buildLeftJoinTempProdWorkDate("b")
 				+ this.pss.buildLeftJoinSCC("b")  
 				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
 				+ this.pss.getLeftJoinSwitchProdOrder("b", "ProductionOrderSW")
 				+ this.pss.buildLeftJoinTempSumGR("b")
 				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ where
+				+ whereBase
 				+ " and 1 = 1 \r\n"   ;
 		String sqlOPSW = ""
 				+ " select \r\n"
 				+ this.selectAll
 	  		    + " INTO #tempOPSW  \r\n"
 				+ " from #tempPrdOPSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
+				+ this.pss.buildInnerJoinViewUSM_SPE("a",1,"UserStatus")
 				+ " where 1 = 1 " 
 				+ whereCaseTry ;
 //////			// Switch 
@@ -929,14 +899,14 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "		 	) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
 				+ "		 	where b.DataStatus = 'O') as a  \r\n " 
 				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
-				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
+				+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
 				+ this.pss.buildLeftJoinTempProdWorkDate("b") 
 				+ this.pss.buildLeftJoinSCC("b") 
 				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
 				+ this.pss.getLeftJoinSwitchProdOrder("b", "ProductionOrderSW") 
 				+ this.pss.buildLeftJoinTempSumGR("b") 
 				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ where
+				+ whereBase
 				+ " and 1 = 1 \r\n"  ;
 			String sqlSW =  ""
 					  + " select \r\n"
@@ -970,7 +940,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					+ "			b.[PrdCreateDate]\r\n"
 		  		    + "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"  
 					+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrderRP")
-					+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
+					+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
 		  		    + "		WHERE a.[DataStatus] = 'O'  \r\n" 
 		  		    + " )  as b on a.SaleOrder = b.SaleOrder \r\n"
 		  		    + "		  and a.SaleLine = b.SaleLine \r\n" 
@@ -1018,23 +988,29 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ createTempMainSale
 			 	+ this.pss.createTempPlanDeliveryDate 
 			 	+ this.pss.createTempSumGR
-			 	+ this.pss.createTempSumBill 
+			 	+ this.pss.createTempSumBill  
 			 	+ createTempOPFromA
+				+ sqlOP  
+				+ this.pss.buildIfTempTableDrop("#tempPrdOPA") 
 			 	+ createTempOPSWFromA
+				+ sqlOPSW 
+				+ this.pss.buildIfTempTableDrop("#tempPrdOPSW")   
 			 	+ createTempSWFromA 
+				+ sqlSW 
+				+ this.pss.buildIfTempTableDrop("#tempPrdSW")  
+				+ createTempRP
+				+ this.pss.createTempForMainAndWaitLot
 				+ sqlWaitLot
 				+ sqlMain
-				+ sqlOP 
-				+ sqlOPSW 
-				+ sqlSW 
-				+ createTempRP
+				+ this.pss.createDropTempForMainAndWaitLot
 				+ " SELECT a.* FROM #tempWaitLot as a\r\n"
 				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and "
 				+ "                              a.SaleLine = b.SaleLine\r\n"
 				+ " where b.SaleOrder is null \r\n"
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempMain as a\r\n"
-				+ " where 1 = 1 "+whereBMainUserStatus
+				+ " where 1 = 1 "
+//				+whereBMainUserStatus
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempOP\r\n"
 				+ " union ALL  \r\n"
@@ -1044,13 +1020,13 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ " union ALL  \r\n"
 				+ " SELECT * FROM #tempRP\r\n"
 				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
-// System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+//		System.out.println(sql);
+			 List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSTableDetail(map));
 		}
-		return list;
+		return list; 
 	}
  
 	@Override
@@ -1065,15 +1041,14 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ " from ( \r\n"
 				+ "			SELECT distinct \r\n"
 				+ this.leftJoinBSelect
-	    	    + this.pss.fromProdA 
-				+ this.pss.leftJoinBPartOneT_A
-				+ this.pss.leftJoinBPartOneS_A 
+	    	    + this.pss.fromProdA  
 				+ this.pss.getLeftJoinTempPlandeliveryDate("a","a") 
 				+ this.pss.buildLeftJoinTempProdWorkDate("a")
 				+ this.pss.buildLeftJoinSCC("a")
 				+ this.pss.buildLeftJoinTempSumGR("a") 
 				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","a","m") 
-				+ this.pss.crossApplyVolCalc
+				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal",0)
+				+ this.pss.getLeftJoinCRP("a")   
 				+ where
 				  + " ) as b \r\n";
 		String sql =  ""
@@ -1081,6 +1056,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.pss.createTempPlanDeliveryDate
 			 	+ this.pss.createTempSumBill
 			 	+ this.pss.createTempSumGR
+				+ this.pss.createTempForMainAndWaitLot
 	  		    + this.pss.withProdData
 				+  " SELECT distinct top 1  \r\n "
 				+ this.selectTwo
@@ -1173,96 +1149,5 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 
 		}
 		return list;
-	}   
-	@Override
-	public ArrayList<PCMSAllDetail> getUserStatusList() {
-		ArrayList<PCMSAllDetail> list = fromSapMainProdService.getUserStatusDetail();
-//		PCMSAllDetail bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอ COA ลูกค้า ok สี");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("ขายแล้วบางส่วน");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอตอบ CFM ตัวแทน");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอเปิดบิล");
-//		list.add(bean);
-		return list;
-	}
-	private String forPage = "Summary";
-	@Override
-	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList) {
-		ArrayList<PCMSTableDetail> list = null;
-		String customerShortName = "", userStatus = "", customerName="",userId = "" ,divisionName = "";
-		PCMSTableDetail bean = poList.get(0); 
-		userId = bean.getUserId();
-		List<String> userStatusList = bean.getUserStatusList();
-		List<String> cusNameList = bean.getCustomerNameList();
-		List<String> cusShortNameList = bean.getCustomerShortNameList();
-		List<String> divisionList = bean.getDivisionList();
-		if (cusNameList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < cusNameList.size(); i++) {
-				text = cusNameList.get(i);
-				customerName += text  ;
-				if (i != cusNameList.size() - 1) {
-					customerName += "|";
-				}
-			}
-		}
-		if (divisionList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < divisionList.size(); i++) {
-				text = divisionList.get(i);
-				divisionName += text  ;
-				if (i != divisionList.size() - 1) {
-					divisionName += "|";
-				}
-			}
-		}
-		if (cusShortNameList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < cusShortNameList.size(); i++) {
-				text = cusShortNameList.get(i);
-				customerShortName += text;
-				if (i != cusShortNameList.size() - 1) {
-					customerShortName += "|";
-				}
-			}
-		}
-		if (userStatusList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < userStatusList.size(); i++) {
-				text = userStatusList.get(i);
-				userStatus +=  text ;
-				if (i != userStatusList.size() - 1) {
-					userStatus += "|";
-				}
-			}
-		}
-		poList.get(0).setDivision(divisionName);
-		poList.get(0).setUserStatus(userStatus);
-		poList.get(0).setCustomerName(customerName);
-		poList.get(0).setCustomerShortName(customerShortName);
-		ArrayList<PCMSTableDetail> beanCheck = searchSettingService.getSearchSettingDetail(userId,this.forPage);
-		if(beanCheck.size() == 0) {
-			list = searchSettingService.insertSearchSettingDetail(poList, this.forPage);
-		}
-		else {
-			list = searchSettingService.updateSearchSettingDetail(poList, this.forPage);
-		}
-		return list;
-	}
-
-
-
-	@Override
-	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList) {
-		// TODO Auto-generated method stub
-		String userId = poList.get(0).getUserId();
-		ArrayList<PCMSTableDetail> bean = searchSettingService.getSearchSettingDetail(userId,this.forPage);
-		return bean;
-	}
+	}    
 }

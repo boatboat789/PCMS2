@@ -11,10 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.filter.OncePerRequestFilter;
  
 public class FilterLogin extends OncePerRequestFilter { 
-//    @Autowired
-//    public FilterLogin(EmployeeDetailModel empModel) {
-//        this.empModel = empModel;
-//    }
 
 	@Override
 	public void destroy()

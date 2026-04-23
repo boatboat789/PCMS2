@@ -11,6 +11,7 @@
 <jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
 <link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">
 <link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/pcms-style.css" />" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
@@ -19,7 +20,7 @@
 	<div id="wrapper-center" class="row" style="margin: 0 5px;">
 		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="font-size: 12.5px; padding: 0px; margin: 0px 0px;">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important; zoom: 95%;">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important;">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">DIV</th>
@@ -47,8 +48,6 @@
 							<th class="row-table" style="vertical-align: middle;">GR Qty KG</th>
 							<th class="row-table" style="vertical-align: middle;">GR Qty MR</th>
 							<th class="row-table" style="vertical-align: middle;">GR Qty YD</th>
-<!-- 							<th class="row-table" style="vertical-align: middle;">GR Qty</th> -->
-
 							<th class="row-table" style="vertical-align: middle;">จำนวน (FG) <span class="c" style="display: block;">KG/MR/YD</span>
 							</th>
 							<th class="row-table" style="vertical-align: middle;">จำนวนที่ส่ง</th>
@@ -109,6 +108,7 @@
 </body>
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
 <script src="<c:url value="/resources/js/General.js" />"></script>
+<script src="<c:url value="/resources/js/web-app.js" />"></script>
 <style>
 .p-r-15 {
 	padding-right: 15px !important;
@@ -117,8 +117,7 @@
 /*     background-color: white;    */
 /* }      */
 </style>
-<script>       	   
-var userId = '' ; 
+<script>       	    
 var preloader = document.getElementById('loader');    
 var today = new Date();        //modalForm  
 var dd = String('0' + today.getDate()).slice(-2); 
@@ -135,13 +134,12 @@ var check3 = 0	;
 var checkReplaced = 0;
 var saleNumberList ; 
 var userStatusList ; 
-var cusNameList ;  	
-var cusShortNameList ;  
+var cusNameList ;  
+var cusShortNameList ;  	  
 var selectOptionDepText ; 
 var depList ;  
 var divisionList ; 
-var colList ; 
-// var configCusList;
+var colList ;  
 var soTmp ;   
 var soLineTmp;
 var soTmpExcel ;   
@@ -197,14 +195,7 @@ $('#input_saleOrderDate').daterangepicker({
 // 	 	  autoApply: true,                 
 	  } 
 , function(start, end, label) {   
-});       
-// 	function showThing() {
-//   		$( "#loading").css("display","block");
-// 	  	setTimeout(removeThing, 11000)  	
-// 	}
-//   	function removeThing() {
-//   		$("#loading" ).css("display","none");       
-//   	}
+});        
      $('#input_dueDate').daterangepicker({
 	   opens: 'right', 	
 	    locale: {
@@ -224,53 +215,18 @@ $('#input_saleOrderDate').daterangepicker({
     	        $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
     	    }, 0);
   	});  
-$(document) .ready( function() {         
-// 	showThing();       
-// 	document.getElementById("div_toOtherPath").style.display = "none"; 
-// document.getElementById("btn_lockColumn").style.display = "none";
-// EMERGENCY
-
-	let os = JSON.parse('${OS}');   
-	let result = os.includes("win");	
-	let domain ='';
-	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
-	else{ domain = "https://"+window.location.hostname;  } 
-// 	configCusList = JSON.parse('${ConfigCusList}'); 
-// 	if(configCusList.length > 0 ){   
-// 		if(!configCusList[0].isPCMSDetailPage ){
-// 			window.location.replace(domain+"/PCMS2/login");
-// 		}
-// 	}
-	 
-	userId = JSON.parse('${UserID}');   ;     
-// 	console.log(document.getElementById("btn_prdDetail"))   
-	if(document.getElementById("btn_prdDetail") != null){
-		document.getElementById("btn_prdDetail").style.display = "none";        
-	} 
-	if(document.getElementById("btn_lbms") != null){ 
-		document.getElementById("btn_lbms").style.display = "none"; 
-	} 
-	if(document.getElementById("btn_qcms") != null){ 
-		document.getElementById("btn_qcms").style.display = "none";  
-	} 
-	if(document.getElementById("btn_inspect") != null){  
-		document.getElementById("btn_inspect").style.display = "none"; 
-	} 
-	if(document.getElementById("btn_sfc") != null){  
-		document.getElementById("btn_sfc").style.display = "none";    
-	} 
+$(document) .ready( function() {           
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');       
 	$('#input_dueDate').val('');
-	<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>    
+	if(document.getElementById("btn_prdDetail") != null){
+		document.getElementById("btn_prdDetail").style.display = "none";        
+	}  
 	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');     
 	  });
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });    
-//   	var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
-// 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
-       	
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {        
 		var title = $(this).text();      	      
@@ -289,13 +245,12 @@ $(document) .ready( function() {
 	  		},         
 	  		paging: true,
 			pageLength:	 100,	          
-// 		    lengthChange : false,   
-// 		    "paging": true,
-			colReorder: {            z
+			colReorder: {            
 			   realtime: false,   
-			   enable: false
-			},             
-// 			deferRender: true, // run again in column
+			   enable: false           
+			},            
+			order: [[1, 'asc'],[2,'asc']],
+			deferRender: true, // run again in column
 		    lengthMenu: [[100, 250, 500, 1000, 2500],[100, 250, 500, 1000, 2500]],
 	 	   	columns :                    
 	 	   		[      
@@ -333,43 +288,16 @@ $(document) .ready( function() {
 				    {"data" : "saleUnit" ,        "title":"Unit" },                                      //10
 				    {"data" : "saleQuantity" ,    "title":"Order Qty.",'type': 'num' },                  //11
 				    {"data" : "remainQuantity" ,  "title":"Remain Qty." ,'type': 'num',                   
-					   	  render: function (data, type, row) {	               
-								var htmlEx = '';               
-//		 	   					console.log(" omg "+caseDupli+"  "+data+" row.saleLine "+row.lotNo+" "+row.grade+" "+row.saleLine+" "+row.saleOrder+" soLineTmp "+soLineTmp+" soTmp "+soTmp)
-					   			if(soLineTmp == '' && soTmp == ''  ){ 
-					   				soLineTmp = row.saleLine;     
-						   			soTmp = row.saleOrder;        
-						   			caseDupli = 0; 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-						   		}  
-					   			else if(soLineTmp == row.saleLine && soTmp == row.saleOrder  ){
-					   				caseDupli = 1;
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+
-//		 				   			row.remainQuantity
-						   			data+' </div>'; 
-						   		}   
-						   		else{       
-						   			soLineTmp = row.saleLine;     
-						   			soTmp = row.saleOrder;       
-						   			caseDupli = 2;
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-						   		}      
-//		 	   					console.log(htmlEx)
-								return  htmlEx
+					   	  render: function (data, type, row) {	                      
+					   	    return row.isDuplicate
+					        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+					        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }   },                 //12
 				    {"data" : "remainAmount" ,    "title":"Remain Amt.(THB)",'type': 'num',        
 					   	  render: function (data, type, row) {	   
-			   					var htmlEx = '';   
-				   				if(caseDupli == 0  ){ 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}  
-					   			else if(caseDupli == 1  ){ 
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}   
-						   		else{          
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-						   		}  
-								return  htmlEx
+						   	    return row.isDuplicate
+						        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }     },            //13
 				    {"data" : "volumn" ,          "title":"Volume FG",'type': 'num' },                   //14
 				    {"data" : "volumnFGAmount" ,  "title":"Volume FG Amt(THB)",'type': 'num' },          //15
@@ -389,17 +317,9 @@ $(document) .ready( function() {
 				    {"data" : "billSendQuantity" ,"title":"Bill Qty" ,'type': 'num'},                    //19
 				    {"data" : "orderAmount" ,     "title":"Amt.(THB)",'type': 'num' ,        
 					   	  render: function (data, type, row) {	               
-						   		var htmlEx = '';  
-				   				if(caseDupli == 0  ){ 
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}  
-					   			else if(caseDupli == 1  ){ 
-						   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}      
-						   		else{          
-						   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-						   		}   
-								return  htmlEx
+						   	    return row.isDuplicate
+						        ? '<div style="visibility: hidden;color: red; font-weight: bolder;">' + data + '</div>'
+						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }    },                   //20
 				    {"data" : "customerDue" ,     "title":"Due Cus.",            
 					  	  className : 'dt-custom-td80',    	        
@@ -418,35 +338,27 @@ $(document) .ready( function() {
 							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
 							return  html; 
 					   	  }     },                                       //25 
-				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro',//,             
-						  render: function (data, type, row) {	 
-						   		var htmlEx = data;                                      
-			   					htmlEx = ''          
-			   					+ '<div data-search="' + data + '" '          
-			   					+ ' name="DateInput" type="text" '
-			   					+ ' value = "' + data   + "' "                 
-			   					+ ' autocomplete="off" >'       
-			   					+ dateDDMMYYYToDDMM(data) 
-			   					+ '</div>';       
-						   		return  htmlEx     ;         
-							}        
+				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro'//,             
+// 						 , render: function (data, type, row) {	 
+// 						   		var htmlEx = data;                                      
+// 			   					htmlEx = ''          
+// 			   					+ '<div data-search="' + data + '" '          
+// 			   					+ ' name="DateInput" type="text" '
+// 			   					+ ' value = "' + data   + "' "                 
+// 			   					+ ' autocomplete="off" >'       
+// 			   					+ dateDDMMYYYToDDMM(data) 
+// 			   					+ '</div>';       
+// 						   		return  htmlEx     ;         
+// 							}        
 				    },                      //26 
 				    {"data" : "dyeActual","title":"Dye [Actual]",'type': 'date-euro' },                  //27 
 				    {"data" : "dyeStatus","title":"Dye Status" },                                        //28  
 				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",
 				    	  'type': 'date-euro',    
 				  		  orderable: false,                   
-					  	  className : 'CFMPlanLabDateParent dt-custom-td80',               
-					   	  render: function (data, type, row) {
-				   			var htmlEx = ''     
-				   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-			   					|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-									htmlEx = ''; 
-								}
-							else{
-								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
-							}
-							return  htmlEx;
+					  	  className : 'CFMPlanLabDateParent dt-custom-td80',            
+					   	  render: function (data, type, row) { 
+							return  data;
 					   	  }             
 				  	  },             //29
 				    {"data" : "cfmActualLabDate","title":"Send CFM LAB" ,'type': 'date-euro'},     	     //30 
@@ -459,18 +371,8 @@ $(document) .ready( function() {
 				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro',                      
 					  	  className : 'SendCFMCusDateParent dt-custom-td80',    
 						  orderable: false,
-		   	  			  render: function (data, type, row) {	
-		 				   		var htmlEx = ''  
-					   			if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-			   					|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-									htmlEx = row.sendCFMCusDate ; 
-								}
-								else{
-									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
-									+ row.sendCFMCusDate
-									+ '" autocomplete="off" >';
-								} 
-								return  htmlEx
+		   	  			  render: function (data, type, row) {	 
+								return  data
 					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
 						
  				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //35 
@@ -488,16 +390,8 @@ $(document) .ready( function() {
 					  	  className : 'DeliveryDateParent dt-custom-td100',       
 					  	  type: 'date-euro'  ,    
 						  orderable: false,     
-					   	  render: function (data, type, row) {	     
-							var htmlEx = ''   
-					   		if(row.lotNo  == "รอจัด Lot"	 || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-					   			|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-								htmlEx = ''; 
-							}
-							else{   
-								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
-							}
-							return  htmlEx           
+					   	  render: function (data, type, row) {	      
+							return  data           
 							}	},       //40
 				    {"data" : "lotShipping","title":"Bill Date" ,            
 							  	  className : 'dt-custom-td80',    	        
@@ -508,124 +402,52 @@ $(document) .ready( function() {
 				    {"data" : "causeOfDelay","title":"Cause of Delay",                       
 				  	  	className : 'dt-custom-td450 p-r-15',      
 				  	  	type: 'string'  ,     
-					   	  render: function (data, type, row) {	 
-						   		var htmlEx = ''      
-					   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
-					   					row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""        || row.lotNo == "พ่วงแล้วรอสวม"	|| 
-					   					row.lotNo == "รอสวมเคยมี Lot" ){ 
-					   				htmlEx = row.causeOfDelay; 
-								}         
-								else if(     
-				   					( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  ||  
-				   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") || 
-				   						row.typePrdRemark == "SUB" || 
-				   						row.typePrdRemark == "" ||
-			   						  	row.typePrd == "OrderPuang"){ 
-				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-				   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
-								}      
-								else{   
-									htmlEx = '<input data-search="' + row.causeOfDelay
-									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-									+ row.causeOfDelay+ '" autocomplete="off" >'; 
-								} 
-								return  htmlEx      
+					   	  render: function (data, type, row) {	  
+								return  data      
 							}         
 				    },                               //43<-------------
 				    {"data" : "delayedDepartment","title":"Delayed Department",                    
 				  	  	className : 'dt-custom-td240',       
 				  	  	type: 'string'   ,       
-					   	  render: function (data, type, row, meta) {	    
-						   		var htmlEx = ''         
-							   		 
-					   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
-					   					row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""        || row.lotNo == "พ่วงแล้วรอสวม"	|| 
-					   					row.lotNo == "รอสวมเคยมี Lot" ){  
-					   				htmlEx = row.delayedDepartment; 
-								}   
-					   			else if(    
-				   					( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || 
-				   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN"|| 
-			  							row.typePrdRemark == "SUB" || row.typePrdRemark == "") ||
-			  							row.typePrd == "OrderPuang"){ 
-									 htmlEx = '<select data-search="' + row.delayedDepartment+ 
-											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
-											 getSelectOptions(data) + '</select>';    
-								} 
-					   			                    
-								else{   
-									htmlEx = '<select data-search="' + row.delayedDepartment+ 
-											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
-											 getSelectOptions(data) + '</select>';     
-								}  
-						   		return  htmlEx      
+					   	  render: function (data, type, row, meta) {	     
+						   		return  data      
 								}  
 				    },                      //44<-------------
 					{"data" : "pcRemark","title":"PCRemark",                   
 				  	  	className : 'dt-custom-td450 p-r-15',      
-				  	  	type: 'string'  ,     
-					   	  render: function (data, type, row) {	     
-						   		var htmlEx = ''    
-								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
-								return  htmlEx      
-								}    },                                         //45
+				  	  	type: 'string'       
+// 					   	  ,render: function (data, type, row) {	     
+// 						   		var htmlEx = ''    
+// 								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
+// 								return  htmlEx      
+// 								}    
+				    },                                         //45
 				    {"data" : "replacedRemark","title":"ReplacedRemark",                       
 							  	  	className : 'dt-custom-td450 p-r-15',      
 							  	  	type: 'string'  ,     
-					   	  render: function (data, type, row) {	     
-						   		var htmlEx = '';
-						   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-								}         
-						   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-								} 
-								else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
-									htmlEx = ''; 
-								}         
-								else{   
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-								}
-						   		return  htmlEx          
+					   	  render: function (data, type, row) {	      
+						   		return  data            
 								}    
 					},                             //46
 				    {"data" : "switchRemark","title":"SwitchRemark",         
 				  	  	type: 'string'  ,         
-				   	  	render: function (data, type, row) {	          
-							var htmlEx = ''           
-							if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
-							}        
-							else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
-									||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
-									|| row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
-								htmlEx = ''; 
-							}     
-							else{   
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
-							}
-							return  htmlEx      
+				   	  	render: function (data, type, row) { 
+							return  data      
 							}    },                                 //47
 				    {"data" : "stockRemark","title":"StockRemark",                 
 						  	  	className : 'dt-custom-td450 p-r-15',      
 						  	  	type: 'string'  ,       
-				   	  	render: function (data, type, row) {	     
-							var htmlEx = ''    
-							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
-							return  htmlEx      
+				   	  	render: function (data, type, row) {	 							return  data      
 							}      },                                   //48
 				    {"data" : "stockLoad","title":"StockLoad",                       
 						  	  	className : 'dt-custom-td450 p-r-15',      
 						  	  	type: 'string'  ,     
-				   	  	render: function (data, type, row) {	     
-							var htmlEx = ''       
-							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
-							return  htmlEx      
+				   	  	render: function (data, type, row) {	 							return  data      
 							}       
 						} ,                                                  //49
      
 			],        	                
-            columnDefs :  [	   
+            columnDefs :  [	 
 			], 
 			createdRow : function(row, data, index) { 
 				if(mapsDataHeader.size != 0){      
@@ -646,12 +468,10 @@ $(document) .ready( function() {
 					}
 					$('td', row).eq(mapsDataHeader.get("dyePlan")).addClass('bg-color-azure'); 
 				} 
-// 				if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
 			},     
-			drawCallback: function( settings ){  },   
-			initComplete: function () { }  
+			drawCallback: function( settings ){  console.log('draw')},   
+			initComplete: function () { console.log('initcom')}  
 	 	 });      	
- 	// Filter event handler
     $( MainTable.table().container() ).on( 'keyup', 'tfoot input', function () {
     	let searchVal = this.value;         
 		soLineTmp = '';            
@@ -663,47 +483,20 @@ $(document) .ready( function() {
 		else{     
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
-    } );
-	// SEARCH BY FILTER UNDER COLUMN NAME : BOAT         
+    } );      
 	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {                  
 // 		MainTable.column($(this).data('index')).search(this.value).draw(); 
 		let searchVal = this.value;      
 		soLineTmp = '';            
 		soTmp = '';       
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
-		let colHeaderData = columnsHeader[indexAfterReCol].data;
-// 		console.log($(this).data('index'))                     
-// 		console.log(columnsHeader[indexAfterReCol].data)           
-// 		console.log( MainTable.column( indexAfterReCol) .header() )
-// 		console.log( MainTable.column( indexAfterReCol).title() )
+		let colHeaderData = columnsHeader[indexAfterReCol].data; 
 		let regrex = '';   
 		let splitText = searchVal.split('/');
 		let size = splitText.length;
-		if(searchVal  == ' '){                        
-// 			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();
+		if(searchVal  == ' '){                         
 			MainTable.column(indexAfterReCol).search( '^$', true, false ).draw();
-		}      
-// 		else if(indexAfterReCol == 26 || indexAfterReCol == 27 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  } 
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'$';  } 
-// 			}    
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
-// 		}   
-// 		else if(indexAfterReCol == 4 ||  indexAfterReCol == 30 || indexAfterReCol == 31 || indexAfterReCol == 32 ||
-// 				indexAfterReCol == 34 || indexAfterReCol == 35 || indexAfterReCol == 41 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  }
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'';  } 
-// 			}       
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
-// 		}
+		}       
 		else if(colHeaderData == 'dyePlan' || colHeaderData == 'dyeActual' ){
 			if(size == 1){ regrex = '^'+searchVal+'';  } 
 			else if(size == 2){
@@ -734,11 +527,7 @@ $(document) .ready( function() {
 	SWMainTable = $('#SWMainTable').DataTable({  
     	scrollY: '100px',            
     	scrollX: true,           
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,        	
 		lengthChange: false,         	  
 		columns : 	
  	   		[   {"data" : "typePrd"  },               
@@ -767,11 +556,7 @@ $(document) .ready( function() {
     InputDateTable = $('#InputDateTable').DataTable({  
     	scrollY:       '400px',        
     	scrollX: true,          
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,
 		lengthChange: false,         	  
 		columns : 
  	   		[   {"data" : "createDate"  },               
@@ -793,7 +578,6 @@ $(document) .ready( function() {
 		],        
 		ordering: false,
 		 createdRow : function(row, data, index) {     
-// 			 $(row).addClass("data-custom-padding0505");
 		 },   
  	 });  
     
@@ -803,31 +587,27 @@ $(document) .ready( function() {
         } );          
     } ).draw();           
  
-// 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
-	$('#multi_userStatus').selectpicker();     
-	$('#multi_colVis').selectpicker();   
-	$('#multi_cusName').selectpicker();     
-	$('#multi_cusShortName').selectpicker();   
-	$('#multi_division').selectpicker();   
- 	colList = JSON.parse('${ColList}');  
-	cusNameList = JSON.parse('${CusNameList}');   	
-	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
-	userStatusList = JSON.parse('${UserStatusList}');       
-	columnsHeader = MainTable.settings().init().columns;  
- 	saleNumberList = JSON.parse('${SaleNumberList}');  
- 	divisionList = JSON.parse('${DivisionList}');       
- 	depList = JSON.parse('${DepList}');   
-//  	console.log(depList)  
-	selectOptionDepText = configDepSelectOption(depList) 
-// 	console.log(selectOptionDepText)
- 	addSelectOption(saleNumberList) ;   
-	addUserStatusOption(userStatusList );        
-	addCusNameOption(cusNameList );      
-	addCusShortNameOption(cusShortNameList );        
-	addColOption(columnsHeader ) ;        
-	addDivisionOption(divisionList );      
+	$('#multi_userStatus').selectpicker();
+	$('#multi_colVis').selectpicker();
+	$('#multi_cusName').selectpicker();
+	$('#multi_cusShortName').selectpicker();
+	$('#multi_division').selectpicker();
+ 	colList = JSON.parse('${ColList}');
+	userStatusList = JSON.parse('${UserStatusList}');
+	columnsHeader = MainTable.settings().init().columns;
+ 	saleNumberList = JSON.parse('${SaleNumberList}');
+ 	divisionList = JSON.parse('${DivisionList}');
+ 	depList = JSON.parse('${DepList}');
+ 	cusNameList = JSON.parse('${CusNameList}');
+ 	cusShortNameList  = JSON.parse('${CusShortNameList}');
+	selectOptionDepText = configDepSelectOption(depList); 
+ 	addSelectOption(saleNumberList);
+	addUserStatusOption(userStatusList);
+	addCusNameOption(cusNameList);
+	addCusShortNameOption(cusShortNameList);
+	addColOption(columnsHeader);
+	addDivisionOption(divisionList);
 	settingColumnOption(columnsHeader, colList);   
-// 	addLockColOption(columnsHeader);  
 	addLockColOption(mapsDataHeader,mapsTitleHeader);       
 	$('#multi_userStatus option').attr("selected","selected");
 	$('#multi_userStatus').selectpicker('refresh');
@@ -838,17 +618,9 @@ $(document) .ready( function() {
 	$('#multi_lockCol').selectpicker('refresh');        
 	$('#multi_division option').attr("selected","selected");
 	$('#multi_division').selectpicker('refresh');    
-// 	$('#SL_userStatus').selectpicker();      
-// 	addUserStatusOption(userStatusList );     
-// 	$('#SL_userStatus').selectpicker('val', userStatusList); 
-	
-	    
 	$("#MainTable_filter").hide();    
 	$("#SWMainTable_filter").hide();      
-// 	$("#MainTable_info").hide();      
-	  
-	$("#InputDateTable_filter").hide();  
-// 	$("#InputDateTable_info").hide();      
+	$("#InputDateTable_filter").hide();   
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
     	MainTable.columns.adjust();  
     	InputDateTable.columns.adjust();  
@@ -879,8 +651,7 @@ $(document) .ready( function() {
 				button: "confirm",
 			});  
 	    }
-	    else{    
-// 	    	 MainTable.colReorder.move( 23, 0 ,true);           
+	    else{           
 			let colReArray = colReOrderBySelect(columnsHeader,selectedItem);
 			swal({  
 				title: "Success",    
@@ -888,7 +659,6 @@ $(document) .ready( function() {
 				icon: "success",
 				button: "confirm",
 			});  
-			 
 //			 MainTable.colReorder.order(          
 //					 colReArray   
 //			    		,true); // true make it https://datatables.net/reference/api/colReorder.order() 
@@ -898,10 +668,7 @@ $(document) .ready( function() {
 //		    		 20,21,22,24,25,26,27,28,29,         
 //		    		 30,31,32,33,34,35 ]   
 //		    		,true); // true make it https://datatables.net/reference/api/colReorder.order() 
-	    }      
-// 	      new $.fn.dataTable.FixedColumns( MainTable );
-// 		columnsHeader = MainTable.settings().init().columns;  
-//     	getVisibleColumnsTable(columnsHeader)        
+	    }       
 	} );   
   	$('#btn_saveDefault').on( 'click', function () {        
 	     saveDefault(); 
@@ -943,81 +710,14 @@ $(document) .ready( function() {
  	    else{    
  			let colReArray = colReOrderBySelect(columnsHeader,selectedItem); 
  	    }      
- 	} );            
+ 	} );  
  	$('#btn_colSetting').on( 'click', function () {      
-//  		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
  		$('#modalColSetting').modal('show');    
  	} );          
     $('#btn_download').on( 'click', function () {           
     	var ObjMarkup = MainTable.data().toArray(); 
     	exportCSV(ObjMarkup)                 
- 	} );    
-   $("#MainTable").on("change",".CauseOfDelayInput",function(){  
-		  var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();  
-		var rowData = MainTable.row($row).data();  
-		var oldValue = rowData.causeOfDelay.trim();  
-		var newValue = $(this).val().trim();            
-// 	    rowData.CauseOfDelay = $(this).val();     
-		handlerInputField("causeOfDelay" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-		//DelayedDep  
-	}) 
-  $("#MainTable").on("change",".DelayedDepInput",function(){  
-		  var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();  
-		var rowData = MainTable.row($row).data();  
-		var oldValue = rowData.delayedDepartment.trim();  
-		var newValue = $(this).val().trim();            
-// 	    rowData.DelayedDepartment = $(this).val();     
-		handlerInputField("delayedDep" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-		//DelayedDep  
-	}) 
-  $("#MainTable").on("keydown blur",".SwitchRemarkInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();  
-		var rowData = MainTable.row($row).data(); 
-		var oldValue = rowData.switchRemark.trim();  
-		var prodOrder = rowData.productionOrder.trim();  
-        var newValue = $(this).val().trim();      
-		if (event.keyCode === 13) {         
-			 e.stopImmediatePropagation();
-			 e.preventDefault();      
-			 if(oldValue == newValue){ }
-			 else if(prodOrder != newValue){
-				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-			 }
-			 else{
-				swal({   
-		   		    title: 'Warning',      
-		   		    text: "ProductionOrder can't switch same productionOrder.",    
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-				})
-			  	rowData.switchRemark  = oldValue;
-			  	MainTable.row(idx).invalidate() ;  
-			 } 
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			 e.stopImmediatePropagation();
-			 e.preventDefault();          
-			 if(oldValue == newValue){ }
-			 else if(prodOrder != newValue){
-				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-			 }
-			 else{
-				 swal({   
-			   		    title: 'Warning',      
-			   		    text: "ProductionOrder can't switch same productionOrder.",    
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-			  	rowData.switchRemark = oldValue;
-			  	MainTable.row(idx).invalidate() ;  
-			 } 
-		} 
-	});  
+ 	} );     
       
   function handlerInputField(fieldName ,oldValue,newValue,checkField,rowData ,MainTable,idx){
 	  let dataArray ;
@@ -1053,554 +753,14 @@ $(document) .ready( function() {
 			  }
 		});      
 		 checkField= 0;  
-  }
-  $("#MainTable").on("keydown blur",".PCRemarkInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();      
-		var rowData = MainTable.row($row).data(); 
-		var oldValue = rowData.pcRemark;  
-        var newValue = $(this).val();      
-		 if (event.keyCode === 13) {         
-			 e.stopImmediatePropagation();
-			 e.preventDefault();  
-			 if(oldValue == newValue){  }
-			 else { handlerInputField("pcRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx) }
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			 e.stopImmediatePropagation();	
-			 e.preventDefault();       
-			 if(oldValue == newValue){  }
-			 else { handlerInputField("pcRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)    }
-		} 
-	});  
-  $("#MainTable").on("keydown blur",".StockLoadInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();      
-		var rowData = MainTable.row($row).data(); 
-		var oldValue = rowData.stockLoad;  
-      var newValue = $(this).val();      
-		 if (event.keyCode === 13) {         
-			 e.stopImmediatePropagation();
-			 e.preventDefault();  
-			 if(oldValue == newValue){  }
-			 else { handlerInputField("stockLoad" ,oldValue,newValue,check1,rowData ,MainTable,idx) }
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			 e.stopImmediatePropagation();	
-			 e.preventDefault();       
-			 if(oldValue == newValue){  }
-			 else { handlerInputField("stockLoad" ,oldValue,newValue,check1,rowData ,MainTable,idx)    }
-		} 
-	});  
-  $("#MainTable").on("keydown blur",".ReplacedRemarkInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();      
-		var rowData = MainTable.row($row).data(); 
-		var oldValue = rowData.replacedRemark;  
-        var newValue = $(this).val();      
-        var checkDigit = true;
-		 if (event.keyCode === 13) {         	    
-			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;    
-			 if(oldValue == newValue){  }
-			 else {
-				let mainSplit = newValue.split(",");
-				for(let i = 0 ; i < mainSplit.length; i++) {
-					let subSplit = mainSplit[i].split("="); 
-					if(subSplit.length > 1){       
-						let volume = subSplit[1].trim()   
-						checkDigit = checkIfDigitOnly(volume)
-					}
-					if(checkDigit){ }
-					else{ break;   } 
-				}
-				if(!checkDigit)  {
-					swal({   
-			   		    title: 'Warning',
-			   		    text: 'After = only numbers are required.',    
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}
-				else{ handlerInputField("replacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
-			 }
-		 }            
-		else if (event.type === 'blur'  && check1 == 0){    
-			 e.stopImmediatePropagation();
-			 e.preventDefault();         
-			 checkReplaced = 1 ;    
-			 if(oldValue == newValue){  }
-			 else {
-			 	let mainSplit = newValue.split(",");
-				for(let i = 0 ; i < mainSplit.length; i++) {
-					let subSplit = mainSplit[i].split("="); 
-					if(subSplit.length > 1){       
-						let volume = subSplit[1].trim()   
-						checkDigit = checkIfDigitOnly(volume)
-					}
-					if(checkDigit){ }
-					else{ break; } 
-				}
-				if(!checkDigit)  {
-					swal({   
-			  		    title: 'Warning',
-			  		    text: 'After = only numbers are required..',    
-			  		    icon: 'warning',
-			  		    timer: 1000,
-			  		    buttons: false,
-			  		})
-				}
-				else{ handlerInputField("replacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
-			 }
-		}    
-	});   
-  $("#MainTable").on("keydown blur",".StockRemarkInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();    
-		var rowData = MainTable.row($row).data();	  
-		var oldValue = rowData.stockRemark;  
-        var newValue = $(this).val();      
-		 if (event.keyCode === 13) {         
-			 e.stopImmediatePropagation();
-			 e.preventDefault();    
-			 if(oldValue == newValue){  }
-			 else if(rowData.grade == ''){
-	        	swal({
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			 } 
-			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)  }
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			 e.stopImmediatePropagation();
-			 e.preventDefault();      
-			 if(oldValue == newValue){  }
-			 else if(rowData.grade == ''){
-	        	swal({   
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			 }
-			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
-		}  
-	});  
-  $("#MainTable").on("keydown blur",".SendCFMCusDateInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();    
-		var rowData = MainTable.row($row).data();	 
-		var oldValue = rowData.sendCFMCusDate;     
-      var newValue = $(this).val();     
-		 if (event.keyCode === 13) {         
-			e.stopImmediatePropagation();
-			e.preventDefault();       
-			check1 = 1 ;    
-			newValue  = checkDateFormatInput( newValue,oldValue)  
-			if(newValue == 'E0'){ 
-	           	rowData.sendCFMCusDate  = oldValue;
-	           	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
-			}
-			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}
-			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})  
-			}       
-			else if(newValue == 'E3'){ }
-			else{
-// 				swal({ 
-// 					  title: "Are you sure to change date?",
-// 					  text: "From : "+oldValue+" to "+newValue+" ",
-// 					  icon: "warning",
-// 					  buttons: true,  
-// 					  dangerMode: true,						   																																								  
-// 					})
-// 					.then((willDelete) => {        
-// 					  if (willDelete) {     
-// 						  rowData.SendCFMCusDate  = newValue;
-// 						  MainTable.row(idx).invalidate() ;  
-// 						  var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
-// 						  var  obj = JSON.parse(json);    
-// 						  var arrayTmp = [];  
-// 						  arrayTmp.push(obj);       
-// // 						  saveInputDateToServer(arrayTmp);
-						  handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
-// 					  } else { 
-// 						  rowData.SendCFMCusDate  = oldValue;
-// 						  MainTable.row(idx).invalidate() ; 
-// //						  MainTable.row(idx).invalidate().draw(); 
-// 					  }
-// 				});    
-				
-			}            
-			check1= 0;   
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			check1= 1; 
-			newValue  = checkDateFormatInput( newValue,oldValue)   
-			 e.stopImmediatePropagation();
-			 e.preventDefault();        
-			if(newValue == 'E0'){ 
-	           	rowData.sendCFMCusDate  = oldValue;
-	           	MainTable.row(idx).invalidate() ; 
-//    			MainTable.row(idx).invalidate().draw();  
-           }
-           else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}
-				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		}) 
-				}      
-				else if(newValue == 'E3'){ }
-           else{  
-// 	           	 swal({ 
-// 					  title: "Are you sure to change date?",
-// 					  text: "From : "+oldValue+" to "+newValue,
-// 					  icon: "warning",
-// 					  buttons: true,
-// 					  dangerMode: true,																																														  
-// 					})
-// 					.then((willDelete) => {
-// 					  if (willDelete) {  
-// 						  rowData.SendCFMCusDate  = newValue;   
-// 							MainTable.row(idx).invalidate() ;  
-// 	 				 		var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
-// 	 			 			var  obj = JSON.parse(json);    
-// 	 			 			var arrayTmp = [];  
-// 	 						arrayTmp.push(obj);       
-// // 	 						saveInputDateToServer(arrayTmp);        
-
-						  	handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
-// 					  } else {       
-// 						  rowData.SendCFMCusDate  = oldValue; 
-// 						  MainTable.row(idx).invalidate() ;  
-// //						  MainTable.row(idx).invalidate().draw(); 
-// 					  }
-// 				}); 
-			}
-           check1= 0;  
-		} 
-	});  
-	 $("#MainTable").on("keydown blur",".CFMPlanLabDateInput", function (e) { 
-		var $row = $(this).parents("tr");
-		var idx = MainTable.row($row).index();    
-		var rowData = MainTable.row($row).data();	 
-		var oldValue = rowData.cfmPlanLabDate;     
-        var newValue = $(this).val();     
-		 if (event.keyCode === 13) {         
-			e.stopImmediatePropagation();   
-			e.preventDefault();       
-			check1 = 1 ;     
-// 			console.log(' newValue ', newValue,' oldValue ',oldValue)     
-			newValue  = checkDateFormatInput( newValue,oldValue)  
-// 			console.log(' newValue ', newValue,' oldValue ',oldValue)   
-// 			console.log('-----------------------------------' )   
-			if(newValue == 'E0'){ 
-             	rowData.cfmPlanLabDate  = oldValue;
-             	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
-			}
-			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}
-			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})  
-			}       
-			else if(newValue == 'E3'){ }
-			else{
-				swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
-					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
-					})
-					.then((willDelete) => {        
-					  if (willDelete) {     
-						  rowData.cfmPlanLabDate  = newValue;
-						  MainTable.row(idx).invalidate() ; 
-// 						  MainTable.row(idx).invalidate().draw();  
-						  var json = createInputDateJsonData(rowData,'cfmPlanLabDate'); 
-						  var  obj = JSON.parse(json);    
-						  var arrayTmp = [];  
-						  arrayTmp.push(obj);       
-						  saveInputDateToServer(arrayTmp);      
-					  } else { 
-						  rowData.cfmPlanLabDate  = oldValue;
-						  MainTable.row(idx).invalidate() ; 
-// 						  MainTable.row(idx).invalidate().draw(); 
-					  }
-				});    
-				
-			}     
-			check1= 0;   
-		}                      
-		else if (event.type === 'blur'  && check1 == 0){    
-			check1= 1; 
-			newValue  = checkDateFormatInput( newValue,oldValue)   
- 			 e.stopImmediatePropagation();
-			 e.preventDefault();        
-			if(newValue == 'E0'){ 
-             	rowData.cfmPlanLabDate  = oldValue;
-             	MainTable.row(idx).invalidate() ; 
-//      			MainTable.row(idx).invalidate().draw();  
-             }
-             else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}
-				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		}) 
-				}      
-				else if(newValue == 'E3'){ }
-             else{  
-	           	 swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue,
-					  icon: "warning",
-					  buttons: true,
-					  dangerMode: true,																																														  
-					})
-					.then((willDelete) => {
-					  if (willDelete) {  
-						  rowData.cfmPlanLabDate  = newValue;
-// 						  MainTable.row(idx).invalidate().draw();  
-							MainTable.row(idx).invalidate() ;  
-	 				 		var json = createInputDateJsonData(rowData,'cfmPlanLabDate'); 
-	 			 			var  obj = JSON.parse(json);    
-	 			 			var arrayTmp = [];  
-	 						arrayTmp.push(obj);       
-	 						saveInputDateToServer(arrayTmp);        
-					  } else {       
-						  rowData.cfmPlanLabDate  = oldValue; 
-						  MainTable.row(idx).invalidate() ;  
-// 						  MainTable.row(idx).invalidate().draw(); 
-					  }
-				}); 
-			}
-             check1= 0;  
-		} 
-	});  
-	 $("#MainTable").on("keydown blur",".DeliveryDateInput", function (e) { 
-			var $row = $(this).parents("tr");
-			var idx = MainTable.row($row).index();    
-			var rowData = MainTable.row($row).data();	 
-			var oldValue = rowData.deliveryDate;
-	        var newValue = $(this).val();           
-			if (event.keyCode === 13) {      
-				check3 = 1 ;    
-				e.stopImmediatePropagation();
-				e.preventDefault();       
-				newValue  = checkDateFormatInput( newValue,oldValue)    
-				if(newValue == 'E0'){ 
-	             	rowData.deliveryDate  = oldValue;
-	             	MainTable.row(idx).invalidate() ; 
-// 	     			MainTable.row(idx).invalidate().draw();  
-	             }else if(newValue == 'E1'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
-				   		    icon: 'warning',
-				   		    timer: 1000,
-				   		    buttons: false,
-				   		})
-					}
-					else if(newValue == 'E2'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Date need greater than equal today.',
-				   		    icon: 'warning',
-				   		    timer: 1000,
-				   		    buttons: false,
-				   		})
-					}      
-					else if(newValue == 'E3'){ }
-				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
-						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
-					})     
-					.then((willDelete) => {
-						if (willDelete) {  
-							 rowData.deliveryDate  = newValue;
-							 MainTable.row(idx).invalidate() ; 
-// 							 MainTable.row(idx).invalidate().draw();  
-							 var json = createInputDateJsonData(rowData,'deliveryDate'); 
-		 			 			var  obj = JSON.parse(json);    
-		 			 			var arrayTmp = [];  
-		 						arrayTmp.push(obj);   
-		 						saveInputDateToServer(arrayTmp);  
-						} else { 
-							 rowData.deliveryDate  = oldValue;
-							 MainTable.row(idx).invalidate() ; 
-// 							 MainTable.row(idx).invalidate().draw(); 
-						}
-					});    
-					
-				}  
-				check3= 0;  
-			}                
-//				--------------------BLUR---------------------------
-			else if (event.type === 'blur'  && check3 == 0){    
-				check3= 1; 
-				e.stopImmediatePropagation();
-				e.preventDefault();         
-				newValue  = checkDateFormatInput( newValue,oldValue)    
-				if(newValue == 'E0'){ 
-	             	rowData.deliveryDate  = oldValue;
-	             	MainTable.row(idx).invalidate() ; 
-// 	     			MainTable.row(idx).invalidate().draw();  
-	             }   
-				else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Please check format input date ( DD/MM/YYYY ).',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}
-				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
-			   		    icon: 'warning',
-			   		    timer: 1000,
-			   		    buttons: false,
-			   		})
-				}      
-				else if(newValue == 'E3'){ }
-				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
-						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
-						})     
-						.then((willDelete) => {
-						  if (willDelete) {  
-							  rowData.deliveryDate  = newValue;
-							  MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw();   
-							  var json = createInputDateJsonData(rowData,'deliveryDate'); 
-		 			 		  var  obj = JSON.parse(json);    
-		 			 		  var arrayTmp = [];  
-		 					  arrayTmp.push(obj);   
-		 					  saveInputDateToServer(arrayTmp);  
-						  } else { 
-							  rowData.deliveryDate  = oldValue;
-							  MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw(); 
-						  }
-						});    
-					
-				} 
-	             check3= 0; 
-			} 
-		});  
-	 
-// 	$('#MainTable').on('dblclick','td',function(e){
-// // 		scroll_to_contact_form_fn()  
-// 	    var row_object  = MainTable.row(this).data();    
-// 	    if(MainTable.cell(this).index() === undefined){
-	    	
-// 	    } 
-// 	    else{      
-// 	    	 var colIdx = MainTable.cell(this).index().column; 
-// 		    var arrTmp = [];
-// 			arrTmp.push(row_object);
-// 			getInputDate(arrTmp,colIdx);
-// 	    }
-	       
-// 	})      
-	$('#MainTable').on('dblclick','td',function(e){ 
-	    var row_object  = MainTable.row(this).data();             
-	    var $rowC =$(this).attr('class') 
-	    if(MainTable.cell(this).index() === undefined){  }     
-	    else {          
-	    	if($rowC != undefined){ 
-		    	let myArray = $rowC.split(" ");
-		    	if(myArray.length > 0){ 
-			    	let classInput = myArray[1];  
-			    	if(classInput == 'cfmPlanLabDateParent' || classInput == 'cfmPlanDateParent' 
-		   			|| classInput == 'deliveryDateParent'   || classInput == 'sendCFMCusDateParent'){      
-					    var arrTmp = [];   
-						arrTmp.push(row_object);
-						getInputDate(arrTmp,classInput);
-				    }  
-		    	}
-	    	}
-	    	
-	    }
-	       
-	})                
+  }              
 	preLoaderHandler( preloader)   
 });      
 function clearInput(){
 	document.getElementById("input_saleOrder").value = '';  
 	document.getElementById("input_article").value   = '';  
 	document.getElementById("input_prdOrder").value  = '';     
-// 	document.getElementById("input_saleOrderDate").value = '';  
 	document.getElementById("input_designNo").value  = '';  
-// 	document.getElementById("input_prdOrderDate").value  = '';  
 	document.getElementById("input_material").value  = '';         
 	document.getElementById("input_labNo").value     = '';  
 	document.getElementById("input_PO").value     = '';  
@@ -1620,8 +780,6 @@ function clearInput(){
 	
 }
 function searchByDetail(){ 
-// 	var customer = document.getElementById("input_customer").value .trim();
-// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();
@@ -1641,8 +799,7 @@ function searchByDetail(){
 	var userStatus = $('#multi_userStatus').val(); 
 	var customer = $('#multi_cusName').val();    
 	var customerShort = $('#multi_cusShortName').val(); 
-	var division = $('#multi_division').val();  
-	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
+	var division = $('#multi_division').val();   
 		var distChannel = "";  
 		 if( dmCheck ){ distChannel = "DM";}
 		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
@@ -1667,120 +824,117 @@ function searchByDetail(){
    		})
 	}
 	else{
-		var json = createJsonData(); 
-	    var  obj = JSON.parse(json);    
-		var arrayTmp = [];   
-		arrayTmp.push(obj); 
-		searchByDetailToServer(arrayTmp); 
+// 		var json = createJsonData(); 
+// 	    var  obj = JSON.parse(json);    
+// 		var arrayTmp = [];   
+// 		arrayTmp.push(obj); 
+// 		searchByDetailToServer(arrayTmp); 
+		
+	    var json = createJsonData(); 
+	    var obj = JSON.parse(json);    
+	    var arrayTmp = [];   
+	    arrayTmp.push(obj);  
+	    searchByDetailToServer(arrayTmp);
 	}
 } 
+function createInputDateJsonData(val, caseSave) {
+    var CFMPlanLabDate = val.cfmPlanLabDate;
+    var CFMPlanDate = val.cfmPlanDate;
+    var DeliveryDate = val.deliveryDate;
+    var SaleOrder = val.saleOrder;
+    var SaleLine = val.saleLine;
+    var ProductionOrder = val.productionOrder;
+    var ReplacedRemark = val.replacedRemark;
+    var PCRemark = val.pcRemark;
+    var StockRemark = val.stockRemark;
+    var LotNo = val.lotNo;
+    var Grade = val.grade;
+    var CauseOfDelay = val.causeOfDelay;
+    var DelayedDepartment = val.delayedDepartment;
+    var SwitchRemark = val.switchRemark;
+    var StockLoad = val.stockLoad;
+    var SendCFMCusDate = val.sendCFMCusDate;
+    var UserStatus = val.userStatus;
 
-function createInputDateJsonData(val,caseSave){ 
-	var CFMPlanLabDate = val.cfmPlanLabDate;      
-	var CFMPlanDate = val.cfmPlanDate;       
-	var DeliveryDate = val.deliveryDate;      
-	var SaleOrder = val.saleOrder; 
-	var SaleLine = val.saleLine; 
-	var ProductionOrder = val.productionOrder; 
-	var ReplacedRemark = val.replacedRemark; 
-	var PCRemark = val.pcRemark; 
-	var StockRemark = val.stockRemark; 
-	var LotNo = val.lotNo; 
-	var Grade = val.grade; 
-
-	var CauseOfDelay = val.causeOfDelay; 
-	var DelayedDepartment = val.delayedDepartment; 
-	var SwitchRemark = val.switchRemark; 
-	var StockLoad = val.stockLoad; 
-	var SendCFMCusDate = val.sendCFMCusDate; 
-	var UserStatus = val.userStatus; 
-	var json = '{"productionOrder":'+JSON.stringify(ProductionOrder)+ 
-	   ',"userStatus":'+JSON.stringify(UserStatus)+  
-	   ',"cfmPlanLabDate":'+JSON.stringify(CFMPlanLabDate)+  
-	   ',"cfmPlanDate":'+JSON.stringify(CFMPlanDate)+  
-	   ',"deliveryDate":'+JSON.stringify(DeliveryDate)+  
-	   ',"saleOrder": '+JSON.stringify(SaleOrder)+ 
-	   ',"saleLine": '+JSON.stringify(SaleLine)+ 
-	   ',"caseSave": '+JSON.stringify(caseSave)+ 
-	   ',"replacedRemark": '+JSON.stringify(ReplacedRemark)+    
-	   ',"stockRemark": '+JSON.stringify(StockRemark)+
-	   ',"pcRemark":'+JSON.stringify(PCRemark)+
-	   ',"grade": '+JSON.stringify(Grade)+  
-	   ',"lotNo": '+JSON.stringify(LotNo)+
-	   ',"switchRemark": '+JSON.stringify(SwitchRemark)+ 
-	   ',"stockLoad": '+JSON.stringify(StockLoad)+    
-	   ',"delayedDepartment": '+JSON.stringify(DelayedDepartment)+   
-	   ',"causeOfDelay": '+JSON.stringify(CauseOfDelay)+    
-	   ',"sendCFMCusDate": '+JSON.stringify(SendCFMCusDate)+    
-	   '} ';          
-	   return json; 
+    var json = {
+        "productionOrder": ProductionOrder,
+        "userStatus": UserStatus,
+        "cfmPlanLabDate": CFMPlanLabDate,
+        "cfmPlanDate": CFMPlanDate,
+        "deliveryDate": DeliveryDate,
+        "saleOrder": SaleOrder,
+        "saleLine": SaleLine,
+        "caseSave": caseSave,
+        "replacedRemark": ReplacedRemark,
+        "stockRemark": StockRemark,
+        "pcRemark": PCRemark,
+        "grade": Grade,
+        "lotNo": LotNo,
+        "switchRemark": SwitchRemark,
+        "stockLoad": StockLoad,
+        "delayedDepartment": DelayedDepartment,
+        "causeOfDelay": CauseOfDelay,
+        "sendCFMCusDate": SendCFMCusDate
+    };
+    return JSON.stringify(json);
 }
-function createJsonData(){ 
-// 	var customer = document.getElementById("input_customer").value .trim();      
-// 	var customerShort = document.getElementById("input_customerShortName").value .trim();  
-	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
-	var article = document.getElementById("input_article").value .trim();  
-	var prdOrder = document.getElementById("input_prdOrder").value .trim();    
-	var saleNumber = document.getElementById("SL_saleNumber").value .trim();
-	var saleOrderDate = document.getElementById("input_saleOrderDate").value .trim();
-	var po = document.getElementById("input_PO").value .trim(); 
-	var designNo = document.getElementById("input_designNo").value .trim();  
-	var prdOrderDate = document.getElementById("input_prdOrderDate").value .trim(); 
-	var material = document.getElementById("input_material").value .trim(); 
-	var labNo = document.getElementById("input_labNo").value .trim(); 
-	var po = document.getElementById("input_PO").value .trim(); 
-// 	var userStatus = document.getElementById("SL_userStatus").value .trim();  
-	var deliStatus = document.getElementById("SL_delivStatus").value .trim();  
-	var dueDate = document.getElementById("input_dueDate").value .trim(); 
-	var dmCheck = document.getElementById("check_DM").checked;  
-	var exCheck = document.getElementById("check_EX").checked;  
-	var hwCheck = document.getElementById("check_HW").checked;    
-	var division = $('#multi_division').val(); 
-	var userStatus = $('#multi_userStatus').val();    
-	var customer = $('#multi_cusName').val();
-	var customerShort = $('#multi_cusShortName').val();
-	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
-	var distChannel = "";    
-	 if( dmCheck ){ distChannel = "DM";}
-	 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
-	 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}
-	 var cusDiv = "";
-// 	 if(configCusList.length > 0 ){ 
-// 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
-// 	 	if(p_cusDiv!=''){ 
-// 	 		cusDiv = p_cusDiv;
-// 	 	} 
-// 	 }
-// 	 else{
-// 		 cusDiv = p_cusDiv; 
-// 	 }
-	var json = '{'+
-// 		'"CustomerName":'+JSON.stringify(customer)+ 
-// 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
-	   '"saleOrder":'+JSON.stringify(saleOrder)+ 
-	   ',"articleFG":'+JSON.stringify(article)+  
-	   ',"productionOrder":'+JSON.stringify(prdOrder)+  
-	   ',"saleNumber": '+JSON.stringify(saleNumber)+
-	   ',"saleOrderCreateDate":'+JSON.stringify(saleOrderDate)+
-	   ',"designFG":'+JSON.stringify(designNo)+       
-	   ',"productionOrderCreateDate":'+JSON.stringify(prdOrderDate)+ 
-	   ',"materialNo":'+JSON.stringify(material)+          
-	   ',"labNo":'+JSON.stringify(labNo)+   
-// 	   ',"UserStatus":'+JSON.stringify(userStatus)+      
-	   ',"userStatusList":'+JSON.stringify(userStatus)+       
-	   ',"customerNameList":'+JSON.stringify(customer)+   
-	   ',"customerDivision":'+JSON.stringify(cusDiv)+      
-	   ',"purchaseOrder":'+JSON.stringify(po)+   
-	   ',"customerShortNameList":'+JSON.stringify(customerShort)+   
-	   ',"divisionList":'+JSON.stringify(division)+   
-	   ',"deliveryStatus":'+JSON.stringify(deliStatus)+         
-	   ',"saleStatus":'+JSON.stringify(saleStatus)+  
-	   ',"distChannel":'+JSON.stringify(distChannel) + 
-	   ',"dueDate":'+JSON.stringify(dueDate) + 
-	   '} ';     
-// 	   console.log(json)
-// 	   console.log(json) 
-	   return json; 
+
+function createJsonData() {
+    var saleOrder = document.getElementById("input_saleOrder").value.trim();
+    var article = document.getElementById("input_article").value.trim();
+    var prdOrder = document.getElementById("input_prdOrder").value.trim();
+    var saleNumber = document.getElementById("SL_saleNumber").value.trim();
+    var saleOrderDate = document.getElementById("input_saleOrderDate").value.trim();
+    var po = document.getElementById("input_PO").value.trim(); // รวมประกาศไว้ที่เดียว
+    var designNo = document.getElementById("input_designNo").value.trim();
+    var prdOrderDate = document.getElementById("input_prdOrderDate").value.trim();
+    var material = document.getElementById("input_material").value.trim();
+    var labNo = document.getElementById("input_labNo").value.trim();
+    var deliStatus = document.getElementById("SL_delivStatus").value.trim();
+    var dueDate = document.getElementById("input_dueDate").value.trim();
+    var dmCheck = document.getElementById("check_DM").checked;
+    var exCheck = document.getElementById("check_EX").checked;
+    var hwCheck = document.getElementById("check_HW").checked;
+    var division = $('#multi_division').val();
+    var userStatus = $('#multi_userStatus').val();
+    var customer = $('#multi_cusName').val();
+    var customerShort = $('#multi_cusShortName').val();
+    var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
+
+    var distChannel = "";
+    if (dmCheck) { distChannel = "DM"; }
+    if (exCheck) {
+        if (distChannel != "") { distChannel = distChannel + "|" }
+        distChannel = distChannel + "EX";
+    }
+    if (hwCheck) {
+        if (distChannel != "") { distChannel = distChannel + "|" }
+        distChannel = distChannel + "HW";
+    }
+
+    // สร้าง Object แล้วค่อย Stringify จะปลอดภัยกว่าการต่อ String เอง
+    var json = {
+        "saleOrder": saleOrder,
+        "articleFG": article,
+        "productionOrder": prdOrder,
+        "saleNumber": saleNumber,
+        "saleOrderCreateDate": saleOrderDate,
+        "designFG": designNo,
+        "productionOrderCreateDate": prdOrderDate,
+        "materialNo": material,
+        "labNo": labNo,
+        "userStatusList": userStatus,
+        "customerNameList": customer,
+        "customerDivision": "", // เคลียร์ตัวแปร cusDiv ที่ไม่ได้ใช้
+        "purchaseOrder": po,
+        "customerShortNameList": customerShort,
+        "divisionList": division,
+        "deliveryStatus": deliStatus,
+        "saleStatus": saleStatus,
+        "distChannel": distChannel,
+        "dueDate": dueDate
+    };
+    return JSON.stringify(json);
 }
 function exportCSV(data){ 
     var createXLSLFormatObj = [];   
@@ -2068,7 +1222,7 @@ function setInputDetailToRowByPrd( array, objTmp) { //"DelayedDep"CauseOfDelay) 
         } 
      })        
 }    
-function setUserStatusByStockLoad( array, objTmp,data) { //"DelayedDep"CauseOfDelay) {        
+function setUserStatusByStockLoad( array, objTmp,data) {  
 	let i = 0;  
 	let fieldName = objTmp.fieldName 
 	let idx = objTmp.idx 
@@ -2139,23 +1293,73 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 	});     
 }    
 function searchByDetailToServer(arrayTmp) {    
-	$.ajax({
-		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/searchByDetail",  
-		success: function(data) {    
-			MainTable.clear();      
-			MainTable.rows.add(data);      
-			MainTable.columns.adjust().draw();     
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
-	});   
-}       
+//     let pageInfo = MainTable.page.info(); // DataTables API
+
+//     let payload = {
+//         criteria: arrayTmp,
+//         start: pageInfo.start,     // offset
+//         length: pageInfo.length    // page size
+//     }; 
+
+    $.ajax({
+        type: "POST",  
+        contentType: "application/json",  
+        data: JSON.stringify(arrayTmp),      
+        url: ctx + "/DetailV2/searchByDetail",  
+        success: function(data) {    
+
+            let lastSo = "";
+            let lastLine = "";
+            data.forEach(function(row, i) {
+                if (row.saleOrder === lastSo && row.saleLine === lastLine) {
+                    row.isDuplicate = true;
+                } else {
+                    row.isDuplicate = false;
+                    lastSo = row.saleOrder;
+                    lastLine = row.saleLine;
+                }
+            });
+
+            MainTable.clear();      
+            MainTable.rows.add(data);      
+            MainTable.draw(false);     
+        },   
+        error: function(e) {
+            swal("Fail", "Please contact to IT", "error");
+        }
+    });   
+}
+// function searchByDetailToServer(arrayTmp) {    
+// 	$.ajax({
+// 		type: "POST",  
+// 		contentType: "application/json",  
+// 		data: JSON.stringify(arrayTmp),      
+// 		url: ctx+"/DetailV2/searchByDetail",  
+// 		success: function(data) {    
+// 			let lastSo = "";
+// 			let lastLine = "";
+// 			data.forEach(function(row, i) {
+// 			    if (row.saleOrder === lastSo && row.saleLine === lastLine) {
+// 			        row.isDuplicate = true;
+// 			    } else {
+// 			        row.isDuplicate = false;
+// 			        lastSo = row.saleOrder;
+// 			        lastLine = row.saleLine;
+// 			    }
+// 			});
+			
+			
+// 			MainTable.clear();      
+// 			MainTable.rows.add(data);      
+// 			MainTable.columns.adjust().draw();     
+// 		},   
+// 		error: function(e) {
+// 			swal("Fail", "Please contact to IT", "error");
+// 		},
+// 		done: function(e) {       
+// 		}   	
+// 	});   
+// }       
 </script>
 <script type="text/javascript">  
 function checkDateFormatInput( value ,oldvalue) {
@@ -2253,27 +1457,11 @@ function settingColumnOption(columnsHeader ,colVisible){
 		$('#multi_colVis option').attr("selected","selected");
 		$('#multi_colVis').selectpicker('refresh');
 	}  
-	else{   
-// 		$('#multi_colVis').selectpicker();   
-// 		columns = MainTable.settings().init().columns; 
-// 		console.log(columns)
-// 		console.log(colVisible)   
-// 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
-// 		addColOption(columns ) 
+	else{    
 		setColVisibleTable(columnsHeader,colVisible);    
 		$('#multi_colVis').selectpicker('val', colVisible);        
 	}       
-	getVisibleColumnsTable(columnsHeader)      
-// 	int index = row.MainTable.Columns["Division"].Ordinal;  
-// 	console.log(index)  
-// SELECTED ONLY   
-// 	$("#multi_colVis").each(function(){     
-// 	    console.log( $(this).val() )  
-// 	});       
-// SELECTED ALLOPTION
-// 	$("#multi_colVis option").each(function(){     
-// 		console.log( $(this).val() )  
-// 	});  
+	getVisibleColumnsTable(columnsHeader);
 }
 function addUserStatusOption(data ){ 
 	// The DOM way. 
@@ -2331,8 +1519,7 @@ function addCusNameOption(data ){
 	}  
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		   
-		 var resultData = data[i]; 	   
-// 		 console.log(resultData)
+		 var resultData = data[i];
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
 		 opt.text  = resultData.customerName;  
@@ -2349,7 +1536,7 @@ function addCusShortNameOption(data ){
 	}  
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
-		 var resultData = data[i]; 	   
+		 var resultData = data[i]; 	    
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
 		 opt.text  = resultData.customerShortName;
@@ -2485,13 +1672,6 @@ function colReOrderBySelect(mainCol,selectedItem) {
 	        leftColumns: countLock,    
 	        rightColumns: 0       
 	    } );
-	//1st param is insert index = 2 means insert at index 2
-	//2nd param is delete item count = 0 means delete 0 elements
-	//3rd param is new item that you want to insert  
-// 	if (index > -1) {  
-// 		arrayCol.splice(index, 1); // 2nd parameter means remove one item only 
-// 		arrayCol.splice(0, 0 , index);
-// 	}   
 	return arrayCol;  
 } 
 function clearStickyInput() {   
@@ -2522,27 +1702,15 @@ function addSelectOption(data){
 		 opt.value = resultData.saleNumber;   
 		 sel.appendChild(opt);          
 	}         
-} 
-// function sumParseFloat(val1,val2){ 
-// 	val1 = val1.replace("px", "");
-// 	val2 = val2.replace("px", "");
-// 	var result = parseFloat(val1) + parseFloat(val2);
-// 	result = result.toFixed(4) + 'px';
-// 	console.log(result)          
-// 	return result  ;​
-// }   
+}   
 function getInputDate(arrTmp,colIdx){      
 	var path ="";  
-// 	console.log(colIdx)    
-// 	if(colIdx == 23){
 	if(colIdx == 'cfmPlanLabDateParent'){	
 		path = ctx+"/Detail/getCFMPlanLabDateDetail";
 	}    
 	else if(colIdx == 'cfmPlanDateParent'){
-// 	else if(colIdx == 27){
 		path = ctx+"/Detail/getCFMPlanDateDetail";
 	}    
-// 	else if(colIdx == 32){
 	else if(colIdx == 'deliveryDateParent'){
 		path = ctx+"/Detail/getDeliveryPlanDateDetail"; 
 	}  
@@ -2594,20 +1762,15 @@ function getVisibleColumnsTable(columnsHeader) {
 	var count = 0;
 	for (var i in columnsHeader) {        
 		check = (MainTable.column( i ).visible() === true ? 'visible' : 'not visible');
-		if((check == 'visible'      
-// 				&& all_columns[i].data == 'DueDate'
+		if((check == 'visible'
 				)){         
-// 			console.log(columnsHeader[i].data)
 			mapsColumnHeader.set(columnsHeader[i].data, columnsHeader[i].type); 
 			mapsTitleHeader.set(columnsHeader[i].title, count); 
 			mapsDataHeader.set(columnsHeader[i].data, count);
 			count = count + 1
-		}    
-		else{        
-// 			unvisible 
-		} 
+		}
 	}     
-}     
+}
 function saveDefault( ){  
 	var json = createJsonData();      
     var  obj = JSON.parse(json);    
@@ -2718,8 +1881,6 @@ function setSearchDefault(data){
 	else{//saleStatus == 'C'
 		document.getElementById("rad_closed").checked = true;
 	}   
-	 
-// 	console.log(innnerText.SaleNumber,innnerText.DeliveryStatus)
 	document.getElementById('SL_saleNumber').value=innnerText.saleNumber;
 	document.getElementById('SL_delivStatus').value=innnerText.deliveryStatus;
 	
@@ -2754,7 +1915,7 @@ function configDepSelectOption(data) {
 //     var select = $("<select><option value='Select'>Select</option><option value='WaitAnswer'>ส่งแล้วรอตอบ</option><option value='OK'>OK</option><option value='NoK'>NoK</option><option value='Cancel'>Cancel</option></select>");
     let htmlSelectOption = "";
     htmlSelectOption += "<select>";    
-    htmlSelectOption +=  "<option value='Select' selected>Select</option>";
+    htmlSelectOption +=  "<option value='' selected>Select</option>";
     for(let i = 0 ; i < data.length; i++) {        
     	htmlSelectOption += "<option value='"+data[i].delayedDepartment+"'>"+(i+1)+":"+data[i].delayedDepartment+"</option>";
 	} 
@@ -2778,22 +1939,17 @@ function setValueWithFieldName(fieldName, rowData,value) {
 	  else if(fieldName == 'sendCFMCusDate'){rowData.sendCFMCusDate = value  ; }
 	} 
 function checkIfDigitOnly(_string) {
-	var check = true;   
-// 	const pattern = /^[0-9]+$/;     
-// console.log(_string)
-	const pattern = /^[1-9]\d*(\.\d+)?$/;         
-// console.log(pattern.test(_string))  
+	var check = true;
+	const pattern = /^[1-9]\d*(\.\d+)?$/;       
     if(pattern.test(_string)) {
-//         console.log("String contains only numbers")
-
     	check = true;    
     }
     else {
-//         console.log("String does not contain only numbers") 
     	check = false;
     } 
     return check;
-}function getSwitchProdOrderListByRowProd(arrayTmp) {    
+}
+function getSwitchProdOrderListByRowProd(arrayTmp) {    
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
@@ -2808,8 +1964,6 @@ function checkIfDigitOnly(_string) {
 						title: "Warning ",        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
-// 			   		    timer: 2000,  
-// 			   		    buttons: false,   
 			   		    button: "confirm",
 			   		})
 				}
@@ -2818,12 +1972,6 @@ function checkIfDigitOnly(_string) {
 					SWMainTable.rows.add(data);     
 					SWMainTable.columns.adjust().draw(false); 
 					$('#modalRemarkSW').modal('show');  
-// 					swal({
-// 						title: "Success",    
-// 					 	text: bean.systemStatus ,   
-// 						icon: "info",
-// 						button: "confirm",   
-//    					});  
 				}  
 				 
 			}     

@@ -29,7 +29,7 @@ import th.co.wacoal.atech.pcms2.entities.SwitchProdOrderDetail;
 import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
 import th.co.wacoal.atech.pcms2.entities.WaitTestDetail;
-import th.co.wacoal.atech.pcms2.entities.WorkInLabDetail; 
+import th.co.wacoal.atech.pcms2.entities.WorkInLabDetail;
 import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.InspectOrdersDetail;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;

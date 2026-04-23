@@ -9,29 +9,31 @@ import th.co.wacoal.atech.pcms2.dao.master.ColumnSettingDao;
 import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 
 @Service
-public class ColumnSettingService  { 
-	private ColumnSettingDao dao; 
+public class ColumnSettingService {
+	private ColumnSettingDao dao;
+
 	@Autowired
 	public ColumnSettingService(ColumnSettingDao dao) {
-		this.dao = dao; 
-	} 
+		this.dao = dao;
+	}
+
 	public ArrayList<ColumnHiddenDetail> getColumnVisibleDetail(String user)
 	{
 		ArrayList<ColumnHiddenDetail> list = this.dao.getColumnVisibleDetail(user);
 		return list;
 	}
 
-	public ArrayList<ColumnHiddenDetail> upsertColumnSettingDetail(ColumnHiddenDetail pd)
+	public ArrayList<ColumnHiddenDetail> upsertColumnSettingDetail(String user, ColumnHiddenDetail pd)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnSettingDetail(pd);
+		ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnSettingDetail(user,pd);
 		return list;
 	}
 
-	public ArrayList<ColumnHiddenDetail> upsertColumnVisibleSummary(ColumnHiddenDetail pd)
+	public ArrayList<ColumnHiddenDetail> upsertColumnVisibleSummary(String user,ColumnHiddenDetail pd)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnVisibleSummary(pd);
+		ArrayList<ColumnHiddenDetail> list = this.dao.upsertColumnVisibleSummary(user,pd);
 		return list;
 	}
 

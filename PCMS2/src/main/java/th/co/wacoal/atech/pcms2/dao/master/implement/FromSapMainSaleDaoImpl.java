@@ -18,7 +18,7 @@ import th.co.wacoal.atech.pcms2.dao.master.FromSapMainSaleDao;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
-import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail; 
+import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.entities.SaleOrderLogDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainSaleDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
@@ -39,7 +39,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapMainSaleDaoImpl(@Qualifier("pcmsDatabase")Database database) {
+	public FromSapMainSaleDaoImpl(@Qualifier("pcmsDatabase") Database database) {
 		this.database = database;
 		this.message = "";
 	}
@@ -81,8 +81,8 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 			+ "      ,CAST ( NULL AS DateTime ) [SyncDateHeader]\r\n";
 
 	@Override
-	public ArrayList<SaleOrderLogDetail> getFromSapMainSaleDetailWithRangeOfChangeDate(String startLogDate,
-			String endLogDate, String saleOrder)
+	public ArrayList<SaleOrderLogDetail> getFromSapMainSaleDetailWithRangeOfChangeDate(String startLogDate, String endLogDate,
+			String saleOrder)
 	{
 		ArrayList<SaleOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1 and ( DataStatus = 'O' )   ";
@@ -249,131 +249,129 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	@Override
 	public String upsertFromSapMainSaleDetail(ArrayList<FromErpMainSaleDetail> paList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 
 		String iconStatus = "I";
-			String sql = "-- Update if the record exists\r\n"
-					+ "-- Update if the record exists\r\n"
-					+ "IF ? = 'X'\r\n"
-					+ "BEGIN\r\n"
-					+ "    UPDATE [dbo].[FromSapMainSale]\r\n"
-					+ "    SET\r\n"
-					+ "        [DataStatus] = 'X',\r\n"
-					+ "        [ChangeDate] = ?\r\n"
-					+ "    WHERE\r\n"
-					+ "        [SaleOrder] = ?\r\n"
-					+ "        AND [DataStatus] = 'O';\r\n"
-					+ "END\r\n"
-					+ "ELSE\r\n"
-					+ "BEGIN\r\n"
-					+ "    UPDATE [dbo].[FromSapMainSale]\r\n"
-					+ "    SET\r\n"
-					+ "        [MaterialNo] = ?,\r\n"
-					+ "        [DueDate] = ?,\r\n"
-					+ "        [PlanGreigeDate] = ?,\r\n"
-					+ "        [SaleUnit] = ?,\r\n"
-					+ "        [SaleQuantity] = ?,\r\n"
-					+ "        [CustomerMaterial] = ?,\r\n"
-					+ "        [Color] = ?,\r\n"
-					+ "        [CustomerNo] = ?,\r\n"
-					+ "        [PurchaseOrder] = ?,\r\n"
-					+ "        [SaleOrg] = ?,\r\n"
-					+ "        [DistChannel] = ?,\r\n"
-					+ "        [Division] = ?,\r\n"
-					+ "        [CustomerName] = ?,\r\n"
-					+ "        [CustomerShortName] = ?,\r\n"
-					+ "        [ColorCustomer] = ?,\r\n"
-					+ "        [CustomerDue] = ?,\r\n"
-					+ "        [RemainQuantity] = ?,\r\n"
-					+ "        [ShipDate] = ?,\r\n"
-					+ "        [SaleStatus] = ?,\r\n"
-					+ "        [Currency] = ?,\r\n"
-					+ "        [Price] = ?,\r\n"
-					+ "        [OrderAmount] = ?,\r\n"
-					+ "        [RemainAmount] = ?,\r\n"
-					+ "        [SaleCreateDate] = ?,\r\n"
-					+ "        [SaleNumber] = ?,\r\n"
-					+ "        [SaleFullName] = ?,\r\n"
-					+ "        [DeliveryStatus] = ?,\r\n"
-					+ "        [DesignFG] = ?,\r\n"
-					+ "        [ArticleFG] = ?,\r\n"
-					+ "        [OrderSheetPrintDate] = ?,\r\n"
-					+ "        [CustomerMaterialBase] = ?,\r\n"
-					+ "        [ChangeDate] = ?,\r\n"
-					+ "        [DataStatus] = ?,\r\n"
-					+ "        [SyncDate] = ?\r\n"
-					+ "    WHERE\r\n"
-					+ "        [SaleOrder] = ?\r\n"
-					+ "        AND [SaleLine] = ?;\r\n"
-					+ "\r\n"
-					+ "    -- Check if rows were updated\r\n"
-					+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
-					+ "    \r\n"
-					+ "    IF @rc = 0\r\n" 
-					+ "    BEGIN\r\n"
-					+ "        -- Insert if no rows were updated\r\n"
-					+ "        INSERT INTO [dbo].[FromSapMainSale] (\r\n"
-					+ "            [SaleOrder],\r\n"
-					+ "            [SaleLine],\r\n"
-					+ "            [MaterialNo],\r\n"
-					+ "            [DueDate],\r\n"
-					+ "            [PlanGreigeDate],\r\n"
-					+ "            [SaleUnit],\r\n"
-					+ "            [SaleQuantity],\r\n"
-					+ "            [CustomerMaterial],\r\n"
-					+ "            [Color],\r\n"
-					+ "            [CustomerNo],\r\n"
-					+ "            [PurchaseOrder],\r\n"
-					+ "            [SaleOrg],\r\n"
-					+ "            [DistChannel],\r\n"
-					+ "            [Division],\r\n"
-					+ "            [CustomerName],\r\n"
-					+ "            [CustomerShortName],\r\n"
-					+ "            [ColorCustomer],\r\n"
-					+ "            [CustomerDue],\r\n"
-					+ "            [RemainQuantity],\r\n"
-					+ "            [ShipDate],\r\n"
-					+ "            [SaleStatus],\r\n"
-					+ "            [Currency],\r\n"
-					+ "            [Price],\r\n"
-					+ "            [OrderAmount],\r\n"
-					+ "            [RemainAmount],\r\n"
-					+ "            [SaleCreateDate],\r\n"
-					+ "            [SaleNumber],\r\n"
-					+ "            [SaleFullName],\r\n"
-					+ "            [DeliveryStatus],\r\n"
-					+ "            [DesignFG],\r\n"
-					+ "            [ArticleFG],\r\n"
-					+ "            [OrderSheetPrintDate],\r\n"
-					+ "            [CustomerMaterialBase],\r\n"
-					+ "            [ChangeDate],\r\n"
-					+ "            [CreateDate],\r\n"
-					+ "            [DataStatus],\r\n"
-					+ "            [SyncDate]\r\n"
-					+ "        )\r\n"
-					+ "        VALUES (\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?, ?, ?, ?, ?,\r\n"
-					+ "            ?,\r\n"
-					+ "            ?\r\n"
-					+ "        );\r\n"
-					+ "    END\r\n"
-					+ "END" ;
-		try {
+		String sql = "-- Update if the record exists\r\n"
+				+ "-- Update if the record exists\r\n"
+				+ "IF ? = 'X'\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainSale]\r\n"
+				+ "    SET\r\n"
+				+ "        [DataStatus] = 'X',\r\n"
+				+ "        [ChangeDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [SaleOrder] = ?\r\n"
+				+ "        AND [DataStatus] = 'O';\r\n"
+				+ "END\r\n"
+				+ "ELSE\r\n"
+				+ "BEGIN\r\n"
+				+ "    UPDATE [dbo].[FromSapMainSale]\r\n"
+				+ "    SET\r\n"
+				+ "        [MaterialNo] = ?,\r\n"
+				+ "        [DueDate] = ?,\r\n"
+				+ "        [PlanGreigeDate] = ?,\r\n"
+				+ "        [SaleUnit] = ?,\r\n"
+				+ "        [SaleQuantity] = ?,\r\n"
+				+ "        [CustomerMaterial] = ?,\r\n"
+				+ "        [Color] = ?,\r\n"
+				+ "        [CustomerNo] = ?,\r\n"
+				+ "        [PurchaseOrder] = ?,\r\n"
+				+ "        [SaleOrg] = ?,\r\n"
+				+ "        [DistChannel] = ?,\r\n"
+				+ "        [Division] = ?,\r\n"
+				+ "        [CustomerName] = ?,\r\n"
+				+ "        [CustomerShortName] = ?,\r\n"
+				+ "        [ColorCustomer] = ?,\r\n"
+				+ "        [CustomerDue] = ?,\r\n"
+				+ "        [RemainQuantity] = ?,\r\n"
+				+ "        [ShipDate] = ?,\r\n"
+				+ "        [SaleStatus] = ?,\r\n"
+				+ "        [Currency] = ?,\r\n"
+				+ "        [Price] = ?,\r\n"
+				+ "        [OrderAmount] = ?,\r\n"
+				+ "        [RemainAmount] = ?,\r\n"
+				+ "        [SaleCreateDate] = ?,\r\n"
+				+ "        [SaleNumber] = ?,\r\n"
+				+ "        [SaleFullName] = ?,\r\n"
+				+ "        [DeliveryStatus] = ?,\r\n"
+				+ "        [DesignFG] = ?,\r\n"
+				+ "        [ArticleFG] = ?,\r\n"
+				+ "        [OrderSheetPrintDate] = ?,\r\n"
+				+ "        [CustomerMaterialBase] = ?,\r\n"
+				+ "        [ChangeDate] = ?,\r\n"
+				+ "        [DataStatus] = ?,\r\n"
+				+ "        [SyncDate] = ?\r\n"
+				+ "    WHERE\r\n"
+				+ "        [SaleOrder] = ?\r\n"
+				+ "        AND [SaleLine] = ?;\r\n"
+				+ "\r\n"
+				+ "    -- Check if rows were updated\r\n"
+				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
+				+ "    \r\n"
+				+ "    IF @rc = 0\r\n"
+				+ "    BEGIN\r\n"
+				+ "        -- Insert if no rows were updated\r\n"
+				+ "        INSERT INTO [dbo].[FromSapMainSale] (\r\n"
+				+ "            [SaleOrder],\r\n"
+				+ "            [SaleLine],\r\n"
+				+ "            [MaterialNo],\r\n"
+				+ "            [DueDate],\r\n"
+				+ "            [PlanGreigeDate],\r\n"
+				+ "            [SaleUnit],\r\n"
+				+ "            [SaleQuantity],\r\n"
+				+ "            [CustomerMaterial],\r\n"
+				+ "            [Color],\r\n"
+				+ "            [CustomerNo],\r\n"
+				+ "            [PurchaseOrder],\r\n"
+				+ "            [SaleOrg],\r\n"
+				+ "            [DistChannel],\r\n"
+				+ "            [Division],\r\n"
+				+ "            [CustomerName],\r\n"
+				+ "            [CustomerShortName],\r\n"
+				+ "            [ColorCustomer],\r\n"
+				+ "            [CustomerDue],\r\n"
+				+ "            [RemainQuantity],\r\n"
+				+ "            [ShipDate],\r\n"
+				+ "            [SaleStatus],\r\n"
+				+ "            [Currency],\r\n"
+				+ "            [Price],\r\n"
+				+ "            [OrderAmount],\r\n"
+				+ "            [RemainAmount],\r\n"
+				+ "            [SaleCreateDate],\r\n"
+				+ "            [SaleNumber],\r\n"
+				+ "            [SaleFullName],\r\n"
+				+ "            [DeliveryStatus],\r\n"
+				+ "            [DesignFG],\r\n"
+				+ "            [ArticleFG],\r\n"
+				+ "            [OrderSheetPrintDate],\r\n"
+				+ "            [CustomerMaterialBase],\r\n"
+				+ "            [ChangeDate],\r\n"
+				+ "            [CreateDate],\r\n"
+				+ "            [DataStatus],\r\n"
+				+ "            [SyncDate]\r\n"
+				+ "        )\r\n"
+				+ "        VALUES (\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?, ?, ?, ?, ?,\r\n"
+				+ "            ?,\r\n"
+				+ "            ?\r\n"
+				+ "        );\r\n"
+				+ "    END\r\n"
+				+ "END";
 
-			int index = 1;
-			int batchSize = 0;
-			prepared = connection.prepareStatement(sql);
+		int index = 1;
+		int batchSize = 0;
+
+		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
 			for (FromErpMainSaleDetail bean : paList) {
 				index = 1;
 
@@ -382,10 +380,10 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getSaleOrder());
 
 				prepared.setString(index ++ , bean.getMaterialNo());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleUnit());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
 				prepared.setString(index ++ , bean.getCustomerMaterial());
 				prepared.setString(index ++ , bean.getColor());
 				prepared.setString(index ++ , bean.getCustomerNo());
@@ -397,15 +395,15 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getColorCustomer());
 				prepared.setString(index ++ , bean.getCustomerDue());
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
+//this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleStatus());
 				prepared.setString(index ++ , bean.getCurrency());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleNumber());
 				prepared.setString(index ++ , bean.getSaleFullName());
 				prepared.setString(index ++ , bean.getDeliveryStatus());
@@ -415,7 +413,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerMaterialBase());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setString(index ++ , bean.getDataStatus());
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
@@ -423,10 +421,10 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getSaleOrder());
 				prepared.setString(index ++ , bean.getSaleLine());
 				prepared.setString(index ++ , bean.getMaterialNo());
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getDueDate(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getPlanGreigeDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleUnit());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getSaleQuantity(), index ++ );
 				prepared.setString(index ++ , bean.getCustomerMaterial());
 				prepared.setString(index ++ , bean.getColor());
 				prepared.setString(index ++ , bean.getCustomerNo());
@@ -438,15 +436,15 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setString(index ++ , bean.getCustomerShortName());
 				prepared.setString(index ++ , bean.getColorCustomer());
 				prepared.setString(index ++ , bean.getCustomerDue());
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
+//this.sshUtl.setSqlDate(prepared, bean.getCustomerDue(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainQuantity(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getShipDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleStatus());
 				prepared.setString(index ++ , bean.getCurrency());
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount(), index ++ );
-				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount(), index ++ );
-				prepared = this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getPrice(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getOrderAmount(), index ++ );
+				this.sshUtl.setSqlBigDecimal(prepared, bean.getRemainAmount(), index ++ );
+				this.sshUtl.setSqlDate(prepared, bean.getSaleCreateDate(), index ++ );
 				prepared.setString(index ++ , bean.getSaleNumber());
 				prepared.setString(index ++ , bean.getSaleFullName());
 				prepared.setString(index ++ , bean.getDeliveryStatus());
@@ -457,7 +455,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setString(index ++ , bean.getDataStatus());
-				prepared = this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 
 				prepared.addBatch();
 				batchSize ++ ;
@@ -467,9 +465,9 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 					batchSize = 0; // Reset batch size
 				}
 //				prepared.setString(index++, bean.get    );
-//				prepared = this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
 //				prepared.setTimestamp(index++, new Timestamp(time));
-//				prepared = this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 			}
 			prepared.executeBatch();
 			prepared.close();

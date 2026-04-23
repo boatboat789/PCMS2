@@ -27,8 +27,7 @@ body {
     height: 18em;
     margin-top: -9em;
     margin-left: -15em;     
-    border: 1px solid #ccc;
-/*     background-color: #f3f3f3; */
+    border: 1px solid #ccc; 
     place-content: space-evenly;
     
 	text-align: center;
@@ -39,11 +38,7 @@ body {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 		
 }
-.tooltip-inner {
-	/*     min-width: 300px; the minimum width */
-	/*      border: 2px solid #44cec3;    */
-	/*      border-radius: .25rem; */
-	/*       background-color: #0133b4;    */
+.tooltip-inner { 
 	padding: 8px;
 	background: #00D500;
 	/* 	position: absolute; */
@@ -57,18 +52,7 @@ body {
 
 .table-bordered tbody tr td, .table-bordered tbody tr th {
 	text-align: center;
-}
-/* .uitooltip{     */
-/* 	padding: 8px; */
-/*     background:#00D500; */
-/* 	position: absolute; */
-/* 	max-width: 300px;   */
-/* 	-webkit-box-shadow: 0 0 5px #aaa; */
-/* 	box-shadow: 0 0 5px #aaa; */
-/*     font-size: 16px;    */
-/*     white-space: pre-line;       */
-/*     border-radius: 10px;    */
-/* }        */
+} 
 #loader {
 	/* 	position: fixed; */
 	position: absolute;

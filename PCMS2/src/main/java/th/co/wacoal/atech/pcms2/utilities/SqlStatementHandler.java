@@ -175,7 +175,6 @@ public class SqlStatementHandler {
 				prepared.setDate(index, this.convertJavaDateToSqlDate(dateStr));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			prepared.setNull(index, java.sql.Types.DATE);
 		}
 		return prepared;

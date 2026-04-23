@@ -1,48 +1,17 @@
 package th.co.wacoal.atech.pcms2.service;
 
-import javax.servlet.http.HttpServlet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.BackGroundJobDao;
-import th.in.totemplate.core.sql.Database;
 
 @Component
-public class BackGroundJobService extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private Database database;
+public class BackGroundJobService {
 	private BackGroundJobDao dao;
-	@SuppressWarnings("unused")
-	private String[] uiColumns;
-	@SuppressWarnings("unused")
-	private static final String columns = "";
- 
+
 	@Autowired
-	public BackGroundJobService(BackGroundJobDao dao) { 
-			this.dao = dao; 
-	}
-
-	public static String stringColumn()
-	{
-		return "[]";
-	}
-
-	public static String[] arrayColumn()
-	{
-		return "".replaceAll("'", "").split(",");
-	}
-
-	@Override
-	public void destroy()
-	{
-		this.database.close();
-		super.destroy();
-	}
-
-	public void handlerERPAtechToWebApp()
-	{
-		this.dao.handlerERPAtechToWebApp();
+	public BackGroundJobService(BackGroundJobDao dao) {
+		this.dao = dao;
 	}
 
 	public void execUpsertToMainProd()
@@ -99,6 +68,11 @@ public class BackGroundJobService extends HttpServlet {
 		// TODO Auto-generated method stub
 		this.dao.handlerBackGroundZ_ATT_CustomerConfirm2();
 
+	}
+
+	public void execSumBillAndGoodReceive()
+	{
+		this.dao.execSumBillAndGoodReceive();
 	}
 
 }

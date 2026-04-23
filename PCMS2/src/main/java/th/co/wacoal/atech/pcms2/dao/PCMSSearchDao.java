@@ -6,6 +6,6 @@ public interface PCMSSearchDao {
 
 	String handlerTempTableCustomerSearchList(List<String> customerNameList, List<String> customerShortNameList);
 
-	void handlerCloseTempTableCustomerSearchList();
-
+	String handlerTempTableUserStatusList(List<String> statuses);
+ 
 }

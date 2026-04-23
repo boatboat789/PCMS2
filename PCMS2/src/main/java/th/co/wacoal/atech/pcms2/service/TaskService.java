@@ -3,96 +3,128 @@ package th.co.wacoal.atech.pcms2.service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
 import th.co.wacoal.atech.pcms2.service.master.FromSORCFMService;
 
-@Configuration
-@EnableScheduling
+@Component
 public class TaskService {
-	@SuppressWarnings("unused")
-	private String LOCAL_DIRECTORY;
-	@SuppressWarnings("unused")
-	private String FTP_DIRECTORY;
-	@SuppressWarnings("unused") 
-	private ServletContext context;
-	private DataImportSORService sorModel;
-	private BackGroundJobService bgjModel;
+	private DataImportSORService dataImportSORService;
+	private BackGroundJobService backGroundJobService;
 	private boolean isCheck = false;
-	private FromSORCFMService fscModel;
+	private FromSORCFMService fromSORCFMService;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	private final ConcurrentHashMap<String, Boolean> jobLocks = new ConcurrentHashMap<>();
+
+	private void executeWithLock(String jobName, Runnable task)
+	{
+		if (jobLocks.putIfAbsent(jobName, true) == null) {
+			try {
+				task.run();
+			} finally {
+				jobLocks.remove(jobName);
+			}
+		}
+	}
+
 	@Autowired
-	public TaskService(DataImportSORService sorModel
-			, BackGroundJobService bgjModel
-			, FromSORCFMService fscModel			) {
-		this.sorModel = sorModel;
-		this.bgjModel = bgjModel;
-		this.fscModel = fscModel; 
+	public TaskService(DataImportSORService dataImportSORService, BackGroundJobService backGroundJobService,
+			FromSORCFMService fromSORCFMService) {
+		this.dataImportSORService = dataImportSORService;
+		this.backGroundJobService = backGroundJobService;
+		this.fromSORCFMService = fromSORCFMService;
 //		isCheck = true;
-	}  
-//	@Scheduled(fixedRate = 50000000)	
-	@Scheduled(cron = "0 6/10 * * * *")
+	}
+
+//	@Scheduled(cron = "1 * * * * *")
+	@Scheduled(cron = "0 13/20 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
-		this.handlerBackGroundZATTCustomerConfirm2();
-		if(isCheck)System.out.println("Start sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.bgjModel.sortBackGroundAfterGetERPDataProcedure();
-		this.runAllSyncJobs();
-		if(isCheck)System.out.println("End sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}  
+
+		System.out.println("Start Date : " + new Date());
+		executeWithLock("ERP_SYNC_JOB", () -> {
+
+			handlerBackGroundZATTCustomerConfirm2();
+			runAllSyncJobs();
+			backGroundJobService.sortBackGroundAfterGetERPDataProcedure();
+
+		});
+		System.out.println("End Date : " + new Date());
+	}
+
 	public void handlerBackGroundZATTCustomerConfirm2()
 	{
-		if(isCheck)System.out.println("Start sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.bgjModel.handlerBackGroundZ_ATT_CustomerConfirm2();
-		if(isCheck)System.out.println("End sortBackGroundZ_ATT_CustomerConfirm2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-	}  
-	public void runAllSyncJobs() {
-	    if(isCheck)System.out.println("=== Start runAllSyncJobs: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		if (isCheck)
+			System.out.println("Start sortBackGroundZ_ATT_CustomerConfirm2: "
+					+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		this.backGroundJobService.handlerBackGroundZ_ATT_CustomerConfirm2();
+		if (isCheck)
+			System.out.println("End sortBackGroundZ_ATT_CustomerConfirm2: "
+					+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+	}
 
-	    sortBackGroundCustomer();
-	    sortBackGroundProductionOrder();
-	    sortBackGroundSaleOrder();
+	public void runAllSyncJobs()
+	{
+		if (isCheck)
+			System.out.println("=== Start runAllSyncJobs: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
-	    if(isCheck)System.out.println("=== End runAllSyncJobs: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		sortBackGroundCustomer();
+		sortBackGroundSaleOrder();
+		sortBackGroundProductionOrder();
+
+//	    this.backGroundJobService.execSumBillAndGoodReceive();
+		if (isCheck)
+			System.out.println("=== End runAllSyncJobs: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
 
 	// ---- ย้ายเป็น private method ----
-	private void sortBackGroundCustomer() {
-	    if(isCheck)System.out.println("Start sortBackGroundCustomer: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));  
-	    this.bgjModel.handlerERPAtechToWebAppCustomer();
-	    if(isCheck)System.out.println("End sortBackGroundCustomer: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	private void sortBackGroundCustomer()
+	{
+		if (isCheck)
+			System.out.println("Start sortBackGroundCustomer: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		this.backGroundJobService.handlerERPAtechToWebAppCustomer();
+		if (isCheck)
+			System.out.println("End sortBackGroundCustomer: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
 
-	private void sortBackGroundProductionOrder() {
-	    if(isCheck)System.out.println("Start sortBackGroundProductionOrder: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
-	    this.bgjModel.handlerERPAtechToWebAppProductionOrder();
-	    if(isCheck)System.out.println("End sortBackGroundProductionOrder: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
+	private void sortBackGroundProductionOrder()
+	{
+		if (isCheck)
+			System.out.println(
+					"Start sortBackGroundProductionOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		this.backGroundJobService.handlerERPAtechToWebAppProductionOrder();
+		if (isCheck)
+			System.out.println(
+					"End sortBackGroundProductionOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
 
-	private void sortBackGroundSaleOrder() {
-	    if(isCheck)System.out.println("Start sortBackGroundSaleOrder: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
-	    this.bgjModel.handlerERPAtechToWebAppSaleOrder();
-	    if(isCheck)System.out.println("End sortBackGroundSaleOrder: " +  
-	        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); 
-	} 
-	@Scheduled(cron = "0 0 1 * * *") 
-//	@Scheduled(fixedRate = 50000000)	
+	private void sortBackGroundSaleOrder()
+	{
+		if (isCheck)
+			System.out
+					.println("Start sortBackGroundSaleOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+		this.backGroundJobService.handlerERPAtechToWebAppSaleOrder();
+		if (isCheck)
+			System.out.println("End sortBackGroundSaleOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+	}
+
+	@Scheduled(cron = "0 0 1 * * *")
 	public void bgJobHandlerDataFromOrgatex()
-	{ 
-		ArrayList<SORDetail> list = sorModel.getList();
-		fscModel.upSertFromSORCFMDetail(list);  
-	}  
+	{
+
+		executeWithLock("ORGATEX_IMPORT", () -> {
+
+			ArrayList<SORDetail> list = dataImportSORService.getList();
+			fromSORCFMService.upSertFromSORCFMDetail(list);
+
+		});
+	}
 }

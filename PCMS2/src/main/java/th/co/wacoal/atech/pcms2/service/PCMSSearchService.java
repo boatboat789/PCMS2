@@ -3,11 +3,11 @@ package th.co.wacoal.atech.pcms2.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSSearchDao;
 
-@Component
+@Service
 public class PCMSSearchService { 
 	private PCMSSearchDao dao; 
 	@Autowired
@@ -21,9 +21,11 @@ public class PCMSSearchService {
 		return list;
 	}
 
-	public void handlerCloseTempTableCustomerSearchList()
+	public String handlerTempTableUserStatusList(List<String> statuss )
 	{ 
-		this.dao.handlerCloseTempTableCustomerSearchList();
+		String list = this.dao.handlerTempTableUserStatusList(statuss);
+		return list;
 	}
+ 
 
 }
