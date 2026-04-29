@@ -160,24 +160,52 @@ $(document) .ready( function() {
 // 				, render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en') 
 			    , render: function (data, type, row) {
 			      if (type === 'display' || type === 'filter') {
-			          const date = moment(data, 'MMM D, YYYY', true); // Strict parsing
-			          return date.isValid() ? date.format('DD/MM/YYYY') : "";
+			            // 1. เช็คเบื้องต้นว่ามีข้อมูลไหม
+			            if (!data) return "";
+ 
+			            const date = moment(data, 'MMM D, YYYY', true);
+
+			            // 2. เช็คว่า Valid หรือไม่ และเช็คเคสปี 1900
+			            if (date.isValid()) {
+			                // ถ้าเป็นปี 1900 ให้ส่งค่าว่าง (หรือขีดฟันหนู "-")
+			                if (date.year() === 1900) {
+			                    return ""; 
+			                }
+			                return date.format('DD/MM/YYYY');
+			            }
+			            
+			            return ""; // กรณี Parse ไม่ผ่าน
 			        }
 			        return data; // Return original data for sorting/other operations
 			      }
 				, orderData : [ 0,2,1 ]
 			},                  //0
 			{ data : "noPerDay" },              //1
-			{ data : "replyDate"                     
-			  	, className : 'dt-custom-td80'  
-			    , render: function (data, type, row) {
-					if (type === 'display' || type === 'filter') {
-				        const date = moment(data, 'MMM D, YYYY', true); // Strict parsing
-				        return date.isValid() ? date.format('DD/MM/YYYY') : "";
+			{ 
+			    data: "replyDate",
+			    className: 'dt-custom-td80',
+			    render: function (data, type, row) {
+			        if (type === 'display' || type === 'filter') {
+			            // 1. เช็คเบื้องต้นว่ามีข้อมูลไหม
+			            if (!data) return "";
+
+			            const date = moment(data, 'MMM D, YYYY', true);
+
+			            // 2. เช็คว่า Valid หรือไม่ และเช็คเคสปี 1900
+			            if (date.isValid()) {
+			                // ถ้าเป็นปี 1900 ให้ส่งค่าว่าง (หรือขีดฟันหนู "-")
+			                if (date.year() === 1900) {
+			                    return ""; 
+			                }
+			                return date.format('DD/MM/YYYY');
+			            }
+			            
+			            return ""; // กรณี Parse ไม่ผ่าน
 			        }
-			        return data; // Return original data for sorting/other operations
-			      }
-				, orderData : [ 2,1,0 ] },              //2
+			        return data; 
+			    },
+			    orderData: [ 2, 1, 0 ] 
+			},              //2
 			{ data : "cfmNo" },             //3  
 			{ data : "customerName"                     
 			  	, className : 'dt-custom-td240'  },        //4

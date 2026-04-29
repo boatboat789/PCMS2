@@ -111,7 +111,12 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ "           )";
 		int index = 1;
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(index ++ , user);
 			prepared.setInt(index ++ , no);
 			prepared.setString(index ++ , customerName);
@@ -140,8 +145,9 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 		} catch (SQLException e) {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		list.add(bean);
 		return list;
@@ -186,7 +192,12 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ "  where  [EmployeeId] = ? and [ForPage] = ?";
 
 //				prepared.setString(1, userId);
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			int index = 1;
 			prepared.setInt(index ++ , no);
 			prepared.setString(index ++ , customerName);
@@ -217,7 +228,8 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		list.add(bean);
 		return list;

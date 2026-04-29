@@ -3,7 +3,9 @@ package th.co.wacoal.atech.pcms2.dao.implement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -78,34 +80,51 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 		this.customerService = customerService;
 		this.zattCustomerConfirm2Service = zattCustomerConfirm2Service;
 	}
+
 	@FunctionalInterface
 	private interface PreparedStatementSetter {
-	    void set(PreparedStatement ps) throws SQLException;
+		void set(PreparedStatement ps) throws SQLException;
 	}
+
 	private void executeProcedure(String sql)
 	{
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
+
+		try {
+			prepared = connection.prepareStatement(sql);
 			prepared.execute();
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 	}
-	private void executeProcedure(String sql, PreparedStatementSetter setter) {
 
-	    try (
-	        Connection connection = database.getConnection();
-	        PreparedStatement prepared = connection.prepareStatement(sql)
-	    ) {
+	private void executeProcedure(String sql, PreparedStatementSetter setter)
+	{
 
-	        setter.set(prepared);
-	        prepared.execute();
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-	    } catch (SQLException e) {
-	        throw new RuntimeException("Execute procedure failed : " + sql, e);
-	    }
+		try {
+			prepared = connection.prepareStatement(sql);
+			setter.set(prepared);
+			prepared.execute();
+
+		} catch (SQLException e) {
+			throw new RuntimeException("Execute procedure failed : " + sql, e);
+		}
 	}
+
 	@Override
 	public void execUpsertToMainProd()
 	{
@@ -246,7 +265,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			e.printStackTrace();
 		}
 
-		this.execSumBillAndGoodReceive();
 	}
 
 	@Override
@@ -274,12 +292,28 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
 
-//		System.out.println("upsertFromSapReceipeDetail: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.execUpsertToTEMPProdWorkDate();
-//		System.out.println("execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
-		this.execUpsertToTEMPUserStatusOnWeb();
-//		System.out.println("After upsert: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));  
-
+		try {
+//		System.out.println("sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+			this.execUpsertToTEMPProdWorkDate();
+		} catch (Exception e) {
+			System.err.println("Error execUpsertToTEMPProdWorkDate: " + e.getMessage());
+			e.printStackTrace();
+		}
+		try {
+//		System.out.println("after execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+			this.execUpsertToTEMPUserStatusOnWeb();
+		} catch (Exception e) {
+			System.err.println("Error execUpsertToTEMPUserStatusOnWeb: " + e.getMessage());
+			e.printStackTrace();
+		}
+		try {
+//		System.out.println("After execUpsertToTEMPUserStatusOnWeb: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));   
+			this.execSumBillAndGoodReceive();
+		} catch (Exception e) {
+			System.err.println("Error execSumBillAndGoodReceive: " + e.getMessage());
+			e.printStackTrace();
+		}
+//		System.out.println("After execSumBillAndGoodReceive: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));   
 	}
 
 	@Override

@@ -47,10 +47,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		return this.message;
 	}
 
-	private String declareThirtyMinuteAgo = "" + " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
+	private String declareThirtyMinuteAgo = "" 
+	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
 
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());"; 
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
+//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -8, GETDATE());"; 
+//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -4, GETDATE());"; 
 //	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
@@ -141,7 +142,9 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A\r\n"
 				+ "LEFT JOIN CFMData AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2');"
+				+ " WHERE   a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "       AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "       AND a.ProductionOrder NOT LIKE 'Y2%';"
 //				+ " SELECT distinct   \r\n" 
 //				+ " TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder ,\r\n"
 //				+ " TRY_CAST(CFMNo AS NVARCHAR(2)) as CFMNo ,\r\n"
@@ -251,7 +254,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN GoodReceive AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2');"
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
 //				+ " TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder,\r\n"
@@ -318,7 +325,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "				         WHEN LotShipping is null or LotShipping = '' THEN null  \r\n"
 				+ "				         ELSE TRY_CAST( LotShipping AS DATETIME)  \r\n"
 				+ "				     END AS LotShipping,    \r\n"
-				+ "				  TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder, \r\n"
+				+ "				  TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrderCheck, \r\n"
 				+ "				  TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder , \r\n"
 				+ "				  TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine , \r\n"
 				+ "				  TRY_CAST(Grade AS NVARCHAR(20)) as Grade, \r\n"
@@ -335,10 +342,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "			WHEN B.[SyncDate] IS NULL THEN 'X'\r\n"
 				+ "			ELSE 'O'\r\n"
 				+ "			END AS DataStatus \r\n"
-				+ "		,B.*\r\n"
+				+ "		,       B.BillDoc, B.BillItem, B.LotShipping,\r\n"
+				+ "       -- ไม่ใช้ B.* เพราะมี B.ProductionOrder ซ้อนทับ\r\n"
+				+ "       B.SaleOrder, B.SaleLine, B.Grade, B.RollNumber,\r\n"
+				+ "       B.QuantityKG, B.QuantityYD, B.QuantityMR, B.SyncDate\r\n"
 				+ " FROM ProductionOrders AS A\r\n"
-				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrder]   \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2')";
+				+ " LEFT JOIN BillBatch AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]   \r\n"
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -462,8 +476,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN MainProd AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
-//		System.out.println(sql);
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -507,7 +524,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN MainProdSale AS B ON A.[ProductionOrder] = B.[ProductionOrderCheck]  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -537,7 +558,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrder + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
-				+ " SELECT TOP (10000) \r\n"
+				+ " SELECT  \r\n"
 				+ "	      [ProductionOrder]\r\n"
 				+ "      ,[SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -723,7 +744,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
-				+ " SELECT TOP (10000) [SaleOrder]\r\n"
+				+ " SELECT  [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
 				+ "      ,[Division]\r\n"
 				+ "      ,[MaterialNo]\r\n"
@@ -824,7 +845,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN Packing AS B ON A.[ProductionOrder] = B.ProductionOrderCheck  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); \r\n"
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "
 				+ " "
 //				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
@@ -910,7 +935,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN PO AS B ON A.[ProductionOrder] = B.ProductionOrderCheck  \r\n"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); "
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "
 
 		;
 //		System.out.println(sql);
@@ -1032,7 +1061,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM ProductionOrders AS A \r\n"
 				+ "LEFT JOIN SubmitDate AS B ON A.[ProductionOrder] = B.ProductionOrderCheck"
-				+ " WHERE left(a.ProductionOrder,2) Not in ('20' , 'WO' , 'Y2'); ";
+				+ " WHERE "
+				+ "      1 = 1 "
+				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
 //		System.out.println(sql);
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -1047,6 +1080,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = new ArrayList<>();
 		String sql = " "
+				+ this.declareThirtyMinuteAgo
+//				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -4, GETDATE());" 
 				+ " SELECT \r\n"
 				+ "   TRY_CAST([SendDate] AS DATE) AS SendDate, "
 				+ "   TRY_CAST([NoPerDay] AS INT) AS NoPerDay, "
@@ -1074,10 +1109,12 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "   [NextLot], "
 				+ "   TRY_CAST([Qty] AS DECIMAL(13,3)) AS Qty, "
 				+ "   [UnitId], "
-				+ "   'O' AS DataStatus "
+				+ "   'O' AS DataStatus ,"
+				+ "   [SYNCSTARTDATETIME]"
 				+ "  FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a  \r\n"
 				+ " WHERE left(a.ProdId,2) Not in ('20' , 'WO' , 'Y2') "
-				+ "   AND [SENDDATE] >= CAST(GETDATE()-1 AS DATE) OR [REPLYDATE] >= CAST(GETDATE()-1 AS DATE)\r\n"
+				+ "   and SYNCSTARTDATETIME >= @dateTimeThirtyMinuteAgo \r\n"
+//				+ "   AND [SYNCSTARTDATETIME] >= CAST(GETDATE()-1 AS DATE) OR [REPLYDATE] >= CAST(GETDATE()-1 AS DATE)\r\n"
 				+ "; \r\n"
 				+ "  ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);

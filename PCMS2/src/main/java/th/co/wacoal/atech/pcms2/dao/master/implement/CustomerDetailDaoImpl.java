@@ -197,7 +197,12 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ "    ); "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 
 			int index = 1;
 			for (CustomerDetail bean : paList) {
@@ -233,8 +238,9 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			iconStatus = "E";
-		} finally {
-			// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return iconStatus;
 	}

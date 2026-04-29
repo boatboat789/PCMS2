@@ -1292,8 +1292,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ "			  ,? , ? "
 					+ " ) ;";
 
-			try (Connection connection = database.getConnection();
-					PreparedStatement prepared = connection.prepareStatement(sql)) {
+
+			Connection connection = this.database.getConnection();
+			try (PreparedStatement prepared = connection.prepareStatement(sql)) { 
 				int index = 1;
 				prepared.setString(index ++ , bean.getProductionOrder());
 				prepared.setString(index ++ , bean.getSaleOrder());
@@ -1666,7 +1667,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ ";";
 		int index = 1;
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(index ++ , prdOrder);
 			this.sshUtl.setSqlDate(prepared, planDate, index ++ );
 			prepared.setString(index ++ , bean.getUserId());
@@ -1681,6 +1687,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //			System.err.println("upSertRemarkCaseThree" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
+		} finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1704,7 +1713,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ "		and [SaleLine] = ? "
 				+ "		and DataStatus = 'O'; ";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, close_STATUS);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -1720,8 +1734,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1745,7 +1760,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' ";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, valueChange);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -1761,8 +1781,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1785,7 +1806,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' ";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, Status);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -1803,7 +1829,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			//// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1823,7 +1850,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SET DataStatus = ?  "
 				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, close_STATUS);
 			prepared.setString(2, prdOrder);
 			prepared.executeUpdate();
@@ -1835,8 +1867,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1863,7 +1896,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ ", ? )  "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prdOrder);
 			prepared.setString(2, saleOrder);
 			prepared.setString(3, bean.getSaleLine());
@@ -1880,7 +1918,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			//// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1900,7 +1939,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, close_STATUS);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -1915,7 +1959,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			//// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1939,7 +1984,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " values(? , ? , ? , ?   )  "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prdOrder);
 			prepared.setString(2, valueChange);
 			prepared.setString(3, bean.getUserId());
@@ -1953,8 +2003,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1982,7 +2033,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ "		(? , ? , ? , ? , ? "
 				+ "    , ? , ? )  ;";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, prdOrder);
 			prepared.setString(2, saleOrder);
 			prepared.setString(3, bean.getSaleLine());
@@ -2000,7 +2056,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			//// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}

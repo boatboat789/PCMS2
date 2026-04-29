@@ -182,7 +182,12 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "      , ? , ? "
 				+ "      )  "
 				+ ";";
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 
 			prepared.setDouble(1, Double.parseDouble(volume));
 			prepared.setString(2, dataStatus);
@@ -209,7 +214,8 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -232,7 +238,12 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ " declare  @rc int = @@ROWCOUNT "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			prepared.setString(1, dataStatus);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -248,8 +259,9 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 //			System.err.println("ReplacedProdOrder"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}

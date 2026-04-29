@@ -3,6 +3,7 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 
 	@Autowired
 	public FromSapPackingDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database; 
+		this.database = database;
 	}
 
 	@Override
@@ -74,115 +75,218 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 	@Override
 	public String upsertFromSapPackingDetail(ArrayList<FromErpPackingDetail> paList)
 	{
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime();
-
 		String iconStatus = "I";
-		String sql = " "
-				+ " "
-				+ "-- Update if the record exists\r\n"
-				+ "IF ? = 'X'\r\n"
-				+ "BEGIN\r\n"
-				+ "    UPDATE [dbo].[FromSapPacking]\r\n"
-				+ "    SET\r\n"
-				+ "        [DataStatus] = 'X',\r\n"
-				+ "        [ChangeDate] = ?\r\n"
-				+ "    WHERE\r\n"
-				+ "        [ProductionOrder] = ?\r\n"
-				+ "        AND [DataStatus] = 'O';\r\n"
-				+ "END\r\n"
-				+ "ELSE\r\n"
-				+ "BEGIN\r\n"
-				+ "    UPDATE [dbo].[FromSapPacking]\r\n"
-				+ "    SET\r\n"
-				+ "        [PostingDate] = ?,\r\n"
-				+ "        [Quantity] = ?,\r\n"
-				+ "        [QuantityKG] = ?,\r\n"
-				+ "        [Grade] = ?,\r\n"
-				+ "        [No] = ?,\r\n"
-				+ "        [QuantityYD] = ?,\r\n"
-				+ "        [ChangeDate] = ?,\r\n"
-				+ "        [SyncDate] = ?,\r\n"
-				+ "        [DataStatus] = ?\r\n"
-				+ "    WHERE\r\n"
-				+ "        [ProductionOrder] = ?\r\n"
-				+ "        AND [RollNo] = ?;\r\n"
-				+ "\r\n"
-				+ "    -- Check if rows were updated\r\n"
-				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
-				+ "\r\n"
-				+ "    IF @rc = 0\r\n"
-				+ "    BEGIN\r\n"
-				+ "        -- Insert if no rows were updated\r\n"
-				+ "        INSERT INTO [dbo].[FromSapPacking] (\r\n"
-				+ "            [ProductionOrder],\r\n"
-				+ "            [PostingDate],\r\n"
-				+ "            [Quantity],\r\n"
-				+ "            [RollNo],\r\n"
-				+ "            [QuantityKG],\r\n"
-				+ "            [Grade],\r\n"
-				+ "            [No],\r\n"
-				+ "            [QuantityYD],\r\n"
-				+ "            [ChangeDate],\r\n"
-				+ "            [CreateDate],\r\n"
-				+ "            [SyncDate],\r\n"
-				+ "            [DataStatus]\r\n"
-				+ "        )\r\n"
-				+ "        VALUES (\r\n"
-				+ "            ?, ?, ?, ?,\r\n"
-				+ "            ?, ?, ?, ?, ?,\r\n"
-				+ "            ?, ?, ?\r\n"
-				+ "        );\r\n"
-				+ "    END\r\n"
-				+ "END";
 
-		int index = 1;
+		// ใช้ try-with-resources ตามสไตล์ Java 8 เพื่อจัดการ Connection
+		Connection conn = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
-			for (FromErpPackingDetail bean : paList) {
-				index = 1;
+		try {
+			conn.setAutoCommit(false);
 
-				prepared.setString(index ++ , bean.getDataStatus());
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , bean.getProductionOrder());
+			try (Statement stmt = conn.createStatement()) {
+				// 1. สร้าง Temp Table ให้ตรงตาม Schema (Decimal 13,3 และ Varchar
+				// ตามความยาวที่กำหนด)
+				stmt.execute("IF OBJECT_ID('tempdb..#TempPacking') IS NOT NULL DROP TABLE #TempPacking");
+				stmt.execute("CREATE TABLE #TempPacking ("
+						+ "ProductionOrder VARCHAR(50) COLLATE DATABASE_DEFAULT, "
+						+ "PostingDate DATE, "
+						+ "Quantity DECIMAL(13, 3), "
+						+ "RollNo VARCHAR(10) COLLATE DATABASE_DEFAULT, "
+						+ "QuantityKG DECIMAL(13, 3), "
+						+ "Grade VARCHAR(10) COLLATE DATABASE_DEFAULT, "
+						+ "No VARCHAR(10) COLLATE DATABASE_DEFAULT, "
+						+ "QuantityYD DECIMAL(13, 3), "
+						+ "DataStatus VARCHAR(1) COLLATE DATABASE_DEFAULT, "
+						+ "SyncDate DATETIME)");
 
-				this.sshUtl.setSqlDate(prepared, bean.getPostingDate(), index ++ );
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantity(), index ++ );
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
-				prepared.setString(index ++ , bean.getGrade());
-				prepared.setString(index ++ , bean.getNo());
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
-				prepared.setString(index ++ , bean.getDataStatus());
+				// 2. Bulk Insert ข้อมูลจาก ArrayList ลงใน Temp Table
+				String insertTempSql = "INSERT INTO #TempPacking VALUES (?,?,?,?,?,?,?,?,?,?)";
+				try (PreparedStatement ps = conn.prepareStatement(insertTempSql)) {
+					for (FromErpPackingDetail bean : paList) {
+						int idx = 1;
+						ps.setString(idx ++ , bean.getProductionOrder());
+						this.sshUtl.setSqlDate(ps, bean.getPostingDate(), idx ++ );
+						this.sshUtl.setSqlBigDecimal(ps, bean.getQuantity(), idx ++ );
+						ps.setString(idx ++ , bean.getRollNo());
+						this.sshUtl.setSqlBigDecimal(ps, bean.getQuantityKG(), idx ++ );
+						ps.setString(idx ++ , bean.getGrade());
+						ps.setString(idx ++ , bean.getNo());
+						this.sshUtl.setSqlBigDecimal(ps, bean.getQuantityYD(), idx ++ );
+						ps.setString(idx ++ , bean.getDataStatus());
+						this.sshUtl.setSqlTimeStamp(ps, bean.getSyncDate(), idx ++ );
+						ps.addBatch();
+					}
+					ps.executeBatch();
+				}
 
-				prepared.setString(index ++ , bean.getProductionOrder());
-				prepared.setString(index ++ , bean.getRollNo());
+				// 3. จัดการ DataStatus = 'X' (สั่งยกเลิกตาม ProductionOrder)
+				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+						+ "FROM [FromSapPacking] AS target "
+						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder "
+						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
 
-				prepared.setString(index ++ , bean.getProductionOrder());
-				this.sshUtl.setSqlDate(prepared, bean.getPostingDate(), index ++ );
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantity(), index ++ );
-				prepared.setString(index ++ , bean.getRollNo());
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
-				prepared.setString(index ++ , bean.getGrade());
-				prepared.setString(index ++ , bean.getNo());
-				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
-				prepared.setString(index ++ , bean.getDataStatus());
-				prepared.addBatch();
+				// 4. Update ข้อมูลเดิม (Matching ด้วย ProductionOrder + RollNo)
+				stmt.execute("UPDATE target SET "
+						+ "target.PostingDate = src.PostingDate, "
+						+ "target.Quantity = src.Quantity, "
+						+ "target.QuantityKG = src.QuantityKG, "
+						+ "target.Grade = src.Grade, "
+						+ "target.No = src.No, "
+						+ "target.QuantityYD = src.QuantityYD, "
+						+ "target.ChangeDate = GETDATE(), "
+						+ "target.SyncDate = src.SyncDate, "
+						+ "target.DataStatus = src.DataStatus "
+						+ "FROM [FromSapPacking] AS target "
+						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
+						+ "WHERE src.DataStatus <> 'X'");
+
+				// 5. Insert ข้อมูลม้วนใหม่
+				stmt.execute("INSERT INTO [FromSapPacking] (ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, "
+						+ "Grade, No, QuantityYD, ChangeDate, CreateDate, SyncDate, DataStatus) "
+						+ "SELECT src.ProductionOrder, src.PostingDate, src.Quantity, src.RollNo, src.QuantityKG, "
+						+ "src.Grade, src.No, src.QuantityYD, GETDATE(), GETDATE(), src.SyncDate, src.DataStatus "
+						+ "FROM #TempPacking AS src "
+						+ "LEFT JOIN [FromSapPacking] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
+						+ "WHERE target.ProductionOrder IS NULL "
+						+ "AND src.DataStatus <> 'X' "
+						+ "AND src.RollNo IS NOT NULL AND src.RollNo <> ''");
+
+				conn.commit();
+			} catch (Exception e) {
+				conn.rollback();
+				throw e;
+			}finally {
+			    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+			    try {
+			        conn.setAutoCommit(true);
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
 			}
-			prepared.executeBatch();
-			prepared.close();
-		} catch (SQLException e) {
-//			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 			iconStatus = "E";
-		} finally {
-			// this.database.close();
 		}
 		return iconStatus;
 	}
+//	@Override
+//	public String upsertFromSapPackingDetail(ArrayList<FromErpPackingDetail> paList)
+//	{
+//		Calendar calendar = Calendar.getInstance();
+//		java.util.Date currentTime = calendar.getTime();
+//		long time = currentTime.getTime();
+//
+//		String iconStatus = "I";
+//		String sql = " "
+//				+ " "
+//				+ "-- Update if the record exists\r\n"
+//				+ "IF ? = 'X'\r\n"
+//				+ "BEGIN\r\n"
+//				+ "    UPDATE [dbo].[FromSapPacking]\r\n"
+//				+ "    SET\r\n"
+//				+ "        [DataStatus] = 'X',\r\n"
+//				+ "        [ChangeDate] = ?\r\n"
+//				+ "    WHERE\r\n"
+//				+ "        [ProductionOrder] = ?\r\n"
+//				+ "        AND [DataStatus] = 'O';\r\n"
+//				+ "END\r\n"
+//				+ "ELSE\r\n"
+//				+ "BEGIN\r\n"
+//				+ "    UPDATE [dbo].[FromSapPacking]\r\n"
+//				+ "    SET\r\n"
+//				+ "        [PostingDate] = ?,\r\n"
+//				+ "        [Quantity] = ?,\r\n"
+//				+ "        [QuantityKG] = ?,\r\n"
+//				+ "        [Grade] = ?,\r\n"
+//				+ "        [No] = ?,\r\n"
+//				+ "        [QuantityYD] = ?,\r\n"
+//				+ "        [ChangeDate] = ?,\r\n"
+//				+ "        [SyncDate] = ?,\r\n"
+//				+ "        [DataStatus] = ?\r\n"
+//				+ "    WHERE\r\n"
+//				+ "        [ProductionOrder] = ?\r\n"
+//				+ "        AND [RollNo] = ?;\r\n"
+//				+ "\r\n"
+//				+ "    -- Check if rows were updated\r\n"
+//				+ "    DECLARE @rc INT = @@ROWCOUNT;\r\n"
+//				+ "\r\n"
+//				+ "    IF @rc = 0\r\n"
+//				+ "    BEGIN\r\n"
+//				+ "        -- Insert if no rows were updated\r\n"
+//				+ "        INSERT INTO [dbo].[FromSapPacking] (\r\n"
+//				+ "            [ProductionOrder],\r\n"
+//				+ "            [PostingDate],\r\n"
+//				+ "            [Quantity],\r\n"
+//				+ "            [RollNo],\r\n"
+//				+ "            [QuantityKG],\r\n"
+//				+ "            [Grade],\r\n"
+//				+ "            [No],\r\n"
+//				+ "            [QuantityYD],\r\n"
+//				+ "            [ChangeDate],\r\n"
+//				+ "            [CreateDate],\r\n"
+//				+ "            [SyncDate],\r\n"
+//				+ "            [DataStatus]\r\n"
+//				+ "        )\r\n"
+//				+ "        VALUES (\r\n"
+//				+ "            ?, ?, ?, ?,\r\n"
+//				+ "            ?, ?, ?, ?, ?,\r\n"
+//				+ "            ?, ?, ?\r\n"
+//				+ "        );\r\n"
+//				+ "    END\r\n"
+//				+ "END";
+//
+//		int index = 1;
+//
+//		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+//Connection connection = this.database.getConnection();
+//PreparedStatement prepared = null;
+//
+//try {
+//    prepared = connection.prepareStatement(sql);
+//			for (FromErpPackingDetail bean : paList) {
+//				index = 1;
+//
+//				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.setTimestamp(index ++ , new Timestamp(time));
+//				prepared.setString(index ++ , bean.getProductionOrder());
+//
+//				this.sshUtl.setSqlDate(prepared, bean.getPostingDate(), index ++ );
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantity(), index ++ );
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
+//				prepared.setString(index ++ , bean.getGrade());
+//				prepared.setString(index ++ , bean.getNo());
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
+//				prepared.setTimestamp(index ++ , new Timestamp(time));
+//				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+//				prepared.setString(index ++ , bean.getDataStatus());
+//
+//				prepared.setString(index ++ , bean.getProductionOrder());
+//				prepared.setString(index ++ , bean.getRollNo());
+//
+//				prepared.setString(index ++ , bean.getProductionOrder());
+//				this.sshUtl.setSqlDate(prepared, bean.getPostingDate(), index ++ );
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantity(), index ++ );
+//				prepared.setString(index ++ , bean.getRollNo());
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityKG(), index ++ );
+//				prepared.setString(index ++ , bean.getGrade());
+//				prepared.setString(index ++ , bean.getNo());
+//				this.sshUtl.setSqlBigDecimal(prepared, bean.getQuantityYD(), index ++ );
+//				prepared.setTimestamp(index ++ , new Timestamp(time));
+//				prepared.setTimestamp(index ++ , new Timestamp(time));
+//				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
+//				prepared.setString(index ++ , bean.getDataStatus());
+//				prepared.addBatch();
+//			}
+//			prepared.executeBatch();
+//			prepared.close();
+//		} catch (SQLException e) {
+////			e.printStackTrace();
+//			e.printStackTrace();
+//			iconStatus = "E";
+//		} finally {
+//			// this.database.close();
+//		}
+//		return iconStatus;
+//	}
 }

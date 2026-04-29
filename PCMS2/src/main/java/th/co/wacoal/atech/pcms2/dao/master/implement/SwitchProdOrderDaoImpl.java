@@ -195,7 +195,12 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ " declare  @rc int = @@ROWCOUNT "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			int index = 1;
 			prepared.setString(index ++ , dataStatus);
 			prepared.setString(index ++ , bean.getUserId());
@@ -210,8 +215,9 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// this.database.close();
+		}  finally {
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -248,7 +254,12 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ "     )  "
 				+ ";";
 
-		try (Connection connection = database.getConnection(); PreparedStatement prepared = connection.prepareStatement(sql)) {
+		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
+Connection connection = this.database.getConnection();
+PreparedStatement prepared = null;
+
+try {
+    prepared = connection.prepareStatement(sql);
 			int index = 1;
 			prepared.setString(index ++ , dataStatus);
 			prepared.setString(index ++ , bean.getUserId());
@@ -278,7 +289,8 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
-			// this.database.close();
+			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
+			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
