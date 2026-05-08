@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -126,36 +123,73 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 					}
 					ps.executeBatch();
 				}
+//
+				// รวมข้อ 3 และ 4 เป็น Batch เดียวเพื่อคุมเวลาให้เท่ากันและลดภาระการทำงานของ
+				// Database
+				String upsertSql = "DECLARE @Now DATETIME = GETDATE(); "
 
-				// 3. Update ข้อมูลเดิม (Matching Key: ProductionOrder + No)
-				stmt.execute("UPDATE target SET "
-						+ "target.BillDate = src.BillDate, "
-						+ "target.BillQtyPerSale = src.BillQtyPerSale, "
-						+ "target.SaleOrder = src.SaleOrder, "
-						+ "target.SaleLine = src.SaleLine, "
-						+ "target.BillQtyPerStock = src.BillQtyPerStock, "
-						+ "target.Remark = src.Remark, "
-						+ "target.CustomerNo = src.CustomerNo, "
-						+ "target.CustomerName1 = src.CustomerName1, "
-						+ "target.CustomerPO = src.CustomerPO, "
-						+ "target.DueDate = src.DueDate, "
-						+ "target.Color = src.Color, "
-						+ "target.ChangeDate = GETDATE(), "
-						+ "target.SyncDate = src.SyncDate "
+						+ "/* 3. Update ข้อมูลเดิม (Matching Key: ProductionOrder + No) */ "
+						+ "UPDATE target SET "
+						+ "    target.BillDate = src.BillDate, "
+						+ "    target.BillQtyPerSale = src.BillQtyPerSale, "
+						+ "    target.SaleOrder = src.SaleOrder, "
+						+ "    target.SaleLine = src.SaleLine, "
+						+ "    target.BillQtyPerStock = src.BillQtyPerStock, "
+						+ "    target.Remark = src.Remark, "
+						+ "    target.CustomerNo = src.CustomerNo, "
+						+ "    target.CustomerName1 = src.CustomerName1, "
+						+ "    target.CustomerPO = src.CustomerPO, "
+						+ "    target.DueDate = src.DueDate, "
+						+ "    target.Color = src.Color, "
+						+ "    target.ChangeDate = @Now, "
+						+ "    target.SyncDate = src.SyncDate "
 						+ "FROM [FromSapSaleInput] AS target "
-						+ "INNER JOIN #TempSaleInput AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No");
+						+ "INNER JOIN #TempSaleInput AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No; "
 
-				// 4. Insert ข้อมูลใหม่
-				stmt.execute("INSERT INTO [FromSapSaleInput] (ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, "
-						+ "BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, "
-						+ "ChangeDate, CreateDate, SyncDate) "
-						+ "SELECT src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, "
-						+ "src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, "
-						+ "src.Color, src.No, GETDATE(), GETDATE(), src.SyncDate "
+						+ "/* 4. Insert ข้อมูลใหม่ */ "
+						+ "INSERT INTO [FromSapSaleInput] ( "
+						+ "    ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, "
+						+ "    BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, "
+						+ "    ChangeDate, CreateDate, SyncDate) "
+						+ "SELECT "
+						+ "    src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, "
+						+ "    src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, "
+						+ "    src.Color, src.No, @Now, @Now, src.SyncDate "
 						+ "FROM #TempSaleInput AS src "
 						+ "LEFT JOIN [FromSapSaleInput] AS target ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No "
 						+ "WHERE target.ProductionOrder IS NULL "
-						+ "AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> ''");
+						+ "  AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> '';";
+
+				stmt.execute(upsertSql);
+//				// 3. Update ข้อมูลเดิม (Matching Key: ProductionOrder + No)
+//				stmt.execute("UPDATE target SET "
+//						+ "target.BillDate = src.BillDate, "
+//						+ "target.BillQtyPerSale = src.BillQtyPerSale, "
+//						+ "target.SaleOrder = src.SaleOrder, "
+//						+ "target.SaleLine = src.SaleLine, "
+//						+ "target.BillQtyPerStock = src.BillQtyPerStock, "
+//						+ "target.Remark = src.Remark, "
+//						+ "target.CustomerNo = src.CustomerNo, "
+//						+ "target.CustomerName1 = src.CustomerName1, "
+//						+ "target.CustomerPO = src.CustomerPO, "
+//						+ "target.DueDate = src.DueDate, "
+//						+ "target.Color = src.Color, "
+//						+ "target.ChangeDate = GETDATE(), "
+//						+ "target.SyncDate = src.SyncDate "
+//						+ "FROM [FromSapSaleInput] AS target "
+//						+ "INNER JOIN #TempSaleInput AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No");
+//
+//				// 4. Insert ข้อมูลใหม่
+//				stmt.execute("INSERT INTO [FromSapSaleInput] (ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, "
+//						+ "BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, "
+//						+ "ChangeDate, CreateDate, SyncDate) "
+//						+ "SELECT src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, "
+//						+ "src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, "
+//						+ "src.Color, src.No, GETDATE(), GETDATE(), src.SyncDate "
+//						+ "FROM #TempSaleInput AS src "
+//						+ "LEFT JOIN [FromSapSaleInput] AS target ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No "
+//						+ "WHERE target.ProductionOrder IS NULL "
+//						+ "AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> ''");
 
 				conn.commit(); // ยืนยันการทำงานทั้งหมด
 			} catch (Exception e) {

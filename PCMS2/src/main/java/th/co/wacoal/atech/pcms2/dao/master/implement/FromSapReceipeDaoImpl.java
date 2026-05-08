@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -95,24 +92,46 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 					}
 					ps.executeBatch();
 				}
+				// 3 & 4. รวมเป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน */ "
+				    + "UPDATE target SET "
+				    + "    target.LotNo = src.LotNo, "
+				    + "    target.DataStatus = src.DataStatus, "
+				    + "    target.ChangeDate = @Now, "
+				    + "    target.SyncDate = src.SyncDate "
+				    + "FROM [FromSapReceipe] AS target "
+				    + "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder; "
 
-				// 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน
-				stmt.execute("UPDATE target SET "
-						+ "target.LotNo = src.LotNo, "
-						+ "target.DataStatus = src.DataStatus, "
-						+ "target.ChangeDate = GETDATE(), "
-						+ "target.SyncDate = src.SyncDate "
-						+ "FROM [FromSapReceipe] AS target "
-						+ "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder");
+				    + "/* 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder */ "
+				    + "INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
+				    + "SELECT "
+				    + "    src.ProductionOrder, src.LotNo, src.DataStatus, @Now, @Now, src.SyncDate "
+				    + "FROM #TempReceipe AS src "
+				    + "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE target.ProductionOrder IS NULL "
+				    + "  AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> '';";
 
-				// 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder
-				stmt.execute(
-						"INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
-								+ "SELECT src.ProductionOrder, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-								+ "FROM #TempReceipe AS src "
-								+ "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
-								+ "WHERE target.ProductionOrder IS NULL "
-								+ "AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> ''");
+				stmt.execute(upsertSql);
+//				// 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน
+//				stmt.execute("UPDATE target SET "
+//						+ "target.LotNo = src.LotNo, "
+//						+ "target.DataStatus = src.DataStatus, "
+//						+ "target.ChangeDate = GETDATE(), "
+//						+ "target.SyncDate = src.SyncDate "
+//						+ "FROM [FromSapReceipe] AS target "
+//						+ "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder");
+//
+//				// 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder
+//				stmt.execute(
+//						"INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
+//								+ "SELECT src.ProductionOrder, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
+//								+ "FROM #TempReceipe AS src "
+//								+ "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
+//								+ "WHERE target.ProductionOrder IS NULL "
+//								+ "AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> ''");
 
 				conn.commit();
 			} catch (Exception e) {

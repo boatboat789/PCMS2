@@ -50,7 +50,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	private String declareThirtyMinuteAgo = "" 
 	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
 
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -8, GETDATE());"; 
+//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
 //+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -4, GETDATE());"; 
 //	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
 	@Override
@@ -1081,11 +1081,23 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = new ArrayList<>();
 		String sql = " "
 				+ this.declareThirtyMinuteAgo
-//				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -4, GETDATE());" 
+//				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());" 
 				+ " SELECT \r\n"
-				+ "   TRY_CAST([SendDate] AS DATE) AS SendDate, "
+//				+ "   TRY_CAST([SendDate] AS DATE) AS SendDate, "
+				+ "	CASE  \r\n"
+				+ "		WHEN [SendDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "		WHEN [SendDate] is null or   \r\n"
+				+ "			[SendDate] = '' THEN null  \r\n"
+				+ "		ELSE TRY_CAST([SendDate] AS DATE)  \r\n"
+				+ "	END AS SendDate,   \r\n"
 				+ "   TRY_CAST([NoPerDay] AS INT) AS NoPerDay, "
-				+ "   TRY_CAST([ReplyDate] AS DATE) AS ReplyDate, "
+//				+ "   TRY_CAST([ReplyDate] AS DATE) AS ReplyDate, "
+				+ "	CASE  \r\n"
+				+ "		WHEN [ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "		WHEN [ReplyDate] is null or   \r\n"
+				+ "			[ReplyDate] = '' THEN null  \r\n"
+				+ "		ELSE TRY_CAST([ReplyDate] AS DATE)  \r\n"
+				+ "	END AS ReplyDate,   \r\n"
 				+ "   [CFMNo], "
 				+ "   [Customer Name] AS CustomerName, "
 				+ "   [SO], "
@@ -1104,7 +1116,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "   TRY_CAST([St] AS DECIMAL(13,3)) AS CFM_St, "
 				+ "   TRY_CAST([DE] AS DECIMAL(13,3)) AS CFM_DeltaE, "
 				+ "   [QCComment], "
-				+ "   [Result], "
+//				+ "   [Result], "
+				+ "	CASE  \r\n"
+				+ "		WHEN [ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "		WHEN [ReplyDate] is null or   \r\n"
+				+ "			[ReplyDate] = '' THEN null  \r\n"
+				+ "		ELSE Result  \r\n"
+				+ "	END AS Result,   \r\n"
 				+ "   [Remark from submit] AS RemarkFromSubmit, "
 				+ "   [NextLot], "
 				+ "   TRY_CAST([Qty] AS DECIMAL(13,3)) AS Qty, "

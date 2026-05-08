@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  	
+<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>
 <title><%=request.getAttribute("HeaderName")%></title>
 <jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
 <link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">

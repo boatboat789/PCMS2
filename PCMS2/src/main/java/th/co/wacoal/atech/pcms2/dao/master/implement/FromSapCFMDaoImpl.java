@@ -2,12 +2,10 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -82,11 +80,11 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 	public String upsertFromSapCFMDetail(ArrayList<FromErpCFMDetail> paList)
 	{
 		String iconStatus = "I";
-		Timestamp now = new Timestamp(System.currentTimeMillis());
+//		Timestamp now = new Timestamp(System.currentTimeMillis());
 		String systemUser = "SYSTEM"; // หรือดึงจาก session ถ้ามี
 
 		Connection conn = this.database.getConnection();
-		PreparedStatement prepared = null;
+//		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false);
@@ -141,47 +139,91 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 					ps.executeBatch();
 				}
 
-				// 3. จัดการ DataStatus = 'X'
-				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE(), target.ChangeBy = '"
-						+ systemUser
-						+ "' "
-						+ "FROM [FromSapCFM] AS target INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//				// 3. จัดการ DataStatus = 'X'
+//				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE(), target.ChangeBy = '"
+//						+ systemUser
+//						+ "' "
+//						+ "FROM [FromSapCFM] AS target INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//				// 4. Update ข้อมูลเดิม
+//				String updateNormal = "UPDATE target SET "
+//						+ "  target.CFMNumber = src.CFMNumber, target.CFMSendDate = src.CFMSendDate, "
+//						+ "  target.CFMAnswerDate = src.CFMAnswerDate, target.CFMStatus = src.CFMStatus, "
+//						+ "  target.CFMRemark = src.CFMRemark, target.SaleOrder = src.SaleOrder, "
+//						+ "  target.SaleLine = src.SaleLine, target.NextLot = src.NextLot, "
+//						+ "  target.SOChange = src.SOChange, target.SOChangeQty = src.SOChangeQty, "
+//						+ "  target.SOChangeUnit = src.SOChangeUnit, target.RollNo = src.RollNo, "
+//						+ "  target.RollNoRemark = src.RollNoRemark, target.DataStatus = src.DataStatus, "
+//						+ "  target.ChangeDate = GETDATE(), target.ChangeBy = '"
+//						+ systemUser
+//						+ "', target.SyncDate = src.SyncDate "
+//						+ "FROM [FromSapCFM] AS target "
+//						+ "INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
+//						+ "WHERE src.DataStatus <> 'X'";
+//				stmt.execute(updateNormal);
+//
+//				// 5. Insert ข้อมูลใหม่ (เพิ่มการระบุ ChangeBy, CreateBy)
+//				String insertNew = "INSERT INTO [FromSapCFM] (ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, "
+//						+ "CFMStatus, CFMRemark, SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, "
+//						+ "RollNo, RollNoRemark, DataStatus, ChangeDate, ChangeBy, CreateDate, CreateBy, SyncDate) "
+//						+ "SELECT src.ProductionOrder, src.CFMNo, src.CFMNumber, src.CFMSendDate, src.CFMAnswerDate, "
+//						+ "src.CFMStatus, src.CFMRemark, src.SaleOrder, src.SaleLine, src.NextLot, src.SOChange, src.SOChangeQty, "
+//						+ "src.SOChangeUnit, src.RollNo, src.RollNoRemark, src.DataStatus, GETDATE(), '"
+//						+ systemUser
+//						+ "', GETDATE(), '"
+//						+ systemUser
+//						+ "', src.SyncDate "
+//						+ "FROM #TempCFM AS src "
+//						+ "LEFT JOIN [FromSapCFM] AS target ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
+//						+ "WHERE target.ProductionOrder IS NULL "
+//						+ "  AND src.DataStatus <> 'X' "
+//						+ "  AND src.CFMNo IS NOT NULL AND src.CFMNo <> ''";
+				// รวมข้อ 3, 4, 5 เป็น Batch เดียวกันเพื่อประกาศตัวแปรคุมเวลาให้เท่ากัน 100%
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. จัดการ DataStatus = 'X' */ "
+				    + "UPDATE target SET "
+				    + "    target.DataStatus = 'X', "
+				    + "    target.ChangeDate = @Now, "
+				    + "    target.ChangeBy = '" + systemUser + "' "
+				    + "FROM [FromSapCFM] AS target "
+				    + "INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-				// 4. Update ข้อมูลเดิม
-				String updateNormal = "UPDATE target SET "
-						+ "  target.CFMNumber = src.CFMNumber, target.CFMSendDate = src.CFMSendDate, "
-						+ "  target.CFMAnswerDate = src.CFMAnswerDate, target.CFMStatus = src.CFMStatus, "
-						+ "  target.CFMRemark = src.CFMRemark, target.SaleOrder = src.SaleOrder, "
-						+ "  target.SaleLine = src.SaleLine, target.NextLot = src.NextLot, "
-						+ "  target.SOChange = src.SOChange, target.SOChangeQty = src.SOChangeQty, "
-						+ "  target.SOChangeUnit = src.SOChangeUnit, target.RollNo = src.RollNo, "
-						+ "  target.RollNoRemark = src.RollNoRemark, target.DataStatus = src.DataStatus, "
-						+ "  target.ChangeDate = GETDATE(), target.ChangeBy = '"
-						+ systemUser
-						+ "', target.SyncDate = src.SyncDate "
-						+ "FROM [FromSapCFM] AS target "
-						+ "INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
-						+ "WHERE src.DataStatus <> 'X'";
-				stmt.execute(updateNormal);
+				    + "/* 4. Update ข้อมูลเดิม */ "
+				    + "UPDATE target SET "
+				    + "    target.CFMNumber = src.CFMNumber, target.CFMSendDate = src.CFMSendDate, "
+				    + "    target.CFMAnswerDate = src.CFMAnswerDate, target.CFMStatus = src.CFMStatus, "
+				    + "    target.CFMRemark = src.CFMRemark, target.SaleOrder = src.SaleOrder, "
+				    + "    target.SaleLine = src.SaleLine, target.NextLot = src.NextLot, "
+				    + "    target.SOChange = src.SOChange, target.SOChangeQty = src.SOChangeQty, "
+				    + "    target.SOChangeUnit = src.SOChangeUnit, target.RollNo = src.RollNo, "
+				    + "    target.RollNoRemark = src.RollNoRemark, target.DataStatus = src.DataStatus, "
+				    + "    target.ChangeDate = @Now, "
+				    + "    target.ChangeBy = '" + systemUser + "', "
+				    + "    target.SyncDate = src.SyncDate "
+				    + "FROM [FromSapCFM] AS target "
+				    + "INNER JOIN #TempCFM AS src ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
+				    + "WHERE src.DataStatus <> 'X'; "
 
-				// 5. Insert ข้อมูลใหม่ (เพิ่มการระบุ ChangeBy, CreateBy)
-				String insertNew = "INSERT INTO [FromSapCFM] (ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, "
-						+ "CFMStatus, CFMRemark, SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, "
-						+ "RollNo, RollNoRemark, DataStatus, ChangeDate, ChangeBy, CreateDate, CreateBy, SyncDate) "
-						+ "SELECT src.ProductionOrder, src.CFMNo, src.CFMNumber, src.CFMSendDate, src.CFMAnswerDate, "
-						+ "src.CFMStatus, src.CFMRemark, src.SaleOrder, src.SaleLine, src.NextLot, src.SOChange, src.SOChangeQty, "
-						+ "src.SOChangeUnit, src.RollNo, src.RollNoRemark, src.DataStatus, GETDATE(), '"
-						+ systemUser
-						+ "', GETDATE(), '"
-						+ systemUser
-						+ "', src.SyncDate "
-						+ "FROM #TempCFM AS src "
-						+ "LEFT JOIN [FromSapCFM] AS target ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
-						+ "WHERE target.ProductionOrder IS NULL "
-						+ "  AND src.DataStatus <> 'X' "
-						+ "  AND src.CFMNo IS NOT NULL AND src.CFMNo <> ''";
-				stmt.execute(insertNew);
+				    + "/* 5. Insert ข้อมูลใหม่ */ "
+				    + "INSERT INTO [FromSapCFM] (ProductionOrder, CFMNo, CFMNumber, CFMSendDate, CFMAnswerDate, "
+				    + "    CFMStatus, CFMRemark, SaleOrder, SaleLine, NextLot, SOChange, SOChangeQty, SOChangeUnit, "
+				    + "    RollNo, RollNoRemark, DataStatus, ChangeDate, ChangeBy, CreateDate, CreateBy, SyncDate) "
+				    + "SELECT "
+				    + "    src.ProductionOrder, src.CFMNo, src.CFMNumber, src.CFMSendDate, src.CFMAnswerDate, "
+				    + "    src.CFMStatus, src.CFMRemark, src.SaleOrder, src.SaleLine, src.NextLot, src.SOChange, src.SOChangeQty, "
+				    + "    src.SOChangeUnit, src.RollNo, src.RollNoRemark, src.DataStatus, @Now, '" + systemUser + "', @Now, '" + systemUser + "', src.SyncDate "
+				    + "FROM #TempCFM AS src "
+				    + "LEFT JOIN [FromSapCFM] AS target ON target.ProductionOrder = src.ProductionOrder AND target.CFMNo = src.CFMNo "
+				    + "WHERE target.ProductionOrder IS NULL "
+				    + "  AND src.DataStatus <> 'X' "
+				    + "  AND src.CFMNo IS NOT NULL AND src.CFMNo <> '';";
+
+				stmt.execute(upsertSql);
+//				stmt.execute(insertNew);
 
 				conn.commit();
 			} catch (Exception e) {

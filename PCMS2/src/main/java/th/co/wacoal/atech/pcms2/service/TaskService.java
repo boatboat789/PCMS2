@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +43,8 @@ public class TaskService {
 		this.fromSORCFMService = fromSORCFMService;
 //		isCheck = true;
 	}
- 
-//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour
+
+//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour  
 	@Scheduled(cron = "0 13/20 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
@@ -113,13 +112,11 @@ public class TaskService {
 			System.out.println("End sortBackGroundSaleOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
 
-	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour 
+//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour 
 	@Scheduled(cron = "0 0 1 * * *")
 	public void bgJobHandlerDataFromOrgatex()
-	{
-
-		executeWithLock("ORGATEX_IMPORT", () -> {
-
+	{ 
+		executeWithLock("ORGATEX_IMPORT", () -> { 
 			ArrayList<SORDetail> list = dataImportSORService.getList();
 			fromSORCFMService.upSertFromSORCFMDetail(list);
 			

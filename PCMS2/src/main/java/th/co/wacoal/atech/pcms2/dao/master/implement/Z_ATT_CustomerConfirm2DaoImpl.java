@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -279,34 +276,67 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 	                }
 	                ps.executeBatch();
 	            }
+//
+//	            // 3. UPDATE (ครบ 26 คอลัมน์ที่ต้องเปลี่ยน)
+//	            stmt.execute("UPDATE target SET " +
+//	                "target.SendDate = src.SendDate, target.NoPerDay = src.NoPerDay, target.ReplyDate = src.ReplyDate, " +
+//	                "target.CustomerName = src.CustomerName, target.SO = src.SO, target.SOLine = src.SOLine, " +
+//	                "target.DueDate = src.DueDate, target.PO = src.PO, target.Material = src.Material, " +
+//	                "target.ProductName = src.ProductName, target.LabNo = src.LabNo, target.Color = src.Color, " +
+//	                "target.LotNo = src.LotNo, target.CFM_L = src.CFM_L, target.CFM_Da = src.CFM_Da, " +
+//	                "target.CFM_Db = src.CFM_Db, target.CFM_St = src.CFM_St, target.CFM_DeltaE = src.CFM_DeltaE, " +
+//	                "target.Result = src.Result, target.QCComment = src.QCComment, target.RemarkFromSubmit = src.RemarkFromSubmit, " +
+//	                "target.NextLot = src.NextLot, target.Qty = src.Qty, target.UnitId = src.UnitId, " +
+//	                "target.DataStatus = src.DataStatus, target.ChangeDate = GETDATE() " +
+//	                "FROM [dbo].[Z_ATT_CustomerConfirm2] AS target " +
+//	                "INNER JOIN #TempCustConfirm AS src ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo");
+//
+//	            // 4. INSERT (ครบ 29 คอลัมน์ตามรูปตารางเป๊ะ)
+//	            stmt.execute("INSERT INTO [dbo].[Z_ATT_CustomerConfirm2] (" +
+//	                "SendDate, NoPerDay, ReplyDate, CFMNo, CustomerName, SO, SOLine, DueDate, PO, Material, " +
+//	                "ProductName, LabNo, Color, ProdId, LotNo, CFM_L, CFM_Da, CFM_Db, CFM_St, CFM_DeltaE, " +
+//	                "Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId, DataStatus, ChangeDate, CreateDate) " +
+//	                "SELECT src.SendDate, src.NoPerDay, src.ReplyDate, src.CFMNo, src.CustomerName, src.SO, src.SOLine, " +
+//	                "src.DueDate, src.PO, src.Material, src.ProductName, src.LabNo, src.Color, src.ProdId, src.LotNo, " +
+//	                "src.CFM_L, src.CFM_Da, src.CFM_Db, src.CFM_St, src.CFM_DeltaE, src.Result, src.QCComment, " +
+//	                "src.RemarkFromSubmit, src.NextLot, src.Qty, src.UnitId, src.DataStatus, GETDATE(), GETDATE() " +
+//	                "FROM #TempCustConfirm AS src " +
+//	                "LEFT JOIN [dbo].[Z_ATT_CustomerConfirm2] AS target ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo " +
+//	                "WHERE target.ProdId IS NULL");
+	         // รวมข้อ 3 และ 4 เป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่สอดคล้องกัน
+	            String upsertSql = 
+	                  "DECLARE @Now DATETIME = GETDATE(); "
+	                
+	                + "/* 3. UPDATE (ครบ 26 คอลัมน์ที่ต้องเปลี่ยน) */ "
+	                + "UPDATE target SET "
+	                + "    target.SendDate = src.SendDate, target.NoPerDay = src.NoPerDay, target.ReplyDate = src.ReplyDate, "
+	                + "    target.CustomerName = src.CustomerName, target.SO = src.SO, target.SOLine = src.SOLine, "
+	                + "    target.DueDate = src.DueDate, target.PO = src.PO, target.Material = src.Material, "
+	                + "    target.ProductName = src.ProductName, target.LabNo = src.LabNo, target.Color = src.Color, "
+	                + "    target.LotNo = src.LotNo, target.CFM_L = src.CFM_L, target.CFM_Da = src.CFM_Da, "
+	                + "    target.CFM_Db = src.CFM_Db, target.CFM_St = src.CFM_St, target.CFM_DeltaE = src.CFM_DeltaE, "
+	                + "    target.Result = src.Result, target.QCComment = src.QCComment, target.RemarkFromSubmit = src.RemarkFromSubmit, "
+	                + "    target.NextLot = src.NextLot, target.Qty = src.Qty, target.UnitId = src.UnitId, "
+	                + "    target.DataStatus = src.DataStatus, "
+	                + "    target.ChangeDate = @Now "
+	                + "FROM [dbo].[Z_ATT_CustomerConfirm2] AS target "
+	                + "INNER JOIN #TempCustConfirm AS src ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo; "
 
-	            // 3. UPDATE (ครบ 26 คอลัมน์ที่ต้องเปลี่ยน)
-	            stmt.execute("UPDATE target SET " +
-	                "target.SendDate = src.SendDate, target.NoPerDay = src.NoPerDay, target.ReplyDate = src.ReplyDate, " +
-	                "target.CustomerName = src.CustomerName, target.SO = src.SO, target.SOLine = src.SOLine, " +
-	                "target.DueDate = src.DueDate, target.PO = src.PO, target.Material = src.Material, " +
-	                "target.ProductName = src.ProductName, target.LabNo = src.LabNo, target.Color = src.Color, " +
-	                "target.LotNo = src.LotNo, target.CFM_L = src.CFM_L, target.CFM_Da = src.CFM_Da, " +
-	                "target.CFM_Db = src.CFM_Db, target.CFM_St = src.CFM_St, target.CFM_DeltaE = src.CFM_DeltaE, " +
-	                "target.Result = src.Result, target.QCComment = src.QCComment, target.RemarkFromSubmit = src.RemarkFromSubmit, " +
-	                "target.NextLot = src.NextLot, target.Qty = src.Qty, target.UnitId = src.UnitId, " +
-	                "target.DataStatus = src.DataStatus, target.ChangeDate = GETDATE() " +
-	                "FROM [dbo].[Z_ATT_CustomerConfirm2] AS target " +
-	                "INNER JOIN #TempCustConfirm AS src ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo");
+	                + "/* 4. INSERT (ครบ 29 คอลัมน์ตาม Schema) */ "
+	                + "INSERT INTO [dbo].[Z_ATT_CustomerConfirm2] ("
+	                + "    SendDate, NoPerDay, ReplyDate, CFMNo, CustomerName, SO, SOLine, DueDate, PO, Material, "
+	                + "    ProductName, LabNo, Color, ProdId, LotNo, CFM_L, CFM_Da, CFM_Db, CFM_St, CFM_DeltaE, "
+	                + "    Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId, DataStatus, ChangeDate, CreateDate) "
+	                + "SELECT "
+	                + "    src.SendDate, src.NoPerDay, src.ReplyDate, src.CFMNo, src.CustomerName, src.SO, src.SOLine, "
+	                + "    src.DueDate, src.PO, src.Material, src.ProductName, src.LabNo, src.Color, src.ProdId, src.LotNo, "
+	                + "    src.CFM_L, src.CFM_Da, src.CFM_Db, src.CFM_St, src.CFM_DeltaE, src.Result, src.QCComment, "
+	                + "    src.RemarkFromSubmit, src.NextLot, src.Qty, src.UnitId, src.DataStatus, @Now, @Now "
+	                + "FROM #TempCustConfirm AS src "
+	                + "LEFT JOIN [dbo].[Z_ATT_CustomerConfirm2] AS target ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo "
+	                + "WHERE target.ProdId IS NULL;";
 
-	            // 4. INSERT (ครบ 29 คอลัมน์ตามรูปตารางเป๊ะ)
-	            stmt.execute("INSERT INTO [dbo].[Z_ATT_CustomerConfirm2] (" +
-	                "SendDate, NoPerDay, ReplyDate, CFMNo, CustomerName, SO, SOLine, DueDate, PO, Material, " +
-	                "ProductName, LabNo, Color, ProdId, LotNo, CFM_L, CFM_Da, CFM_Db, CFM_St, CFM_DeltaE, " +
-	                "Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId, DataStatus, ChangeDate, CreateDate) " +
-	                "SELECT src.SendDate, src.NoPerDay, src.ReplyDate, src.CFMNo, src.CustomerName, src.SO, src.SOLine, " +
-	                "src.DueDate, src.PO, src.Material, src.ProductName, src.LabNo, src.Color, src.ProdId, src.LotNo, " +
-	                "src.CFM_L, src.CFM_Da, src.CFM_Db, src.CFM_St, src.CFM_DeltaE, src.Result, src.QCComment, " +
-	                "src.RemarkFromSubmit, src.NextLot, src.Qty, src.UnitId, src.DataStatus, GETDATE(), GETDATE() " +
-	                "FROM #TempCustConfirm AS src " +
-	                "LEFT JOIN [dbo].[Z_ATT_CustomerConfirm2] AS target ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo " +
-	                "WHERE target.ProdId IS NULL");
-
+	            stmt.execute(upsertSql);
 	            connection.commit();
 	        } catch (Exception e) {
 	            if (connection != null) connection.rollback();

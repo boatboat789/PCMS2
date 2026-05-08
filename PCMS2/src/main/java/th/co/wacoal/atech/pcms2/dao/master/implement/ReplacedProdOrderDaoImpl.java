@@ -183,11 +183,11 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "      )  "
 				+ ";";
 		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-try {
-    prepared = connection.prepareStatement(sql);
+		try {
+			prepared = connection.prepareStatement(sql);
 
 			prepared.setDouble(1, Double.parseDouble(volume));
 			prepared.setString(2, dataStatus);
@@ -215,7 +215,11 @@ try {
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
 			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 		return bean;
 	}
@@ -239,11 +243,11 @@ try {
 				+ ";";
 
 		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-try {
-    prepared = connection.prepareStatement(sql);
+		try {
+			prepared = connection.prepareStatement(sql);
 			prepared.setString(1, dataStatus);
 			prepared.setString(2, bean.getUserId());
 			prepared.setTimestamp(3, new Timestamp(time));
@@ -259,9 +263,13 @@ try {
 //			System.err.println("ReplacedProdOrder"+e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
+		} finally {
 			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 		return bean;
 	}

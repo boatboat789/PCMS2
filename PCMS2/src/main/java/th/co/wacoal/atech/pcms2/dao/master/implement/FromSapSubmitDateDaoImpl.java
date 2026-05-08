@@ -2,13 +2,10 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -256,28 +253,59 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 					ps.executeBatch();
 				}
 
-				// 3. สั่ง Update ข้อมูลเดิมจาก Temp ไปยังตารางจริง (ทีเดียวจบ)
-				String updateSql = "UPDATE target SET "
-						+ "  target.SubmitDate = CASE WHEN src.DataStatus = 'X' THEN target.SubmitDate ELSE src.SubmitDate END, "
-						+ "  target.Remark = CASE WHEN src.DataStatus = 'X' THEN target.Remark ELSE src.Remark END, "
-						+ "  target.DataStatus = src.DataStatus, "
-						+ "  target.ChangeDate = GETDATE(), "
-						+ "  target.SyncDate = CASE WHEN src.DataStatus = 'X' THEN target.SyncDate ELSE src.SyncDate END "
-						+ "FROM [FromSapSubmitDate] AS target "
-						+ "INNER JOIN #TempSubmitDate AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "AND target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND target.No = src.No";
-				stmt.execute(updateSql);
+//				// 3. สั่ง Update ข้อมูลเดิมจาก Temp ไปยังตารางจริง (ทีเดียวจบ)
+//				String updateSql = "UPDATE target SET "
+//						+ "  target.SubmitDate = CASE WHEN src.DataStatus = 'X' THEN target.SubmitDate ELSE src.SubmitDate END, "
+//						+ "  target.Remark = CASE WHEN src.DataStatus = 'X' THEN target.Remark ELSE src.Remark END, "
+//						+ "  target.DataStatus = src.DataStatus, "
+//						+ "  target.ChangeDate = GETDATE(), "
+//						+ "  target.SyncDate = CASE WHEN src.DataStatus = 'X' THEN target.SyncDate ELSE src.SyncDate END "
+//						+ "FROM [FromSapSubmitDate] AS target "
+//						+ "INNER JOIN #TempSubmitDate AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "AND target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND target.No = src.No";
+//				stmt.execute(updateSql);
+//
+//				// 4. สั่ง Insert ข้อมูลใหม่ที่ไม่มีในตารางจริง (ทีเดียวจบ)
+//				String insertSql =
+//						"INSERT INTO [FromSapSubmitDate] (ProductionOrder, SaleOrder, SaleLine, [No], SubmitDate, Remark, DataStatus, ChangeDate, CreateDate, SyncDate) "
+//								+ "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.No, src.SubmitDate, src.Remark, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
+//								+ "FROM #TempSubmitDate AS src "
+//								+ "LEFT JOIN [FromSapSubmitDate] AS target ON target.ProductionOrder = src.ProductionOrder "
+//								+ "AND target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND target.No = src.No "
+//								+ "WHERE target.ProductionOrder IS NULL AND src.DataStatus != 'X'";
+//				stmt.execute(insertSql);
+				// รวมข้อ 3 และ 4 เป็น Batch เดียวเพื่อคุมเวลาและเพิ่มประสิทธิภาพ
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. Update ข้อมูลเดิม โดยมีการเช็ก DataStatus = 'X' เพื่อรักษาค่าเดิม */ "
+				    + "UPDATE target SET "
+				    + "    target.SubmitDate = CASE WHEN src.DataStatus = 'X' THEN target.SubmitDate ELSE src.SubmitDate END, "
+				    + "    target.Remark = CASE WHEN src.DataStatus = 'X' THEN target.Remark ELSE src.Remark END, "
+				    + "    target.DataStatus = src.DataStatus, "
+				    + "    target.ChangeDate = @Now, "
+				    + "    target.SyncDate = CASE WHEN src.DataStatus = 'X' THEN target.SyncDate ELSE src.SyncDate END "
+				    + "FROM [FromSapSubmitDate] AS target "
+				    + "INNER JOIN #TempSubmitDate AS src ON target.ProductionOrder = src.ProductionOrder "
+				    + "    AND target.SaleOrder = src.SaleOrder "
+				    + "    AND target.SaleLine = src.SaleLine "
+				    + "    AND target.No = src.No; "
 
-				// 4. สั่ง Insert ข้อมูลใหม่ที่ไม่มีในตารางจริง (ทีเดียวจบ)
-				String insertSql =
-						"INSERT INTO [FromSapSubmitDate] (ProductionOrder, SaleOrder, SaleLine, [No], SubmitDate, Remark, DataStatus, ChangeDate, CreateDate, SyncDate) "
-								+ "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.No, src.SubmitDate, src.Remark, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-								+ "FROM #TempSubmitDate AS src "
-								+ "LEFT JOIN [FromSapSubmitDate] AS target ON target.ProductionOrder = src.ProductionOrder "
-								+ "AND target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND target.No = src.No "
-								+ "WHERE target.ProductionOrder IS NULL AND src.DataStatus != 'X'";
-				stmt.execute(insertSql);
+				    + "/* 4. Insert ข้อมูลใหม่ที่ไม่มีในตารางจริง (ไม่รับตัวที่เป็น 'X') */ "
+				    + "INSERT INTO [FromSapSubmitDate] ( "
+				    + "    ProductionOrder, SaleOrder, SaleLine, [No], SubmitDate, Remark, "
+				    + "    DataStatus, ChangeDate, CreateDate, SyncDate) "
+				    + "SELECT "
+				    + "    src.ProductionOrder, src.SaleOrder, src.SaleLine, src.No, src.SubmitDate, src.Remark, "
+				    + "    src.DataStatus, @Now, @Now, src.SyncDate "
+				    + "FROM #TempSubmitDate AS src "
+				    + "LEFT JOIN [FromSapSubmitDate] AS target ON target.ProductionOrder = src.ProductionOrder "
+				    + "    AND target.SaleOrder = src.SaleOrder "
+				    + "    AND target.SaleLine = src.SaleLine "
+				    + "    AND target.No = src.No "
+				    + "WHERE target.ProductionOrder IS NULL AND src.DataStatus != 'X';";
 
+				stmt.execute(upsertSql);
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();

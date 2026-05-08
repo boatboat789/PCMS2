@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,7 +45,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 	{
 		String iconStatus = "I";
 		Connection conn = this.database.getConnection();
-		PreparedStatement prepared = null;
+//		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false);
@@ -96,42 +93,90 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 					ps.executeBatch();
 				}
 
-				// 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder)
-				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
-						+ "FROM [FromSapMainBillBatch] AS target "
-						+ "INNER JOIN #TempMainBill AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//				// 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder)
+//				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+//						+ "FROM [FromSapMainBillBatch] AS target "
+//						+ "INNER JOIN #TempMainBill AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//				// 4. Update ข้อมูลเดิม (Matching 6 Keys)
+//				stmt.execute("UPDATE target SET "
+//						+ "  target.LotShipping = src.LotShipping, target.Grade = src.Grade, "
+//						+ "  target.QuantityKG = src.QuantityKG, target.QuantityYD = src.QuantityYD, "
+//						+ "  target.QuantityMR = src.QuantityMR, target.LotNo = src.LotNo, "
+//						+ "  target.DataStatus = src.DataStatus, target.ChangeDate = GETDATE(), "
+//						+ "  target.SyncDate = src.SyncDate "
+//						+ "FROM [FromSapMainBillBatch] AS target "
+//						+ "INNER JOIN #TempMainBill AS src ON "
+//						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
+//						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
+//						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus <> 'X'");
+//
+//				// 5. Insert ข้อมูลใหม่
+//				stmt.execute("INSERT INTO [FromSapMainBillBatch] (BillDoc, BillItem, LotShipping, ProductionOrder, "
+//						+ "SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, "
+//						+ "DataStatus, ChangeDate, CreateDate, SyncDate) "
+//						+ "SELECT src.BillDoc, src.BillItem, src.LotShipping, src.ProductionOrder, "
+//						+ "src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, src.QuantityKG, src.QuantityYD, "
+//						+ "src.QuantityMR, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
+//						+ "FROM #TempMainBill AS src "
+//						+ "LEFT JOIN [FromSapMainBillBatch] AS target ON "
+//						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
+//						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
+//						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE target.ProductionOrder IS NULL "
+//						+ "  AND src.DataStatus <> 'X' "
+//						+ "  AND src.BillDoc IS NOT NULL AND src.BillDoc <> ''");
+				// รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลา GETDATE() ให้เท่ากันทั้ง 3 Step
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder) */ "
+				    + "UPDATE target SET "
+				    + "    target.DataStatus = 'X', "
+				    + "    target.ChangeDate = @Now "
+				    + "FROM [FromSapMainBillBatch] AS target "
+				    + "INNER JOIN #TempMainBill AS src ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-				// 4. Update ข้อมูลเดิม (Matching 6 Keys)
-				stmt.execute("UPDATE target SET "
-						+ "  target.LotShipping = src.LotShipping, target.Grade = src.Grade, "
-						+ "  target.QuantityKG = src.QuantityKG, target.QuantityYD = src.QuantityYD, "
-						+ "  target.QuantityMR = src.QuantityMR, target.LotNo = src.LotNo, "
-						+ "  target.DataStatus = src.DataStatus, target.ChangeDate = GETDATE(), "
-						+ "  target.SyncDate = src.SyncDate "
-						+ "FROM [FromSapMainBillBatch] AS target "
-						+ "INNER JOIN #TempMainBill AS src ON "
-						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
-						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
-						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus <> 'X'");
+				    + "/* 4. Update ข้อมูลเดิม (Matching 6 Keys) */ "
+				    + "UPDATE target SET "
+				    + "    target.LotShipping = src.LotShipping, "
+				    + "    target.Grade = src.Grade, "
+				    + "    target.QuantityKG = src.QuantityKG, "
+				    + "    target.QuantityYD = src.QuantityYD, "
+				    + "    target.QuantityMR = src.QuantityMR, "
+				    + "    target.LotNo = src.LotNo, "
+				    + "    target.DataStatus = src.DataStatus, "
+				    + "    target.ChangeDate = @Now, "
+				    + "    target.SyncDate = src.SyncDate "
+				    + "FROM [FromSapMainBillBatch] AS target "
+				    + "INNER JOIN #TempMainBill AS src ON "
+				    + "    target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
+				    + "    target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
+				    + "    target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE src.DataStatus <> 'X'; "
 
-				// 5. Insert ข้อมูลใหม่
-				stmt.execute("INSERT INTO [FromSapMainBillBatch] (BillDoc, BillItem, LotShipping, ProductionOrder, "
-						+ "SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, "
-						+ "DataStatus, ChangeDate, CreateDate, SyncDate) "
-						+ "SELECT src.BillDoc, src.BillItem, src.LotShipping, src.ProductionOrder, "
-						+ "src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, src.QuantityKG, src.QuantityYD, "
-						+ "src.QuantityMR, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-						+ "FROM #TempMainBill AS src "
-						+ "LEFT JOIN [FromSapMainBillBatch] AS target ON "
-						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
-						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
-						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE target.ProductionOrder IS NULL "
-						+ "  AND src.DataStatus <> 'X' "
-						+ "  AND src.BillDoc IS NOT NULL AND src.BillDoc <> ''");
+				    + "/* 5. Insert ข้อมูลใหม่ */ "
+				    + "INSERT INTO [FromSapMainBillBatch] ( "
+				    + "    BillDoc, BillItem, LotShipping, ProductionOrder, "
+				    + "    SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD, "
+				    + "    QuantityMR, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
+				    + "SELECT "
+				    + "    src.BillDoc, src.BillItem, src.LotShipping, src.ProductionOrder, "
+				    + "    src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, src.QuantityKG, src.QuantityYD, "
+				    + "    src.QuantityMR, src.LotNo, src.DataStatus, @Now, @Now, src.SyncDate "
+				    + "FROM #TempMainBill AS src "
+				    + "LEFT JOIN [FromSapMainBillBatch] AS target ON "
+				    + "    target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
+				    + "    target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
+				    + "    target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE target.ProductionOrder IS NULL "
+				    + "  AND src.DataStatus <> 'X' "
+				    + "  AND src.BillDoc IS NOT NULL AND src.BillDoc <> '';";
 
+				stmt.execute(upsertSql);
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();

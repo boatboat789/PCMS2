@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +149,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 		String iconStatus = "I";
 
 		Connection conn = this.database.getConnection();
-		PreparedStatement prepared = null;
+//		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false);
@@ -230,42 +227,90 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 					ps.executeBatch();
 				}
 
-				// 3. จัดการ DataStatus = 'X'
-				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
-						+ "FROM [FromSapMainProd] AS target INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//				// 3. จัดการ DataStatus = 'X'
+//				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+//						+ "FROM [FromSapMainProd] AS target INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//				// 4. Update ข้อมูลเดิม (Matching ProductionOrder)
+//				stmt.execute("UPDATE target SET "
+//						+ "target.SaleOrder = src.SaleOrder, target.SaleLine = src.SaleLine, target.TotalQuantity = src.TotalQuantity, "
+//						+ "target.Unit = src.Unit, target.RemAfterCloseOne = src.RemAfterCloseOne, target.RemAfterCloseTwo = src.RemAfterCloseTwo, "
+//						+ "target.RemAfterCloseThree = src.RemAfterCloseThree, target.LabStatus = src.LabStatus, target.UserStatus = src.UserStatus, "
+//						+ "target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, target.BookNo = src.BookNo, target.Center = src.Center, "
+//						+ "target.LotNo = src.LotNo, target.Batch = src.Batch, target.LabNo = src.LabNo, target.RemarkOne = src.RemarkOne, "
+//						+ "target.RemarkTwo = src.RemarkTwo, target.RemarkThree = src.RemarkThree, target.BCAware = src.BCAware, "
+//						+ "target.OrderPuang = src.OrderPuang, target.RefPrd = src.RefPrd, target.GreigeInDate = src.GreigeInDate, "
+//						+ "target.BCDate = src.BCDate, target.Volumn = src.Volumn, target.CFdate = src.CFdate, target.CFType = src.CFType, "
+//						+ "target.Shade = src.Shade, target.LotShipping = src.LotShipping, target.BillSendQuantity = src.BillSendQuantity, "
+//						+ "target.Grade = src.Grade, target.DataStatus = src.DataStatus, target.PrdCreateDate = src.PrdCreateDate, "
+//						+ "target.GreigeArticle = src.GreigeArticle, target.GreigeDesign = src.GreigeDesign, target.GreigeMR = src.GreigeMR, "
+//						+ "target.GreigeKG = src.GreigeKG, target.OrderType = src.OrderType, target.SyncDate = src.SyncDate, target.ChangeDate = GETDATE() "
+//						+ "FROM [FromSapMainProd] AS target INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus <> 'X'");
+//
+//				// 5. Insert ข้อมูลใหม่
+//				stmt.execute("INSERT INTO [FromSapMainProd] (ProductionOrder, SaleOrder, SaleLine, TotalQuantity, Unit, "
+//						+ "RemAfterCloseOne, RemAfterCloseTwo, RemAfterCloseThree, LabStatus, UserStatus, DesignFG, ArticleFG, "
+//						+ "BookNo, Center, LotNo, Batch, LabNo, RemarkOne, RemarkTwo, RemarkThree, BCAware, OrderPuang, RefPrd, "
+//						+ "GreigeInDate, BCDate, Volumn, CFdate, CFType, Shade, LotShipping, BillSendQuantity, Grade, DataStatus, "
+//						+ "PrdCreateDate, GreigeArticle, GreigeDesign, GreigeMR, GreigeKG, OrderType, SyncDate, ChangeDate, CreateDate) "
+//						+ "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.TotalQuantity, src.Unit, "
+//						+ "src.RemAfterCloseOne, src.RemAfterCloseTwo, src.RemAfterCloseThree, src.LabStatus, src.UserStatus, src.DesignFG, src.ArticleFG, "
+//						+ "src.BookNo, src.Center, src.LotNo, src.Batch, src.LabNo, src.RemarkOne, src.RemarkTwo, src.RemarkThree, src.BCAware, src.OrderPuang, src.RefPrd, "
+//						+ "src.GreigeInDate, src.BCDate, src.Volumn, src.CFdate, src.CFType, src.Shade, src.LotShipping, src.BillSendQuantity, src.Grade, src.DataStatus, "
+//						+ "src.PrdCreateDate, src.GreigeArticle, src.GreigeDesign, src.GreigeMR, src.GreigeKG, src.OrderType, src.SyncDate, GETDATE(), GETDATE() "
+//						+ "FROM #TempMainProd AS src LEFT JOIN [FromSapMainProd] AS target ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X'");
+				// รวมข้อ 3, 4, 5 เป็น Batch เดียวกันเพื่อประสิทธิภาพและเวลาที่แม่นยำ
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. จัดการ DataStatus = 'X' */ "
+				    + "UPDATE target SET "
+				    + "    target.DataStatus = 'X', "
+				    + "    target.ChangeDate = @Now "
+				    + "FROM [FromSapMainProd] AS target "
+				    + "INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-				// 4. Update ข้อมูลเดิม (Matching ProductionOrder)
-				stmt.execute("UPDATE target SET "
-						+ "target.SaleOrder = src.SaleOrder, target.SaleLine = src.SaleLine, target.TotalQuantity = src.TotalQuantity, "
-						+ "target.Unit = src.Unit, target.RemAfterCloseOne = src.RemAfterCloseOne, target.RemAfterCloseTwo = src.RemAfterCloseTwo, "
-						+ "target.RemAfterCloseThree = src.RemAfterCloseThree, target.LabStatus = src.LabStatus, target.UserStatus = src.UserStatus, "
-						+ "target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, target.BookNo = src.BookNo, target.Center = src.Center, "
-						+ "target.LotNo = src.LotNo, target.Batch = src.Batch, target.LabNo = src.LabNo, target.RemarkOne = src.RemarkOne, "
-						+ "target.RemarkTwo = src.RemarkTwo, target.RemarkThree = src.RemarkThree, target.BCAware = src.BCAware, "
-						+ "target.OrderPuang = src.OrderPuang, target.RefPrd = src.RefPrd, target.GreigeInDate = src.GreigeInDate, "
-						+ "target.BCDate = src.BCDate, target.Volumn = src.Volumn, target.CFdate = src.CFdate, target.CFType = src.CFType, "
-						+ "target.Shade = src.Shade, target.LotShipping = src.LotShipping, target.BillSendQuantity = src.BillSendQuantity, "
-						+ "target.Grade = src.Grade, target.DataStatus = src.DataStatus, target.PrdCreateDate = src.PrdCreateDate, "
-						+ "target.GreigeArticle = src.GreigeArticle, target.GreigeDesign = src.GreigeDesign, target.GreigeMR = src.GreigeMR, "
-						+ "target.GreigeKG = src.GreigeKG, target.OrderType = src.OrderType, target.SyncDate = src.SyncDate, target.ChangeDate = GETDATE() "
-						+ "FROM [FromSapMainProd] AS target INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus <> 'X'");
+				    + "/* 4. Update ข้อมูลเดิม (Matching ProductionOrder) */ "
+				    + "UPDATE target SET "
+				    + "    target.SaleOrder = src.SaleOrder, target.SaleLine = src.SaleLine, target.TotalQuantity = src.TotalQuantity, "
+				    + "    target.Unit = src.Unit, target.RemAfterCloseOne = src.RemAfterCloseOne, target.RemAfterCloseTwo = src.RemAfterCloseTwo, "
+				    + "    target.RemAfterCloseThree = src.RemAfterCloseThree, target.LabStatus = src.LabStatus, target.UserStatus = src.UserStatus, "
+				    + "    target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, target.BookNo = src.BookNo, target.Center = src.Center, "
+				    + "    target.LotNo = src.LotNo, target.Batch = src.Batch, target.LabNo = src.LabNo, target.RemarkOne = src.RemarkOne, "
+				    + "    target.RemarkTwo = src.RemarkTwo, target.RemarkThree = src.RemarkThree, target.BCAware = src.BCAware, "
+				    + "    target.OrderPuang = src.OrderPuang, target.RefPrd = src.RefPrd, target.GreigeInDate = src.GreigeInDate, "
+				    + "    target.BCDate = src.BCDate, target.Volumn = src.Volumn, target.CFdate = src.CFdate, target.CFType = src.CFType, "
+				    + "    target.Shade = src.Shade, target.LotShipping = src.LotShipping, target.BillSendQuantity = src.BillSendQuantity, "
+				    + "    target.Grade = src.Grade, target.DataStatus = src.DataStatus, target.PrdCreateDate = src.PrdCreateDate, "
+				    + "    target.GreigeArticle = src.GreigeArticle, target.GreigeDesign = src.GreigeDesign, target.GreigeMR = src.GreigeMR, "
+				    + "    target.GreigeKG = src.GreigeKG, target.OrderType = src.OrderType, target.SyncDate = src.SyncDate, "
+				    + "    target.ChangeDate = @Now "
+				    + "FROM [FromSapMainProd] AS target "
+				    + "INNER JOIN #TempMainProd AS src ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE src.DataStatus <> 'X'; "
 
-				// 5. Insert ข้อมูลใหม่
-				stmt.execute("INSERT INTO [FromSapMainProd] (ProductionOrder, SaleOrder, SaleLine, TotalQuantity, Unit, "
-						+ "RemAfterCloseOne, RemAfterCloseTwo, RemAfterCloseThree, LabStatus, UserStatus, DesignFG, ArticleFG, "
-						+ "BookNo, Center, LotNo, Batch, LabNo, RemarkOne, RemarkTwo, RemarkThree, BCAware, OrderPuang, RefPrd, "
-						+ "GreigeInDate, BCDate, Volumn, CFdate, CFType, Shade, LotShipping, BillSendQuantity, Grade, DataStatus, "
-						+ "PrdCreateDate, GreigeArticle, GreigeDesign, GreigeMR, GreigeKG, OrderType, SyncDate, ChangeDate, CreateDate) "
-						+ "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.TotalQuantity, src.Unit, "
-						+ "src.RemAfterCloseOne, src.RemAfterCloseTwo, src.RemAfterCloseThree, src.LabStatus, src.UserStatus, src.DesignFG, src.ArticleFG, "
-						+ "src.BookNo, src.Center, src.LotNo, src.Batch, src.LabNo, src.RemarkOne, src.RemarkTwo, src.RemarkThree, src.BCAware, src.OrderPuang, src.RefPrd, "
-						+ "src.GreigeInDate, src.BCDate, src.Volumn, src.CFdate, src.CFType, src.Shade, src.LotShipping, src.BillSendQuantity, src.Grade, src.DataStatus, "
-						+ "src.PrdCreateDate, src.GreigeArticle, src.GreigeDesign, src.GreigeMR, src.GreigeKG, src.OrderType, src.SyncDate, GETDATE(), GETDATE() "
-						+ "FROM #TempMainProd AS src LEFT JOIN [FromSapMainProd] AS target ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X'");
+				    + "/* 5. Insert ข้อมูลใหม่ */ "
+				    + "INSERT INTO [FromSapMainProd] ( "
+				    + "    ProductionOrder, SaleOrder, SaleLine, TotalQuantity, Unit, "
+				    + "    RemAfterCloseOne, RemAfterCloseTwo, RemAfterCloseThree, LabStatus, UserStatus, DesignFG, ArticleFG, "
+				    + "    BookNo, Center, LotNo, Batch, LabNo, RemarkOne, RemarkTwo, RemarkThree, BCAware, OrderPuang, RefPrd, "
+				    + "    GreigeInDate, BCDate, Volumn, CFdate, CFType, Shade, LotShipping, BillSendQuantity, Grade, DataStatus, "
+				    + "    PrdCreateDate, GreigeArticle, GreigeDesign, GreigeMR, GreigeKG, OrderType, SyncDate, ChangeDate, CreateDate) "
+				    + "SELECT "
+				    + "    src.ProductionOrder, src.SaleOrder, src.SaleLine, src.TotalQuantity, src.Unit, "
+				    + "    src.RemAfterCloseOne, src.RemAfterCloseTwo, src.RemAfterCloseThree, src.LabStatus, src.UserStatus, src.DesignFG, src.ArticleFG, "
+				    + "    src.BookNo, src.Center, src.LotNo, src.Batch, src.LabNo, src.RemarkOne, src.RemarkTwo, src.RemarkThree, src.BCAware, src.OrderPuang, src.RefPrd, "
+				    + "    src.GreigeInDate, src.BCDate, src.Volumn, src.CFdate, src.CFType, src.Shade, src.LotShipping, src.BillSendQuantity, src.Grade, src.DataStatus, "
+				    + "    src.PrdCreateDate, src.GreigeArticle, src.GreigeDesign, src.GreigeMR, src.GreigeKG, src.OrderType, src.SyncDate, @Now, @Now "
+				    + "FROM #TempMainProd AS src "
+				    + "LEFT JOIN [FromSapMainProd] AS target ON target.ProductionOrder = src.ProductionOrder "
+				    + "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X';";
 
+				stmt.execute(upsertSql);
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();

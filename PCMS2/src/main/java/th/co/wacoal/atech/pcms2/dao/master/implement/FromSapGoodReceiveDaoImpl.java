@@ -2,12 +2,10 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,7 +43,7 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 	public String upsertFromSapGoodReceiveDetail(ArrayList<FromErpGoodReceiveDetail> paList) {
 	    String iconStatus = "I";
 	    // ใช้เวลาปัจจุบันจากระบบ
-	    Timestamp now = new Timestamp(System.currentTimeMillis());
+//	    Timestamp now = new Timestamp(System.currentTimeMillis());
 
 		Connection conn = this.database.getConnection();
 		PreparedStatement prepared = null;
@@ -92,33 +90,76 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 
 	            // 3. Update สถานะ X (ปิดรายการเก่า)
 	            // ใช้ GETDATE() เพื่อความแม่นยำของ DB Server
-	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
-	                    + "FROM [FromSapGoodReceive] AS target "
-	                    + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder "
-	                    + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+//	                    + "FROM [FromSapGoodReceive] AS target "
+//	                    + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder "
+//	                    + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//	            // 4. Update ข้อมูลม้วนเดิม (Logic: PO + RollNumber)
+//	            stmt.execute("UPDATE target SET "
+//	                    + "  target.SaleOrder = src.SaleOrder, target.SaleLine = src.SaleLine, "
+//	                    + "  target.Grade = src.Grade, target.QuantityKG = src.QuantityKG, "
+//	                    + "  target.QuantityYD = src.QuantityYD, target.QuantityMR = src.QuantityMR, "
+//	                    + "  target.PriceSTD = src.PriceSTD, target.DataStatus = src.DataStatus, "
+//	                    + "  target.ChangeDate = GETDATE(), target.SyncDate = src.SyncDate "
+//	                    + "FROM [FromSapGoodReceive] AS target "
+//	                    + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
+//	                    + "WHERE src.DataStatus <> 'X'");
+//
+//	            // 5. Insert ข้อมูลม้วนใหม่
+//	            stmt.execute("INSERT INTO [FromSapGoodReceive] (ProductionOrder, SaleOrder, SaleLine, Grade, RollNumber, "
+//	                    + "QuantityKG, QuantityYD, QuantityMR, PriceSTD, DataStatus, ChangeDate, CreateDate, SyncDate) "
+//	                    + "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, "
+//	                    + "src.QuantityKG, src.QuantityYD, src.QuantityMR, src.PriceSTD, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
+//	                    + "FROM #TempGR AS src "
+//	                    + "LEFT JOIN [FromSapGoodReceive] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
+//	                    + "WHERE target.ProductionOrder IS NULL "
+//	                    + "  AND src.DataStatus <> 'X' "
+//	                    + "  AND src.RollNumber IS NOT NULL AND src.RollNumber <> ''");
+	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
+	            String upsertSql = 
+	                  "DECLARE @Now DATETIME = GETDATE(); "
+	                
+	                + "/* 3. จัดการ DataStatus = 'X' */ "
+	                + "UPDATE target SET "
+	                + "    target.DataStatus = 'X', "
+	                + "    target.ChangeDate = @Now "
+	                + "FROM [FromSapGoodReceive] AS target "
+	                + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder "
+	                + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-	            // 4. Update ข้อมูลม้วนเดิม (Logic: PO + RollNumber)
-	            stmt.execute("UPDATE target SET "
-	                    + "  target.SaleOrder = src.SaleOrder, target.SaleLine = src.SaleLine, "
-	                    + "  target.Grade = src.Grade, target.QuantityKG = src.QuantityKG, "
-	                    + "  target.QuantityYD = src.QuantityYD, target.QuantityMR = src.QuantityMR, "
-	                    + "  target.PriceSTD = src.PriceSTD, target.DataStatus = src.DataStatus, "
-	                    + "  target.ChangeDate = GETDATE(), target.SyncDate = src.SyncDate "
-	                    + "FROM [FromSapGoodReceive] AS target "
-	                    + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
-	                    + "WHERE src.DataStatus <> 'X'");
+	                + "/* 4. Update ข้อมูลม้วนเดิม (Logic: PO + RollNumber) */ "
+	                + "UPDATE target SET "
+	                + "    target.SaleOrder = src.SaleOrder, "
+	                + "    target.SaleLine = src.SaleLine, "
+	                + "    target.Grade = src.Grade, "
+	                + "    target.QuantityKG = src.QuantityKG, "
+	                + "    target.QuantityYD = src.QuantityYD, "
+	                + "    target.QuantityMR = src.QuantityMR, "
+	                + "    target.PriceSTD = src.PriceSTD, "
+	                + "    target.DataStatus = src.DataStatus, "
+	                + "    target.ChangeDate = @Now, "
+	                + "    target.SyncDate = src.SyncDate "
+	                + "FROM [FromSapGoodReceive] AS target "
+	                + "INNER JOIN #TempGR AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
+	                + "WHERE src.DataStatus <> 'X'; "
 
-	            // 5. Insert ข้อมูลม้วนใหม่
-	            stmt.execute("INSERT INTO [FromSapGoodReceive] (ProductionOrder, SaleOrder, SaleLine, Grade, RollNumber, "
-	                    + "QuantityKG, QuantityYD, QuantityMR, PriceSTD, DataStatus, ChangeDate, CreateDate, SyncDate) "
-	                    + "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, "
-	                    + "src.QuantityKG, src.QuantityYD, src.QuantityMR, src.PriceSTD, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-	                    + "FROM #TempGR AS src "
-	                    + "LEFT JOIN [FromSapGoodReceive] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
-	                    + "WHERE target.ProductionOrder IS NULL "
-	                    + "  AND src.DataStatus <> 'X' "
-	                    + "  AND src.RollNumber IS NOT NULL AND src.RollNumber <> ''");
+	                + "/* 5. Insert ข้อมูลม้วนใหม่ */ "
+	                + "INSERT INTO [FromSapGoodReceive] ( "
+	                + "    ProductionOrder, SaleOrder, SaleLine, Grade, RollNumber, "
+	                + "    QuantityKG, QuantityYD, QuantityMR, PriceSTD, DataStatus, "
+	                + "    ChangeDate, CreateDate, SyncDate) "
+	                + "SELECT "
+	                + "    src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, "
+	                + "    src.QuantityKG, src.QuantityYD, src.QuantityMR, src.PriceSTD, src.DataStatus, "
+	                + "    @Now, @Now, src.SyncDate "
+	                + "FROM #TempGR AS src "
+	                + "LEFT JOIN [FromSapGoodReceive] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNumber = src.RollNumber "
+	                + "WHERE target.ProductionOrder IS NULL "
+	                + "  AND src.DataStatus <> 'X' "
+	                + "  AND src.RollNumber IS NOT NULL AND src.RollNumber <> '';";
 
+	            stmt.execute(upsertSql);
 	            conn.commit(); 
 	        } catch (Exception e) {
 	            conn.rollback(); 

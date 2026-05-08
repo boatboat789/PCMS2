@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,7 +46,7 @@ public class FromSORCFMDaoImpl implements FromSORCFMDao {
 	{
 		String iconStatus = "I";
 		Connection conn = this.database.getConnection();
-		PreparedStatement prepared = null;
+//		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false); // เริ่ม Transaction
@@ -76,23 +73,45 @@ public class FromSORCFMDaoImpl implements FromSORCFMDao {
 					}
 					ps.executeBatch();
 				}
+				// รวมข้อ 3 และ 4 เป็น Batch เดียวเพื่อให้เวลา GETDATE() ตรงกันและทำงานได้เร็วขึ้น
+				String upsertSql = 
+				      "DECLARE @Now DATETIME = GETDATE(); "
+				    
+				    + "/* 3. Update ข้อมูลเดิมที่มี SaleOrder และ SaleLine ตรงกัน */ "
+				    + "UPDATE target SET "
+				    + "    target.CFMDate = src.CFMDate, "
+				    + "    target.ChangeDate = @Now "
+				    + "FROM [PCMS].[dbo].[FromSORCFM] AS target "
+				    + "INNER JOIN #TempSORCFM AS src ON "
+				    + "    target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine; "
 
-				// 3. Update ข้อมูลเดิมที่มี SaleOrder และ SaleLine ตรงกัน
-				stmt.execute("UPDATE target SET "
-						+ "target.CFMDate = src.CFMDate, "
-						+ "target.ChangeDate = GETDATE() "
-						+ "FROM [PCMS].[dbo].[FromSORCFM] AS target "
-						+ "INNER JOIN #TempSORCFM AS src ON "
-						+ "target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine");
+				    + "/* 4. Insert ข้อมูลใหม่ที่ยังไม่มีในตารางหลัก */ "
+				    + "INSERT INTO [PCMS].[dbo].[FromSORCFM] (SaleOrder, SaleLine, CFMDate, ChangeDate, CreateDate) "
+				    + "SELECT "
+				    + "    src.SaleOrder, src.SaleLine, src.CFMDate, @Now, @Now "
+				    + "FROM #TempSORCFM AS src "
+				    + "LEFT JOIN [PCMS].[dbo].[FromSORCFM] AS target ON "
+				    + "    target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine "
+				    + "WHERE target.SaleOrder IS NULL "
+				    + "  AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> '';";
 
-				// 4. Insert ข้อมูลใหม่ที่ยังไม่มีในตารางหลัก
-				stmt.execute("INSERT INTO [PCMS].[dbo].[FromSORCFM] (SaleOrder, SaleLine, CFMDate, ChangeDate, CreateDate) "
-						+ "SELECT src.SaleOrder, src.SaleLine, src.CFMDate, GETDATE(), GETDATE() "
-						+ "FROM #TempSORCFM AS src "
-						+ "LEFT JOIN [PCMS].[dbo].[FromSORCFM] AS target ON "
-						+ "target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine "
-						+ "WHERE target.SaleOrder IS NULL "
-						+ "AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> ''");
+				stmt.execute(upsertSql);
+//				// 3. Update ข้อมูลเดิมที่มี SaleOrder และ SaleLine ตรงกัน
+//				stmt.execute("UPDATE target SET "
+//						+ "target.CFMDate = src.CFMDate, "
+//						+ "target.ChangeDate = GETDATE() "
+//						+ "FROM [PCMS].[dbo].[FromSORCFM] AS target "
+//						+ "INNER JOIN #TempSORCFM AS src ON "
+//						+ "target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine");
+//
+//				// 4. Insert ข้อมูลใหม่ที่ยังไม่มีในตารางหลัก
+//				stmt.execute("INSERT INTO [PCMS].[dbo].[FromSORCFM] (SaleOrder, SaleLine, CFMDate, ChangeDate, CreateDate) "
+//						+ "SELECT src.SaleOrder, src.SaleLine, src.CFMDate, GETDATE(), GETDATE() "
+//						+ "FROM #TempSORCFM AS src "
+//						+ "LEFT JOIN [PCMS].[dbo].[FromSORCFM] AS target ON "
+//						+ "target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine "
+//						+ "WHERE target.SaleOrder IS NULL "
+//						+ "AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> ''");
 
 				conn.commit(); // ยืนยัน Transaction
 			} catch (Exception e) {

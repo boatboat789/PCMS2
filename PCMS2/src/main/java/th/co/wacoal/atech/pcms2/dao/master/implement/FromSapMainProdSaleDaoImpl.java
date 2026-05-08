@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,39 +74,80 @@ public class FromSapMainProdSaleDaoImpl implements FromSapMainProdSaleDao {
 	                ps.executeBatch();
 	            }
 
-	            // 3. จัดการ DataStatus = 'X'
-	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
-	                         "FROM [FromSapMainProdSale] AS target " +
-	                         "INNER JOIN #TempMainProdSale AS src ON target.ProductionOrder = src.ProductionOrder " +
-	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//	            // 3. จัดการ DataStatus = 'X'
+//	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
+//	                         "FROM [FromSapMainProdSale] AS target " +
+//	                         "INNER JOIN #TempMainProdSale AS src ON target.ProductionOrder = src.ProductionOrder " +
+//	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//	            // 4. Update ข้อมูลเดิม (Matching: PO + SO + Line)
+//	            stmt.execute("UPDATE target SET " +
+//	                         "target.Volumn = src.Volumn, " +
+//	                         "target.DataStatus = src.DataStatus, " +
+//	                         "target.ChangeDate = GETDATE(), " +
+//	                         "target.SyncDate = src.SyncDate " +
+//	                         "FROM [FromSapMainProdSale] AS target " +
+//	                         "INNER JOIN #TempMainProdSale AS src ON " +
+//	                         "target.ProductionOrder = src.ProductionOrder AND " +
+//	                         "target.SaleOrder = src.SaleOrder AND " +
+//	                         "target.SaleLine = src.SaleLine " +
+//	                         "WHERE src.DataStatus <> 'X'");
+//
+//	            // 5. Insert ข้อมูลใหม่ (เช็คเงื่อนไข SaleOrder/Line ไม่เป็นค่าว่าง)
+//	            stmt.execute("INSERT INTO [FromSapMainProdSale] (ProductionOrder, SaleOrder, SaleLine, Volumn, " +
+//	                         "DataStatus, ChangeDate, CreateDate, SyncDate) " +
+//	                         "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Volumn, " +
+//	                         "src.DataStatus, GETDATE(), GETDATE(), src.SyncDate " +
+//	                         "FROM #TempMainProdSale AS src " +
+//	                         "LEFT JOIN [FromSapMainProdSale] AS target ON " +
+//	                         "target.ProductionOrder = src.ProductionOrder AND " +
+//	                         "target.SaleOrder = src.SaleOrder AND " +
+//	                         "target.SaleLine = src.SaleLine " +
+//	                         "WHERE target.ProductionOrder IS NULL " +
+//	                         "AND src.DataStatus <> 'X' " +
+//	                         "AND src.SaleOrder <> '' AND src.SaleLine <> ''");
+	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลา GETDATE() ให้ตรงกัน และลดการ Round-trip ของ Network
+	            String upsertSql = 
+	                  "DECLARE @Now DATETIME = GETDATE(); "
+	                
+	                + "/* 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder) */ "
+	                + "UPDATE target SET "
+	                + "    target.DataStatus = 'X', "
+	                + "    target.ChangeDate = @Now "
+	                + "FROM [FromSapMainProdSale] AS target "
+	                + "INNER JOIN #TempMainProdSale AS src ON target.ProductionOrder = src.ProductionOrder "
+	                + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-	            // 4. Update ข้อมูลเดิม (Matching: PO + SO + Line)
-	            stmt.execute("UPDATE target SET " +
-	                         "target.Volumn = src.Volumn, " +
-	                         "target.DataStatus = src.DataStatus, " +
-	                         "target.ChangeDate = GETDATE(), " +
-	                         "target.SyncDate = src.SyncDate " +
-	                         "FROM [FromSapMainProdSale] AS target " +
-	                         "INNER JOIN #TempMainProdSale AS src ON " +
-	                         "target.ProductionOrder = src.ProductionOrder AND " +
-	                         "target.SaleOrder = src.SaleOrder AND " +
-	                         "target.SaleLine = src.SaleLine " +
-	                         "WHERE src.DataStatus <> 'X'");
+	                + "/* 4. Update ข้อมูลเดิม (Matching: PO + SO + Line) */ "
+	                + "UPDATE target SET "
+	                + "    target.Volumn = src.Volumn, "
+	                + "    target.DataStatus = src.DataStatus, "
+	                + "    target.ChangeDate = @Now, "
+	                + "    target.SyncDate = src.SyncDate "
+	                + "FROM [FromSapMainProdSale] AS target "
+	                + "INNER JOIN #TempMainProdSale AS src ON "
+	                + "    target.ProductionOrder = src.ProductionOrder AND "
+	                + "    target.SaleOrder = src.SaleOrder AND "
+	                + "    target.SaleLine = src.SaleLine "
+	                + "WHERE src.DataStatus <> 'X'; "
 
-	            // 5. Insert ข้อมูลใหม่ (เช็คเงื่อนไข SaleOrder/Line ไม่เป็นค่าว่าง)
-	            stmt.execute("INSERT INTO [FromSapMainProdSale] (ProductionOrder, SaleOrder, SaleLine, Volumn, " +
-	                         "DataStatus, ChangeDate, CreateDate, SyncDate) " +
-	                         "SELECT src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Volumn, " +
-	                         "src.DataStatus, GETDATE(), GETDATE(), src.SyncDate " +
-	                         "FROM #TempMainProdSale AS src " +
-	                         "LEFT JOIN [FromSapMainProdSale] AS target ON " +
-	                         "target.ProductionOrder = src.ProductionOrder AND " +
-	                         "target.SaleOrder = src.SaleOrder AND " +
-	                         "target.SaleLine = src.SaleLine " +
-	                         "WHERE target.ProductionOrder IS NULL " +
-	                         "AND src.DataStatus <> 'X' " +
-	                         "AND src.SaleOrder <> '' AND src.SaleLine <> ''");
+	                + "/* 5. Insert ข้อมูลใหม่ (เช็คเงื่อนไข SaleOrder/Line ไม่เป็นค่าว่าง) */ "
+	                + "INSERT INTO [FromSapMainProdSale] ( "
+	                + "    ProductionOrder, SaleOrder, SaleLine, Volumn, "
+	                + "    DataStatus, ChangeDate, CreateDate, SyncDate) "
+	                + "SELECT "
+	                + "    src.ProductionOrder, src.SaleOrder, src.SaleLine, src.Volumn, "
+	                + "    src.DataStatus, @Now, @Now, src.SyncDate "
+	                + "FROM #TempMainProdSale AS src "
+	                + "LEFT JOIN [FromSapMainProdSale] AS target ON "
+	                + "    target.ProductionOrder = src.ProductionOrder AND "
+	                + "    target.SaleOrder = src.SaleOrder AND "
+	                + "    target.SaleLine = src.SaleLine "
+	                + "WHERE target.ProductionOrder IS NULL "
+	                + "  AND src.DataStatus <> 'X' "
+	                + "  AND src.SaleOrder <> '' AND src.SaleLine <> '';";
 
+	            stmt.execute(upsertSql);
 	            conn.commit();
 	        } catch (Exception e) {
 	            conn.rollback();

@@ -483,9 +483,9 @@ public class PCMSSqlService {
 		if (userStatusList.size() > 0) {
 			UserStatusGroups groups = categorizeUserStatus(userStatusList);
 			List<String> lotNoList = groups.lotNoList;
-			List<String> userStatusCalRPList = groups.userStatusCalRPList;
+//			List<String> userStatusCalRPList = groups.userStatusCalRPList;
 			List<String> userStatusCalList = groups.userStatusCalList;
-			List<String> userStatusListA = groups.userStatusListA;
+//			List<String> userStatusListA = groups.userStatusListA;
 			StringBuilder tmpWhere = new StringBuilder(" and ( b.ProductionOrder is not null and ( \r\n");
 			StringBuilder stringTmpWhereNoLotUCAL = new StringBuilder(" and ( b.ProductionOrder is not null and ( \r\n");
 			StringBuilder whereCaseTryRPBuilder =

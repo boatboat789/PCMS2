@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -127,43 +124,89 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	                ps.executeBatch();
 	            }
 
-	            // 3. จัดการ DataStatus = 'X' (ปิดรายการตาม SaleOrder เดิม)
-	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
-	                         "FROM [FromSapSale] AS target " +
-	                         "INNER JOIN #TempSale AS src ON target.SaleOrder = src.SaleOrder " +
-	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//	            // 3. จัดการ DataStatus = 'X' (ปิดรายการตาม SaleOrder เดิม)
+//	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
+//	                         "FROM [FromSapSale] AS target " +
+//	                         "INNER JOIN #TempSale AS src ON target.SaleOrder = src.SaleOrder " +
+//	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//	            // 4. Update ข้อมูลเดิม (Matching: ProductionOrder + No)
+//	            stmt.execute("UPDATE target SET " +
+//	                         "target.BillDate = src.BillDate, " +
+//	                         "target.BillQtyPerSale = src.BillQtyPerSale, " +
+//	                         "target.SaleOrder = src.SaleOrder, " +
+//	                         "target.SaleLine = src.SaleLine, " +
+//	                         "target.BillQtyPerStock = src.BillQtyPerStock, " +
+//	                         "target.Remark = src.Remark, " +
+//	                         "target.CustomerNo = src.CustomerNo, " +
+//	                         "target.CustomerName1 = src.CustomerName1, " +
+//	                         "target.CustomerPO = src.CustomerPO, " +
+//	                         "target.DueDate = src.DueDate, " +
+//	                         "target.Color = src.Color, " +
+//	                         "target.DataStatus = src.DataStatus, " +
+//	                         "target.ChangeDate = GETDATE(), " +
+//	                         "target.SyncDate = src.SyncDate " +
+//	                         "FROM [FromSapSale] AS target " +
+//	                         "INNER JOIN #TempSale AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No " +
+//	                         "WHERE src.DataStatus <> 'X'");
+//
+//	            // 5. Insert ข้อมูลใหม่
+//	            stmt.execute("INSERT INTO [FromSapSale] (ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, " +
+//	                         "BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, " +
+//	                         "DataStatus, ChangeDate, CreateDate, SyncDate) " +
+//	                         "SELECT src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, " +
+//	                         "src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, " +
+//	                         "src.Color, src.No, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate " +
+//	                         "FROM #TempSale AS src " +
+//	                         "LEFT JOIN [FromSapSale] AS target ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No " +
+//	                         "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X'");
+//
+	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลา GETDATE() ให้เท่ากัน และลดภาระของ Database
+	            String upsertSql = 
+	                  "DECLARE @Now DATETIME = GETDATE(); "
+	                
+	                + "/* 3. จัดการ DataStatus = 'X' (ปิดรายการตาม SaleOrder เดิม) */ "
+	                + "UPDATE target SET "
+	                + "    target.DataStatus = 'X', "
+	                + "    target.ChangeDate = @Now "
+	                + "FROM [FromSapSale] AS target "
+	                + "INNER JOIN #TempSale AS src ON target.SaleOrder = src.SaleOrder "
+	                + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-	            // 4. Update ข้อมูลเดิม (Matching: ProductionOrder + No)
-	            stmt.execute("UPDATE target SET " +
-	                         "target.BillDate = src.BillDate, " +
-	                         "target.BillQtyPerSale = src.BillQtyPerSale, " +
-	                         "target.SaleOrder = src.SaleOrder, " +
-	                         "target.SaleLine = src.SaleLine, " +
-	                         "target.BillQtyPerStock = src.BillQtyPerStock, " +
-	                         "target.Remark = src.Remark, " +
-	                         "target.CustomerNo = src.CustomerNo, " +
-	                         "target.CustomerName1 = src.CustomerName1, " +
-	                         "target.CustomerPO = src.CustomerPO, " +
-	                         "target.DueDate = src.DueDate, " +
-	                         "target.Color = src.Color, " +
-	                         "target.DataStatus = src.DataStatus, " +
-	                         "target.ChangeDate = GETDATE(), " +
-	                         "target.SyncDate = src.SyncDate " +
-	                         "FROM [FromSapSale] AS target " +
-	                         "INNER JOIN #TempSale AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No " +
-	                         "WHERE src.DataStatus <> 'X'");
+	                + "/* 4. Update ข้อมูลเดิม (Matching: ProductionOrder + No) */ "
+	                + "UPDATE target SET "
+	                + "    target.BillDate = src.BillDate, "
+	                + "    target.BillQtyPerSale = src.BillQtyPerSale, "
+	                + "    target.SaleOrder = src.SaleOrder, "
+	                + "    target.SaleLine = src.SaleLine, "
+	                + "    target.BillQtyPerStock = src.BillQtyPerStock, "
+	                + "    target.Remark = src.Remark, "
+	                + "    target.CustomerNo = src.CustomerNo, "
+	                + "    target.CustomerName1 = src.CustomerName1, "
+	                + "    target.CustomerPO = src.CustomerPO, "
+	                + "    target.DueDate = src.DueDate, "
+	                + "    target.Color = src.Color, "
+	                + "    target.DataStatus = src.DataStatus, "
+	                + "    target.ChangeDate = @Now, "
+	                + "    target.SyncDate = src.SyncDate "
+	                + "FROM [FromSapSale] AS target "
+	                + "INNER JOIN #TempSale AS src ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No "
+	                + "WHERE src.DataStatus <> 'X'; "
 
-	            // 5. Insert ข้อมูลใหม่
-	            stmt.execute("INSERT INTO [FromSapSale] (ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, " +
-	                         "BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, " +
-	                         "DataStatus, ChangeDate, CreateDate, SyncDate) " +
-	                         "SELECT src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, " +
-	                         "src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, " +
-	                         "src.Color, src.No, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate " +
-	                         "FROM #TempSale AS src " +
-	                         "LEFT JOIN [FromSapSale] AS target ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No " +
-	                         "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X'");
+	                + "/* 5. Insert ข้อมูลใหม่ */ "
+	                + "INSERT INTO [FromSapSale] ( "
+	                + "    ProductionOrder, BillDate, BillQtyPerSale, SaleOrder, SaleLine, "
+	                + "    BillQtyPerStock, Remark, CustomerNo, CustomerName1, CustomerPO, DueDate, Color, No, "
+	                + "    DataStatus, ChangeDate, CreateDate, SyncDate) "
+	                + "SELECT "
+	                + "    src.ProductionOrder, src.BillDate, src.BillQtyPerSale, src.SaleOrder, src.SaleLine, "
+	                + "    src.BillQtyPerStock, src.Remark, src.CustomerNo, src.CustomerName1, src.CustomerPO, src.DueDate, "
+	                + "    src.Color, src.No, src.DataStatus, @Now, @Now, src.SyncDate "
+	                + "FROM #TempSale AS src "
+	                + "LEFT JOIN [FromSapSale] AS target ON target.ProductionOrder = src.ProductionOrder AND target.No = src.No "
+	                + "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X';";
 
+	            stmt.execute(upsertSql);
 	            conn.commit();
 	        } catch (Exception e) {
 	            conn.rollback();

@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -338,48 +335,100 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	                ps.executeBatch();
 	            }
 
-	            // 3. จัดการเคส DataStatus = 'X' (ปิดงานทั้ง SaleOrder)
-	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
-	                         "FROM [FromSapMainSale] AS target " +
-	                         "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder " +
-	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//	            // 3. จัดการเคส DataStatus = 'X' (ปิดงานทั้ง SaleOrder)
+//	            stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() " +
+//	                         "FROM [FromSapMainSale] AS target " +
+//	                         "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder " +
+//	                         "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//	            // 4. Update ข้อมูลเดิม (Matching SaleOrder + SaleLine)
+//	            stmt.execute("UPDATE target SET " +
+//	                         "target.MaterialNo = src.MaterialNo, target.DueDate = src.DueDate, target.PlanGreigeDate = src.PlanGreigeDate, " +
+//	                         "target.SaleUnit = src.SaleUnit, target.SaleQuantity = src.SaleQuantity, target.CustomerMaterial = src.CustomerMaterial, " +
+//	                         "target.Color = src.Color, target.CustomerNo = src.CustomerNo, target.PurchaseOrder = src.PurchaseOrder, " +
+//	                         "target.SaleOrg = src.SaleOrg, target.DistChannel = src.DistChannel, target.Division = src.Division, " +
+//	                         "target.CustomerName = src.CustomerName, target.CustomerShortName = src.CustomerShortName, " +
+//	                         "target.ColorCustomer = src.ColorCustomer, target.CustomerDue = src.CustomerDue, target.RemainQuantity = src.RemainQuantity, " +
+//	                         "target.ShipDate = src.ShipDate, target.SaleStatus = src.SaleStatus, target.Currency = src.Currency, " +
+//	                         "target.Price = src.Price, target.OrderAmount = src.OrderAmount, target.RemainAmount = src.RemainAmount, " +
+//	                         "target.SaleCreateDate = src.SaleCreateDate, target.SaleNumber = src.SaleNumber, target.SaleFullName = src.SaleFullName, " +
+//	                         "target.DeliveryStatus = src.DeliveryStatus, target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, " +
+//	                         "target.OrderSheetPrintDate = src.OrderSheetPrintDate, target.CustomerMaterialBase = src.CustomerMaterialBase, " +
+//	                         "target.ChangeDate = GETDATE(), target.DataStatus = src.DataStatus, target.SyncDate = src.SyncDate " +
+//	                         "FROM [FromSapMainSale] AS target " +
+//	                         "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine " +
+//	                         "WHERE src.DataStatus <> 'X'");
+//
+//	            // 5. Insert ข้อมูลใหม่ (เฉพาะตัวที่ไม่มีในตารางหลัก)
+//	            stmt.execute("INSERT INTO [FromSapMainSale] (SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity, " +
+//	                         "CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName, CustomerShortName, " +
+//	                         "ColorCustomer, CustomerDue, RemainQuantity, ShipDate, SaleStatus, Currency, Price, OrderAmount, RemainAmount, " +
+//	                         "SaleCreateDate, SaleNumber, SaleFullName, DeliveryStatus, DesignFG, ArticleFG, OrderSheetPrintDate, " +
+//	                         "CustomerMaterialBase, ChangeDate, CreateDate, DataStatus, SyncDate) " +
+//	                         "SELECT src.SaleOrder, src.SaleLine, src.MaterialNo, src.DueDate, src.PlanGreigeDate, src.SaleUnit, src.SaleQuantity, " +
+//	                         "src.CustomerMaterial, src.Color, src.CustomerNo, src.PurchaseOrder, src.SaleOrg, src.DistChannel, src.Division, " +
+//	                         "src.CustomerName, src.CustomerShortName, src.ColorCustomer, src.CustomerDue, src.RemainQuantity, src.ShipDate, " +
+//	                         "src.SaleStatus, src.Currency, src.Price, src.OrderAmount, src.RemainAmount, src.SaleCreateDate, src.SaleNumber, " +
+//	                         "src.SaleFullName, src.DeliveryStatus, src.DesignFG, src.ArticleFG, src.OrderSheetPrintDate, src.CustomerMaterialBase, " +
+//	                         "GETDATE(), GETDATE(), src.DataStatus, src.SyncDate " +
+//	                         "FROM #TempMainSale AS src " +
+//	                         "LEFT JOIN [FromSapMainSale] AS target ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine " +
+//	                         "WHERE target.SaleOrder IS NULL " +
+//	                         "AND src.DataStatus <> 'X' " +
+//	                         "AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> ''");
+	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลาให้เท่ากันและเพิ่มประสิทธิภาพในการทำงาน
+	            String upsertSql = 
+	                  "DECLARE @Now DATETIME = GETDATE(); "
+	                
+	                + "/* 3. จัดการเคส DataStatus = 'X' (ปิดงานทั้ง SaleOrder) */ "
+	                + "UPDATE target SET "
+	                + "    target.DataStatus = 'X', "
+	                + "    target.ChangeDate = @Now "
+	                + "FROM [FromSapMainSale] AS target "
+	                + "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder "
+	                + "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-	            // 4. Update ข้อมูลเดิม (Matching SaleOrder + SaleLine)
-	            stmt.execute("UPDATE target SET " +
-	                         "target.MaterialNo = src.MaterialNo, target.DueDate = src.DueDate, target.PlanGreigeDate = src.PlanGreigeDate, " +
-	                         "target.SaleUnit = src.SaleUnit, target.SaleQuantity = src.SaleQuantity, target.CustomerMaterial = src.CustomerMaterial, " +
-	                         "target.Color = src.Color, target.CustomerNo = src.CustomerNo, target.PurchaseOrder = src.PurchaseOrder, " +
-	                         "target.SaleOrg = src.SaleOrg, target.DistChannel = src.DistChannel, target.Division = src.Division, " +
-	                         "target.CustomerName = src.CustomerName, target.CustomerShortName = src.CustomerShortName, " +
-	                         "target.ColorCustomer = src.ColorCustomer, target.CustomerDue = src.CustomerDue, target.RemainQuantity = src.RemainQuantity, " +
-	                         "target.ShipDate = src.ShipDate, target.SaleStatus = src.SaleStatus, target.Currency = src.Currency, " +
-	                         "target.Price = src.Price, target.OrderAmount = src.OrderAmount, target.RemainAmount = src.RemainAmount, " +
-	                         "target.SaleCreateDate = src.SaleCreateDate, target.SaleNumber = src.SaleNumber, target.SaleFullName = src.SaleFullName, " +
-	                         "target.DeliveryStatus = src.DeliveryStatus, target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, " +
-	                         "target.OrderSheetPrintDate = src.OrderSheetPrintDate, target.CustomerMaterialBase = src.CustomerMaterialBase, " +
-	                         "target.ChangeDate = GETDATE(), target.DataStatus = src.DataStatus, target.SyncDate = src.SyncDate " +
-	                         "FROM [FromSapMainSale] AS target " +
-	                         "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine " +
-	                         "WHERE src.DataStatus <> 'X'");
+	                + "/* 4. Update ข้อมูลเดิม (Matching SaleOrder + SaleLine) */ "
+	                + "UPDATE target SET "
+	                + "    target.MaterialNo = src.MaterialNo, target.DueDate = src.DueDate, target.PlanGreigeDate = src.PlanGreigeDate, "
+	                + "    target.SaleUnit = src.SaleUnit, target.SaleQuantity = src.SaleQuantity, target.CustomerMaterial = src.CustomerMaterial, "
+	                + "    target.Color = src.Color, target.CustomerNo = src.CustomerNo, target.PurchaseOrder = src.PurchaseOrder, "
+	                + "    target.SaleOrg = src.SaleOrg, target.DistChannel = src.DistChannel, target.Division = src.Division, "
+	                + "    target.CustomerName = src.CustomerName, target.CustomerShortName = src.CustomerShortName, "
+	                + "    target.ColorCustomer = src.ColorCustomer, target.CustomerDue = src.CustomerDue, target.RemainQuantity = src.RemainQuantity, "
+	                + "    target.ShipDate = src.ShipDate, target.SaleStatus = src.SaleStatus, target.Currency = src.Currency, "
+	                + "    target.Price = src.Price, target.OrderAmount = src.OrderAmount, target.RemainAmount = src.RemainAmount, "
+	                + "    target.SaleCreateDate = src.SaleCreateDate, target.SaleNumber = src.SaleNumber, target.SaleFullName = src.SaleFullName, "
+	                + "    target.DeliveryStatus = src.DeliveryStatus, target.DesignFG = src.DesignFG, target.ArticleFG = src.ArticleFG, "
+	                + "    target.OrderSheetPrintDate = src.OrderSheetPrintDate, target.CustomerMaterialBase = src.CustomerMaterialBase, "
+	                + "    target.ChangeDate = @Now, "
+	                + "    target.DataStatus = src.DataStatus, "
+	                + "    target.SyncDate = src.SyncDate "
+	                + "FROM [FromSapMainSale] AS target "
+	                + "INNER JOIN #TempMainSale AS src ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine "
+	                + "WHERE src.DataStatus <> 'X'; "
 
-	            // 5. Insert ข้อมูลใหม่ (เฉพาะตัวที่ไม่มีในตารางหลัก)
-	            stmt.execute("INSERT INTO [FromSapMainSale] (SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity, " +
-	                         "CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName, CustomerShortName, " +
-	                         "ColorCustomer, CustomerDue, RemainQuantity, ShipDate, SaleStatus, Currency, Price, OrderAmount, RemainAmount, " +
-	                         "SaleCreateDate, SaleNumber, SaleFullName, DeliveryStatus, DesignFG, ArticleFG, OrderSheetPrintDate, " +
-	                         "CustomerMaterialBase, ChangeDate, CreateDate, DataStatus, SyncDate) " +
-	                         "SELECT src.SaleOrder, src.SaleLine, src.MaterialNo, src.DueDate, src.PlanGreigeDate, src.SaleUnit, src.SaleQuantity, " +
-	                         "src.CustomerMaterial, src.Color, src.CustomerNo, src.PurchaseOrder, src.SaleOrg, src.DistChannel, src.Division, " +
-	                         "src.CustomerName, src.CustomerShortName, src.ColorCustomer, src.CustomerDue, src.RemainQuantity, src.ShipDate, " +
-	                         "src.SaleStatus, src.Currency, src.Price, src.OrderAmount, src.RemainAmount, src.SaleCreateDate, src.SaleNumber, " +
-	                         "src.SaleFullName, src.DeliveryStatus, src.DesignFG, src.ArticleFG, src.OrderSheetPrintDate, src.CustomerMaterialBase, " +
-	                         "GETDATE(), GETDATE(), src.DataStatus, src.SyncDate " +
-	                         "FROM #TempMainSale AS src " +
-	                         "LEFT JOIN [FromSapMainSale] AS target ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine " +
-	                         "WHERE target.SaleOrder IS NULL " +
-	                         "AND src.DataStatus <> 'X' " +
-	                         "AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> ''");
+	                + "/* 5. Insert ข้อมูลใหม่ (เฉพาะตัวที่ไม่มีในตารางหลัก) */ "
+	                + "INSERT INTO [FromSapMainSale] ( "
+	                + "    SaleOrder, SaleLine, MaterialNo, DueDate, PlanGreigeDate, SaleUnit, SaleQuantity, "
+	                + "    CustomerMaterial, Color, CustomerNo, PurchaseOrder, SaleOrg, DistChannel, Division, CustomerName, CustomerShortName, "
+	                + "    ColorCustomer, CustomerDue, RemainQuantity, ShipDate, SaleStatus, Currency, Price, OrderAmount, RemainAmount, "
+	                + "    SaleCreateDate, SaleNumber, SaleFullName, DeliveryStatus, DesignFG, ArticleFG, OrderSheetPrintDate, "
+	                + "    CustomerMaterialBase, ChangeDate, CreateDate, DataStatus, SyncDate) "
+	                + "SELECT "
+	                + "    src.SaleOrder, src.SaleLine, src.MaterialNo, src.DueDate, src.PlanGreigeDate, src.SaleUnit, src.SaleQuantity, "
+	                + "    src.CustomerMaterial, src.Color, src.CustomerNo, src.PurchaseOrder, src.SaleOrg, src.DistChannel, src.Division, "
+	                + "    src.CustomerName, src.CustomerShortName, src.ColorCustomer, src.CustomerDue, src.RemainQuantity, src.ShipDate, "
+	                + "    src.SaleStatus, src.Currency, src.Price, src.OrderAmount, src.RemainAmount, src.SaleCreateDate, src.SaleNumber, "
+	                + "    src.SaleFullName, src.DeliveryStatus, src.DesignFG, src.ArticleFG, src.OrderSheetPrintDate, src.CustomerMaterialBase, "
+	                + "    @Now, @Now, src.DataStatus, src.SyncDate "
+	                + "FROM #TempMainSale AS src "
+	                + "LEFT JOIN [FromSapMainSale] AS target ON target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine "
+	                + "WHERE target.SaleOrder IS NULL "
+	                + "  AND src.DataStatus <> 'X' "
+	                + "  AND src.SaleOrder IS NOT NULL AND src.SaleOrder <> '';";
 
+	            stmt.execute(upsertSql);
 	            conn.commit(); // ยืนยัน Transaction
 	        } catch (Exception e) {
 	            conn.rollback(); // ย้อนกลับหากเกิด Error

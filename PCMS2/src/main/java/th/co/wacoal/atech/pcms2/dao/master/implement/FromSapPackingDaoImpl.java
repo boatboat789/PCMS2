@@ -2,12 +2,9 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -121,48 +118,87 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				}
 
 				// 3. จัดการ DataStatus = 'X' (สั่งยกเลิกตาม ProductionOrder)
-				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+//				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
+//						+ "FROM [FromSapPacking] AS target "
+//						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder "
+//						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+//
+//				// 4. Update ข้อมูลเดิม (Matching ด้วย ProductionOrder + RollNo)
+//				stmt.execute("UPDATE target SET "
+//						+ "target.PostingDate = src.PostingDate, "
+//						+ "target.Quantity = src.Quantity, "
+//						+ "target.QuantityKG = src.QuantityKG, "
+//						+ "target.Grade = src.Grade, "
+//						+ "target.No = src.No, "
+//						+ "target.QuantityYD = src.QuantityYD, "
+//						+ "target.ChangeDate = GETDATE(), "
+//						+ "target.SyncDate = src.SyncDate, "
+//						+ "target.DataStatus = src.DataStatus "
+//						+ "FROM [FromSapPacking] AS target "
+//						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
+//						+ "WHERE src.DataStatus <> 'X'");
+//
+//				// 5. Insert ข้อมูลม้วนใหม่
+//				stmt.execute("INSERT INTO [FromSapPacking] (ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, "
+//						+ "Grade, No, QuantityYD, ChangeDate, CreateDate, SyncDate, DataStatus) "
+//						+ "SELECT src.ProductionOrder, src.PostingDate, src.Quantity, src.RollNo, src.QuantityKG, "
+//						+ "src.Grade, src.No, src.QuantityYD, GETDATE(), GETDATE(), src.SyncDate, src.DataStatus "
+//						+ "FROM #TempPacking AS src "
+//						+ "LEFT JOIN [FromSapPacking] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
+//						+ "WHERE target.ProductionOrder IS NULL "
+//						+ "AND src.DataStatus <> 'X' "
+//						+ "AND src.RollNo IS NOT NULL AND src.RollNo <> ''");
+				// 3, 4, 5. รวมเป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
+				String upsertSql = "DECLARE @Now DATETIME = GETDATE(); "
+
+						+ "/* 3. จัดการ DataStatus = 'X' */ "
+						+ "UPDATE target SET "
+						+ "    target.DataStatus = 'X', "
+						+ "    target.ChangeDate = @Now "
 						+ "FROM [FromSapPacking] AS target "
 						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder "
-						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
+						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'; "
 
-				// 4. Update ข้อมูลเดิม (Matching ด้วย ProductionOrder + RollNo)
-				stmt.execute("UPDATE target SET "
-						+ "target.PostingDate = src.PostingDate, "
-						+ "target.Quantity = src.Quantity, "
-						+ "target.QuantityKG = src.QuantityKG, "
-						+ "target.Grade = src.Grade, "
-						+ "target.No = src.No, "
-						+ "target.QuantityYD = src.QuantityYD, "
-						+ "target.ChangeDate = GETDATE(), "
-						+ "target.SyncDate = src.SyncDate, "
-						+ "target.DataStatus = src.DataStatus "
+						+ "/* 4. Update ข้อมูลเดิม (Matching ด้วย ProductionOrder + RollNo) */ "
+						+ "UPDATE target SET "
+						+ "    target.PostingDate = src.PostingDate, "
+						+ "    target.Quantity = src.Quantity, "
+						+ "    target.QuantityKG = src.QuantityKG, "
+						+ "    target.Grade = src.Grade, "
+						+ "    target.No = src.No, "
+						+ "    target.QuantityYD = src.QuantityYD, "
+						+ "    target.ChangeDate = @Now, "
+						+ "    target.SyncDate = src.SyncDate, "
+						+ "    target.DataStatus = src.DataStatus "
 						+ "FROM [FromSapPacking] AS target "
 						+ "INNER JOIN #TempPacking AS src ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
-						+ "WHERE src.DataStatus <> 'X'");
+						+ "WHERE src.DataStatus <> 'X'; "
 
-				// 5. Insert ข้อมูลม้วนใหม่
-				stmt.execute("INSERT INTO [FromSapPacking] (ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, "
-						+ "Grade, No, QuantityYD, ChangeDate, CreateDate, SyncDate, DataStatus) "
-						+ "SELECT src.ProductionOrder, src.PostingDate, src.Quantity, src.RollNo, src.QuantityKG, "
-						+ "src.Grade, src.No, src.QuantityYD, GETDATE(), GETDATE(), src.SyncDate, src.DataStatus "
+						+ "/* 5. Insert ข้อมูลม้วนใหม่ */ "
+						+ "INSERT INTO [FromSapPacking] ( "
+						+ "    ProductionOrder, PostingDate, Quantity, RollNo, QuantityKG, "
+						+ "    Grade, No, QuantityYD, ChangeDate, CreateDate, SyncDate, DataStatus) "
+						+ "SELECT "
+						+ "    src.ProductionOrder, src.PostingDate, src.Quantity, src.RollNo, src.QuantityKG, "
+						+ "    src.Grade, src.No, src.QuantityYD, @Now, @Now, src.SyncDate, src.DataStatus "
 						+ "FROM #TempPacking AS src "
 						+ "LEFT JOIN [FromSapPacking] AS target ON target.ProductionOrder = src.ProductionOrder AND target.RollNo = src.RollNo "
 						+ "WHERE target.ProductionOrder IS NULL "
-						+ "AND src.DataStatus <> 'X' "
-						+ "AND src.RollNo IS NOT NULL AND src.RollNo <> ''");
+						+ "  AND src.DataStatus <> 'X' "
+						+ "  AND src.RollNo IS NOT NULL AND src.RollNo <> '';";
 
+				stmt.execute(upsertSql);
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();
 				throw e;
-			}finally {
-			    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
-			    try {
-			        conn.setAutoCommit(true);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+			} finally {
+				// ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+				try {
+					conn.setAutoCommit(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
