@@ -11,6 +11,55 @@ import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 
 @Service
 public class PCMSSqlService {
+
+	/**
+	 * DROP statements for all temp tables used in read queries (SELECT INTO #temp).
+	 * Used by SqlStatementHandler.queryList(database, dropAllTemp, sql) — drop BEFORE and AFTER.
+	 * NOTE: Excludes PCMSSearch temp tables (#tempLotNoList, #tempUserStatusList,
+	 *       #tempCustomerList, #tempCustomerShortList) because those are created
+	 *       by PCMSSearchDaoImpl before the main query runs and must remain visible.
+	 */
+	public static final String dropAllTemp =
+			"IF OBJECT_ID('tempdb..#BillBatchFlag')          IS NOT NULL DROP TABLE #BillBatchFlag;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tmpSumVolOP')            IS NOT NULL DROP TABLE #tmpSumVolOP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tmpSumVolRP')            IS NOT NULL DROP TABLE #tmpSumVolRP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tmpCRP')                 IS NOT NULL DROP TABLE #tmpCRP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tmpSaleAgg')             IS NOT NULL DROP TABLE #tmpSaleAgg;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tmpProdAgg')             IS NOT NULL DROP TABLE #tmpProdAgg;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempMainSale')           IS NOT NULL DROP TABLE #tempMainSale;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPlandeliveryDate')   IS NOT NULL DROP TABLE #tempPlandeliveryDate;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPrepWaitLot')        IS NOT NULL DROP TABLE #tempPrepWaitLot;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempProdData')           IS NOT NULL DROP TABLE #tempProdData;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempUCAL')               IS NOT NULL DROP TABLE #tempUCAL;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempUSMSpecial1')        IS NOT NULL DROP TABLE #tempUSMSpecial1;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempUCALBroad')          IS NOT NULL DROP TABLE #tempUCALBroad;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempUSMSPE')             IS NOT NULL DROP TABLE #tempUSMSPE;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempUCALBest')           IS NOT NULL DROP TABLE #tempUCALBest;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSumGRMain')          IS NOT NULL DROP TABLE #tempSumGRMain;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSumGR')              IS NOT NULL DROP TABLE #tempSumGR;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSumBill')            IS NOT NULL DROP TABLE #tempSumBill;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSCC')                IS NOT NULL DROP TABLE #tempSCC;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempFromSORCFM')         IS NOT NULL DROP TABLE #tempFromSORCFM;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempProdWorkDate')       IS NOT NULL DROP TABLE #tempProdWorkDate;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempProdWorkDateFiltered') IS NOT NULL DROP TABLE #tempProdWorkDateFiltered;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSPO')                IS NOT NULL DROP TABLE #tempSPO;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSPOSale')            IS NOT NULL DROP TABLE #tempSPOSale;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPlanCFMLabDate')     IS NOT NULL DROP TABLE #tempPlanCFMLabDate;\r\n"
+		  + "IF OBJECT_ID('tempdb..#FlagHasRP')              IS NOT NULL DROP TABLE #FlagHasRP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#FlagHasOP')              IS NOT NULL DROP TABLE #FlagHasOP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempMain')               IS NOT NULL DROP TABLE #tempMain;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempWaitLot')            IS NOT NULL DROP TABLE #tempWaitLot;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempOP')                 IS NOT NULL DROP TABLE #tempOP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempOPSW')               IS NOT NULL DROP TABLE #tempOPSW;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSW')                 IS NOT NULL DROP TABLE #tempSW;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempRP')                 IS NOT NULL DROP TABLE #tempRP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPrdOPA')             IS NOT NULL DROP TABLE #tempPrdOPA;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPrdOP')              IS NOT NULL DROP TABLE #tempPrdOP;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPrdOPSW')            IS NOT NULL DROP TABLE #tempPrdOPSW;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempPrdSW')              IS NOT NULL DROP TABLE #tempPrdSW;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempProdMain')           IS NOT NULL DROP TABLE #tempProdMain;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempFinalResult')        IS NOT NULL DROP TABLE #tempFinalResult;\r\n";
+
 	public static class UserStatusGroups {
 		public List<String> lotNoList = new ArrayList<>();
 		public List<String> userStatusCalRPList = new ArrayList<>();
@@ -118,18 +167,94 @@ public class PCMSSqlService {
 			+ "CREATE CLUSTERED INDEX IX_tmpProdAgg \r\n"
 			+ "ON #tmpProdAgg(ProductionOrder);\n";
 	public String createTempForMainAndWaitLot = ""
-			+ this.createTempBillBatchFlag 
+			+ this.createTempBillBatchFlag
 			+ this.createTempSumVolOP
 			+ this.createTempSumVolRP
 			+ this.createTempCRP
 			+ this.createTempSaleAgg
 			+ this.createTempProdAgg;
+
+	// เวอร์ชัน filter ด้วย #tempMainSale — ใช้เฉพาะที่สร้าง #tempMainSale ไว้ก่อนแล้ว
+	// (getPCMSSumaryDetail, searchByDetail) ลด I/O ลงอย่างมากเมื่อ user search ด้วย criteria
+	public String createTempForMainAndWaitLotFiltered = ""
+			+ this.buildIfTempTableDrop("#BillBatchFlag")
+			+ "SELECT a.SaleOrder, a.SaleLine\r\n"
+			+ "INTO #BillBatchFlag\r\n"
+			+ "FROM [PCMS].[dbo].[FromSapMainBillBatch] a\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = a.SaleOrder AND ms.SaleLine = a.SaleLine\r\n"
+			+ "WHERE a.DataStatus = 'O'\r\n"
+			+ "GROUP BY a.SaleOrder, a.SaleLine;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_BBF ON #BillBatchFlag(SaleOrder, SaleLine);\r\n"
+
+			+ this.buildIfTempTableDrop("#tmpSumVolOP")
+			+ "SELECT a.ProductionOrder, SUM(a.Volumn) AS SumVolOP\r\n"
+			+ "INTO #tmpSumVolOP\r\n"
+			+ "FROM [PCMS].[dbo].[FromSapMainProdSale] a\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[FromSapMainProd] b ON a.ProductionOrder = b.ProductionOrder\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] v\r\n"
+			+ "    ON b.[UserStatus] = v.UserStatus AND v.Special = 1\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = a.SaleOrder AND ms.SaleLine = a.SaleLine\r\n"
+			+ "WHERE a.DataStatus = 'O'\r\n"
+			+ "GROUP BY a.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tmpSumVolOP ON #tmpSumVolOP(ProductionOrder);\r\n"
+
+			+ this.buildIfTempTableDrop("#tmpSumVolRP")
+			+ "SELECT a.ProductionOrderRP,\r\n"
+			+ "    SUM(CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END) AS SumVolRP\r\n"
+			+ "INTO #tmpSumVolRP\r\n"
+			+ "FROM [PCMS].[dbo].[ReplacedProdOrder] a\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[FromSapMainProd] b ON a.ProductionOrderRP = b.ProductionOrder\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] v\r\n"
+			+ "    ON b.[UserStatus] = v.UserStatus AND v.Special = 1\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = a.SaleOrder AND ms.SaleLine = a.SaleLine\r\n"
+			+ "WHERE a.DataStatus = 'O'\r\n"
+			+ "GROUP BY a.ProductionOrderRP;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tmpSumVolRP ON #tmpSumVolRP(ProductionOrderRP);\r\n"
+
+			+ this.buildIfTempTableDrop("#tmpCRP")
+			+ "SELECT a.SaleOrder, a.SaleLine, 1 AS countProdRP\r\n"
+			+ "INTO #tmpCRP\r\n"
+			+ "FROM [PCMS].[dbo].[ReplacedProdOrder] a\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[FromSapMainProd] b ON a.ProductionOrderRP = b.ProductionOrder\r\n"
+			+ "INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] v\r\n"
+			+ "    ON b.[UserStatus] = v.UserStatus AND v.Special = 1\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = a.SaleOrder AND ms.SaleLine = a.SaleLine\r\n"
+			+ "WHERE a.DataStatus = 'O'\r\n"
+			+ "GROUP BY a.SaleOrder, a.SaleLine;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tmpCRP ON #tmpCRP(SaleOrder, SaleLine);\r\n"
+
+			+ this.buildIfTempTableDrop("#tmpSaleAgg")
+			+ "SELECT p.SaleOrder, p.SaleLine,\r\n"
+			+ "    SUM(COALESCE(t.SumVolOP,0)) AS SumVolOP,\r\n"
+			+ "    SUM(COALESCE(s.SumVolRP,0)) AS SumVolRP,\r\n"
+			+ "    SUM(CASE WHEN p.DataStatus='O' THEN p.Volumn ELSE 0 END) AS SumVolMain\r\n"
+			+ "INTO #tmpSaleAgg\r\n"
+			+ "FROM [PCMS].[dbo].[FromSapMainProd] p\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = p.SaleOrder AND ms.SaleLine = p.SaleLine\r\n"
+			+ "LEFT JOIN #tmpSumVolOP t ON p.ProductionOrder = t.ProductionOrder\r\n"
+			+ "LEFT JOIN #tmpSumVolRP s ON p.ProductionOrder = s.ProductionOrderRP\r\n"
+			+ "GROUP BY p.SaleOrder, p.SaleLine;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tmpSaleAgg ON #tmpSaleAgg(SaleOrder, SaleLine);\r\n"
+
+			+ this.buildIfTempTableDrop("#tmpProdAgg")
+			+ "SELECT p.[ProductionOrder],\r\n"
+			+ "    SUM(COALESCE(t.SumVolOP,0)) AS SumVolOP,\r\n"
+			+ "    SUM(COALESCE(s.SumVolRP,0)) AS SumVolRP,\r\n"
+			+ "    SUM(CASE WHEN p.DataStatus='O' THEN p.Volumn ELSE 0 END) AS SumVolMain\r\n"
+			+ "INTO #tmpProdAgg\r\n"
+			+ "FROM [PCMS].[dbo].[FromSapMainProd] p\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = p.SaleOrder AND ms.SaleLine = p.SaleLine\r\n"
+			+ "LEFT JOIN #tmpSumVolOP t ON p.ProductionOrder = t.ProductionOrder\r\n"
+			+ "LEFT JOIN #tmpSumVolRP s ON p.ProductionOrder = s.ProductionOrderRP\r\n"
+			+ "GROUP BY p.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tmpProdAgg ON #tmpProdAgg(ProductionOrder);\r\n";
+
 	public String createDropTempForMainAndWaitLot = ""
-			+ this.buildIfTempTableDrop("#BillBatchFlag") 
-			+ this.buildIfTempTableDrop("#BillBatchFlag") 
-			+ this.buildIfTempTableDrop("#tmpSumVolOP") 
-			+ this.buildIfTempTableDrop("#tmpSumVolRP") 
-			+ this.buildIfTempTableDrop("#tmpSaleAgg") 
+			+ this.buildIfTempTableDrop("#BillBatchFlag")
+			+ this.buildIfTempTableDrop("#tmpSumVolOP")
+			+ this.buildIfTempTableDrop("#tmpSumVolRP")
+			+ this.buildIfTempTableDrop("#tmpCRP")
+			+ this.buildIfTempTableDrop("#tmpSaleAgg")
 			+ this.buildIfTempTableDrop("#tmpProdAgg") ;
 
 	public String leftJoinBPartOneT_A = ""
@@ -233,6 +358,104 @@ public class PCMSSqlService {
 			+ "        END AS LotNoValue\r\n"
 			+ ") AS calc \r\n"
 			+ ") \r\n";
+
+	// Materialized version of ProdData CTE — SELECT INTO #tempProdData with indexes.
+	// ใช้แทน WITH ProdData AS (...) ใน searchByDetail เพื่อหลีกเลี่ยง inline join กับ FromSapMainProd
+	// ต้องรัน AFTER createTempForMainAndWaitLotFiltered (ต้องการ #BillBatchFlag, #tmpSumVolOP, #tmpSumVolRP)
+	public String createTempProdData = ""
+			+ this.buildIfTempTableDrop("#tempProdData")
+			+ "SELECT\r\n"
+			+ "    a.[SaleOrder]\r\n"
+			+ "   ,a.[Saleline]\r\n"
+			+ "   ,a.[DesignFG]\r\n"
+			+ "   ,a.[ArticleFG]\r\n"
+			+ "   ,a.[Price]\r\n"
+			+ "   ,a.[Division]\r\n"
+			+ "   ,a.[DistChannel]\r\n"
+			+ "   ,a.CustomerName\r\n"
+			+ "   ,a.CustomerShortName\r\n"
+			+ "   ,a.SaleCreateDate\r\n"
+			+ "   ,a.PurchaseOrder\r\n"
+			+ "   ,a.[SaleStatus]\r\n"
+			+ "   ,a.OrderAmount\r\n"
+			+ "   ,a.SaleQuantity\r\n"
+			+ "   ,a.RemainQuantity\r\n"
+			+ "   ,a.RemainAmount\r\n"
+			+ "   ,a.MaterialNo\r\n"
+			+ "   ,a.CustomerMaterial\r\n"
+			+ "   ,a.CustomerMaterialBase\r\n"
+			+ "   ,a.SaleUnit\r\n"
+			+ "   ,a.CustomerDue\r\n"
+			+ "   ,a.DueDate\r\n"
+			+ "   ,a.ShipDate\r\n"
+			+ "   ,a.SaleNumber\r\n"
+			+ "   ,a.SaleFullName\r\n"
+			+ "   ,a.Color\r\n"
+			+ "   ,a.ColorCustomer\r\n"
+			+ "   ,a.DeliveryStatus\r\n"
+			+ "   ,calc.ProdOrderValue AS [ProductionOrder]\r\n"
+			+ "   ,calc.LotNoValue     AS [LotNo]\r\n"
+			+ "   ,b.[Unit]\r\n"
+			+ "   ,b.[RemAfterCloseOne]\r\n"
+			+ "   ,b.[RemAfterCloseTwo]\r\n"
+			+ "   ,b.[RemAfterCloseThree]\r\n"
+			+ "   ,b.[LabStatus]\r\n"
+			+ "   ,b.[BookNo]\r\n"
+			+ "   ,b.[Center]\r\n"
+			+ "   ,b.[Batch]\r\n"
+			+ "   ,b.[LabNo]\r\n"
+			+ "   ,b.[RemarkOne]\r\n"
+			+ "   ,b.[RemarkTwo]\r\n"
+			+ "   ,b.[RemarkThree]\r\n"
+			+ "   ,b.[BCAware]\r\n"
+			+ "   ,b.[OrderPuang]\r\n"
+			+ "   ,b.[RefPrd]\r\n"
+			+ "   ,b.[GreigeInDate]\r\n"
+			+ "   ,b.[BCDate]\r\n"
+			+ "   ,b.[Volumn]\r\n"
+			+ "   ,b.[CFdate]\r\n"
+			+ "   ,b.[CFType]\r\n"
+			+ "   ,b.[Shade]\r\n"
+			+ "   ,b.[PrdCreateDate]\r\n"
+			+ "   ,b.[GreigeArticle]\r\n"
+			+ "   ,b.[GreigeDesign]\r\n"
+			+ "   ,b.[GreigeMR]\r\n"
+			+ "   ,b.[GreigeKG]\r\n"
+			+ "   ,b.[BillSendQuantity]\r\n"
+			+ "   ,b.TotalQuantity\r\n"
+			+ "   ,CASE\r\n"
+			+ "      WHEN s.SumVolRP IS NOT NULL AND t.SumVolOP IS NOT NULL THEN b.Volumn - s.SumVolRP - t.SumVolOP\r\n"
+			+ "      WHEN s.SumVolRP IS NOT NULL THEN b.Volumn - s.SumVolRP\r\n"
+			+ "      WHEN t.SumVolOP IS NOT NULL THEN b.Volumn - t.SumVolOP\r\n"
+			+ "      WHEN b.Volumn IS NOT NULL THEN b.Volumn\r\n"
+			+ "      ELSE 0\r\n"
+			+ "    END AS adjVol\r\n"
+			+ "INTO #tempProdData\r\n"
+			+ "FROM #tempMainSale a\r\n"
+			+ "LEFT JOIN [PCMS].[dbo].[FromSapMainProd] b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+			+ "LEFT JOIN #BillBatchFlag bb ON bb.SaleOrder = a.SaleOrder AND bb.SaleLine = a.SaleLine\r\n"
+			+ this.leftJoinBPartOneT_A
+			+ this.leftJoinBPartOneS_A
+			+ "CROSS APPLY (\r\n"
+			+ "    SELECT\r\n"
+			+ "        CASE\r\n"
+			+ "            WHEN b.[ProductionOrder] IS NOT NULL THEN b.[ProductionOrder]\r\n"
+			+ "            WHEN a.MaterialNo LIKE 'V%' THEN N'รับจ้างถัก'\r\n"
+			+ "            WHEN bb.SaleOrder IS NOT NULL THEN N'Lot ขายแล้ว'\r\n"
+			+ "            WHEN a.[SaleStatus] = 'C' THEN N'ขาย stock'\r\n"
+			+ "            ELSE N'รอจัด Lot'\r\n"
+			+ "        END AS ProdOrderValue,\r\n"
+			+ "        CASE\r\n"
+			+ "            WHEN b.[ProductionOrder] IS NOT NULL THEN b.[LotNo]\r\n"
+			+ "            WHEN a.MaterialNo LIKE 'V%' THEN N'รับจ้างถัก'\r\n"
+			+ "            WHEN bb.SaleOrder IS NOT NULL THEN N'Lot ขายแล้ว'\r\n"
+			+ "            WHEN a.[SaleStatus] = 'C' THEN N'ขาย stock'\r\n"
+			+ "            ELSE N'รอจัด Lot'\r\n"
+			+ "        END AS LotNoValue\r\n"
+			+ ") AS calc;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempProdData_PO ON #tempProdData(ProductionOrder);\r\n"
+			+ "CREATE NONCLUSTERED INDEX IX_tempProdData_SOSL ON #tempProdData(SaleOrder, SaleLine);\r\n";
+
 //	public String crossApplyVolCalc = ""
 //			+ "\r\n"
 //			+ "	CROSS APPLY (\r\n"
@@ -245,20 +468,444 @@ public class PCMSSqlService {
 //			+ "				ELSE 0\r\n"
 //			+ "			END AS adjVol\r\n"
 //			+ "	) AS volCalc ";
+
+	// Pre-filter TEMP_UserStatusAuto ให้เหลือแค่ ProductionOrder ที่ใช้จริงใน batch นี้
+	// → #tempUCAL  (จาก millions row → หลักร้อย/พัน row)
+	// ต้องรัน AFTER createTempProdData (#tempProdData ต้องมีแล้ว)
+	public String createTempUCAL = ""
+			+ this.buildIfTempTableDrop("#tempUCAL")
+			+ "SELECT DISTINCT UCAL.ProductionOrder, UCAL.UserStatusCal, UCAL.Grade\r\n"
+			+ "INTO #tempUCAL\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_UserStatusAuto] AS UCAL\r\n"
+			+ "INNER JOIN (\r\n"
+			+ "    SELECT DISTINCT ProductionOrder FROM #tempProdData\r\n"
+			+ ") AS pd ON pd.ProductionOrder = UCAL.ProductionOrder\r\n"
+			+ "WHERE UCAL.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempUCAL ON #tempUCAL(ProductionOrder, Grade);\r\n";
+
+	// Pre-build viewUserStatusMappingPCMS (Special=1) → #tempUSMSpecial1
+	// ใช้แทน INNER JOIN view ใน typed tables (OP, RP, OPSW, SW)
+	// ต้องสร้างใน buildSqlCommonTables ก่อน buildSqlTypedTables รัน
+	public String createTempUSMSpecial1 = ""
+			+ this.buildIfTempTableDrop("#tempUSMSpecial1")
+			+ "SELECT UserStatus\r\n"
+			+ "INTO #tempUSMSpecial1\r\n"
+			+ "FROM [PCMS].[dbo].[viewUserStatusMappingPCMS]\r\n"
+			+ "WHERE Special = 1;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempUSMSpecial1 ON #tempUSMSpecial1(UserStatus);\r\n";
+
+	// Pre-build TEMP_UserStatusAuto (DataStatus='O') → #tempUCALBroad
+	// ใช้แทน LEFT JOIN TEMP_UserStatusAuto ใน typed tables (OP, RP, OPSW, SW)
+	// รวม UserStatusCal (ใช้ใน OP/OPSW/SW) และ UserStatusCalRP (ใช้ใน RP)
+	// ต้องสร้างใน buildSqlCommonTables ก่อน buildSqlTypedTables รัน
+	public String createTempUCALBroad = ""
+			+ this.buildIfTempTableDrop("#tempUCALBroad")
+			+ "SELECT ProductionOrder, UserStatusCal, UserStatusCalRP, Grade\r\n"
+			+ "INTO #tempUCALBroad\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_UserStatusAuto]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempUCALBroad ON #tempUCALBroad(ProductionOrder, Grade);\r\n";
+
+	// Pre-build viewUserStatusMappingPCMS (Special=0) เป็น temp table
+	// → #tempUSMSPE  (แทนการ expand view inline ทุกครั้ง)
+	public String createTempUSMSPE = ""
+			+ this.buildIfTempTableDrop("#tempUSMSPE")
+			+ "SELECT UserStatus, Special\r\n"
+			+ "INTO #tempUSMSPE\r\n"
+			+ "FROM [PCMS].[dbo].[viewUserStatusMappingPCMS]\r\n"
+			+ "WHERE Special = 0;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempUSMSPE ON #tempUSMSPE(UserStatus);\r\n";
+
+	// Pre-resolve best UCAL per (ProductionOrder, Grade) — replaces OUTER APPLY correlated subquery
+	// Requires: #tempProdData, #tempSumGR, #tempUCAL, #tempUSMSPE  (run in that order before this)
+	//
+	// v3 — explicit NULL-safe join condition แทน (_uc.Grade = sg.Grade OR _uc.Grade IS NULL)
+	//       ที่มี ambiguity เมื่อ sg.Grade IS NULL  (_uc.Grade = NULL = UNKNOWN ทำให้ evaluate ผิด)
+	//   InputGrade IS NOT NULL → จับทั้ง grade-specific (_uc.Grade = InputGrade) และ catch-all (_uc.Grade IS NULL)
+	//   InputGrade IS NULL     → จับเฉพาะ catch-all (_uc.Grade IS NULL) เท่านั้น
+	//
+	// Why faster than OUTER APPLY:
+	//   OUTER APPLY TOP 1 fires once per every row in (#tempProdData × #tempSumGR) ≈ N×G times.
+	//   This CTE computes once per DISTINCT (PO, InputGrade) pair — far fewer executions.
+	public String createTempUCALBest = ""
+			+ this.buildIfTempTableDrop("#tempUCALBest")
+			+ ";WITH _pairs AS (\r\n"
+			+ "    SELECT DISTINCT pd.ProductionOrder, sg.Grade AS InputGrade\r\n"
+			+ "    FROM (\r\n"
+			+ "        SELECT DISTINCT ProductionOrder FROM #tempProdData WHERE ProductionOrder IS NOT NULL\r\n"
+			+ "    ) AS pd\r\n"
+			+ "    LEFT JOIN #tempSumGR AS sg ON sg.ProductionOrder = pd.ProductionOrder\r\n"
+			+ "),\r\n"
+			+ "_ranked AS (\r\n"
+			+ "    SELECT\r\n"
+			+ "        p.ProductionOrder,\r\n"
+			+ "        p.InputGrade,\r\n"
+			+ "        _uc.UserStatusCal,\r\n"
+			+ "        ROW_NUMBER() OVER (\r\n"
+			+ "            PARTITION BY p.ProductionOrder, p.InputGrade\r\n"
+			+ "            ORDER BY\r\n"
+			+ "                CASE WHEN _spe.UserStatus IS NOT NULL THEN 0 ELSE 1 END,\r\n"
+			+ "                CASE WHEN _uc.Grade     IS NOT NULL THEN 0 ELSE 1 END\r\n"
+			+ "        ) AS rn\r\n"
+			+ "    FROM _pairs AS p\r\n"
+			+ "    INNER JOIN #tempUCAL AS _uc ON _uc.ProductionOrder = p.ProductionOrder\r\n"
+			+ "        AND (\r\n"
+			+ "            (p.InputGrade IS NOT NULL AND (_uc.Grade = p.InputGrade OR _uc.Grade IS NULL))\r\n"
+			+ "            OR\r\n"
+			+ "            (p.InputGrade IS NULL     AND  _uc.Grade IS NULL)\r\n"
+			+ "        )\r\n"
+			+ "    LEFT JOIN #tempUSMSPE AS _spe ON _spe.UserStatus = _uc.UserStatusCal\r\n"
+			+ ")\r\n"
+			+ "SELECT ProductionOrder, InputGrade AS Grade, UserStatusCal\r\n"
+			+ "INTO #tempUCALBest FROM _ranked WHERE rn = 1;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempUCALBest ON #tempUCALBest(ProductionOrder, Grade);\r\n";
+
+	// JOIN to #tempUCALBest — handles both non-NULL and NULL grades
+	// NULL=NULL is UNKNOWN in SQL so need explicit IS NULL check for the no-GR-data case
+	public String getLeftJoinTempUCALBest(String aliasProd, String aliasGrade) {
+		return String.format(
+				" LEFT JOIN #tempUCALBest AS UCAL\r\n"
+				+ "     ON UCAL.ProductionOrder = %s.ProductionOrder\r\n"
+				+ "    AND (UCAL.Grade = %s.Grade OR (UCAL.Grade IS NULL AND %s.Grade IS NULL))\r\n",
+				aliasProd, aliasGrade, aliasGrade);
+	}
+
+	// INNER JOIN #tempUSMSpecial1 — แทน buildInnerJoinViewUSM_SPE(..., 1, ...) ใน typed tables
+	public String buildInnerJoinTempUSMSpecial1(String aliasTable, String aliasUserStatus) {
+		return String.format(
+				" INNER JOIN #tempUSMSpecial1 AS viewUSM_SPE\r\n"
+				+ "     ON viewUSM_SPE.UserStatus = %s.%s\r\n",
+				aliasTable, aliasUserStatus);
+	}
+
+	// LEFT JOIN #tempUCALBroad — แทน buildLeftJoinUserStatusAuto ใน typed tables
+	// ใช้ TEMP_UserStatusAuto ที่ pre-materialized แล้ว (ไม่ต้อง scan ตาราง permanent ซ้ำทุก query)
+	public String getLeftJoinTempUCALBroad(String aliasJoin, String aliasProd, String aliasGrade) {
+		return String.format(
+				" LEFT JOIN #tempUCALBroad AS %s\r\n"
+				+ "     ON %s.ProductionOrder = %s.ProductionOrder\r\n"
+				+ "    AND (%s.Grade = %s.Grade OR %s.Grade IS NULL)\r\n",
+				aliasJoin, aliasJoin, aliasProd, aliasJoin, aliasGrade, aliasJoin);
+	}
+
+	// ใช้แทน buildLeftJoinUserStatusAuto ใน createTempProdMain
+	// join #tempUCAL (small, pre-filtered) แทน TEMP_UserStatusAuto (large permanent table)
+	public String getLeftJoinTempUCAL(String aliasProd, String aliasGrade)
+	{
+		return String.format(
+				" LEFT JOIN #tempUCAL AS UCAL ON UCAL.ProductionOrder = %s.ProductionOrder\r\n"
+				+ "     AND (UCAL.Grade = %s.Grade OR UCAL.Grade IS NULL)\r\n",
+				aliasProd, aliasGrade);
+	}
+
+	// ใช้แทน buildLeftJoinViewUserStatusMappingPCMS ใน createTempProdMain
+	// join #tempUSMSPE (materialized, indexed) แทน view (expanded inline)
+	public String getLeftJoinTempUSMSPE()
+	{
+		return " LEFT JOIN #tempUSMSPE AS viewUSM_SPE ON viewUSM_SPE.UserStatus = UCAL.UserStatusCal\r\n";
+	}
+
+	// Pre-filter SumGRCache ให้เหลือเฉพาะ PO ที่ใช้จริง + 1 row ต่อ PO (prefer Grade='A' ก่อน)
+	// ไม่ filter ตาม Grade เพราะ PO บางตัวอาจมีแค่ Grade='B'/'C' — ถ้า filter ออกจะทำให้ UCAL lookup ผิด
+	// → #tempSumGRMain (เหมือน pattern ของ #tempUCAL กับ TEMP_UserStatusAuto)
+	// ต้องรัน AFTER createTempProdData (#tempProdData ต้องมีแล้ว)
+	public String createTempSumGRMain = ""
+			+ this.buildIfTempTableDrop("#tempSumGRMain")
+			+ ";WITH _sgRanked AS (\r\n"
+			+ "    SELECT sg.*,\r\n"
+			+ "           ROW_NUMBER() OVER (\r\n"
+			+ "               PARTITION BY sg.ProductionOrder\r\n"
+			+ "               ORDER BY CASE WHEN sg.Grade = 'A' THEN 0 WHEN sg.Grade = '' THEN 1 WHEN sg.Grade IS NULL THEN 2 ELSE 3 END\r\n"
+			+ "           ) AS _sgRn\r\n"
+			+ "    FROM [PCMS].[dbo].SumGRCache AS sg\r\n"
+			+ "    INNER JOIN (\r\n"
+			+ "        SELECT DISTINCT ProductionOrder FROM #tempProdData WHERE ProductionOrder IS NOT NULL\r\n"
+			+ "    ) AS pd ON pd.ProductionOrder = sg.ProductionOrder\r\n"
+			+ ")\r\n"
+			+ "SELECT * INTO #tempSumGRMain FROM _sgRanked WHERE _sgRn = 1;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGRMain ON #tempSumGRMain(ProductionOrder);\r\n";
+
+	// LEFT JOIN #tempSumGRMain ใน createTempProdMain — แทน getOuterApplyTempSumGRGradeA
+	// ไม่ต้องใช้ OUTER APPLY เพราะ #tempSumGRMain มี 1 row ต่อ PO อยู่แล้ว → 1:1 join แน่นอน
+	public String buildLeftJoinTempSumGRMain(String aliasProd)
+	{
+		return String.format(
+				" LEFT JOIN #tempSumGRMain AS m ON m.ProductionOrder = %s.ProductionOrder\r\n",
+				aliasProd);
+	}
+
+	// OUTER APPLY แทน LEFT JOIN #tempUCAL ใน createTempProdMain
+	// TOP 1 + prefer Grade-specific over NULL → รับประกัน 1 row ต่อ PO → ไม่เกิด row multiplication → ไม่ต้องใช้ SELECT DISTINCT
+	public String getOuterApplyTempUCAL(String aliasProd, String aliasGrade)
+	{
+		return String.format(
+				" OUTER APPLY (\r\n"
+				+ "     SELECT TOP 1 UserStatusCal\r\n"
+				+ "     FROM #tempUCAL AS _uc\r\n"
+				+ "     WHERE _uc.ProductionOrder = %s.ProductionOrder\r\n"
+				+ "       AND (_uc.Grade = %s.Grade OR _uc.Grade IS NULL)\r\n"
+				+ "     ORDER BY CASE WHEN _uc.Grade IS NOT NULL THEN 0 ELSE 1 END\r\n"
+				+ " ) AS UCAL\r\n",
+				aliasProd, aliasGrade);
+	}
+
+	/**
+	 * OUTER APPLY แทน LEFT JOIN #tempUCAL — แก้ปัญหา SELECT DISTINCT 60+ คอลัมน์
+	 *
+	 * ปัญหาเดิม: LEFT JOIN #tempUCAL ด้วย (Grade = m.Grade OR Grade IS NULL) ทำให้ได้ 2 row ต่อ 1 (PO, Grade)
+	 *   - row จาก grade-specific UCAL (Grade='X')
+	 *   - row จาก catch-all UCAL (Grade IS NULL)
+	 *   → SELECT DISTINCT จำเป็น เพื่อ collapse แต่ sort/hash บน 60+ คอลัมน์ช้ามาก
+	 *
+	 * วิธีนี้ใช้ OUTER APPLY TOP 1 โดย ORDER BY 2 เกณฑ์:
+	 *   1. prefer UCAL row ที่ UserStatusCal มี entry ใน #tempUSMSPE (Special=0) → PassFilter=1 ได้
+	 *   2. ถ้าเท่ากัน: prefer grade-specific row มากกว่า catch-all
+	 *
+	 * ผลลัพธ์:
+	 *   - Grade Z: grade-specific row (Special=1 เท่านั้น, ไม่อยู่ใน #tempUSMSPE) → ลำดับ 1
+	 *             catch-all row (Special=0, อยู่ใน #tempUSMSPE) → ลำดับ 0 → ถูกเลือก ✓
+	 *   - Grade A: grade-specific (Special=0) → ลำดับ (0, 0) → ถูกเลือก ✓
+	 *   - ไม่มี UCAL row ใดเลย: OUTER APPLY คืน NULL → PassFilter ผ่าน adjVol แทน ✓
+	 *
+	 * ต้องใช้คู่กับ getLeftJoinTempUSMSPE() ใน outer query (viewUSM_SPE ยังคงต้องใช้ใน PassFilter CASE)
+	 */
+	public String getOuterApplyTempUCALWithSpecialPref(String aliasProd, String aliasGrade)
+	{
+		return String.format(
+				" OUTER APPLY (\r\n"
+				+ "     SELECT TOP 1 _uc.UserStatusCal\r\n"
+				+ "     FROM #tempUCAL AS _uc\r\n"
+				+ "     LEFT JOIN #tempUSMSPE AS _spe ON _spe.UserStatus = _uc.UserStatusCal\r\n"
+				+ "     WHERE _uc.ProductionOrder = %s.ProductionOrder\r\n"
+				+ "       AND (_uc.Grade = %s.Grade OR _uc.Grade IS NULL)\r\n"
+				+ "     ORDER BY\r\n"
+				+ "         CASE WHEN _spe.UserStatus IS NOT NULL THEN 0 ELSE 1 END,\r\n"
+				+ "         CASE WHEN _uc.Grade IS NOT NULL THEN 0 ELSE 1 END\r\n"
+				+ " ) AS UCAL\r\n",
+				aliasProd, aliasGrade);
+	}
+
 	public String fromProdA = "" + " from ProdData as a \r\n";
+
+	/**
+	 * PassFilter CASE — ใช้ใน leftJoinBSelect ของ PCMSMainDaoImpl และ PCMSDetailDaoImpl
+	 *   1 = passFilter (แสดงผล), 0 = กรองออก
+	 *   ลำดับเงื่อนไข:
+	 *     adjVol IS NOT NULL  → มี production order จริง → pass
+	 *     LotNo เป็นค่า virtual + adjVol = 0 + ไม่มี CRP → pass
+	 *     Volumn = 0          → order ไม่มีปริมาณ → pass
+	 *     viewUSM_SPE.Special = 0 → UserStatus map ไปหน่วยงานที่รับ (Special=0) → pass
+	 *     else                → ไม่ผ่าน
+	 */
+	public String passFilterExpr = ""
+			+ "                ,CASE\r\n"
+			+ "                   WHEN adjVol IS NOT NULL THEN 1\r\n"
+			+ "                   WHEN a.LotNo IN (N'รอจัด Lot',N'ขาย stock',N'รับจ้างถัก',N'Lot ขายแล้ว',N'พ่วงแล้วรอสวม',N'รอสวมเคยมี Lot')\r\n"
+			+ "                        AND adjVol = 0 AND CRP.SaleOrder IS NULL THEN 1\r\n"
+			+ "                   WHEN a.Volumn = 0 THEN 1\r\n"
+			+ "                   WHEN viewUSM_SPE.Special = 0 THEN 1\r\n"
+			+ "                   ELSE 0\r\n"
+			+ "                 END AS PassFilter\r\n";
+	// pre-build PlanCFMLabDate (ROW_NUMBER ครั้งเดียว แทน 5 ครั้งต่อ query)
+	public String createTempPlanCFMLabDate = ""
+			+ this.buildIfTempTableDrop("#tempPlanCFMLabDate")
+			+ "SELECT ProductionOrder, SaleOrder, SaleLine, PlanDate AS CFMPlanLabDate\r\n"
+			+ "INTO #tempPlanCFMLabDate\r\n"
+			+ "FROM (\r\n"
+			+ "    SELECT *,\r\n"
+			+ "           ROW_NUMBER() OVER (\r\n"
+			+ "               PARTITION BY ProductionOrder, SaleOrder, SaleLine\r\n"
+			+ "               ORDER BY CreateDate DESC\r\n"
+			+ "           ) AS rn\r\n"
+			+ "    FROM [PCMS].[dbo].[PlanCFMLabDate]\r\n"
+			+ ") AS ranked\r\n"
+			+ "WHERE rn = 1;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempPlanCFMLabDate\r\n"
+			+ "ON #tempPlanCFMLabDate (ProductionOrder, SaleOrder, SaleLine);\r\n";
+
+	// createTempSumGR: โหลดทั้ง table เพราะ ProductionOrderRP (case สวม) อยู่ใน
+	// FromSapMainProdSale ด้วย SaleOrder ต้นทาง ซึ่งอาจไม่อยู่ใน #tempMainSale
 	public String createTempSumGR = ""
 			+ this.buildIfTempTableDrop("#tempSumGR")
 			+ " SELECT *\r\n"
-			+ " into #tempSumGR\r\n"
-			+ " FROM [PCMS].[dbo].SumGRCache  ;\r\n";
+			+ " INTO #tempSumGR\r\n"
+			+ " FROM [PCMS].[dbo].SumGRCache;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
+	// pre-build PlanSendCFMCusDate → #tempSCC (1 scan ครั้งเดียว แทนหลาย scan ต่อ query)
+	public String createTempSCC = ""
+			+ this.buildIfTempTableDrop("#tempSCC")
+			+ "SELECT ProductionOrder, MAX(SendCFMCusDate) AS SendCFMCusDate\r\n"
+			+ "INTO #tempSCC\r\n"
+			+ "FROM [PCMS].[dbo].[PlanSendCFMCusDate]\r\n"
+			+ "WHERE DataStatus = 'O'\r\n"
+			+ "GROUP BY ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSCC ON #tempSCC(ProductionOrder);\r\n";
+
+	// pre-build FromSORCFM → #tempFromSORCFM (1 scan ครั้งเดียว แทนหลาย scan ต่อ query)
+	public String createTempFromSORCFM = ""
+			+ this.buildIfTempTableDrop("#tempFromSORCFM")
+			+ "SELECT SaleOrder, SaleLine, MAX(CFMDATE) AS CFMDate\r\n"
+			+ "INTO #tempFromSORCFM\r\n"
+			+ "FROM [PCMS].[dbo].[FromSORCFM]\r\n"
+			+ "GROUP BY SaleOrder, SaleLine;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempFromSORCFM ON #tempFromSORCFM(SaleOrder, SaleLine);\r\n";
+
+	// full scan version — ใช้เมื่อไม่มี #tempMainSale (เช่น background job)
+	public String createTempProdWorkDate = ""
+			+ this.buildIfTempTableDrop("#tempProdWorkDate")
+			+ "SELECT *\r\n"
+			+ "INTO #tempProdWorkDate\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_ProdWorkDate];\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
+
+	// filtered version — requires #tempMainSale with clustered index already built
+	// filters to only POs relevant to the current search:
+	//   regular POs  : FromSapMainProd   JOIN #tempMainSale (SaleOrder, SaleLine)
+	//   replaced POs : ReplacedProdOrder JOIN #tempMainSale (SaleOrder, SaleLine) -> ProductionOrderRP
+	// eliminates ~90% of TEMP_ProdWorkDate rows → cuts tempdb I/O dramatically
+	public String createTempProdWorkDateFiltered = ""
+			+ this.buildIfTempTableDrop("#tempProdWorkDate")
+			+ "SELECT pwd.*\r\n"
+			+ "INTO #tempProdWorkDate\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_ProdWorkDate] AS pwd\r\n"
+			+ "INNER JOIN (\r\n"
+			+ "    SELECT fsp.ProductionOrder\r\n"
+			+ "    FROM [PCMS].[dbo].[FromSapMainProd] AS fsp\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fsp.SaleOrder AND ms.SaleLine = fsp.SaleLine\r\n"
+			+ "    WHERE fsp.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT rpo.ProductionOrderRP\r\n"
+			+ "    FROM [PCMS].[dbo].[ReplacedProdOrder] AS rpo\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = rpo.SaleOrder AND ms.SaleLine = rpo.SaleLine\r\n"
+			+ "    WHERE rpo.DataStatus = 'O'\r\n"
+			+ ") AS flt ON flt.ProductionOrder = pwd.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
+
+	// pre-build SwitchProdOrder → #tempSPO (1 scan แทนหลาย scan ต่อ query)
+	public String createTempSPO = ""
+			+ this.buildIfTempTableDrop("#tempSPO")
+			+ "SELECT ProductionOrder, ProductionOrderSW\r\n"
+			+ "INTO #tempSPO\r\n"
+			+ "FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
+			+ "WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSPO_SW ON #tempSPO(ProductionOrderSW);\r\n"
+			+ "CREATE NONCLUSTERED INDEX IX_tempSPO_PO ON #tempSPO(ProductionOrder);\r\n";
+
+	// pre-build FromSapMainProdSale filtered to SPO rows only → #tempSPOSale (reused by OPSW and SW)
+	public String createTempSPOSale = ""
+			+ this.buildIfTempTableDrop("#tempSPOSale")
+			+ "SELECT\r\n"
+			+ "    CASE WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
+			+ "         ELSE C.ProductionOrder END AS ProductionOrder,\r\n"
+			+ "    A.SaleOrder, A.SaleLine, A.Volumn\r\n"
+			+ "INTO #tempSPOSale\r\n"
+			+ "FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
+			+ "LEFT JOIN #tempSPO AS B ON A.ProductionOrder = B.ProductionOrder\r\n"
+			+ "LEFT JOIN #tempSPO AS C ON A.ProductionOrder = C.ProductionOrderSW\r\n"
+			+ "WHERE (B.ProductionOrder IS NOT NULL OR C.ProductionOrder IS NOT NULL)\r\n"
+			+ "  AND A.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSPOSale_SO_SL ON #tempSPOSale(SaleOrder, SaleLine);\r\n"
+			+ "CREATE NONCLUSTERED INDEX IX_tempSPOSale_PO ON #tempSPOSale(ProductionOrder);\r\n";
+
+	// clustered index on #tempMainSale — added after INSERT so every downstream INNER JOIN is a seek
+	public String createTempMainSaleIndex =
+			"CREATE CLUSTERED INDEX IX_tempMainSale ON #tempMainSale(SaleOrder, SaleLine);\r\n";
+
+	// pre-build InputReplacedRemark → #tempInputRR
+	// INNER JOIN #tempMainSale: กรองเฉพาะ SaleOrder/SaleLine ใน search criteria
+	// → ลดจาก "ทุก record DataStatus=O" เหลือแค่แถวที่จะปรากฏใน final SELECT
+	public String createTempInputRR = ""
+			+ this.buildIfTempTableDrop("#tempInputRR")
+			+ "SELECT ir.ProductionOrder, ir.SaleOrder, ir.SaleLine, ir.ReplacedRemark\r\n"
+			+ "INTO #tempInputRR\r\n"
+			+ "FROM [PCMS].[dbo].[InputReplacedRemark] ir\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = ir.SaleOrder AND ms.SaleLine = ir.SaleLine\r\n"
+			+ "WHERE ir.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputRR ON #tempInputRR(ProductionOrder, SaleOrder, SaleLine);\r\n";
+
+	// pre-build InputPCRemark → #tempInputPCR
+	// INNER JOIN #tempMainSale: กรองเฉพาะ SaleOrder/SaleLine ใน search criteria
+	public String createTempInputPCR = ""
+			+ this.buildIfTempTableDrop("#tempInputPCR")
+			+ "SELECT ir.ProductionOrder, ir.SaleOrder, ir.SaleLine, ir.PCRemark\r\n"
+			+ "INTO #tempInputPCR\r\n"
+			+ "FROM [PCMS].[dbo].[InputPCRemark] ir\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = ir.SaleOrder AND ms.SaleLine = ir.SaleLine\r\n"
+			+ "WHERE ir.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputPCR ON #tempInputPCR(ProductionOrder, SaleOrder, SaleLine);\r\n";
+
+	// pre-build InputCauseOfDelay → #tempInputCOD  (ไม่มี SaleOrder/SaleLine — กรองด้วย SPO แทน)
+	public String createTempInputCOD = ""
+			+ this.buildIfTempTableDrop("#tempInputCOD")
+			+ "SELECT ProductionOrder, CauseOfDelay\r\n"
+			+ "INTO #tempInputCOD\r\n"
+			+ "FROM [PCMS].[dbo].[InputCauseOfDelay]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputCOD ON #tempInputCOD(ProductionOrder);\r\n";
+
+	// pre-build InputDelayedDep → #tempInputDD  (ไม่มี SaleOrder/SaleLine)
+	public String createTempInputDD = ""
+			+ this.buildIfTempTableDrop("#tempInputDD")
+			+ "SELECT ProductionOrder, DelayedDep\r\n"
+			+ "INTO #tempInputDD\r\n"
+			+ "FROM [PCMS].[dbo].[InputDelayedDep]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputDD ON #tempInputDD(ProductionOrder);\r\n";
+
+	// pre-build InputSwitchRemark → #tempInputSR  (ไม่มี SaleOrder/SaleLine)
+	public String createTempInputSR = ""
+			+ this.buildIfTempTableDrop("#tempInputSR")
+			+ "SELECT ProductionOrder, SwitchRemark\r\n"
+			+ "INTO #tempInputSR\r\n"
+			+ "FROM [PCMS].[dbo].[InputSwitchRemark]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputSR ON #tempInputSR(ProductionOrder);\r\n";
+
+	// pre-build InputStockLoad → #tempInputSL
+	// INNER JOIN #tempMainSale: กรองเฉพาะ SaleOrder/SaleLine ใน search criteria
+	public String createTempInputSL = ""
+			+ this.buildIfTempTableDrop("#tempInputSL")
+			+ "SELECT ir.ProductionOrder, ir.SaleOrder, ir.SaleLine, ir.StockLoad\r\n"
+			+ "INTO #tempInputSL\r\n"
+			+ "FROM [PCMS].[dbo].[InputStockLoad] ir\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = ir.SaleOrder AND ms.SaleLine = ir.SaleLine\r\n"
+			+ "WHERE ir.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputSL ON #tempInputSL(ProductionOrder, SaleOrder, SaleLine);\r\n";
+
+	// pre-build InputStockRemark → #tempInputStockRemark
+	// INNER JOIN #tempMainSale: กรองเฉพาะ SaleOrder/SaleLine ใน search criteria
+	// (ก่อนหน้านี้ load ทุก record → join 4 column ใน final SELECT ช้ามาก)
+	public String createTempInputStockRemark = ""
+			+ this.buildIfTempTableDrop("#tempInputStockRemark")
+			+ "SELECT ir.ProductionOrder, ir.SaleOrder, ir.SaleLine, ir.Grade, ir.StockRemark\r\n"
+			+ "INTO #tempInputStockRemark\r\n"
+			+ "FROM [PCMS].[dbo].[InputStockRemark] ir\r\n"
+			+ "INNER JOIN #tempMainSale ms ON ms.SaleOrder = ir.SaleOrder AND ms.SaleLine = ir.SaleLine\r\n"
+			+ "WHERE ir.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempInputStockRemark ON #tempInputStockRemark(ProductionOrder, SaleOrder, SaleLine, Grade);\r\n";
+
+	// pre-build TAPP (SOR_TempProd JOIN ApprovedPlanDate) → #tempTAPP
+	public String createTempTAPP = ""
+			+ this.buildIfTempTableDrop("#tempTAPP")
+			+ "SELECT a.ProductionOrder, b.SORCFMDate, b.SORDueDate\r\n"
+			+ "INTO #tempTAPP\r\n"
+			+ "FROM [PPMM].[dbo].[SOR_TempProd] AS a\r\n"
+			+ "INNER JOIN [PPMM].[dbo].[ApprovedPlanDate] AS b ON a.POId = b.POId\r\n"
+			+ "WHERE a.DataStatus = 'O' AND b.DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempTAPP ON #tempTAPP(ProductionOrder);\r\n";
+
 	public String createTempSumBill = ""
 			+ "  If(OBJECT_ID('tempdb..#tempSumBill') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempSumBill\r\n"
 			+ "	end ;\r\n"
-			+ " SELECT *\r\n"
-			+ " into #tempSumBill\r\n"
-			+ " FROM [PCMS].dbo.SumBillCache ; \r\n"; 
+			+ " SELECT b.*\r\n"
+			+ " INTO #tempSumBill\r\n"
+			+ " FROM [PCMS].dbo.SumBillCache b\r\n"
+			+ " JOIN #tempMainSale ms ON ms.SaleOrder = b.SaleOrder AND ms.SaleLine = b.SaleLine;\r\n"
+	+ "CREATE CLUSTERED INDEX IX_tempSumBill ON #tempSumBill(ProductionOrder, SaleOrder, SaleLine, Grade);\r\n";
 	public String createTempMainSale = ""
 			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
 			+ "	begin\r\n"
@@ -384,7 +1031,9 @@ public class PCMSSqlService {
 			+ "		,cast(null as NVARCHAR) as CFMNumberAll \r\n"
 			+ "		,cast(null as NVARCHAR) as CFMRemarkAll\r\n"
 			+ " into #tempPrepWaitLot\r\n"
-			+ "	from [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			// ใช้ #tempMainSale แทน FromSapMainSale ทั้ง table
+			// #tempMainSale filtered DataStatus='O' ไว้แล้ว และมีเฉพาะ sales ที่ค้นหา
+			+ "	from #tempMainSale as a\r\n"
 			+ " LEFT JOIN #tmpSaleAgg c \r\n"
 			+ "       ON a.SaleOrder = c.SaleOrder \r\n"
 			+ "      AND a.SaleLine  = c.SaleLine\r\n"
@@ -400,7 +1049,7 @@ public class PCMSSqlService {
 			+ "		GROUP BY a.SaleOrder, a.SaleLine \r\n"
 			+ "	) AS D ON A.SaleOrder = D.SaleOrder  \r\n"
 			+ "          AND A.SaleLine = D.SaleLine  \r\n"
-			+ "	where  A.[DataStatus] = 'O' AND \r\n"
+			+ "	where  1 = 1 AND \r\n"
 			+ "         ( c.SumVolMain > 0 OR ( c.SumVolMain is null AND D.SaleOrder IS NOT NULL ) )  ;\r\n";
 	public String innerJoinWaitLotB = ""
 			+ " INNER JOIN #tempPrepWaitLot AS b ON a.SaleOrder = b.SaleOrder and\r\n"
@@ -665,87 +1314,46 @@ public class PCMSSqlService {
 
 	public String getLeftJoinPlanCFMLabDate(String aliasProd, String aliasSale)
 	{
+		// ใช้ #tempPlanCFMLabDate ที่ pre-build ไว้แล้ว แทน inline ROW_NUMBER() subquery
 		String sqlTemplate = ""
-				+ " LEFT JOIN ( \r\n"
-				+ "		SELECT \r\n"
-				+ "    	[ProductionOrder],\r\n"
-				+ "    	[SaleOrder],\r\n"
-				+ "    	[SaleLine],\r\n"
-				+ "    	[PlanDate] AS CFMPlanLabDate\r\n"
-				+ "		FROM (\r\n"
-				+ "    		SELECT \r\n"
-				+ "        		*,\r\n"
-				+ "        		ROW_NUMBER() OVER (\r\n"
-				+ "            PARTITION BY [ProductionOrder], [SaleOrder], [SaleLine] \r\n"
-				+ "            ORDER BY [CreateDate] DESC\r\n"
-				+ "        		) AS rn\r\n"
-				+ "    		FROM [PCMS].[dbo].[PlanCFMLabDate]\r\n"
-				+ "		) AS ranked\r\n"
-				+ "		WHERE rn = 1"
-				+ " ) as e on e.[ProductionOrder] = %s.[ProductionOrder] and \r\n"
-				+ "           e.[SaleOrder] = %s.[SaleOrder] and\r\n"
-				+ "           e.[SaleLine] = %s.[SaleLine]\r\n";
+				+ " LEFT JOIN #tempPlanCFMLabDate AS e\r\n"
+				+ "     ON e.[ProductionOrder] = %s.[ProductionOrder]\r\n"
+				+ "    AND e.[SaleOrder] = %s.[SaleOrder]\r\n"
+				+ "    AND e.[SaleLine] = %s.[SaleLine]\r\n";
 		return String.format(sqlTemplate, aliasProd, aliasSale, aliasSale);
 	}
 
 	public String getLeftJoinFromSORCFM(String aliasSale)
 	{
-		String sqlTemplate = ""
-				+ " left join ( \r\n"
-				+ "    SELECT SALEORDER,SALELINE,CFMDATE \r\n"
-				+ "	   FROM [PCMS].[dbo].[FromSORCFM]\r\n"
-				+ " )AS J  on %s.SaleOrder = J.SaleOrder and \r\n"
-				+ "           %s.SaleLine = J.SaleLine \r\n ";
+		String sqlTemplate = " LEFT JOIN #tempFromSORCFM AS J ON J.SaleOrder = %s.SaleOrder AND J.SaleLine = %s.SaleLine\r\n";
 		return String.format(sqlTemplate, aliasSale, aliasSale);
 	}
 
 	public String getLeftJoinInputReplacedRemark(String aliasProd, String aliasSale)
 	{
-		String sqlTemplate = ""
-				+ " left join (\r\n"
-				+ "     SELECT SALELINE,SALEORDER,ProductionOrder,ReplacedRemark \r\n"
-				+ "     FROM [PCMS].[dbo].[InputReplacedRemark] \r\n"
-				+ "     WHERE DataStatus = 'O'\r\n"
-				+ " ) AS K on K.ProductionOrder = %s.ProductionOrder and \r\n"
-				+ "           K.SaleOrder = %s.SaleOrder and\r\n"
-				+ "           K.SaleLine = %s.SaleLine \r\n ";
+		String sqlTemplate = " LEFT JOIN #tempInputRR AS K ON K.ProductionOrder = %s.ProductionOrder"
+				+ " AND K.SaleOrder = %s.SaleOrder AND K.SaleLine = %s.SaleLine\r\n";
 		return String.format(sqlTemplate, aliasProd, aliasSale, aliasSale);
 	}
 
 	public String getLeftJoinInputStockLoad(String aliasProd, String aliasSale)
 	{
-		String sqlTemplate = " left join ( \r\n"
-				+ "    SELECT SALELINE, SALEORDER, ProductionOrder, StockLoad \r\n"
-				+ "    FROM [PCMS].[dbo].InputStockLoad \r\n"
-				+ "    WHERE DataStatus = 'O' \r\n"
-				+ ") AS SL on SL.ProductionOrder = %s.ProductionOrder and \r\n"
-				+ "           SL.SaleOrder = %s.SaleOrder and \r\n"
-				+ "           SL.SaleLine = %s.SaleLine \r\n";
+		String sqlTemplate = " LEFT JOIN #tempInputSL AS SL ON SL.ProductionOrder = %s.ProductionOrder"
+				+ " AND SL.SaleOrder = %s.SaleOrder AND SL.SaleLine = %s.SaleLine\r\n";
 		return String.format(sqlTemplate, aliasProd, aliasSale, aliasSale);
 	}
 
 	public String getLeftJoinInputStockRemark(String aliasProd, String aliasSale, String aliasGrade)
 	{
-		String sqlTemplate = " left join ( \r\n"
-				+ "    SELECT SALELINE, SALEORDER, ProductionOrder, Grade, StockRemark \r\n"
-				+ "    FROM [PCMS].[dbo].[InputStockRemark] \r\n"
-				+ "    WHERE DataStatus = 'O' \r\n"
-				+ ") AS l on l.ProductionOrder = %s.ProductionOrder and \r\n"
-				+ "         l.SaleOrder = %s.SaleOrder and \r\n"
-				+ "         l.SaleLine = %s.SaleLine  and \r\n"
-				+ "         l.Grade = %s.Grade \r\n";
+		String sqlTemplate = " LEFT JOIN #tempInputStockRemark AS l ON l.ProductionOrder = %s.ProductionOrder"
+				+ " AND l.SaleOrder = %s.SaleOrder AND l.SaleLine = %s.SaleLine AND l.Grade = %s.Grade\r\n";
 		return String.format(sqlTemplate, aliasProd, aliasSale, aliasSale, aliasGrade);
 	}
 
 	public String getLeftJoinInputPCRemark(String aliasProd, String aliasSale)
 	{
-		String sqlTemplate = " left join ( \r\n"
-				+ "    SELECT SALELINE, SALEORDER, ProductionOrder, PCRemark \r\n"
-				+ "    FROM [PCMS].[dbo].InputPCRemark \r\n"
-				+ "    WHERE DataStatus = 'O' \r\n"
-				+ ") AS P on P.ProductionOrder = %s.ProductionOrder and \r\n"
-				+ "         P.SaleOrder = %s.SaleOrder and \r\n"
-				+ "         P.SaleLine = %s.SaleLine   \r\n";
+		String sqlTemplate = " LEFT JOIN #tempInputPCR AS P ON P.ProductionOrder = %s.ProductionOrder"
+				+ " AND P.SaleOrder = %s.SaleOrder AND P.SaleLine = %s.SaleLine\r\n";
 		return String.format(sqlTemplate, aliasProd, aliasSale, aliasSale);
 	}
 
@@ -782,6 +1390,16 @@ public class PCMSSqlService {
 	public String getLeftJoinSimpleTable(String aliasProd, String tableName, String alias, String selectFields, String joinField,
 			String joinAliasField)
 	{
+		// route pre-built Input* tables to their temp table versions
+		if (tableName.equals("InputCauseOfDelay")) {
+			return String.format(" LEFT JOIN #tempInputCOD AS InputCOD ON %s.ProductionOrder = InputCOD.ProductionOrder\r\n", aliasProd);
+		}
+		if (tableName.equals("InputDelayedDep")) {
+			return String.format(" LEFT JOIN #tempInputDD AS InputDD ON %s.ProductionOrder = InputDD.ProductionOrder\r\n", aliasProd);
+		}
+		if (tableName.equals("InputSwitchRemark")) {
+			return String.format(" LEFT JOIN #tempInputSR AS q ON %s.ProductionOrder = q.ProductionOrder\r\n", aliasProd);
+		}
 		String sqlTemplate = " left join ( \r\n"
 				+ "    SELECT %s \r\n"
 				+ "    FROM [PCMS].[dbo].%s \r\n"
@@ -792,13 +1410,7 @@ public class PCMSSqlService {
 
 	public String getLeftJoinTAPP(String aliasProd)
 	{
-		String sqlTemplate = " left join ( \r\n"
-				+ "    select a.ProductionOrder, b.SORCFMDate, b.SORDueDate \r\n"
-				+ "    from [PPMM].[dbo].[SOR_TempProd] as a \r\n"
-				+ "    inner join [PPMM].[dbo].[ApprovedPlanDate] as b on a.POId = b.POId \r\n"
-				+ "    WHERE a.DataStatus = 'O' and b.DataStatus = 'O' \r\n"
-				+ ") AS TAPP on TAPP.ProductionOrder = %s.ProductionOrder \r\n";
-		return String.format(sqlTemplate, aliasProd);
+		return String.format(" LEFT JOIN #tempTAPP AS TAPP ON TAPP.ProductionOrder = %s.ProductionOrder\r\n", aliasProd);
 	}
 
 	public String getLeftJoinTempSumBill(String aliasProd, String aliasSale, String aliasGrade)
@@ -841,11 +1453,7 @@ public class PCMSSqlService {
 
 	public String getLeftJoinSwitchProdOrder(String aliasProd)
 	{
-		String sqlTemplate = " "
-				+ " LEFT JOIN [PCMS].[dbo].[SwitchProdOrder] \r\n"
-				+ "AS SPO on SPO.ProductionOrderSW = %s.ProductionOrder"
-				+ "      AND SPO.DataStatus = 'O' \r\n";
-		return String.format(sqlTemplate, aliasProd);
+		return String.format(" LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = %s.ProductionOrder\r\n", aliasProd);
 	}
 
 	public String getLeftJoinTempPlandeliveryDate(String aliasProd, String aliasSale)
@@ -880,10 +1488,7 @@ public class PCMSSqlService {
 	}
 	public String buildLeftJoinSCC(String aliasProd)
 	{
-		String sqlTemplate = " LEFT JOIN [PCMS].[dbo].[PlanSendCFMCusDate] AS SCC\n"
-				+ "     ON SCC.ProductionOrder = %s.ProductionOrder\n"
-				+ "     AND SCC.DataStatus = 'O'\n";
-		return String.format(sqlTemplate, aliasProd);
+		return String.format(" LEFT JOIN #tempSCC AS SCC ON SCC.ProductionOrder = %s.ProductionOrder\n", aliasProd);
 	}
 
 	public String buildLeftJoinTempSumGR(String aliasMain)
@@ -893,8 +1498,7 @@ public class PCMSSqlService {
 
 	public String buildLeftJoinTempProdWorkDate(String aliasMain)
 	{
-		return String.format(" LEFT JOIN [PCMS].[dbo].[TEMP_ProdWorkDate] AS g ON g.ProductionOrder = %s.ProductionOrder \n",
-				aliasMain);
+		return String.format(" LEFT JOIN #tempProdWorkDate AS g ON g.ProductionOrder = %s.ProductionOrder\n", aliasMain);
 	}
 
 	public String buildInnerJoinFromSapMainProd(String aliasJoinTableAs, String fieldJoinTableAs, String aliasTableMainJoin,

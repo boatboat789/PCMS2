@@ -86,18 +86,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , b.RemarkOne \r\n"
 			+ "   , b.RemarkTwo \r\n"
 			+ "   , b.RemarkThree \r\n"
-			+ "   , k.ReplacedRemark \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark \r\n"
 			+ "   , b.StockRemark\r\n"
 			+ "   , b.GRSumKG \r\n"
 			+ "   , b.GRSumYD \r\n"
 			+ "   , b.GRSumMR \r\n"
 			+ "   , b.DyePlan \r\n"
 			+ "   , b.DyeActual \r\n"
-			+ "   , p.PCRemark\r\n"
-			+ "   , InputDD.[DelayedDep] \r\n"
-			+ "   , InputCOD.[CauseOfDelay] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS PCRemark\r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay] \r\n"
 			+ "   , b.[SwitchRemark]\r\n"
-			+ "   , SL.[StockLoad] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad] \r\n"
 			+ "   , b.[PrdCreateDate]\r\n"
 			+ "   , b.LotShipping \r\n"
 			+ "   , b.Volumn \r\n"
@@ -136,11 +136,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   a.CFMActualLabDate,\r\n"
 			+ "   a.CFMCusAnsLabDate,\r\n"
 			+ "   a.UserStatusCal as UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n"
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   a.CFMPlanDate AS CFMPlanDate ,  \r\n"
 			+ "   a.SendCFMCusDate, \r\n"
 			+ "   CASE \r\n"
@@ -156,18 +156,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark ,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   a.GRSumKG,\r\n"
 			+ "   a.GRSumYD,\r\n"
 			+ "   a.GRSumMR,\r\n"
 			+ "   a.DyePlan, \r\n"
 			+ "   a.DyeActual, \r\n"
-			+ "   P.PCRemark, \r\n"
-			+ "   InputDD.[DelayedDep], \r\n"
-			+ "   InputCOD.[CauseOfDelay], \r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark, \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad], \r\n"
 			+ "   b.[PrdCreateDate],\r\n"
 			+ "   a.LotShipping \r\n";
 	private String selectSW = ""
@@ -201,11 +201,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   g.CFMActualLabDate,\r\n"
 			+ "   g.CFMCusAnsLabDate,\r\n"
 			+ "   UCAL.UserStatusCal as UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n"
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n"
 			+ "   coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate, \r\n"
 			+ "   CASE \r\n"
@@ -221,18 +221,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark ,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   m.GRSumKG,\r\n"
 			+ "   m.GRSumYD,\r\n"
 			+ "   m.GRSumMR,\r\n"
 			+ "   g.DyePlan , \r\n"
 			+ "   g.DyeActual, \r\n"
-			+ "   PCRemark, \r\n"
-			+ "   InputDD.[DelayedDep], \r\n"
-			+ "   InputCOD.[CauseOfDelay], \r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark, \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad], \r\n"
 			+ "   b.[PrdCreateDate],\r\n"
 			+ "   g.LotShipping,\r\n"
 			+ "   g.PlanGreigeDate\r\n ";
@@ -263,11 +263,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   b.CFMActualLabDate,\r\n"
 			+ "   b.CFMCusAnsLabDate,\r\n"
 			+ "   b.UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n"
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   b.CFMPlanDate AS CFMPlanDate ,  \r\n"
 			+ "   b.SendCFMCusDate,\r\n"
 			+ "   CASE \r\n"
@@ -283,18 +283,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark ,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   b.GRSumKG,\r\n"
 			+ "   b.GRSumYD,\r\n"
 			+ "   b.GRSumMR,\r\n"
 			+ "   b.DyePlan , \r\n"
 			+ "   b.DyeActual, \r\n"
-			+ "   p.PCRemark,\r\n"
-			+ "   InputDD.[DelayedDep],\r\n"
-			+ "   InputCOD.[CauseOfDelay],\r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad],\r\n"
 			+ "   b.[PrdCreateDate], \r\n"
 			+ "   b.LotShipping\r\n";
 	private String selectRPV2 = ""
@@ -331,11 +331,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   g.CFMActualLabDate,\r\n"
 			+ "   g.CFMCusAnsLabDate,\r\n"
 			+ "   UCALRP.UserStatusCalRP as UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n"
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n"
 			+ "   coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate, \r\n"
 			+ "   CASE \r\n"
@@ -351,18 +351,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   m.GRSumKG,\r\n"
 			+ "   m.GRSumYD,\r\n"
 			+ "   m.GRSumMR,\r\n"
 			+ "   g.DyePlan , \r\n"
 			+ "   g.DyeActual, \r\n"
-			+ "   PCRemark,\r\n"
-			+ "   InputDD.[DelayedDep],\r\n"
-			+ "   InputCOD.[CauseOfDelay],\r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad],\r\n"
 			+ "   b.[PrdCreateDate],\r\n"
 			+ "   g.LotShipping, \r\n"
 			+ "   g.PlanGreigeDate\r\n";
@@ -601,15 +601,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,a.CustomerName\r\n"
 			+ "                ,a.DeliveryStatus\r\n"
 			+ "                ,a.SaleStatus\r\n"
-			+ "				,CASE \r\n"
-			+ "				  WHEN adjVol IS NOT NULL THEN 1\r\n"
-			+ "				  WHEN a.LotNo IN ('รอจัด Lot','ขาย stock','รับจ้างถัก','Lot ขายแล้ว','พ่วงแล้วรอสวม','รอสวมเคยมี Lot')\r\n"
-			+ "					   AND adjVol = 0 AND CRP.SaleOrder IS NULL THEN 1\r\n"
-			+ "				  WHEN a.Volumn = 0 THEN 1\r\n"
-			+ "				  WHEN viewUSM_SPE.Special = 0 THEN 1\r\n"
-			+ "				  ELSE 0\r\n"
-			+ "				 END AS PassFilter\r\n"
-			+ "";
+			+ pss.passFilterExpr;
 	private String createTempMainFirst = ""
 			+ " SELECT \r\n"
 			+ this.selectMainV2
@@ -627,19 +619,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , b.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempMain  \r\n";
 	private String createTempMainSecond = ""
-			+ this.pss.getLeftJoinPlanCFMLabDate("b", "b")
-			+ this.pss.getLeftJoinFromSORCFM("b")
-			+ this.pss.getLeftJoinTAPP("b")
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "b")
-			+ this.pss.getLeftJoinInputStockRemark("b", "b", "b")
-			+ this.pss.getLeftJoinInputPCRemark("b", "b")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-					"ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "b")
 			+ this.pss.getLeftJoinSwitchProdOrder("b")
 			+ " where b.PassFilter = 1\r\n"
 			+ "    AND SPO.ProductionOrderSW IS NULL ";
@@ -721,7 +700,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
 			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")
 			+ this.pss.buildLeftJoinSCC("b")
-			+ this.pss.buildInnerJoinViewUSM_SPE("UCAL", 1, "UserStatusCal")
+			+ this.pss.buildInnerJoinTempUSMSpecial1("UCAL", "UserStatusCal")
 			+ this.pss.getLeftJoinSwitchProdOrder("b")
 			+ "		 	WHERE 1 = 1 AND SPO.ProductionOrderSW IS NULL\r\n";
 	private String createTempOP = ""
@@ -746,20 +725,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ " into #tempPrdOP\r\n"
 			+ " FROM #tempPrdOPA as a  \r\n "
 			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
-			+ this.pss.getLeftJoinPlanCFMLabDate("a", "b")
-			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
-			+ this.pss.getLeftJoinFromSORCFM("a")
-			+ this.pss.getLeftJoinTAPP("b")
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-			+ this.pss.getLeftJoinInputStockRemark("b", "a", "b")
-			+ this.pss.getLeftJoinInputPCRemark("b", "a")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-					"ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a");
+			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a");
 
 	private String createTempOPSWFirst = ""
 			+ " If(OBJECT_ID('tempdb..#tempPrdOPSW') Is Not Null)\r\n"
@@ -817,50 +783,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                 END   AS Volumn\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
 			+ "		 	from #tempMainSale as a  \r\n"
-			+ "		 	inner join ( \r\n"
-			+ "            	SELECT \r\n"
-			+ " 				CASE \r\n"
-			+ "			          WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-			+ "			          ELSE C.ProductionOrder\r\n"
-			+ "			          END AS [ProductionOrder],\r\n"
-			+ "		           [SaleOrder] ,[SaleLine] ,[Volumn]  ,[DataStatus]\r\n"
-			+ "		        FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-			+ "		        LEFT JOIN (\r\n"
-			+ "					SELECT [ProductionOrder] ,[ProductionOrderSW] \r\n"
-			+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-			+ "					       WHERE ProductionOrder <> ProductionOrderSW AND \r\n"
-			+ "                              DataStatus = 'O'	\r\n"
-			+ "				) AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-			+ "		        LEFT JOIN (\r\n"
-			+ "					SELECT  [ProductionOrder] \r\n"
-			+ "						 	 ,[ProductionOrderSW] \r\n"
-			+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-			+ "					       WHERE ProductionOrder <> ProductionOrderSW AND\r\n"
-			+ "                              DataStatus = 'O'	\r\n"
-			+ "				) AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-			+ "				WHERE ( B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL and a.DataStatus = 'O') \r\n"
-			+ "       	) as b on a.SaleOrder = b.SaleOrder and \r\n"
-			+ "                   a.SaleLine = b.SaleLine \r\n"
-			+ "			where b.DataStatus = 'O' and b.SaleLine <> ''\r\n";
+			+ "		 	inner join #tempSPOSale as b on a.SaleOrder = b.SaleOrder and \r\n"
+			+ "                                         a.SaleLine = b.SaleLine \r\n"
+			+ "			where b.SaleLine <> ''\r\n";
 	private String createTempOPSWSecond = ""
 			+ "	) as a  \r\n "
 			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
-			+ this.pss.getLeftJoinPlanCFMLabDate("a", "b")
 			+ this.pss.buildLeftJoinTempProdWorkDate("b")
 			+ this.pss.buildLeftJoinSCC("b")
 			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
-			+ this.pss.getLeftJoinFromSORCFM("a")
-			+ this.pss.getLeftJoinTAPP("b")
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-			+ this.pss.getLeftJoinInputStockRemark("b", "a", "b")
-			+ this.pss.getLeftJoinInputPCRemark("b", "a")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-					"ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a")
 			+ this.pss.buildLeftJoinTempSumGR("b")
 			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
 			+ this.pss.getLeftJoinTempSumBill("b", "a", "M");
@@ -925,54 +856,17 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleOrder = b.SaleOrderSW and \r\n"
 			+ "                                                            a.SaleLine = b.SaleLineSW  \r\n \r\n"
 			+ "		 	LEFT JOIN ( \r\n"
-			+ "				SELECT PRDORDERSW ,sum([Volumn]) as SumVol\r\n"
-			+ "				FROM (  \r\n"
-			+ "                 SELECT \r\n"
-			+ "                    a.[ProductionOrder] \r\n"
-			+ "					 , CASE \r\n"
-			+ "					       WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-			+ "						   ELSE C.ProductionOrder\r\n"
-			+ "					   END AS PRDORDERSW\r\n"
-			+ "					 , a.[SaleOrder] ,a.[SaleLine] ,a.[Volumn] ,a.[DataStatus]\r\n"
-			+ "				    FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-			+ "				    LEFT JOIN (	\r\n"
-			+ "                    SELECT  [ProductionOrder] \r\n"
-			+ "							  ,[ProductionOrderSW] \r\n"
-			+ "					   FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-			+ "					   WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'\r\n"
-			+ "                 ) AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-			+ "				  	LEFT JOIN (\r\n"
-			+ "                     SELECT  [ProductionOrder] \r\n"
-			+ "							   ,[ProductionOrderSW] \r\n"
-			+ "					    FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-			+ "						WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'\r\n"
-			+ "                 ) AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-			+ "					WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL) AND"
-			+ "						  A.[DataStatus] = 'O' \r\n"
-			+ "				 ) AS A\r\n"
-			+ "				 group by PRDORDERSW\r\n"
+			+ "				SELECT ProductionOrder AS PRDORDERSW, SUM(Volumn) AS SumVol\r\n"
+			+ "				FROM #tempSPOSale\r\n"
+			+ "				GROUP BY ProductionOrder\r\n"
 			+ "		    ) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
 			+ "		    where b.DataStatus = 'O' \r\n";
 
 	private String createTempPrdSWSecond =
 			"" + " ) as a  \r\n " + " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
-//			+ this.leftJoinE
-					+ this.pss.getLeftJoinPlanCFMLabDate("a", "b")
 					+ this.pss.buildLeftJoinTempProdWorkDate("b")
 					+ this.pss.buildLeftJoinSCC("b")
 					+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
-					+ this.pss.getLeftJoinFromSORCFM("a")
-					+ this.pss.getLeftJoinTAPP("b")
-					+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-					+ this.pss.getLeftJoinInputStockRemark("b", "a", "b")
-					+ this.pss.getLeftJoinInputPCRemark("b", "a")
-					+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-							"ProductionOrder", "ProductionOrder")
-					+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep",
-							"ProductionOrder", "ProductionOrder")
-					+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark",
-							"ProductionOrder", "ProductionOrder")
-					+ this.pss.getLeftJoinInputStockLoad("b", "a")
 					+ this.pss.buildLeftJoinTempSumGR("b")
 					+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
 					+ this.pss.getLeftJoinTempSumBill("b", "a", "M");
@@ -1010,29 +904,16 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			b.[PrdCreateDate]\r\n"
 			+ "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
 			+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrderRP")
-			+ this.pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+			+ this.pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
 			+ "		WHERE a.[DataStatus] = 'O'  \r\n";
 	private String createTempPrdReplacedSecond = ""
 			+ " )  as b on a.SaleOrder = b.SaleOrder \n"
 			+ "         and a.SaleLine = b.SaleLine \r\n"
-			+ this.pss.getLeftJoinPlanCFMLabDate("b", "b")
 			+ this.pss.buildLeftJoinTempProdWorkDate("b")
 			+ this.pss.buildLeftJoinSCC("b")
 			+ this.pss.getLeftJoinTempPlandeliveryDate("b", "a")
-			+ this.pss.getLeftJoinFromSORCFM("a")
-			+ this.pss.getLeftJoinTAPP("b")
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
 			+ this.pss.buildLeftJoinTempSumGR("b")
-			+ this.pss.getLeftJoinInputStockRemark("b", "a", "m")
-			+ this.pss.getLeftJoinInputPCRemark("b", "a")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-					"ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder",
-					"ProductionOrder")
 			+ this.pss.buildLeftJoinUserStatusAuto("UCALRP", "b", "m")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder",
-					"ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a")
 			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")
 			+ " where 1 = 1 \r\n";
 	private final Database database;
@@ -1063,179 +944,281 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	@Override
 	public ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList)
 	{
-
 		ArrayList<PCMSSecondTableDetail> list = null;
 		PCMSTableDetail bean = poList.get(0);
-		List<String> userStatusList = bean.getUserStatusList();
-		Map<String, String> results = pss.buildWhereClauses(bean);
-		String whereCaseTry = results.get("whereCaseTry");
-		String whereCaseTryRP = results.get("whereCaseTryRP");
-		String tmpWhereNoLotUCAL = results.get("tmpWhereNoLotUCAL");
-//		String whereBMainUserStatus = results.get("whereBMainUserStatus");
-		String whereSale = results.get("whereSale");
-		String whereWaitLot = results.get("whereWaitLot");
-		String whereBase = results.get("whereBase");
-		whereBase = whereBase.replace("b.", "a.");
-		String createTempTableUserStatus = "" + psService.handlerTempTableUserStatusList(userStatusList);
-		String createCusListSearch =
-				"" + psService.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
-		String createTempMainSale =
-				"" + createTempTableUserStatus + createCusListSearch + this.pss.createTempMainSaleWithJoinCustomer + whereSale;
-		;
-		String sqlWaitLot = " "
-				+ this.pss.createTempPrepWaitLot
-				+ " SELECT\r\n"
-				+ this.selectWaitLot
-				+ " INTO #tempWaitLot  \r\n"
-				+ " FROM #tempMainSale as a \r\n "
-				+ this.pss.innerJoinWaitLotB
-				+ this.pss.getLeftJoinFromSORCFM("a")
-				+ this.pss.getLeftJoinTAPP("b")
-				+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-				+ this.pss.getLeftJoinInputPCRemark("b", "a")
-				+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
-						"ProductionOrder", "ProductionOrder")
-				+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep",
-						"ProductionOrder", "ProductionOrder")
-				+ this.pss.getLeftJoinInputStockLoad("b", "a")
-				+ whereWaitLot
-				+ " and ( SumVol = 'B' OR countProdRP > 0 ) \r\n";
-		String fromMainB = ""
-				+ " from (\r\n"
-				+ "      SELECT distinct \r\n"
-				+ this.leftJoinBSelect
-				+ this.pss.fromProdA
-				+ this.pss.getLeftJoinTempPlandeliveryDate("A", "a")
-				+ this.pss.buildLeftJoinTempProdWorkDate("a")
-				+ this.pss.buildLeftJoinSCC("a")
-				+ this.pss.buildLeftJoinTempSumGR("a")
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "a", "m")
-				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
-				+ this.pss.getLeftJoinCRP("a")
-				+ this.pss.getLeftJoinTempSumBill("a", "a", "M")
-				+ whereBase
-				+ " ) as b \r\n";
-		String sqlMain = "" + this.pss.withProdData + this.createTempMainFirst + fromMainB + this.createTempMainSecond;
 
-		String createTempOPFromA = ""
-				+ this.createTempPrdOPA
-				+ "         "
-				+ tmpWhereNoLotUCAL
-				+ " AND SPO.ProductionOrderSW IS NULL"
-				+ this.createTempOP;
-		String sqlOP = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempOP  \r\n"
-				+ " from #tempPrdOP as a \r\n"
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-		String sqlOPSW = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempOPSW  \r\n"
-				+ " from #tempPrdOPSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-		String sqlSW = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempSW  \r\n"
-				+ " from #tempPrdSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-//////				// สวม
-		String createTempRP = ""
-				+ "; WITH PRD_REPLACED as ( \n "
-				+ this.createTempPrdReplacedFirst
-				+ this.createTempPrdReplacedSecond
-				+ whereCaseTryRP
-				+ " ) \r\n"
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempRP  \r\n"
-				+ " from PRD_REPLACED as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-		String sql = ""
-				+ " SET NOCOUNT ON; ;\r\n"
-				+ " If(OBJECT_ID('tempdb..#tempWaitLot') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempWaitLot\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempMain') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempMain\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOP\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOPSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOPSW\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempSW \r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempRP \r\n"
-				+ "	end ; \r\n"
-				+ createTempMainSale
-				+ this.pss.createTempPlanDeliveryDate
-				+ this.pss.createTempSumGR
-				+ this.pss.createTempSumBill
-				+ createTempOPFromA
-				+ sqlOP
-				+ this.pss.buildIfTempTableDrop("#tempPrdOP")
-				+ createTempRP
-				+ this.pss.buildIfTempTableDrop("#tempPrdOPA")
-				+ this.createTempOPSWFirst
-				+ this.createTempOPSWSecond
-				+ sqlOPSW
-				+ this.pss.buildIfTempTableDrop("#tempPrdOPSW")
-				+ this.createTempPrdSWFirst
-				+ this.createTempPrdSWSecond
-				+ sqlSW
-				+ this.pss.buildIfTempTableDrop("#tempPrdSW")
+		// ---- Build WHERE clauses from search criteria ----
+		Map<String, String> whereMap      = pss.buildWhereClauses(bean);
+		String whereCaseTry               = whereMap.get("whereCaseTry");
+		String whereCaseTryRP             = whereMap.get("whereCaseTryRP");
+		String tmpWhereNoLotUCAL          = whereMap.get("tmpWhereNoLotUCAL");
+		String whereSale                  = whereMap.get("whereSale");
+		String whereWaitLot               = whereMap.get("whereWaitLot");
+		String whereBase                  = whereMap.get("whereBase").replace("b.", "a.");
 
-				+ this.pss.createTempForMainAndWaitLot
-				+ sqlWaitLot
-				+ sqlMain
-				+ this.pss.createDropTempForMainAndWaitLot
+		String sql = "SET NOCOUNT ON;\r\n"
+				+ buildSqlGuardDrops()
+				+ buildSqlCommonTables(bean, whereSale)
+				+ buildSqlTypedTables(tmpWhereNoLotUCAL, whereCaseTry, whereCaseTryRP)
+				+ buildSqlMainAndWaitLot(whereWaitLot, whereBase)
+				+ buildSqlCleanup()
+				+ buildSqlPrepareFinalResult()   // materialize UNION ALL + CREATE INDEX ตาม ORDER BY
+				+ buildSqlFinalSelect();
 
-				+ this.pss.buildIfTempTableDrop("#tempSumBill")
-				+ this.pss.buildIfTempTableDrop("#tempSumGR")
-				+ this.pss.buildIfTempTableDrop("#tempPlandeliveryDate")
-				+ this.pss.buildIfTempTableDrop("#tempMainSale")
-				+ " SELECT a.* FROM #tempWaitLot as a\r\n"
-				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
-				+ " where b.SaleOrder is null \r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempMain as a\r\n"
-				+ " where 1 = 1 "
-//				+ whereBMainUserStatus
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOP\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOPSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempRP\r\n"
-				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] ";
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
 		}
 		return list;
+	}
+
+	// =========================================================================
+	// SQL batch builders — searchByDetail
+	// =========================================================================
+
+	/** Drop output temp tables ก่อนเริ่ม batch เพื่อป้องกัน error จาก session เก่า */
+	private String buildSqlGuardDrops() {
+		return pss.buildIfTempTableDrop("#tempFinalResult")
+				+ pss.buildIfTempTableDrop("#tempWaitLot")
+				+ pss.buildIfTempTableDrop("#tempMain")
+				+ pss.buildIfTempTableDrop("#tempOP")
+				+ pss.buildIfTempTableDrop("#tempOPSW")
+				+ pss.buildIfTempTableDrop("#tempSW")
+				+ pss.buildIfTempTableDrop("#tempRP")
+				+ pss.buildIfTempTableDrop("#tempSPOSale")
+				+ pss.buildIfTempTableDrop("#tempProdData")
+				+ pss.buildIfTempTableDrop("#tempProdMain")
+				+ pss.buildIfTempTableDrop("#tempUCAL")
+				+ pss.buildIfTempTableDrop("#tempUCALBest")
+				+ pss.buildIfTempTableDrop("#tempUSMSPE")
+				+ pss.buildIfTempTableDrop("#tempUSMSpecial1")
+				+ pss.buildIfTempTableDrop("#tempSumGRMain");
+	}
+
+	/** Lookup tables ที่ใช้ร่วมกันทุก type (#tempMainSale, #tempSumGR, #tempSPO, Input tables ฯลฯ) */
+	private String buildSqlCommonTables(PCMSTableDetail bean, String whereSale) {
+		String createUserStatus  = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
+		String createCusList     = psService.handlerTempTableCustomerSearchList(
+				bean.getCustomerNameList(), bean.getCustomerShortNameList());
+		String createTempMainSale = createUserStatus + createCusList
+				+ pss.createTempMainSaleWithJoinCustomer + whereSale;
+
+		return createTempMainSale
+				+ pss.createTempMainSaleIndex
+				+ pss.createTempPlanDeliveryDate
+				+ pss.createTempSumGR
+				+ pss.createTempSumBill
+				+ pss.createTempSCC
+				+ pss.createTempProdWorkDateFiltered   // filtered by #tempMainSale — was full scan (35% cost)
+				+ pss.createTempFromSORCFM
+				+ pss.createTempPlanCFMLabDate
+				+ pss.createTempSPO
+				+ pss.createTempSPOSale
+				+ pss.createTempTAPP
+				+ pss.createTempInputRR
+				+ pss.createTempInputPCR
+				+ pss.createTempInputCOD
+				+ pss.createTempInputDD
+				+ pss.createTempInputSR
+				+ pss.createTempInputSL
+				+ pss.createTempInputStockRemark
+				+ pss.createTempUSMSpecial1;           // pre-materialize viewUserStatusMappingPCMS WHERE Special=1
+	}
+
+	/** สร้าง temp table ตาม type: OrderPuang (OP), Replaced (RP), Switch (OPSW, SW) */
+	private String buildSqlTypedTables(String tmpWhereNoLotUCAL, String whereCaseTry, String whereCaseTryRP) {
+		return buildSqlOPTables(tmpWhereNoLotUCAL, whereCaseTry)
+				+ buildSqlRPTable(whereCaseTryRP, whereCaseTry)
+				+ buildSqlOPSWTable(whereCaseTry)
+				+ buildSqlSWTable(whereCaseTry);
+	}
+
+	/** OrderPuang: #tempPrdOPA → #tempPrdOP → #tempOP */
+	private String buildSqlOPTables(String tmpWhereNoLotUCAL, String whereCaseTry) {
+		String createOPA = this.createTempPrdOPA
+				+ "         " + tmpWhereNoLotUCAL
+				+ " AND SPO.ProductionOrderSW IS NULL"
+				+ this.createTempOP;
+		String insertOP = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempOP\r\n"
+				+ " FROM #tempPrdOP as a\r\n"
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return createOPA
+				+ insertOP
+				+ pss.buildIfTempTableDrop("#tempPrdOP");
+	}
+
+	/** Replaced: PRD_REPLACED CTE → #tempRP  (ใช้แล้ว drop #tempPrdOPA) */
+	private String buildSqlRPTable(String whereCaseTryRP, String whereCaseTry) {
+		String insertRP = "; WITH PRD_REPLACED AS (\r\n"
+				+ this.createTempPrdReplacedFirst
+				+ this.createTempPrdReplacedSecond
+				+ whereCaseTryRP
+				+ " )\r\n"
+				+ " SELECT\r\n" + this.selectAll
+				+ " INTO #tempRP\r\n"
+				+ " FROM PRD_REPLACED as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return insertRP
+				+ pss.buildIfTempTableDrop("#tempPrdOPA");
+	}
+
+	/** OrderPuang+Switch: #tempPrdOPSW → #tempOPSW */
+	private String buildSqlOPSWTable(String whereCaseTry) {
+		String insertOPSW = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempOPSW\r\n"
+				+ " FROM #tempPrdOPSW as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return this.createTempOPSWFirst
+				+ this.createTempOPSWSecond
+				+ insertOPSW
+				+ pss.buildIfTempTableDrop("#tempPrdOPSW");
+	}
+
+	/** Switch: #tempPrdSW → #tempSW */
+	private String buildSqlSWTable(String whereCaseTry) {
+		String insertSW = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempSW\r\n"
+				+ " FROM #tempPrdSW as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return this.createTempPrdSWFirst
+				+ this.createTempPrdSWSecond
+				+ insertSW
+				+ pss.buildIfTempTableDrop("#tempPrdSW");
+	}
+
+	/**
+	 * Main + WaitLot:
+	 *   aggregate filter → #tempWaitLot
+	 *   #tempProdData → #tempUCAL, #tempUSMSPE → #tempProdMain → #tempMain
+	 */
+	private String buildSqlMainAndWaitLot(String whereWaitLot, String whereBase) {
+		String insertWaitLot = pss.createTempPrepWaitLot
+				+ " SELECT\r\n" + this.selectWaitLot
+				+ " INTO #tempWaitLot\r\n"
+				+ " FROM #tempMainSale as a\r\n"
+				+ pss.innerJoinWaitLotB
+				+ whereWaitLot
+				+ " AND ( SumVol = 'B' OR countProdRP > 0 )\r\n";
+
+		String insertProdMain = pss.buildIfTempTableDrop("#tempProdMain")
+				+ " SELECT\r\n" + this.leftJoinBSelect
+				+ " INTO #tempProdMain\r\n"
+				+ " FROM #tempProdData as a\r\n"
+				+ pss.getLeftJoinTempPlandeliveryDate("A", "a")
+				+ pss.buildLeftJoinTempProdWorkDate("a")
+				+ pss.buildLeftJoinSCC("a")
+				+ pss.buildLeftJoinTempSumGR("a")
+				+ pss.getLeftJoinTempUCALBest("a", "m")   // pre-computed — แทน OUTER APPLY TOP 1
+				+ pss.getLeftJoinTempUSMSPE()              // ยังคงต้องใช้สำหรับ PassFilter (viewUSM_SPE.Special)
+				+ pss.getLeftJoinCRP("a")
+				+ pss.getLeftJoinTempSumBill("a", "a", "M")
+				+ pss.getLeftJoinSwitchProdOrder("a")      // ย้าย SPO anti-join มาที่นี่ — #tempProdMain จะไม่มี switch-target rows
+				+ whereBase
+				+ " AND SPO.ProductionOrderSW IS NULL\r\n" // กรองออกก่อน — ลดจำนวน row ใน #tempProdMain
+				+ ";\r\n"
+				+ "CREATE CLUSTERED INDEX IX_tempProdMain_PO ON #tempProdMain(ProductionOrder);\r\n";
+
+		// #tempProdMain ไม่มี SPO switch-target rows แล้ว → insertMain ไม่ต้อง JOIN #tempSPO อีก
+		String insertMain = this.createTempMainFirst
+				+ " FROM #tempProdMain as b\r\n"
+				+ " WHERE b.PassFilter = 1\r\n";
+
+		return pss.createTempForMainAndWaitLotFiltered
+				+ insertWaitLot
+				+ pss.createTempProdData
+				+ pss.createTempUCAL
+				+ pss.createTempUSMSPE
+				+ pss.createTempUCALBest                   // ต้องรันหลัง UCAL + USMSE + SumGR พร้อมแล้ว
+				+ insertProdMain
+				+ insertMain
+				+ pss.buildIfTempTableDrop("#tempProdMain")
+				+ pss.buildIfTempTableDrop("#tempUCALBest")
+				+ pss.buildIfTempTableDrop("#tempUCAL")
+				+ pss.buildIfTempTableDrop("#tempUSMSPE")
+				+ pss.createDropTempForMainAndWaitLot
+				+ pss.buildIfTempTableDrop("#tempProdData");
+	}
+
+	/** Drop lookup tables ที่ไม่ต้องใช้แล้วก่อน final SELECT */
+	private String buildSqlCleanup() {
+		return pss.buildIfTempTableDrop("#tempSumBill")
+				+ pss.buildIfTempTableDrop("#tempSumGR")
+				+ pss.buildIfTempTableDrop("#tempPlandeliveryDate")
+				+ pss.buildIfTempTableDrop("#tempUSMSpecial1")
+				+ pss.buildIfTempTableDrop("#tempMainSale");
+	}
+
+	/**
+	 * Materialize UNION ALL 6 tables → #tempFinalResult + clustered index ตาม ORDER BY
+	 *
+	 * แยกขั้นตอนนี้ออกจาก finalSelect เพื่อให้:
+	 * 1. SQL Server รู้ row count จริงของ #tempFinalResult ก่อน compile 10 LEFT JOINs
+	 * 2. Clustered index ตาม ORDER BY → ไม่มี sort operator ใน finalSelect
+	 * 3. Optimizer เลือก Nested Loop seek เข้า lookup tables ได้ถูกต้อง
+	 */
+	private String buildSqlPrepareFinalResult() {
+		return pss.buildIfTempTableDrop("#tempFinalResult")
+				+ " SELECT a.*\r\n"
+				+ " INTO #tempFinalResult\r\n"
+				+ " FROM #tempWaitLot AS a\r\n"
+				+ " LEFT JOIN #tempMain AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+				+ " WHERE b.SaleOrder IS NULL\r\n"
+				+ " UNION ALL SELECT * FROM #tempMain\r\n"
+				+ " UNION ALL SELECT * FROM #tempOP\r\n"
+				+ " UNION ALL SELECT * FROM #tempOPSW\r\n"
+				+ " UNION ALL SELECT * FROM #tempSW\r\n"
+				+ " UNION ALL SELECT * FROM #tempRP;\r\n"
+				// Clustered index ตาม ORDER BY → eliminates sort operator ใน final SELECT
+				+ "CREATE CLUSTERED INDEX IX_tempFinalResult\r\n"
+				+ "    ON #tempFinalResult(CustomerShortName, DueDate, SaleOrder, SaleLine, TypePrdRemark, ProductionOrder);\r\n";
+	}
+
+	/** Final SELECT: FROM #tempFinalResult + 10 lookup JOINs (compiled หลัง materialize — รู้ row count จริง) */
+	private String buildSqlFinalSelect() {
+		return " SELECT\r\n"
+				+ "   u.SaleOrder, u.[SaleLine], u.Division, u.CustomerShortName, u.SaleCreateDate,\r\n"
+				+ "   u.PurchaseOrder, u.MaterialNo, u.CustomerMaterial, u.Price, u.SaleUnit,\r\n"
+				+ "   u.OrderAmount, u.SaleQuantity, u.RemainQuantity, u.RemainAmount, u.TotalQuantity,\r\n"
+				+ "   u.Grade, u.BillSendWeightQuantity, u.BillSendQuantity, u.BillSendMRQuantity,\r\n"
+				+ "   u.BillSendYDQuantity, u.CustomerDue, u.DueDate, u.ProductionOrder, u.LotNo,\r\n"
+				+ "   u.LabNo, u.LabStatus,\r\n"
+				+ "   e.CFMPlanLabDate,\r\n"
+				+ "   u.CFMActualLabDate, u.CFMCusAnsLabDate, u.UserStatus,\r\n"
+				+ "   COALESCE(TAPP.SORCFMDate, J.CFMDate) AS TKCFM,\r\n"
+				+ "   u.CFMPlanDate, u.SendCFMCusDate, u.DeliveryDate, u.CFMDateActual,\r\n"
+				+ "   u.CFMDetailAll, u.CFMNumberAll, u.CFMRemarkAll, u.RollNoRemarkAll, u.ShipDate,\r\n"
+				+ "   u.RemarkOne, u.RemarkTwo, u.RemarkThree,\r\n"
+				+ "   K.ReplacedRemark,\r\n"
+				+ "   l.StockRemark,\r\n"
+				+ "   u.GRSumKG, u.GRSumYD, u.GRSumMR, u.DyePlan, u.DyeActual,\r\n"
+				+ "   P.PCRemark,\r\n"
+				+ "   InputDD.[DelayedDep],\r\n"
+				+ "   InputCOD.[CauseOfDelay],\r\n"
+				+ "   q.[SwitchRemark],\r\n"
+				+ "   SL.[StockLoad],\r\n"
+				+ "   u.[PrdCreateDate], u.LotShipping, u.Volumn, u.VolumnFGAmount, u.TypePrd,\r\n"
+				+ "   u.TypePrdRemark, u.[DyeStatus], u.[CustomerMaterialBase]\r\n"
+				+ " FROM #tempFinalResult AS u\r\n"   // ← materialized แล้ว ไม่ใช่ inline UNION ALL
+				+ pss.getLeftJoinPlanCFMLabDate("u", "u")
+				+ pss.getLeftJoinFromSORCFM("u")
+				+ pss.getLeftJoinTAPP("u")
+				+ pss.getLeftJoinInputReplacedRemark("u", "u")
+				+ pss.getLeftJoinInputStockRemark("u", "u", "u")
+				+ pss.getLeftJoinInputPCRemark("u", "u")
+				+ pss.getLeftJoinSimpleTable("u", "InputCauseOfDelay", "InputCOD",
+						"ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinSimpleTable("u", "InputDelayedDep", "InputDD",
+						"ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinSimpleTable("u", "InputSwitchRemark", "q",
+						"ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinInputStockLoad("u", "u")
+				+ " ORDER BY u.CustomerShortName, u.DueDate, u.[SaleOrder], u.[SaleLine], u.TypePrdRemark, u.[ProductionOrder]";
 	}
 
 	@Override
@@ -1356,6 +1339,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempForMainAndWaitLot
 				+ this.pss.createTempPrepWaitLot
 				+ this.pss.createTempMainSale
+				+ this.pss.createTempFromSORCFM
 				+ where
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
@@ -1468,6 +1452,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
 				+ this.pss.createTempSumGR
+				+ this.pss.createTempSCC
+				+ this.pss.createTempProdWorkDate
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPlanCFMLabDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSR
+				+ this.pss.createTempInputSL
+				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempBillBatchFlag
 				+ this.pss.createTempSumVolOP
 				+ this.pss.createTempSumVolRP
@@ -1526,6 +1523,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
 				+ this.pss.createTempSumGR
+				+ this.pss.createTempSCC
+				+ this.pss.createTempProdWorkDate
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPlanCFMLabDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSR
+				+ this.pss.createTempInputSL
+				+ this.pss.createTempInputStockRemark
 				+ " ; WITH PRD_REPLACED as ( \n "
 				+ this.createTempPrdReplacedFirst
 				+ where
@@ -1565,6 +1575,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
 				+ this.pss.createTempSumGR
+				+ this.pss.createTempSCC
+				+ this.pss.createTempProdWorkDate
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPlanCFMLabDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSR
+				+ this.pss.createTempInputSL
+				+ this.pss.createTempInputStockRemark
 				+ createTempSWFromA
 				+ " select distinct\r\n"
 				+ this.selectAll
@@ -1597,6 +1620,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
 				+ this.pss.createTempSumGR
+				+ this.pss.createTempSCC
+				+ this.pss.createTempProdWorkDate
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPlanCFMLabDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSR
+				+ this.pss.createTempInputSL
+				+ this.pss.createTempInputStockRemark
 				+ createTempOPFromA
 				+ " select distinct \r\n"
 				+ this.selectAll
@@ -1633,6 +1669,19 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
 				+ this.pss.createTempSumGR
+				+ this.pss.createTempSCC
+				+ this.pss.createTempProdWorkDate
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPlanCFMLabDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSR
+				+ this.pss.createTempInputSL
+				+ this.pss.createTempInputStockRemark
 				+ this.createTempOPSWFirst
 				+ where
 				+ " \r\n"

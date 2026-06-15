@@ -232,6 +232,9 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 			}
 			finally {
 			    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+			    try (java.sql.Statement cleanup = conn.createStatement()) {
+			        cleanup.execute("IF OBJECT_ID('tempdb..#TempCFM') IS NOT NULL DROP TABLE #TempCFM");
+			    } catch (Exception ignored) {}
 			    try {
 			        conn.setAutoCommit(true);
 			    } catch (Exception e) {

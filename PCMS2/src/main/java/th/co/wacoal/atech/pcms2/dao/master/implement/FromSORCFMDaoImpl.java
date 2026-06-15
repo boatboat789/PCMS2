@@ -119,6 +119,9 @@ public class FromSORCFMDaoImpl implements FromSORCFMDao {
 				throw e;
 			}finally {
 			    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+			    try (java.sql.Statement cleanup = conn.createStatement()) {
+			        cleanup.execute("IF OBJECT_ID('tempdb..#TempSORCFM') IS NOT NULL DROP TABLE #TempSORCFM");
+			    } catch (Exception ignored) {}
 			    try {
 			        conn.setAutoCommit(true);
 			    } catch (Exception e) {

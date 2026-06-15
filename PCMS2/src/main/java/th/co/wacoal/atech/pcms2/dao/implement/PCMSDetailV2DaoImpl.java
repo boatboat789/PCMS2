@@ -205,8 +205,8 @@ public class PCMSDetailV2DaoImpl implements PCMSDetailV2Dao {
 			+ "order by  a.SaleOrder , a.SaleLine,TypePrd ,a.ProductionOrder  \r\n"
 			+ ""
 			;;    
-//			System.out.println(sql); 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+//			System.out.println(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1164,7 +1164,7 @@ public class PCMSDetailV2DaoImpl implements PCMSDetailV2Dao {
 		        " ORDER BY a.SaleOrder, a.SaleLine, a.ProductionOrder, a.TypePrd " +
 		        " OFFSET " + start + " ROWS FETCH NEXT " + length + " ROWS ONLY ";
 
-		    List<Map<String, Object>> datas = database.queryList(dataSql);
+		    List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, dataSql);
 
 		    List<PCMSSecondTableDetail> list = new ArrayList<>();
 		    for (Map<String, Object> map : datas) {

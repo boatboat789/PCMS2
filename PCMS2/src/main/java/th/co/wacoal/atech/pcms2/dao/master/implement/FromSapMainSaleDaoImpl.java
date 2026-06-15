@@ -435,6 +435,9 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	            throw e;
 	        }finally {
 	            // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+	            try (java.sql.Statement cleanup = conn.createStatement()) {
+	                cleanup.execute("IF OBJECT_ID('tempdb..#TempMainSale') IS NOT NULL DROP TABLE #TempMainSale");
+	            } catch (Exception ignored) {}
 	            try {
 	                conn.setAutoCommit(true);
 	            } catch (Exception e) {

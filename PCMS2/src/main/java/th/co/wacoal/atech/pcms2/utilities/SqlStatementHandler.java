@@ -2,7 +2,10 @@ package th.co.wacoal.atech.pcms2.utilities;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -10,9 +13,45 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import th.in.totemplate.core.sql.Database;
 
 public class SqlStatementHandler {
+
+	/**
+	 * Drop-in replacement for database.queryList() that drops stale temp tables
+	 * on the same connection BEFORE and AFTER running the SQL.
+	 * Mirrors the PPMM2 SqlStatementHandler.queryList(JdbcTemplate, dropSql, sql) pattern
+	 * adapted for the legacy Database class used in PCMS2.
+	 *
+	 * Drop-before: prevents "object already exists" if the connection was reused from pool
+	 *              with leftover temp tables from a previous request.
+	 * Drop-after:  returns the connection to the pool clean so the next request
+	 *              does not encounter stale temp tables.
+	 *
+	 * NOTE: dropSql must NOT include #tempLotNoList/#tempUserStatusList/#tempCustomerList/
+	 *       #tempCustomerShortList — those are created by PCMSSearchDaoImpl before this call.
+	 */
+	public static List<Map<String, Object>> queryList(Database database, String dropSql, String sql) {
+		// drop BEFORE — clear stale temp tables before SQL Server compiles the batch
+		try (Statement cleanup = database.getConnection().createStatement()) {
+			cleanup.execute(dropSql);
+		} catch (Exception ignored) {}
+
+		try {
+			return database.queryList(sql);
+		} finally {
+			// drop AFTER — return connection to pool clean
+			try (Statement cleanup = database.getConnection().createStatement()) {
+				cleanup.execute(dropSql);
+			} catch (Exception ignored) {}
+		}
+	}
+
 	public SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy");
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat sdf3 = new SimpleDateFormat("yyyyMMdd");

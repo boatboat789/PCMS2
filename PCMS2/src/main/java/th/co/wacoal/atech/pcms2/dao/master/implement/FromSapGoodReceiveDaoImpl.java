@@ -166,6 +166,9 @@ public class FromSapGoodReceiveDaoImpl implements FromSapGoodReceiveDao {
 	            throw e;
 	        }finally {
 	            // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+	            try (java.sql.Statement cleanup = conn.createStatement()) {
+	                cleanup.execute("IF OBJECT_ID('tempdb..#TempGR') IS NOT NULL DROP TABLE #TempGR");
+	            } catch (Exception ignored) {}
 	            try {
 	                conn.setAutoCommit(true);
 	            } catch (Exception e) {

@@ -1,4 +1,4 @@
-	package th.co.wacoal.atech.pcms2.dao.implement;
+﻿	package th.co.wacoal.atech.pcms2.dao.implement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSearchService;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
+import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.co.wacoal.atech.pcms2.service.master.FromSapCFMService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapPackingService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapSaleService;
@@ -525,14 +526,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.CustomerName\r\n"
 	 		  + "                ,a.DeliveryStatus\r\n"
 	 		  + "                ,a.SaleStatus\r\n"
-	 		  + "				,CASE \r\n"
-	 		  + "				  WHEN adjVol IS NOT NULL THEN 1\r\n"
-	 		  + "				  WHEN a.LotNo IN ('รอจัด Lot','ขาย stock','รับจ้างถัก','Lot ขายแล้ว','พ่วงแล้วรอสวม','รอสวมเคยมี Lot')\r\n"
-	 		  + "					   AND adjVol = 0 AND CRP.SaleOrder IS NULL THEN 1\r\n"
-	 		  + "				  WHEN a.Volumn = 0 THEN 1\r\n"
-	 		  + "				  WHEN viewUSM_SPE.Special = 0 THEN 1\r\n"
-	 		  + "				  ELSE 0\r\n"
-	 		  + "				 END AS PassFilter\r\n"  ;
+	 		  + pss.passFilterExpr;
 	    private final PCMSSearchService psService;
 	    private final ShopFloorControlService sfcService;
 	    private final RollFromSapService rfsService;
@@ -574,461 +568,312 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	        this.fromSapSubmitDateService = fromSapSubmitDateService; 
  
 	    } 
-    @Override
-	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList ) {
-		 
+	@Override
+	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList) {
 		ArrayList<PCMSTableDetail> list = null;
-		PCMSTableDetail bean = poList.get(0); 
-		List<String> userStatusList = bean.getUserStatusList();
-		Map<String, String> results = pss.buildWhereClauses(bean);
-		String whereCaseTry = results.get("whereCaseTry");
-		String whereCaseTryRP = results.get("whereCaseTryRP");
-		String tmpWhereNoLotUCAL = results.get("tmpWhereNoLotUCAL");
-		String whereBase = results.get("whereBase"); 
-//		String whereBMainUserStatus = results.get("whereBMainUserStatus");
-		String whereSale = results.get("whereSale");
-		String whereWaitLot = results.get("whereWaitLot");
-		String createTempTableUserStatus = ""
-				+ psService.handlerTempTableUserStatusList(userStatusList);
-		String createCusListSearch = ""
-				+ psService.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
-			String createTempMainSale = ""
-				+ createTempTableUserStatus
-				+ createCusListSearch
-				+ this.pss.createTempMainSaleWithJoinCustomer 
-				+ whereSale 
-				; 
-		String sqlWaitLot =
-				  ""
-				+ this.pss.createTempPrepWaitLot
-				+ " SELECT    \r\n"
-				+ this.selectWaitLot
-	  		    + " INTO #tempWaitLot  \r\n"
-				+ " FROM #tempMainSale as a \r\n "
-				+ this.pss.innerJoinWaitLotB 
-				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
-				+ whereWaitLot
-				+ " and ( SumVol = 'B' OR countProdRP > 0 ) \r\n"; 
-		String fromMainB = ""
-				+ " from ( \r\n"
-				+ "	SELECT   \r\n"
-				+ this.leftJoinBSelect
-				+ this.pss.fromProdA
-				+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
-				+ this.pss.buildLeftJoinTempProdWorkDate("a")
-				+ this.pss.buildLeftJoinSCC("a") 
-				+ this.pss.buildLeftJoinTempSumGR("a")
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "A", "m")
-				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
-				+ this.pss.getLeftJoinCRP("a")
-				+ whereBase.replace("b.", "a.")
-//				+ this.pss.crossApplyVolCalc
-				+ " ) as b \r\n";
-		String sqlMain = ""
-	  		    + this.pss.withProdData
-				+ " SELECT DISTINCT \r\n "
-				+ this.selectMainV2
-	  		    + " INTO #tempMain  \r\n"
-				+ fromMainB   
-				+ this.pss.getLeftJoinCRP("b") 
-				+ this.pss.getLeftJoinSwitchProdOrder("b") 
-				+ " where b.PassFilter = 1\r\n" 
-				+ "    AND SPO.ProductionOrderSW IS NULL " 
-				;
-				// Order Puang
-//				+ " union ALL  "
-		String createTempOPFromA =  ""
-				+ " If(OBJECT_ID('tempdb..#tempPrdOPA') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempPrdOPA\r\n"
-				+ "	end ; \r\n"
-    			+ "       SELECT  \r\n"
-    			+ "             a.SaleOrder\r\n"
-    			+ "                ,a.[SaleLine]\r\n"
-    			+ "                ,a.DistChannel\r\n"
-    			+ "                ,a.Color\r\n"
-    			+ "                ,a.ColorCustomer\r\n"
-    			+ "                ,a.SaleQuantity\r\n"
-    			+ "                ,a.RemainQuantity\r\n"
-    			+ "                ,a.SaleUnit\r\n"
-    			+ "                ,a.DueDate\r\n"
-    			+ "                ,a.CustomerShortName\r\n"
-    			+ "                ,a.[SaleFullName]\r\n"
-    			+ "                ,a.[SaleNumber]\r\n"
-    			+ "                ,a.SaleCreateDate\r\n"
-    			+ "                ,a.MaterialNo\r\n"
-    			+ "                ,a.DeliveryStatus\r\n"
-    			+ "                ,a.SaleStatus\r\n"
-    			+ "                ,b.ProductionOrder\r\n"
-    			+ "                ,a.CustomerName\r\n"
-    			+ "                ,a.DesignFG\r\n"
-    			+ "                ,a.OrderAmount\r\n"
-    			+ "                ,'SUB'              as TypePrdRemark\r\n"
-    			+ "                ,a.ArticleFG\r\n"
-    			+ "                ,a.ShipDate\r\n"
-    			+ "                ,a.Division\r\n"
-    			+ "                ,a.PurchaseOrder\r\n"
-    			+ "                ,a.CustomerMaterial\r\n"
-    			+ "                ,a.Price\r\n"
-    			+ "                ,a.RemainAmount\r\n"
-    			+ "                ,a.CustomerDue\r\n"
-    			+ "                ,CASE\r\n"
-    			+ "                   WHEN b.Volumn <> 0 THEN b.Volumn\r\n"
-    			+ "                   ELSE 0\r\n"
-    			+ "                 END                AS Volumn\r\n"
-    			+ "                ,g.[DyePlan]\r\n"
-    			+ "                ,g.[DyeActual]\r\n"
-    			+ "                ,g.[Dryer]\r\n"
-    			+ "                ,g.[Finishing]\r\n"
-    			+ "                ,g.[Inspectation]\r\n"
-    			+ "                ,g.[Prepare]\r\n"
-    			+ "                ,g.[Preset]\r\n"
-    			+ "                ,g.[Relax]\r\n"
-    			+ "                ,g.[CFMDateActual]\r\n"
-    			+ "                ,g.[CFMPlanDate]\r\n"
-    			+ "                ,g.[DyeStatus]\r\n"
-    			+ "                ,UCAL.UserStatusCal as UserStatus\r\n"
-    			+ "                ,CASE\r\n"
-    			+ "                   WHEN SCC.SendCFMCusDate IS NOT NULL\r\n"
-    			+ "                        and SCC.SendCFMCusDate <> '' THEN SCC.SendCFMCusDate\r\n"
-    			+ "                   ELSE g.SendCFMCusDate\r\n"
-    			+ "                 END                AS SendCFMCusDate\r\n"
-    			+ "                ,m.GRSumKG\r\n"
-    			+ "                ,m.GRSumYD\r\n"
-    			+ "                ,m.GRSumMR\r\n"
-    			+ "                ,g.CFMDetailAll\r\n"
-    			+ "                ,g.CFMNumberAll\r\n"
-    			+ "                ,g.CFMRemarkAll\r\n"
-    			+ "                ,g.RollNoRemarkAll\r\n"
-    			+ "                ,g.CFMActualLabDate\r\n"
-    			+ "                ,g.CFMCusAnsLabDate\r\n"
-    			+ "                ,g.GreigeInDate\r\n"
-    			+ "                ,g.LotShipping\r\n"
-    			+ "                ,g.PlanGreigeDate\r\n"
-				+ "       into #tempPrdOPA\r\n"
-				+ "       from #tempMainSale as a  \r\n"
-				+ "       inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleOrder = b.SaleOrder and \n"
-				+ "                                                             a.SaleLine = b.SaleLine and  \r\n"
-				+ "                                                             b.[DataStatus] = 'O' \n" 
-				+ "       "+this.pss.buildLeftJoinTempProdWorkDate("b")
-				+ "       "+this.pss.buildLeftJoinSCC("b")
-				+ "       "+this.pss.buildLeftJoinTempSumGR("b")
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ "       where 1 = 1  \r\n"
-				+ "             "+tmpWhereNoLotUCAL+" \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempPrdOP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "	     Drop Table #tempPrdOP\r\n"
-				+ "	end ; \r\n "
-				+ " SELECT DISTINCT \r\n"
-				+ this.selectOP
-				+ " into #tempPrdOP\r\n"
-    			+ " FROM #tempPrdOPA as a  \r\n "
-				+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
- 
-				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a")     ;
-		String sqlOP = ""
-					+ " select \r\n"
-					+ this.selectAll
-		  		    + " INTO #tempOP  \r\n"
-					+ " from #tempPrdOP as a \r\n" 
-					+ this.pss.getLeftJoinSwitchProdOrder("A") 
-					+ this.pss.buildInnerJoinViewUSM_SPE("a",1,"UserStatus")
-					+ " where 1 = 1 "
-					+ "    AND SPO.ProductionOrderSW IS NULL " 
-					+ whereCaseTry ;
-//				//// Order PuangSwitch 
-		String createTempOPSWFromA = ""
-				+ " If(OBJECT_ID('tempdb..#tempPrdOPSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempPrdOPSW\r\n"
-				+ "	end ;\r\n"
-				+ " SELECT DISTINCT  \r\n"
-				+ this.selectOPSWA
-				+ " INTO #tempPrdOPSW  \r\n"
-				+ " FROM ( \r\n"
-				+ "    SELECT DISTINCT  a.SaleOrder\r\n"
-				+ "                ,a.[SaleLine]\r\n"
-				+ "                ,a.DistChannel\r\n"
-				+ "                ,a.Color\r\n"
-				+ "                ,a.ColorCustomer\r\n"
-				+ "                ,a.SaleQuantity\r\n"
-				+ "                ,a.RemainQuantity\r\n"
-				+ "                ,a.SaleUnit\r\n"
-				+ "                ,a.DueDate\r\n"
-				+ "                ,a.CustomerShortName\r\n"
-				+ "                ,a.[SaleFullName]\r\n"
-				+ "                ,a.[SaleNumber]\r\n"
-				+ "                ,a.SaleCreateDate\r\n"
-				+ "                ,a.MaterialNo\r\n"
-				+ "                ,a.DeliveryStatus\r\n"
-				+ "                ,a.SaleStatus\r\n"
-				+ "                ,b.ProductionOrder\r\n"
-				+ "                ,a.CustomerName\r\n"
-				+ "                ,a.DesignFG\r\n"
-				+ "                ,a.OrderAmount\r\n"
-				+ "                ,'SUB' as TypePrdRemark\r\n"
-				+ "                ,a.ArticleFG\r\n"
-				+ "                ,a.ShipDate\r\n"
-				+ "                ,a.Division\r\n"
-				+ "                ,a.PurchaseOrder\r\n"
-				+ "                ,a.CustomerMaterial\r\n"
-				+ "                ,a.Price\r\n"
-				+ "                ,RemainAmount\r\n"
-				+ "                ,CustomerDue\r\n"
-				+ "                ,CASE\r\n"
-				+ "                   WHEN b.Volumn <> 0 THEN b.Volumn\r\n"
-				+ "                   ELSE 0\r\n"
-				+ "                 END   AS Volumn\r\n"
-				+ "                ,a.[PlanGreigeDate]\r\n"
-				+ "		   from #tempMainSale as a  \r\n"
-				+ "		   inner join ( \r\n"
-				+ "             SELECT \r\n"
-				+ "					CASE \r\n"
-				+ "			          	WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-				+ "			          	ELSE C.ProductionOrder\r\n"
-				+ "			          	END AS [ProductionOrder]\r\n"
-				+ "		           , [SaleOrder] ,[SaleLine] ,[Volumn]  ,[DataStatus]\r\n"
-				+ "		        FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-				+ "		        LEFT JOIN (SELECT  [ProductionOrder] ,[ProductionOrderSW] \r\n"
-				+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-				+ "					       WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
-				+ "					       AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-				+ "		        LEFT JOIN (SELECT  [ProductionOrder] \r\n"
-				+ "								  ,[ProductionOrderSW] \r\n"
-				+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-				+ "					       WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
-				+ "					       AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL) "
-				+ "					AND A.[DataStatus] = 'O' \r\n"
-				+ "       	) as b on a.SaleOrder = b.SaleOrder and "
-				+ "                   a.SaleLine = b.SaleLine   \r\n"
-				+ "		 	where b.DataStatus = 'O' and b.SaleLine <> '' ) as a  \r\n " 
-				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
-				+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
-				+ this.pss.buildLeftJoinTempProdWorkDate("b")
-				+ this.pss.buildLeftJoinSCC("b")  
-				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
-				+ this.pss.getLeftJoinSwitchProdOrder("b", "ProductionOrderSW")
-				+ this.pss.buildLeftJoinTempSumGR("b")
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ whereBase
-				+ " and 1 = 1 \r\n"   ;
-		String sqlOPSW = ""
-				+ " select \r\n"
-				+ this.selectAll
-	  		    + " INTO #tempOPSW  \r\n"
-				+ " from #tempPrdOPSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1,"UserStatus")
-				+ " where 1 = 1 " 
-				+ whereCaseTry ;
-//////			// Switch 
-		String createTempSWFromA = ""
-				+ " If(OBJECT_ID('tempdb..#tempPrdSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempPrdSW\r\n"
-				+ "	end ; \r\n"
-				+ " SELECT DISTINCT \r\n "
-				+ this.selectSW
-	  		    + " INTO #tempPrdSW  \r\n"
-    			+ " FROM (  \r\n"
-    			+ "			SELECT DISTINCT  \r\n"
-    			+ "                a.SaleOrder\r\n"
-    			+ "                ,a.[SaleLine]\r\n"
-    			+ "                ,a.DistChannel\r\n"
-    			+ "                ,a.Color\r\n"
-    			+ "                ,a.ColorCustomer\r\n"
-    			+ "                ,a.SaleQuantity\r\n"
-    			+ "                ,a.RemainQuantity\r\n"
-    			+ "                ,a.SaleUnit\r\n"
-    			+ "                ,a.DueDate\r\n"
-    			+ "                ,a.CustomerShortName\r\n"
-    			+ "                ,a.[SaleFullName]\r\n"
-    			+ "                ,a.[SaleNumber]\r\n"
-    			+ "                ,a.SaleCreateDate\r\n"
-    			+ "                ,a.MaterialNo\r\n"
-    			+ "                ,a.DeliveryStatus\r\n"
-    			+ "                ,a.SaleStatus\r\n"
-    			+ "                ,b.ProductionOrderSW as ProductionOrder\r\n"
-    			+ "                ,a.CustomerName\r\n"
-    			+ "                ,a.DesignFG\r\n"
-    			+ "                ,a.OrderAmount\r\n"
-    			+ "                ,a.ArticleFG\r\n"
-    			+ "                ,a.ShipDate\r\n"
-    			+ "                ,a.Division\r\n"
-    			+ "                ,a.PurchaseOrder\r\n"
-    			+ "                ,a.CustomerMaterial\r\n"
-    			+ "                ,a.Price\r\n"
-    			+ "                ,RemainAmount\r\n"
-    			+ "                ,CustomerDue\r\n"
-    			+ "                ,CASE\r\n"
-    			+ "                   when b.ProductionOrder = b.ProductionOrderSW then 'MAIN'\r\n"
-    			+ "                   ELSE 'SUB'\r\n"
-    			+ "                 END TypePrdRemark\r\n"
-    			+ "                ,C.SumVol\r\n"
-    			+ "                ,a.[PlanGreigeDate] \r\n"
-				+ "		 	from #tempMainSale as a  \r\n"
-				+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on  a.SaleOrder = b.SaleOrderSW and "
-				+ "																a.SaleLine = b.SaleLineSW \r\n \r\n"
-				+ "		 	LEFT JOIN ( \r\n"
-				+ "				SELECT PRDORDERSW ,sum([Volumn]) as SumVol\r\n"
-				+ "				FROM ( SELECT A.[ProductionOrder] \r\n"
-				+ "					  ,CASE \r\n"
-				+ "							WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-				+ "							ELSE C.ProductionOrder\r\n"
-				+ "							END AS PRDORDERSW\r\n"
-				+ "					  ,[SaleOrder]\r\n"
-				+ "					  ,[SaleLine]\r\n"
-				+ "					  ,[Volumn]\r\n"
-				+ "					  ,[DataStatus]\r\n"
-				+ "				  FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-				+ "				  LEFT JOIN (SELECT  [ProductionOrder] \r\n"
-				+ "									,[ProductionOrderSW] \r\n"
-				+ "							  FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-				+ "							  WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
-				+ "							   AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-				+ "				  LEFT JOIN (SELECT  [ProductionOrder] \r\n"
-				+ "									,[ProductionOrderSW] \r\n"
-				+ "							  FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-				+ "							  WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'	)\r\n"
-				+ "							   AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-				+ "				WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL)\r\n"
-				+ "                AND a.[DataStatus] = 'O' "
-				+ "				) AS A\r\n"
-				+ "				group by PRDORDERSW\r\n"
-				+ "		 	) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
-				+ "		 	where b.DataStatus = 'O') as a  \r\n " 
-				+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrder")
-				+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
-				+ this.pss.buildLeftJoinTempProdWorkDate("b") 
-				+ this.pss.buildLeftJoinSCC("b") 
-				+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
-				+ this.pss.getLeftJoinSwitchProdOrder("b", "ProductionOrderSW") 
-				+ this.pss.buildLeftJoinTempSumGR("b") 
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","b","m") 
-				+ whereBase
-				+ " and 1 = 1 \r\n"  ;
-			String sqlSW =  ""
-					  + " select \r\n"
-					  + this.selectAll
-		  		      + " INTO #tempSW  \r\n"
-					  + " from #tempPrdSW as a \r\n" ;
-//////			// สวม 
-			String createTempRP = ""
-					+ "  If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
-					+ "	begin\r\n"
-					+ "		Drop Table #tempRP\r\n"
-					+ "	end ;  \r\n"
-					+ " ;WITH PRD_REPLACED AS ( \r\n"
-					+" SELECT    \r\n"
-					+ this.selectRP 
-					+ " from #tempMainSale as a  \r\n"
-		  		    + " inner join ( \r\n"
-		  		    + "		select \r\n"
-		  		    + "			a.SaleOrder , \r\n"
-		  		    + "			a.SaleLine, \r\n"
-		  		    + "			CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END as [Volume] ,\r\n"
-					+ "			a.[ProductionOrderRP] AS ProductionOrder , \r\n"
-					+ "			b.TotalQuantity,\r\n" 
-					+ "			b.LotNo,\r\n"
-					+ "			b.LabNo,\r\n"
-					+ "			b.LabStatus,\r\n"
-					+ "			b.CFTYPE ,\r\n"
-					+ "			b.RemarkOne,\r\n"
-					+ "			b.RemarkTwo,\r\n"
-					+ "			b.RemarkThree ,\r\n"
-					+ "			b.[PrdCreateDate]\r\n"
-		  		    + "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"  
-					+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrderRP")
-					+ this.pss.buildInnerJoinViewUSM_SPE("b",1,"UserStatus")
-		  		    + "		WHERE a.[DataStatus] = 'O'  \r\n" 
-		  		    + " )  as b on a.SaleOrder = b.SaleOrder \r\n"
-		  		    + "		  and a.SaleLine = b.SaleLine \r\n" 
-					+ this.pss.buildLeftJoinTempProdWorkDate("b") 
-					+ this.pss.buildLeftJoinSCC("b") 
-					+ this.pss.getLeftJoinTempPlandeliveryDate("b","a") 
-					+ this.pss.getLeftJoinSwitchProdOrder("b", "ProductionOrderSW") 
-					+ this.pss.buildLeftJoinTempSumGR("b") 
-					+ this.pss.buildLeftJoinUserStatusAuto("UCALRP","b","m") 
-					+ " where 1 = 1 \r\n"
-					+ whereCaseTryRP  
-					+ " ) " 
-					+ " select \r\n"
-					+ this.selectAll
-		  		    + " INTO #tempRP  \r\n"
-					+ " from PRD_REPLACED as a \r\n"  ;
+		PCMSTableDetail bean = poList.get(0);
 
-			 String sql =
-					 " "
-				+ " SET NOCOUNT ON; ;\r\n"
-				+ " If(OBJECT_ID('tempdb..#tempWaitLot') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempWaitLot\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempMain') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempMain\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOP\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOPSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOPSW\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempSW \r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempRP \r\n"
-				+ "	end ; \r\n"
-				+ createTempMainSale
-			 	+ this.pss.createTempPlanDeliveryDate 
-			 	+ this.pss.createTempSumGR
-			 	+ this.pss.createTempSumBill  
-			 	+ createTempOPFromA
-				+ sqlOP  
-				+ this.pss.buildIfTempTableDrop("#tempPrdOPA") 
-			 	+ createTempOPSWFromA
-				+ sqlOPSW 
-				+ this.pss.buildIfTempTableDrop("#tempPrdOPSW")   
-			 	+ createTempSWFromA 
-				+ sqlSW 
-				+ this.pss.buildIfTempTableDrop("#tempPrdSW")  
-				+ createTempRP
-				+ this.pss.createTempForMainAndWaitLot
-				+ sqlWaitLot
-				+ sqlMain
-				+ this.pss.createDropTempForMainAndWaitLot
-				+ " SELECT a.* FROM #tempWaitLot as a\r\n"
-				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and "
-				+ "                              a.SaleLine = b.SaleLine\r\n"
-				+ " where b.SaleOrder is null \r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempMain as a\r\n"
-				+ " where 1 = 1 "
-//				+whereBMainUserStatus
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOP\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOPSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempRP\r\n"
-				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
-//		System.out.println(sql);
-			 List<Map<String, Object>> datas = this.database.queryList(sql);
+		Map<String, String> results   = pss.buildWhereClauses(bean);
+		String whereCaseTry           = results.get("whereCaseTry");
+		String whereCaseTryRP         = results.get("whereCaseTryRP");
+		String tmpWhereNoLotUCAL      = results.get("tmpWhereNoLotUCAL");
+		String whereBase              = results.get("whereBase");
+		String whereSale              = results.get("whereSale");
+		String whereWaitLot           = results.get("whereWaitLot");
+
+		String sql = "SET NOCOUNT ON;\r\n"
+				+ buildSummaryGuardDrops()
+				+ buildSummaryCommonTables(bean, whereSale)
+				+ buildSummaryOPTables(tmpWhereNoLotUCAL, whereCaseTry)
+				+ buildSummaryOPSWTable(whereBase, whereCaseTry)
+				+ buildSummarySWTable(whereBase)
+				+ buildSummaryRPTable(whereCaseTryRP)
+				+ buildSummaryMainAndWaitLot(whereBase, whereWaitLot)
+				+ buildSummaryFinalSelect();
+
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSTableDetail(map));
 		}
-		return list; 
+		return list;
 	}
- 
+
+	// =========================================================================
+	// SQL batch builders — getPCMSSumaryDetail
+	// =========================================================================
+
+	/** Drop output temp tables ก่อนเริ่ม batch เพื่อป้องกัน error จาก session เก่า */
+	private String buildSummaryGuardDrops() {
+		return pss.buildIfTempTableDrop("#tempWaitLot")
+				+ pss.buildIfTempTableDrop("#tempMain")
+				+ pss.buildIfTempTableDrop("#tempOP")
+				+ pss.buildIfTempTableDrop("#tempOPSW")
+				+ pss.buildIfTempTableDrop("#tempSW")
+				+ pss.buildIfTempTableDrop("#tempRP");
+	}
+
+	/** Lookup tables ที่ใช้ร่วมกันทุก type (#tempMainSale, #tempSumGR, #tempSPO ฯลฯ) */
+	private String buildSummaryCommonTables(PCMSTableDetail bean, String whereSale) {
+		String createUserStatus = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
+		String createCusList    = psService.handlerTempTableCustomerSearchList(
+				bean.getCustomerNameList(), bean.getCustomerShortNameList());
+		return createUserStatus + createCusList
+				+ pss.createTempMainSaleWithJoinCustomer + whereSale
+				+ pss.createTempMainSaleIndex
+				+ pss.createTempPlanDeliveryDate
+				+ pss.createTempSumGR
+				+ pss.createTempSumBill
+				+ pss.createTempSCC
+				+ pss.createTempProdWorkDateFiltered   // filtered by #tempMainSale — was full scan
+				+ pss.createTempSPO;
+	}
+
+	/**
+	 * OrderPuang: #tempPrdOPA (ProdSale + UCAL) → #tempPrdOP (+ FromSapMainProd) → #tempOP
+	 * filter ตาม tmpWhereNoLotUCAL ในขั้น OPA, ตาม whereCaseTry ในขั้น OP
+	 */
+	private String buildSummaryOPTables(String tmpWhereNoLotUCAL, String whereCaseTry) {
+		String createOPA = pss.buildIfTempTableDrop("#tempPrdOPA")
+				+ "SELECT a.SaleOrder, a.[SaleLine], a.DistChannel, a.Color, a.ColorCustomer\r\n"
+				+ "      ,a.SaleQuantity, a.RemainQuantity, a.SaleUnit, a.DueDate\r\n"
+				+ "      ,a.CustomerShortName, a.[SaleFullName], a.[SaleNumber], a.SaleCreateDate\r\n"
+				+ "      ,a.MaterialNo, a.DeliveryStatus, a.SaleStatus\r\n"
+				+ "      ,b.ProductionOrder, a.CustomerName, a.DesignFG, a.OrderAmount\r\n"
+				+ "      ,'SUB' AS TypePrdRemark, a.ArticleFG, a.ShipDate, a.Division\r\n"
+				+ "      ,a.PurchaseOrder, a.CustomerMaterial, a.Price, a.RemainAmount, a.CustomerDue\r\n"
+				+ "      ,CASE WHEN b.Volumn <> 0 THEN b.Volumn ELSE 0 END AS Volumn\r\n"
+				+ "      ,g.[DyePlan], g.[DyeActual], g.[Dryer], g.[Finishing], g.[Inspectation]\r\n"
+				+ "      ,g.[Prepare], g.[Preset], g.[Relax], g.[CFMDateActual], g.[CFMPlanDate]\r\n"
+				+ "      ,g.[DyeStatus], UCAL.UserStatusCal AS UserStatus\r\n"
+				+ "      ,CASE WHEN SCC.SendCFMCusDate IS NOT NULL AND SCC.SendCFMCusDate <> ''\r\n"
+				+ "            THEN SCC.SendCFMCusDate ELSE g.SendCFMCusDate END AS SendCFMCusDate\r\n"
+				+ "      ,m.GRSumKG, m.GRSumYD, m.GRSumMR\r\n"
+				+ "      ,g.CFMDetailAll, g.CFMNumberAll, g.CFMRemarkAll, g.RollNoRemarkAll\r\n"
+				+ "      ,g.CFMActualLabDate, g.CFMCusAnsLabDate, g.GreigeInDate, g.LotShipping, g.PlanGreigeDate\r\n"
+				+ "INTO #tempPrdOPA\r\n"
+				+ "FROM #tempMainSale AS a\r\n"
+				+ "INNER JOIN [PCMS].[dbo].[FromSapMainProdSale] AS b\r\n"
+				+ "    ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine AND b.[DataStatus] = 'O'\r\n"
+				+ pss.buildLeftJoinTempProdWorkDate("b")
+				+ pss.buildLeftJoinSCC("b")
+				+ pss.buildLeftJoinTempSumGR("b")
+				+ pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
+				+ "WHERE 1 = 1\r\n"
+				+ "      " + tmpWhereNoLotUCAL + "\r\n";
+
+		String createOP = pss.buildIfTempTableDrop("#tempPrdOP")
+				+ "SELECT DISTINCT\r\n" + this.selectOP
+				+ "INTO #tempPrdOP\r\n"
+				+ "FROM #tempPrdOPA AS a\r\n"
+				+ "LEFT JOIN [PCMS].[dbo].[FromSapMainProd] AS b ON a.ProductionOrder = b.ProductionOrder\r\n"
+				+ pss.getLeftJoinTempPlandeliveryDate("b", "a");
+
+		String insertOP = "SELECT\r\n" + this.selectAll
+				+ "INTO #tempOP\r\n"
+				+ "FROM #tempPrdOP AS a\r\n"
+				+ "LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = a.ProductionOrder\r\n"
+				+ pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
+				+ "WHERE 1 = 1 AND SPO.ProductionOrderSW IS NULL\r\n"
+				+ whereCaseTry;
+
+		return createOPA + createOP + insertOP
+				+ pss.buildIfTempTableDrop("#tempPrdOPA")
+				+ pss.buildIfTempTableDrop("#tempPrdOP");
+	}
+
+	/**
+	 * OrderPuang+Switch: สร้าง #tempPrdOPSW จาก FromSapMainProdSale ที่ตรง SPO
+	 * แล้ว INSERT INTO #tempOPSW โดย filter ตาม whereCaseTry
+	 */
+	private String buildSummaryOPSWTable(String whereBase, String whereCaseTry) {
+		String createOPSW = pss.buildIfTempTableDrop("#tempPrdOPSW")
+				+ "SELECT DISTINCT\r\n" + this.selectOPSWA
+				+ "INTO #tempPrdOPSW\r\n"
+				+ "FROM (\r\n"
+				+ "    SELECT DISTINCT\r\n"
+				+ "           a.SaleOrder, a.[SaleLine], a.DistChannel, a.Color, a.ColorCustomer\r\n"
+				+ "          ,a.SaleQuantity, a.RemainQuantity, a.SaleUnit, a.DueDate\r\n"
+				+ "          ,a.CustomerShortName, a.[SaleFullName], a.[SaleNumber], a.SaleCreateDate\r\n"
+				+ "          ,a.MaterialNo, a.DeliveryStatus, a.SaleStatus\r\n"
+				+ "          ,b.ProductionOrder, a.CustomerName, a.DesignFG, a.OrderAmount\r\n"
+				+ "          ,'SUB' AS TypePrdRemark, a.ArticleFG, a.ShipDate, a.Division\r\n"
+				+ "          ,a.PurchaseOrder, a.CustomerMaterial, a.Price, a.RemainAmount, a.CustomerDue\r\n"
+				+ "          ,CASE WHEN b.Volumn <> 0 THEN b.Volumn ELSE 0 END AS Volumn\r\n"
+				+ "          ,a.[PlanGreigeDate]\r\n"
+				+ "    FROM #tempMainSale AS a\r\n"
+				+ "    INNER JOIN (\r\n"
+				+ "        SELECT CASE WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
+				+ "                    ELSE C.ProductionOrder END AS [ProductionOrder]\r\n"
+				+ "              ,[SaleOrder],[SaleLine],[Volumn],[DataStatus]\r\n"
+				+ "        FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
+				+ "        LEFT JOIN #tempSPO AS B ON A.[ProductionOrder] = B.ProductionOrder\r\n"
+				+ "        LEFT JOIN #tempSPO AS C ON A.[ProductionOrder] = C.[ProductionOrderSW]\r\n"
+				+ "        WHERE (B.ProductionOrder IS NOT NULL OR C.ProductionOrder IS NOT NULL)\r\n"
+				+ "          AND A.[DataStatus] = 'O'\r\n"
+				+ "    ) AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+				+ "    WHERE b.DataStatus = 'O' AND b.SaleLine <> ''\r\n"
+				+ ") AS a\r\n"
+				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrder")
+				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ pss.buildLeftJoinTempProdWorkDate("b")
+				+ pss.buildLeftJoinSCC("b")
+				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
+				+ " LEFT JOIN #tempSPO AS R ON b.ProductionOrder = R.ProductionOrderSW\r\n"
+				+ pss.buildLeftJoinTempSumGR("b")
+				+ pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
+				+ whereBase + " AND 1 = 1\r\n";
+
+		String insertOPSW = "SELECT\r\n" + this.selectAll
+				+ "INTO #tempOPSW\r\n"
+				+ "FROM #tempPrdOPSW AS a\r\n"
+				+ pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
+				+ "WHERE 1 = 1 " + whereCaseTry;
+
+		return createOPSW + insertOPSW + pss.buildIfTempTableDrop("#tempPrdOPSW");
+	}
+
+	/**
+	 * Switch: สร้าง #tempPrdSW จาก SwitchProdOrder
+	 * แล้ว INSERT INTO #tempSW (ไม่มี whereCaseTry เพราะ filter ไว้ใน #tempPrdSW แล้ว)
+	 */
+	private String buildSummarySWTable(String whereBase) {
+		String createSW = pss.buildIfTempTableDrop("#tempPrdSW")
+				+ "SELECT DISTINCT\r\n" + this.selectSW
+				+ "INTO #tempPrdSW\r\n"
+				+ "FROM (\r\n"
+				+ "    SELECT DISTINCT\r\n"
+				+ "           a.SaleOrder, a.[SaleLine], a.DistChannel, a.Color, a.ColorCustomer\r\n"
+				+ "          ,a.SaleQuantity, a.RemainQuantity, a.SaleUnit, a.DueDate\r\n"
+				+ "          ,a.CustomerShortName, a.[SaleFullName], a.[SaleNumber], a.SaleCreateDate\r\n"
+				+ "          ,a.MaterialNo, a.DeliveryStatus, a.SaleStatus\r\n"
+				+ "          ,b.ProductionOrderSW AS ProductionOrder, a.CustomerName, a.DesignFG, a.OrderAmount\r\n"
+				+ "          ,a.ArticleFG, a.ShipDate, a.Division, a.PurchaseOrder, a.CustomerMaterial\r\n"
+				+ "          ,a.Price, a.RemainAmount, a.CustomerDue\r\n"
+				+ "          ,CASE WHEN b.ProductionOrder = b.ProductionOrderSW THEN 'MAIN' ELSE 'SUB' END AS TypePrdRemark\r\n"
+				+ "          ,C.SumVol, a.[PlanGreigeDate]\r\n"
+				+ "    FROM #tempMainSale AS a\r\n"
+				+ "    INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS b\r\n"
+				+ "        ON a.SaleOrder = b.SaleOrderSW AND a.SaleLine = b.SaleLineSW\r\n"
+				+ "    LEFT JOIN (\r\n"
+				+ "        SELECT PRDORDERSW, SUM([Volumn]) AS SumVol\r\n"
+				+ "        FROM (\r\n"
+				+ "            SELECT A.[ProductionOrder]\r\n"
+				+ "                  ,CASE WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
+				+ "                        ELSE C.ProductionOrder END AS PRDORDERSW\r\n"
+				+ "                  ,[SaleOrder],[SaleLine],[Volumn],[DataStatus]\r\n"
+				+ "            FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
+				+ "            LEFT JOIN #tempSPO AS B ON A.[ProductionOrder] = B.ProductionOrder\r\n"
+				+ "            LEFT JOIN #tempSPO AS C ON A.[ProductionOrder] = C.[ProductionOrderSW]\r\n"
+				+ "            WHERE (B.ProductionOrder IS NOT NULL OR C.ProductionOrder IS NOT NULL)\r\n"
+				+ "              AND A.[DataStatus] = 'O'\r\n"
+				+ "        ) AS A\r\n"
+				+ "        GROUP BY PRDORDERSW\r\n"
+				+ "    ) AS C ON b.ProductionOrderSW = C.PRDORDERSW\r\n"
+				+ "    WHERE b.DataStatus = 'O'\r\n"
+				+ ") AS a\r\n"
+				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrder")
+				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ pss.buildLeftJoinTempProdWorkDate("b")
+				+ pss.buildLeftJoinSCC("b")
+				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
+				+ " LEFT JOIN #tempSPO AS R ON b.ProductionOrder = R.ProductionOrderSW\r\n"
+				+ pss.buildLeftJoinTempSumGR("b")
+				+ pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
+				+ whereBase + " AND 1 = 1\r\n";
+
+		String insertSW = "SELECT\r\n" + this.selectAll
+				+ "INTO #tempSW\r\n"
+				+ "FROM #tempPrdSW AS a\r\n";
+
+		return createSW + insertSW + pss.buildIfTempTableDrop("#tempPrdSW");
+	}
+
+	/** Replaced: PRD_REPLACED CTE → #tempRP  filter ตาม whereCaseTryRP */
+	private String buildSummaryRPTable(String whereCaseTryRP) {
+		return pss.buildIfTempTableDrop("#tempRP")
+				+ ";WITH PRD_REPLACED AS (\r\n"
+				+ "SELECT\r\n" + this.selectRP
+				+ "FROM #tempMainSale AS a\r\n"
+				+ "INNER JOIN (\r\n"
+				+ "    SELECT a.SaleOrder, a.SaleLine\r\n"
+				+ "          ,CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END AS [Volume]\r\n"
+				+ "          ,a.[ProductionOrderRP] AS ProductionOrder\r\n"
+				+ "          ,b.TotalQuantity, b.LotNo, b.LabNo, b.LabStatus\r\n"
+				+ "          ,b.CFTYPE, b.RemarkOne, b.RemarkTwo, b.RemarkThree, b.[PrdCreateDate]\r\n"
+				+ "    FROM [PCMS].[dbo].[ReplacedProdOrder] AS a\r\n"
+				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrderRP")
+				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ "    WHERE a.[DataStatus] = 'O'\r\n"
+				+ ") AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+				+ pss.buildLeftJoinTempProdWorkDate("b")
+				+ pss.buildLeftJoinSCC("b")
+				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
+				+ " LEFT JOIN #tempSPO AS R ON b.ProductionOrder = R.ProductionOrderSW\r\n"
+				+ pss.buildLeftJoinTempSumGR("b")
+				+ pss.buildLeftJoinUserStatusAuto("UCALRP", "b", "m")
+				+ "WHERE 1 = 1\r\n" + whereCaseTryRP
+				+ ")\r\n"
+				+ "SELECT\r\n" + this.selectAll
+				+ "INTO #tempRP\r\n"
+				+ "FROM PRD_REPLACED AS a\r\n";
+	}
+
+	/**
+	 * Main + WaitLot:
+	 *   aggregate filter → #tempWaitLot
+	 *   ProdData CTE + PassFilter → #tempMain
+	 */
+	private String buildSummaryMainAndWaitLot(String whereBase, String whereWaitLot) {
+		String insertWaitLot = pss.createTempPrepWaitLot
+				+ "SELECT\r\n" + this.selectWaitLot
+				+ "INTO #tempWaitLot\r\n"
+				+ "FROM #tempMainSale AS a\r\n"
+				+ pss.innerJoinWaitLotB
+				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
+				+ whereWaitLot
+				+ " AND (SumVol = 'B' OR countProdRP > 0)\r\n";
+
+		String fromProdDataB = "FROM (\r\n"
+				+ "    SELECT\r\n" + this.leftJoinBSelect
+				+ pss.fromProdA
+				+ pss.getLeftJoinTempPlandeliveryDate("a", "a")
+				+ pss.buildLeftJoinTempProdWorkDate("a")
+				+ pss.buildLeftJoinSCC("a")
+				+ pss.buildLeftJoinTempSumGR("a")
+				+ pss.buildLeftJoinUserStatusAuto("UCAL", "A", "m")
+				+ pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
+				+ pss.getLeftJoinCRP("a")
+				+ whereBase.replace("b.", "a.")
+				+ ") AS b\r\n";
+
+		String insertMain = pss.withProdData
+				+ "SELECT DISTINCT\r\n" + this.selectMainV2
+				+ "INTO #tempMain\r\n"
+				+ fromProdDataB
+				+ pss.getLeftJoinCRP("b")
+				+ " LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = b.ProductionOrder\r\n"
+				+ "WHERE b.PassFilter = 1 AND SPO.ProductionOrderSW IS NULL\r\n";
+
+		return pss.createTempForMainAndWaitLotFiltered
+				+ insertWaitLot
+				+ insertMain
+				+ pss.createDropTempForMainAndWaitLot;
+	}
+
+	/** UNION ALL 6 tables + ORDER BY */
+	private String buildSummaryFinalSelect() {
+		return "SELECT a.* FROM #tempWaitLot AS a\r\n"
+				+ "LEFT JOIN #tempMain AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+				+ "WHERE b.SaleOrder IS NULL\r\n"
+				+ "UNION ALL SELECT * FROM #tempMain\r\n"
+				+ "UNION ALL SELECT * FROM #tempOP\r\n"
+				+ "UNION ALL SELECT * FROM #tempOPSW\r\n"
+				+ "UNION ALL SELECT * FROM #tempSW\r\n"
+				+ "UNION ALL SELECT * FROM #tempRP\r\n"
+				+ "ORDER BY CustomerShortName, DueDate, [SaleOrder], [SaleLine], TypePrdRemark, [ProductionOrder]\r\n";
+	}
+
 	@Override
 	public ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList) {
 		ArrayList<PCMSAllDetail> list = null;
@@ -1056,6 +901,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ this.pss.createTempPlanDeliveryDate
 			 	+ this.pss.createTempSumBill
 			 	+ this.pss.createTempSumGR
+			 	+ this.pss.createTempSCC
+			 	+ this.pss.createTempProdWorkDate
 				+ this.pss.createTempForMainAndWaitLot
 	  		    + this.pss.withProdData
 				+  " SELECT distinct top 1  \r\n "

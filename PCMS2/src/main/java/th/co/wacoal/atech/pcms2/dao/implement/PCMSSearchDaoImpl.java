@@ -128,63 +128,29 @@ public class PCMSSearchDaoImpl implements PCMSSearchDao {
 		return sql.toString();
 	}
 
-	public void handlerCloseUserStatusAndLotNo()
-	{
-
-		// TODO Auto-generated method stub
-		String sql = ""
-				+ " If(OBJECT_ID('tempdb..#tempLotNoList') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempLotNoList \r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempUserStatusList') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempUserStatusList\r\n"
-				+ "	end ; ";
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			// Step 1: สร้าง temp table
-			prepared.execute();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
-		}
+	public void handlerCloseUserStatusAndLotNo() {
+		executeDrop("#tempLotNoList", "#tempUserStatusList");
 	}
 
-	public void handlerCloseTempTableCustomerSearchList()
-	{
+	public void handlerCloseTempTableCustomerSearchList() {
+		executeDrop("#tempCustomerList", "#tempCustomerShortList");
+	}
 
-		// TODO Auto-generated method stub
-		String sql  = ""
-				+ " If(OBJECT_ID('tempdb..#tempCustomerList') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempCustomerList \r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempCustomerShortList') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempCustomerShortList\r\n"
-				+ "	end ; ";
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			// Step 1: สร้าง temp table
+	/** Drop temp tables ที่ระบุ — ใช้ร่วมกันใน cleanup methods */
+	private void executeDrop(String... tableNames) {
+		StringBuilder sql = new StringBuilder();
+		for (String t : tableNames) {
+			sql.append("IF OBJECT_ID('tempdb..").append(t).append("') IS NOT NULL DROP TABLE ").append(t).append(";\r\n");
+		}
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
+		try {
+			prepared = connection.prepareStatement(sql.toString());
 			prepared.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			if (prepared != null) try { prepared.close(); } catch (Exception ignored) {}
 		}
 	}
 }

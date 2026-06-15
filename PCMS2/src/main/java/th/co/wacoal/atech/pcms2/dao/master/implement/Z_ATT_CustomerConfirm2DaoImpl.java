@@ -342,7 +342,13 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 	            if (connection != null) connection.rollback();
 	            throw e;
 	        } finally {
-	            if (connection != null) connection.setAutoCommit(true);
+	            // ✅ DROP temp table ก่อนคืน connection กลับ pool
+	            if (connection != null) {
+	                try (java.sql.Statement cleanup = connection.createStatement()) {
+	                    cleanup.execute("IF OBJECT_ID('tempdb..#TempCustConfirm') IS NOT NULL DROP TABLE #TempCustConfirm");
+	                } catch (Exception ignored) {}
+	                connection.setAutoCommit(true);
+	            }
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

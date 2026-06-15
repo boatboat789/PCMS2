@@ -213,6 +213,9 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	            throw e;
 	        }finally {
 	            // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+	            try (java.sql.Statement cleanup = conn.createStatement()) {
+	                cleanup.execute("IF OBJECT_ID('tempdb..#TempSale') IS NOT NULL DROP TABLE #TempSale");
+	            } catch (Exception ignored) {}
 	            try {
 	                conn.setAutoCommit(true);
 	            } catch (Exception e) {
@@ -224,14 +227,6 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	        iconStatus = "E";
 	    }
 
-finally {
-    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
-    try {
-        conn.setAutoCommit(true);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
 	    return iconStatus;
 	}
 //	@Override

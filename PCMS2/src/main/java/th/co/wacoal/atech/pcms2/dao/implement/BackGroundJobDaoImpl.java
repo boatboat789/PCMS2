@@ -109,7 +109,6 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 	private void executeProcedure(String sql, PreparedStatementSetter setter)
 	{
-
 		Connection connection = this.database.getConnection();
 		PreparedStatement prepared = null;
 
@@ -120,6 +119,12 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 		} catch (SQLException e) {
 			throw new RuntimeException("Execute procedure failed : " + sql, e);
+		} finally {
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 	}
 
