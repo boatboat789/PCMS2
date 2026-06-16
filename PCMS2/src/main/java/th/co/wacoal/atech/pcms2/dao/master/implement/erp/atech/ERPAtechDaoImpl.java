@@ -46,19 +46,21 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		return this.message;
 	}
+	private String declareTimeFocus = ""  
+	+ " DECLARE @oneHourAgo DATETIME = DATEADD(HOUR, -1, GETDATE()); \r\n"
+//	private String declareTimeFocus = "" 
+//	+ " declare  @oneHourAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
 
-	private String declareThirtyMinuteAgo = "" 
-	+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
-
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
-//+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -4, GETDATE());"; 
-//	+" declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
+//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
+//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -4, GETDATE());"; 
+//	+" declare  @oneHourAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
+;
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
 		ArrayList<CustomerDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
@@ -80,7 +82,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " [SyncDate] "
 				+ " from CustomerDetail "
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
-				+ "       SyncDate >= @dateTimeThirtyMinuteAgo ";
+				+ "       SyncDate >= @oneHourAgo ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -94,17 +96,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpCFMDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS (\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
 				+ "    FROM [FromErpMainProd] AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "    WHERE SyncDate >= @oneHourAgo\r\n"
 				+ "\r\n"
 				+ "    UNION\r\n"
 				+ "\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
 				+ "    FROM [FromErpCFM] AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "    WHERE SyncDate >= @oneHourAgo\r\n"
 				+ "),\r\n"
 				+ "CFMData AS (\r\n"
 				+ "    SELECT DISTINCT\r\n"
@@ -219,17 +221,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpGoodReceiveDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "				  \r\n"
 				+ "	UNION \r\n"
 				+ "				  \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM FromErpGoodReceive AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "GoodReceive AS ( \r\n"
 				+ "	SELECT DISTINCT \r\n"
@@ -306,15 +308,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ " WITH ProductionOrders AS (\r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a\r\n"
-				+ "	WHERE [SyncDate] >= @dateTimeThirtyMinuteAgo    \r\n"
+				+ "	WHERE [SyncDate] >= @oneHourAgo    \r\n"
 				+ "	UNION \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM FromErpMainBillBatch AS a\r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo\r\n"
 				+ "),\r\n"
 				+ "BillBatch  AS (\r\n"
 				+ "    SELECT DISTINCT\r\n"
@@ -366,11 +368,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainProdDetail> list = new ArrayList<>();
 		String sql = ""
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "MainProd AS (  \r\n"
 				+ "	SELECT distinct    \r\n"
@@ -494,17 +496,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainProdSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "				  \r\n"
 				+ "	UNION \r\n"
 				+ "				  \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM FromErpMainProdSale AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "MainProdSale AS (   \r\n"
 				+ "	SELECT distinct    \r\n"
@@ -607,13 +609,13 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS (  		  \r\n"
 				+ "	SELECT DISTINCT a.SaleOrder \r\n"
 				+ "	FROM FromErpMainSale AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
-				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
-				+ "	      OR [syncDateProdHeader] >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
+				+ "	      OR [SyncDateHeader] >= @oneHourAgo\r\n"
+				+ "	      OR [syncDateProdHeader] >= @oneHourAgo\r\n"
 				+ "), \r\n"
 				+ "MainSale AS (   \r\n"
 				+ " SELECT distinct    \r\n"
@@ -806,17 +808,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpPackingDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "				  \r\n"
 				+ "	UNION \r\n"
 				+ "				  \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM FromErpPacking AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "Packing  AS (   \r\n"
 				+ "	SELECT distinct    \r\n"
@@ -851,7 +853,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "
 				+ " "
-//				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
+//				+ " declare  @oneHourAgo datetime = DATEADD(MINUTE, -30, GETDATE());"
 //				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST( ProductionOrder AS NVARCHAR(50)) as ProductionOrder,\r\n"
 //				+ "  CASE \r\n"
@@ -883,17 +885,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpPODetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "				  \r\n"
 				+ "	UNION \r\n"
 				+ "				  \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM FromErpPO AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "	PO   AS (   \r\n"
 				+ " 	SELECT distinct    \r\n"
@@ -956,18 +958,18 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
-				+ "	      OR [SyncDateHeader] >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "    WHERE SyncDate >= @oneHourAgo\r\n"
+				+ "	      OR [SyncDateHeader] >= @oneHourAgo\r\n"
 				+ "\r\n"
 				+ "    UNION\r\n"
 				+ "\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM FromErpSale AS a\r\n"
-				+ "    WHERE SyncDate >= @dateTimeThirtyMinuteAgo\r\n"
+				+ "    WHERE SyncDate >= @oneHourAgo\r\n"
 				+ "),\r\n"
 				+ "Sale AS (   \r\n"
 				+ "		SELECT distinct    \r\n"
@@ -1024,17 +1026,17 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpSubmitDateDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
+				+ this.declareTimeFocus
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "				  \r\n"
 				+ "	UNION \r\n"
 				+ "				  \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder]   \r\n"
 				+ "	FROM [FromErpSubmitDate] AS a \r\n"
-				+ "	WHERE SyncDate >= @dateTimeThirtyMinuteAgo \r\n"
+				+ "	WHERE SyncDate >= @oneHourAgo \r\n"
 				+ "), \r\n"
 				+ "SubmitDate AS (    \r\n"
 				+ "	SELECT distinct    \r\n"
@@ -1079,62 +1081,76 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	public ArrayList<Z_ATT_CustomerConfirm2Detail> getZ_ATT_CustomerConfirm2Detail()
 	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = new ArrayList<>();
+		// หา distinct ReplyDate (ไม่รวม NULL) จาก records ที่ sync ใน 1 ชั่วโมงล่าสุด
+		// แล้วดึงทุก record ที่: (1) ReplyDate อยู่ใน batch นั้น หรือ (2) sync ใน 1 ชั่วโมงและ ReplyDate = NULL
 		String sql = " "
-				+ this.declareThirtyMinuteAgo
-//				+ " declare  @dateTimeThirtyMinuteAgo datetime = DATEADD(MONTH, -12, GETDATE());" 
-				+ " SELECT \r\n"
-//				+ "   TRY_CAST([SendDate] AS DATE) AS SendDate, "
-				+ "	CASE  \r\n"
-				+ "		WHEN [SendDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
-				+ "		WHEN [SendDate] is null or   \r\n"
-				+ "			[SendDate] = '' THEN null  \r\n"
-				+ "		ELSE TRY_CAST([SendDate] AS DATE)  \r\n"
-				+ "	END AS SendDate,   \r\n"
-				+ "   TRY_CAST([NoPerDay] AS INT) AS NoPerDay, "
-//				+ "   TRY_CAST([ReplyDate] AS DATE) AS ReplyDate, "
-				+ "	CASE  \r\n"
-				+ "		WHEN [ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
-				+ "		WHEN [ReplyDate] is null or   \r\n"
-				+ "			[ReplyDate] = '' THEN null  \r\n"
-				+ "		ELSE TRY_CAST([ReplyDate] AS DATE)  \r\n"
-				+ "	END AS ReplyDate,   \r\n"
-				+ "   [CFMNo], "
-				+ "   [Customer Name] AS CustomerName, "
-				+ "   [SO], "
-				+ "   TRY_CAST([SOLineNo] AS NVARCHAR(50)) AS SOLine, "
-				+ "   TRY_CAST([DueDate] AS DATE) AS DueDate, "
-				+ "   [PO], "
-				+ "   [Material], "
-				+ "   [ProductName], "
-				+ "   [LabNo], "
-				+ "   [Color], "
-				+ "   [ProdId], "
-				+ "   [LotNo], "
-				+ "   TRY_CAST([L] AS DECIMAL(13,3)) AS CFM_L, "
-				+ "   TRY_CAST([Da] AS DECIMAL(13,3)) AS CFM_Da, "
-				+ "   TRY_CAST([Db] AS DECIMAL(13,3)) AS CFM_Db, "
-				+ "   TRY_CAST([St] AS DECIMAL(13,3)) AS CFM_St, "
-				+ "   TRY_CAST([DE] AS DECIMAL(13,3)) AS CFM_DeltaE, "
-				+ "   [QCComment], "
-//				+ "   [Result], "
-				+ "	CASE  \r\n"
-				+ "		WHEN [ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
-				+ "		WHEN [ReplyDate] is null or   \r\n"
-				+ "			[ReplyDate] = '' THEN null  \r\n"
-				+ "		ELSE Result  \r\n"
-				+ "	END AS Result,   \r\n"
-				+ "   [Remark from submit] AS RemarkFromSubmit, "
-				+ "   [NextLot], "
-				+ "   TRY_CAST([Qty] AS DECIMAL(13,3)) AS Qty, "
-				+ "   [UnitId], "
-				+ "   'O' AS DataStatus ,"
-				+ "   [SYNCSTARTDATETIME]"
-				+ "  FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a  \r\n"
-				+ " WHERE left(a.ProdId,2) Not in ('20' , 'WO' , 'Y2') "
-				+ "   and SYNCSTARTDATETIME >= @dateTimeThirtyMinuteAgo \r\n"
-//				+ "   AND [SYNCSTARTDATETIME] >= CAST(GETDATE()-1 AS DATE) OR [REPLYDATE] >= CAST(GETDATE()-1 AS DATE)\r\n"
-				+ "; \r\n"
-				+ "  ";
+				+ this.declareTimeFocus
+//				+ " DECLARE @oneHourAgo DATETIME = DATEADD(HOUR, -1, GETDATE());\r\n"
+				+ "\r\n"
+				+ "-- CTE หาเฉพาะ ProdId ที่มีการเปลี่ยนแปลง (Update/Insert) ใน 1 ชั่วโมงที่ผ่านมา\r\n"
+//				+ " DECLARE @oneHourAgo DATETIME = DATEADD(HOUR, -1, GETDATE());\r\n"
+				+ "\r\n"
+				+ "-- CTE สำหรับหาเฉพาะ ProdId ที่มีการเคลื่อนไหวในช่วง 1 ชั่วโมงที่ผ่านมา\r\n"
+				+ "WITH TargetProdId AS (\r\n"
+				+ "    SELECT DISTINCT ProdId\r\n"
+				+ "    FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2]\r\n"
+				+ "    WHERE SYNCSTARTDATETIME >= @oneHourAgo\r\n"
+				+ "      -- เปลี่ยนเป็น NOT LIKE เพื่อให้รองรับการทำงานของ Index (Sargable)\r\n"
+				+ "      AND ProdId NOT LIKE '20%'\r\n"
+				+ "      AND ProdId NOT LIKE 'WO%'\r\n"
+				+ "      AND ProdId NOT LIKE 'Y2%'\r\n"
+				+ ")\r\n"
+				+ "\r\n"
+				+ "SELECT \r\n"
+				+ "    CASE  \r\n"
+				+ "        WHEN a.[SendDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "        WHEN a.[SendDate] IS NULL OR a.[SendDate] = '' THEN NULL  \r\n"
+				+ "        ELSE TRY_CAST(a.[SendDate] AS DATE)  \r\n"
+				+ "    END AS SendDate,   \r\n"
+				+ "    TRY_CAST(a.[NoPerDay] AS INT) AS NoPerDay, \r\n"
+				+ "    CASE  \r\n"
+				+ "        WHEN a.[ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "        WHEN a.[ReplyDate] IS NULL OR a.[ReplyDate] = '' THEN NULL  \r\n"
+				+ "        ELSE TRY_CAST(a.[ReplyDate] AS DATE)  \r\n"
+				+ "    END AS ReplyDate,   \r\n"
+				+ "    a.[CFMNo], \r\n"
+				+ "    a.[Customer Name] AS CustomerName, \r\n"
+				+ "    a.[SO], \r\n"
+				+ "    TRY_CAST(a.[SOLineNo] AS NVARCHAR(50)) AS SOLine, \r\n"
+				+ "    TRY_CAST(a.[DueDate] AS DATE) AS DueDate, \r\n"
+				+ "    a.[PO], \r\n"
+				+ "    a.[Material], \r\n"
+				+ "    a.[ProductName], \r\n"
+				+ "    a.[LabNo], \r\n"
+				+ "    a.[Color], \r\n"
+				+ "    a.[ProdId], \r\n"
+				+ "    a.[LotNo], \r\n"
+				+ "    TRY_CAST(a.[L] AS DECIMAL(13,3)) AS CFM_L, \r\n"
+				+ "    TRY_CAST(a.[Da] AS DECIMAL(13,3)) AS CFM_Da, \r\n"
+				+ "    TRY_CAST(a.[Db] AS DECIMAL(13,3)) AS CFM_Db, \r\n"
+				+ "    TRY_CAST(a.[St] AS DECIMAL(13,3)) AS CFM_St, \r\n"
+				+ "    TRY_CAST(a.[DE] AS DECIMAL(13,3)) AS CFM_DeltaE, \r\n"
+				+ "    a.[QCComment], \r\n"
+				+ "    CASE  \r\n"
+				+ "        WHEN a.[ReplyDate] = '1900-01-01 00:00:00.000' THEN NULL  \r\n"
+				+ "        WHEN a.[ReplyDate] IS NULL OR a.[ReplyDate] = '' THEN NULL  \r\n"
+				+ "        ELSE a.Result  \r\n"
+				+ "    END AS Result,   \r\n"
+				+ "    a.[Remark from submit] AS RemarkFromSubmit, \r\n"
+				+ "    a.[NextLot], \r\n"
+				+ "    TRY_CAST(a.[Qty] AS DECIMAL(13,3)) AS Qty, \r\n"
+				+ "    a.[UnitId], \r\n"
+				+ "    'O' AS DataStatus,\r\n"
+				+ "    a.[SYNCSTARTDATETIME]\r\n"
+				+ "FROM [ERP_PROD].[dbo].[Z_ATT_CustomerConfirm2] a  \r\n"
+				+ "INNER JOIN TargetProdId b \r\n"
+				+ "    ON a.ProdId = b.ProdId\r\n"
+				+ "WHERE a.ProdId NOT LIKE '20%'\r\n"
+				+ "  AND a.ProdId NOT LIKE 'WO%'\r\n"
+				+ "  AND a.ProdId NOT LIKE 'Y2%'\r\n"
+//				+ "  -- กรองเอาเฉพาะ Row ของ ProdId นั้นๆ ที่เพิ่ง Sync หรือเป็นกลุ่มที่มีการ Reply แล้ว\r\n"
+//				+ "  AND (a.SYNCSTARTDATETIME >= @oneHourAgo OR a.[ReplyDate] IS NOT NULL);\r\n"
+				+ "  ;";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

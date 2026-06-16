@@ -78,11 +78,11 @@ public class ColumnSettingDaoImpl implements ColumnSettingDao {
 				+ " 		([EmployeeId] ,[ColVisibleDetail])"// 55
 				+ " 	values(? , ? )  ;";
 		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-try {
-    prepared = connection.prepareStatement(sql);
+		try {
+			prepared = connection.prepareStatement(sql);
 			prepared.setString(1, colName);
 			prepared.setString(2, user);
 			prepared.setString(3, user);
@@ -96,9 +96,13 @@ try {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
+		} finally {
 			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 		list.add(bean);
 		return list;
@@ -121,11 +125,11 @@ try {
 				+ " 		([EmployeeId] ,[ColVisibleSummary])"// 55
 				+ " 	values(? , ? )  ;";
 		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
+		Connection connection = this.database.getConnection();
+		PreparedStatement prepared = null;
 
-try {
-    prepared = connection.prepareStatement(sql);
+		try {
+			prepared = connection.prepareStatement(sql);
 			connection.prepareStatement(sql);
 			prepared.setString(1, colName);
 			prepared.setString(2, user);
@@ -142,7 +146,11 @@ try {
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		} finally {
 			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			if (prepared != null)
+				try {
+					prepared.close();
+				} catch (Exception e) {
+				}
 		}
 		list.add(bean);
 		return list;

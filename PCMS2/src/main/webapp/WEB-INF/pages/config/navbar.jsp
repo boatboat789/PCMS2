@@ -27,7 +27,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDetailDropdown"> 
                     <a id="PCMSDetailPage" class="dropdown-item" href="${contextpath}/Detail">PCMS - Detail</a> 
-                    <a id="PCMSDetailV2Page" class="dropdown-item" href="${contextpath}/DetailV2">PCMS - Detail (ViewOnly)</a>
+<%--                     <a id="PCMSDetailV2Page" class="dropdown-item" href="${contextpath}/DetailV2">PCMS - Detail (ViewOnly)</a> --%>
                 </div>
             </li>
         </c:if>

@@ -55,7 +55,7 @@ public class TaskService {
 			runAllSyncJobs();
 			backGroundJobService.sortBackGroundAfterGetERPDataProcedure(); 
 		});
-//		System.out.println("End Date : " + new Date());
+		System.out.println("End Date : " + new Date());
 	}
 
 	public void handlerBackGroundZATTCustomerConfirm2()

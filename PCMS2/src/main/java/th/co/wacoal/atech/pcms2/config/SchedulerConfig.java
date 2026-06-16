@@ -14,6 +14,8 @@ public class SchedulerConfig {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(3); // จำกัด
         scheduler.setThreadNamePrefix("schedule-pcms2");
+        scheduler.setWaitForTasksToCompleteOnShutdown(true);
+        scheduler.setAwaitTerminationSeconds(10);
         scheduler.initialize();
         return scheduler;
     }
