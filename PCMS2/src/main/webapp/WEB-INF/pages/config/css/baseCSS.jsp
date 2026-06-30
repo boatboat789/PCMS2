@@ -4,15 +4,17 @@
 	<jsp:include page="/WEB-INF/pages/config/css/jquery.jsp"></jsp:include>            
 	<jsp:include page="/WEB-INF/pages/config/css/bootstrap.jsp"></jsp:include>       
 	<script src="<c:url value="/resources/vendor/moment/moment.js"/>"></script>    
-	<script src="<c:url value="/resources/vendor/sweetalert/2.1.2/sweetalert.min.js"/>"></script> 
+	<script src="<c:url value="/resources/vendor/sweetalert2-11.1.7/package/dist/sweetalert2.all.min.js"/>"></script>
 	<script src="<c:url value="/resources/vendor/dateRangePicker/daterangepicker.js"/>"></script>     
      
 	<jsp:include page="/WEB-INF/pages/config/css/DataTable.jsp"></jsp:include>            
 	<script src="<c:url value="/resources/vendor/xlsx.full.min.js_0.15.6/cdnjs/xlsx.full.min.js"/>"></script> 
 	<link  href="<c:url value="/resources/vendor/dateRangePicker/daterangepicker.css" />" rel="stylesheet" type="text/css">
-	<link  href="<c:url value="/resources/vendor/font-awesome-4.7.0/css/font-awesome.css" />" rel="stylesheet" type="text/css">
+	<link  href="<c:url value="/resources/vendor/fontawesome-free-6.7.2/css/all.min.css" />" rel="stylesheet" type="text/css">
 <%-- 	<link href="<c:url value="/resources/css/operation_page.css" />" rel="stylesheet" type="text/css">    --%>
-	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css">   
+	<link href="<c:url value="/resources/css/tokens.css" />" rel="stylesheet" type="text/css">
+	<link href="<c:url value="/resources/css/style.css" />" rel="stylesheet" type="text/css">
+	<link href="<c:url value="/resources/css/theme-claude.css" />" rel="stylesheet" type="text/css">
 	
 	        
 	<script src="<c:url value="/resources/vendor/CryptoJSv3.1.2/rollups/aes.js"/>"></script>     

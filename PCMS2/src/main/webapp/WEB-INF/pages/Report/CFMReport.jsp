@@ -17,7 +17,7 @@
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/Report/CFMReport/search.jsp"></jsp:include>
 	<div id="wrapper">
-		<div class="col-12 col-sm-12 col-md-12 col-xl-12">
+		<div class="content-panel">
 			<div class="table-responsive " style="font-size: 12px;">
 				<table id="mainTable" class="table compact  table-bordered table-striped text-center" style="width: 100%">
 					<thead>
@@ -346,8 +346,9 @@ $(document) .ready( function() {
 	$("#mainTable_wrapper .dataTables_scrollHead").on('keyup', '.monitor_search', function() { 
 		mainTable.column($(this).data('index')).search(this.value).draw();  
 	});      
- 	$('#btn_search').on( 'click', function () {        
-	     searchByDetail(); 
+ 	$('#btn_search').on( 'click', function () {
+	    $('#btn_search').prop('disabled', true);
+	    searchByDetail();
  	} );   
  	$('#btn_download').on( 'click', function () {      
 		var ObjMarkup = mainTable.data().toArray(); 
@@ -395,7 +396,7 @@ $(document) .ready( function() {
 // 				mainTable.draw();
 // 			},
 // 			error : function(e) {
-// 				swal("Fail", "Please contact to IT", "error");
+// 				swal("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 // 			},
 // 			done : function(e) {
 // 				console.log(data);
@@ -419,7 +420,7 @@ $(document) .ready( function() {
 		    getReportSplitWorkDetail(arrayTmp); 
 	    } else {
 	        // All fields are empty
-	        swal("Fail", "Please fill at least one field to proceed.", "error");
+	        Swal.fire("Fail", "Please fill at least one field to proceed.", "error");
 // 	        console.log("Please fill at least one field to proceed.");
 	    } 
 	}    
@@ -462,12 +463,11 @@ $(document) .ready( function() {
 	            mainTable.draw();
 	        },
 	        error: function(e) {
-	            swal("Fail", "Please contact IT", "error");
+	            Swal.fire("Fail", "Please contact IT", "error");
 	            console.log(e);
 	        },
 	        complete: function() {
-	            console.log("Request completed");   
-// 	            console.log(e);
+	            $('#btn_search').prop('disabled', false);
 	        }
 	    });
 	}
@@ -506,7 +506,7 @@ $(document) .ready( function() {
 	            link.remove();
 	        },
 	        error: function(e) {
-	            swal("Fail", "Please contact IT", "error");
+	            Swal.fire("Fail", "Please contact IT", "error");
 	            console.log(e);
 	        },
 	        complete: function() {

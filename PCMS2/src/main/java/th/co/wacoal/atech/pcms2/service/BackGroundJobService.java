@@ -44,6 +44,11 @@ public class BackGroundJobService {
 		// TODO Auto-generated method stub
 	}
 
+	public void runFullErpSyncWithDateRange(String fromDate, String toDate)
+	{
+		this.dao.runFullErpSyncWithDateRange(fromDate, toDate);
+	}
+
 	public void handlerERPAtechToWebAppSaleOrder()
 	{
 		this.dao.handlerERPAtechToWebAppSaleOrder();

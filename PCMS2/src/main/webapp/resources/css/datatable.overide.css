@@ -5,17 +5,17 @@ table.dataTable, table.dataTable th, table.dataTable td {
 .dt-custom-unavailable {
 	color: white;
 	font-weight: normal;
-	background-color: #c0c0c0 !important;
+	background-color: var(--pcms-dt-unavailable-bg) !important;
 }
 
 .dt-custom-highlight {
 	color: #555;
 	font-weight: normal;
-	background-color: #bbb !important;
+	background-color: var(--pcms-dt-highlight-bg) !important;
 }
 
 .table thead {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 
 td.dt-custom-tvd {
@@ -168,15 +168,15 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
 }
 
 .dataTables_scrollBody {
-	background-color: whitesmoke;
+	background-color: var(--pcms-dt-scroll-bg);
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable thead th, table.dataTable thead td {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 /* fix column color case  */
 tr.even td {
@@ -184,17 +184,17 @@ tr.even td {
 }
 
 tr.odd td {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable tbody tr.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 table.dataTable tbody tr.odd.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 .fixed-column {
@@ -204,7 +204,7 @@ table.dataTable tbody tr.odd.selected {
 }
 
 table.dataTable tbody tr.selected td {
-	background-color: #b0c4de !important;
+	background-color: var(--pcms-dt-selected-cell-bg) !important;
 	color: white;
 }
 

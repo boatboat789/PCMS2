@@ -7,7 +7,7 @@
   <!-- Footer Links -->
   <div class="container-fluid text-center text-md-left">
   </div>      
-  <div class="footer-copyright text-center py-3">©2022 Copyright:
-<!--     <a href="https://mdbootstrap.com/">PCMS2</a> -->
-  </div>   
+  <div class="footer-copyright text-center py-3">©<span id="footer-year"></span> Copyright:
+  </div>
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
 </footer> 

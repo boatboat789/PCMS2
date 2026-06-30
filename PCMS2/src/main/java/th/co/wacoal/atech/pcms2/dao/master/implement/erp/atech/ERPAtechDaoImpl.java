@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.erp.atech.ERPAtechDao;
@@ -26,7 +27,6 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.MapperUtility;
-import th.in.totemplate.core.sql.Database;
 
 @Component
 public class ERPAtechDaoImpl implements ERPAtechDao {
@@ -34,33 +34,49 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
-	private Database database;
+	private JdbcTemplate jdbc;
 
 	@Autowired
-	public ERPAtechDaoImpl(@Qualifier("erpDatabase") Database database) {
+	public ERPAtechDaoImpl(@Qualifier("erpDatabase") JdbcTemplate jdbc) {
 		this.message = "";
-		this.database = database;
+		this.jdbc = jdbc;
 	}
 
 	public String getMessage()
 	{
 		return this.message;
 	}
-	private String declareTimeFocus = ""  
+	private String declareTimeFocus = ""
 	+ " DECLARE @oneHourAgo DATETIME = DATEADD(HOUR, -1, GETDATE()); \r\n"
-//	private String declareTimeFocus = "" 
+//	private String declareTimeFocus = ""
 //	+ " declare  @oneHourAgo datetime = DATEADD(MINUTE, -60, GETDATE());";
 
-//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -1, GETDATE());"; 
-//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -4, GETDATE());"; 
-//	+" declare  @oneHourAgo datetime = DATEADD(DAY, -2, GETDATE());"; 
+//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -1, GETDATE());";
+//+" declare  @oneHourAgo datetime = DATEADD(MONTH, -4, GETDATE());";
+//	+" declare  @oneHourAgo datetime = DATEADD(DAY, -2, GETDATE());";
 ;
+	private final ThreadLocal<String> timeFocusOverride = new ThreadLocal<>();
+
+	private String getActiveTimeFocus() {
+		String override = timeFocusOverride.get();
+		return override != null ? override : this.declareTimeFocus;
+	}
+
+	@Override
+	public void setTimeFocusForCurrentThread(String fromDate) {
+		timeFocusOverride.set(" declare @oneHourAgo datetime = '" + fromDate + " 00:00:00';");
+	}
+
+	@Override
+	public void clearTimeFocusForCurrentThread() {
+		timeFocusOverride.remove();
+	}
 	@Override
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
 		ArrayList<CustomerDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ " SELECT distinct   \r\n"
 				+ " CASE \r\n"
 				+ "		WHEN LEN([CustomerNo]) > 10 THEN [CustomerNo]\r\n"
@@ -83,7 +99,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " from CustomerDetail "
 				+ " where TRY_CAST( CustomerNo AS int) is not null and "
 				+ "       SyncDate >= @oneHourAgo ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -96,7 +112,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpCFMDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS (\r\n"
 				+ "    SELECT DISTINCT a.[ProductionOrder]\r\n"
 				+ "    FROM [FromErpMainProd] AS a\r\n"
@@ -147,31 +163,31 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " WHERE   a.ProductionOrder NOT LIKE '20%' \r\n"
 				+ "       AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
 				+ "       AND a.ProductionOrder NOT LIKE 'Y2%';"
-//				+ " SELECT distinct   \r\n" 
+//				+ " SELECT distinct   \r\n"
 //				+ " TRY_CAST(ProductionOrder AS NVARCHAR(50)) as ProductionOrder ,\r\n"
 //				+ " TRY_CAST(CFMNo AS NVARCHAR(2)) as CFMNo ,\r\n"
 //				+ " TRY_CAST(CFMNumber AS NVARCHAR(20)) as CFMNumber ,\r\n"
 //				+ "  CASE \r\n"
-//				+ "        WHEN CFMSendDate = '1900-01-01 00:00:00.000' THEN null \r\n" 
+//				+ "        WHEN CFMSendDate = '1900-01-01 00:00:00.000' THEN null \r\n"
 //				+ "        WHEN CFMSendDate is null or CFMSendDate = '' THEN null \r\n"
 //				+ "        ELSE CFMSendDate \r\n"
-//				+ "    END AS CFMSendDate, \r\n"   
+//				+ "    END AS CFMSendDate, \r\n"
 //				+ "  CASE \r\n"
 //				+ "        WHEN CFMAnswerDate = '1900-01-01 00:00:00.000' THEN null\r\n"
 //				+ "        WHEN CFMAnswerDate is null or CFMAnswerDate = '' THEN null \r\n"
 //				+ "        ELSE CFMAnswerDate \r\n"
-//				+ "    END AS CFMAnswerDate, \r\n"  
-//				+ " TRY_CAST( CFMStatus AS NVARCHAR(30)) as CFMStatus ,\r\n" 
-//				+ " TRY_CAST( CFMRemark AS NVARCHAR(80)) as CFMRemark ,\r\n" 
+//				+ "    END AS CFMAnswerDate, \r\n"
+//				+ " TRY_CAST( CFMStatus AS NVARCHAR(30)) as CFMStatus ,\r\n"
+//				+ " TRY_CAST( CFMRemark AS NVARCHAR(80)) as CFMRemark ,\r\n"
 //				+ " TRY_CAST(SaleOrder AS NVARCHAR(50)) as SaleOrder ,\r\n"
 //				+ " TRY_CAST(SaleLine AS NVARCHAR(50)) as SaleLine ,\r\n"
-//				+ " TRY_CAST(RollNoRemark AS NVARCHAR(200)) as RollNoRemark,  \r\n" 
+//				+ " TRY_CAST(RollNoRemark AS NVARCHAR(200)) as RollNoRemark,  \r\n"
 //				+ " [SyncDate]"
 //				+ " from FromErpCFM"
 
 		;
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpCFMDetail(map));
@@ -181,15 +197,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //	@Override
 //	public ArrayList<FromErpDyeingDetail> getFromErpDyeingDetail()
 //	{
-//		ArrayList<FromErpDyeingDetail> list = new ArrayList<>(); 
+//		ArrayList<FromErpDyeingDetail> list = new ArrayList<>();
 //		String sql =
 //				" "
 //				+ " SELECT distinct   \r\n"
-//				+ this.select 
+//				+ this.select
 //				+ " from FromErpDyeing"
-//				
-//				; 
-//		List<Map<String, Object>> datas = this.database.queryList(sql);
+//
+//				;
+//		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 //		list = new ArrayList<>();
 //		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genFromErpDyeingDetail(map));
@@ -200,15 +216,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //	@Override
 //	public ArrayList<FromErpFinishingDetail> getFromErpFinishingDetail()
 //	{
-//		ArrayList<FromErpFinishingDetail> list = new ArrayList<>(); 
+//		ArrayList<FromErpFinishingDetail> list = new ArrayList<>();
 //		String sql =
 //				" "
 //				+ " SELECT distinct   \r\n"
-//				+ this.select 
+//				+ this.select
 //				+ " from FromErpFinishing"
-//				
-//				; 
-//		List<Map<String, Object>> datas = this.database.queryList(sql);
+//
+//				;
+//		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 //		list = new ArrayList<>();
 //		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genFromErpFinishingDetail(map));
@@ -221,7 +237,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpGoodReceiveDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -276,7 +292,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //				+ " from FromErpGoodReceive"
 
 		;
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpGoodReceiveDetail(map));
@@ -287,15 +303,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //	@Override
 //	public ArrayList<FromErpInspectDetail> getFromErpInspectDetail()
 //	{
-//		ArrayList<FromErpInspectDetail> list = new ArrayList<>(); 
+//		ArrayList<FromErpInspectDetail> list = new ArrayList<>();
 //		String sql =
 //				" "
 //				+ " SELECT distinct   \r\n"
-//				+ this.select 
+//				+ this.select
 //				+ " from FromErpInspect"
-//				
-//				; 
-//		List<Map<String, Object>> datas = this.database.queryList(sql);
+//
+//				;
+//		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 //		list = new ArrayList<>();
 //		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genFromErpInspectDetail(map));
@@ -308,7 +324,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainBillBatchDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ " WITH ProductionOrders AS (\r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a\r\n"
@@ -354,8 +370,8 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "      1 = 1 "
 				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
-				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; "; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainBillBatchDetail(map));
@@ -368,7 +384,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainProdDetail> list = new ArrayList<>();
 		String sql = ""
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -483,7 +499,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainProdDetail(map));
@@ -496,7 +512,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainProdSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -531,7 +547,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "     AND a.ProductionOrder NOT LIKE '20%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainProdSaleDetail(map));
@@ -545,19 +561,22 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<ProductionOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1  ";
+		String changeDateStartSafe = (changeDateStart == null ? "" : changeDateStart.replace("'", "''"));
+		String changeDateEndSafe = (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"));
+		String productionOrderSafe = (productionOrder == null ? "" : productionOrder.replace("'", "''"));
 		if ( ! changeDateStart.equals("")) {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
-					+ changeDateStart
+					+ changeDateStartSafe
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
-					+ changeDateEnd
+					+ changeDateEndSafe
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
 		if ( ! productionOrder.equals("")) {
-			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrderSafe + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT  \r\n"
@@ -595,7 +614,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ " FROM [FromErpMainProd] a\r\n"
 				+ where
 				+ " Order by SyncDate desc";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genProductionOrderLogDetail(map));
@@ -609,7 +628,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpMainSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS (  		  \r\n"
 				+ "	SELECT DISTINCT a.SaleOrder \r\n"
 				+ "	FROM FromErpMainSale AS a \r\n"
@@ -717,7 +736,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 
 		;
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpMainSaleDetail(map));
@@ -731,19 +750,22 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<SaleOrderLogDetail> list = null;
 		String where = " WHERE 1 = 1  ";
+		String changeDateStartSafe = (changeDateStart == null ? "" : changeDateStart.replace("'", "''"));
+		String changeDateEndSafe = (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"));
+		String saleOrderSafe = (saleOrder == null ? "" : saleOrder.replace("'", "''"));
 		if ( ! changeDateStart.equals("")) {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
-					+ changeDateStart
+					+ changeDateStartSafe
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
-					+ changeDateEnd
+					+ changeDateEndSafe
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
 		if ( ! saleOrder.equals("")) {
-			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrderSafe + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT  [SaleOrder]\r\n"
@@ -794,7 +816,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "  FROM  [FromErpMainSale] a\r\n"
 				+ where
 				+ " Order by SyncDate desc";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 //			list.add(this.bcModel._genProductionOrderLogDetail(map));
@@ -808,7 +830,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpPackingDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -861,18 +883,18 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //				+ "        WHEN PostingDate is null or  "
 //				+ "             PostingDate = '' THEN null \r\n"
 //				+ "        ELSE TRY_CAST( PostingDate AS DATETIME )  \r\n"
-//				+ "      END AS PostingDate, \r\n"   
+//				+ "      END AS PostingDate, \r\n"
 //				+ " TRY_CAST(Quantity AS decimal(13, 3)) as Quantity,\r\n"
 //				+ " TRY_CAST(RollNo AS NVARCHAR(10)) as RollNo,\r\n"
 //				+ " TRY_CAST(QuantityKG AS decimal(13, 3)) as QuantityKG,\r\n"
 //				+ " TRY_CAST(Grade AS NVARCHAR(10)) as Grade,\r\n"
 //				+ " TRY_CAST(No AS NVARCHAR(10)) as No,\r\n"
 //				+ " TRY_CAST(QuantityYD AS decimal(13, 3)) as QuantityYD ,\r\n"
-//				+ " [SyncDate]" 
+//				+ " [SyncDate]"
 //				+ " from FromErpPacking"
 
 		;
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpPackingDetail(map));
@@ -885,7 +907,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpPODetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -945,7 +967,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 
 		;
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpPODetail(map));
@@ -958,7 +980,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpSaleDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH SaleOrderLines AS (\r\n"
 				+ "    SELECT DISTINCT a.[SaleOrder] \r\n"
 				+ "    FROM [FromErpMainSale] AS a\r\n"
@@ -1013,7 +1035,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "		,B.*\r\n"
 				+ "FROM SaleOrderLines AS A \r\n"
 				+ "LEFT JOIN Sale AS B ON A.[SaleOrder] = B.SaleOrderCheck; \r\n";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpSaleDetail(map));
@@ -1026,7 +1048,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 	{
 		ArrayList<FromErpSubmitDateDetail> list = new ArrayList<>();
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 				+ "WITH ProductionOrders AS ( \r\n"
 				+ "	SELECT DISTINCT a.[ProductionOrder] \r\n"
 				+ "	FROM [FromErpMainProd] AS a \r\n"
@@ -1069,7 +1091,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "     AND a.ProductionOrder NOT LIKE 'WO%' \r\n"
 				+ "     AND a.ProductionOrder NOT LIKE 'Y2%' ; ";
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genFromErpSubmitDateDetail(map));
@@ -1084,7 +1106,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		// หา distinct ReplyDate (ไม่รวม NULL) จาก records ที่ sync ใน 1 ชั่วโมงล่าสุด
 		// แล้วดึงทุก record ที่: (1) ReplyDate อยู่ใน batch นั้น หรือ (2) sync ใน 1 ชั่วโมงและ ReplyDate = NULL
 		String sql = " "
-				+ this.declareTimeFocus
+				+ this.getActiveTimeFocus()
 //				+ " DECLARE @oneHourAgo DATETIME = DATEADD(HOUR, -1, GETDATE());\r\n"
 				+ "\r\n"
 				+ "-- CTE หาเฉพาะ ProdId ที่มีการเปลี่ยนแปลง (Update/Insert) ใน 1 ชั่วโมงที่ผ่านมา\r\n"
@@ -1151,7 +1173,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 //				+ "  -- กรองเอาเฉพาะ Row ของ ProdId นั้นๆ ที่เพิ่ง Sync หรือเป็นกลุ่มที่มีการ Reply แล้ว\r\n"
 //				+ "  AND (a.SYNCSTARTDATETIME >= @oneHourAgo OR a.[ReplyDate] IS NOT NULL);\r\n"
 				+ "  ;";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));

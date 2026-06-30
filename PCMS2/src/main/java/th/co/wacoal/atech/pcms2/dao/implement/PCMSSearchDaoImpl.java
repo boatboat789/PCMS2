@@ -1,28 +1,26 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSSearchDao;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class PCMSSearchDaoImpl implements PCMSSearchDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
-	private Database database;
+	private JdbcTemplate jdbc;
 
 	@Autowired
-	public PCMSSearchDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public PCMSSearchDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 	}
 
 	@Override
@@ -142,15 +140,11 @@ public class PCMSSearchDaoImpl implements PCMSSearchDao {
 		for (String t : tableNames) {
 			sql.append("IF OBJECT_ID('tempdb..").append(t).append("') IS NOT NULL DROP TABLE ").append(t).append(";\r\n");
 		}
-		Connection connection = this.database.getConnection();
-		PreparedStatement prepared = null;
-		try {
-			prepared = connection.prepareStatement(sql.toString());
-			prepared.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (prepared != null) try { prepared.close(); } catch (Exception ignored) {}
-		}
+		this.jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<Void>) conn -> {
+			try (Statement stmt = conn.createStatement()) {
+				stmt.execute(sql.toString());
+			}
+			return null;
+		});
 	}
 }

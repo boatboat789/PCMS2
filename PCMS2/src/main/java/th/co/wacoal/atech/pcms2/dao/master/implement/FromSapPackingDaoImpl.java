@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapPackingDao;
@@ -17,16 +21,16 @@ import th.co.wacoal.atech.pcms2.entities.PackingDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpPackingDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapPackingDaoImpl implements FromSapPackingDao {
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 	private String selectPacking = "      fsp.[Id]\r\n"
@@ -45,8 +49,8 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 			+ "      ,[CreateDate] \r\n ";;
 
 	@Autowired
-	public FromSapPackingDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapPackingDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 	}
 
 	@Override
@@ -54,14 +58,15 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 	{
 		ArrayList<PackingDetail> list = null;
 		String where = " where  ";
-		where += " " + " fsp.ProductionOrder = '" + prodOrder + "'  and \r\n" + " fsp.[DataStatus] = 'O' \r\n";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " " + " fsp.ProductionOrder = '" + prodOrderSafe + "'  and \r\n" + " fsp.[DataStatus] = 'O' \r\n";
 		String sql = ""
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectPacking
 				+ "  from [PCMS].[dbo].[FromSapPacking] as fsp\r\n"
 				+ "  left join [InspectSystem].[dbo].[InspectOrders] as insorder on fsp.[ProductionOrder] = insorder.[PrdNumber] \r\n "
 				+ where;
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPackingDetail(map));
@@ -75,13 +80,14 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 		String iconStatus = "I";
 
 		// ใช้ try-with-resources ตามสไตล์ Java 8 เพื่อจัดการ Connection
-		Connection conn = this.database.getConnection();
+		Connection conn = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false);
 
 			try (Statement stmt = conn.createStatement()) {
+				stmt.setQueryTimeout(300);
 				// 1. สร้าง Temp Table ให้ตรงตาม Schema (Decimal 13,3 และ Varchar
 				// ตามความยาวที่กำหนด)
 				stmt.execute("IF OBJECT_ID('tempdb..#TempPacking') IS NOT NULL DROP TABLE #TempPacking");
@@ -100,6 +106,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				// 2. Bulk Insert ข้อมูลจาก ArrayList ลงใน Temp Table
 				String insertTempSql = "INSERT INTO #TempPacking VALUES (?,?,?,?,?,?,?,?,?,?)";
 				try (PreparedStatement ps = conn.prepareStatement(insertTempSql)) {
+					ps.setQueryTimeout(300);
 					for (FromErpPackingDetail bean : paList) {
 						int idx = 1;
 						ps.setString(idx ++ , bean.getProductionOrder());
@@ -149,7 +156,8 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 //						+ "AND src.DataStatus <> 'X' "
 //						+ "AND src.RollNo IS NOT NULL AND src.RollNo <> ''");
 				// 3, 4, 5. รวมเป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
-				String upsertSql = "DECLARE @Now DATETIME = GETDATE(); "
+				String upsertSql = "SET XACT_ABORT ON; SET DEADLOCK_PRIORITY LOW; "
+						+ "DECLARE @Now DATETIME = GETDATE(); "
 
 						+ "/* 3. จัดการ DataStatus = 'X' */ "
 						+ "UPDATE target SET "
@@ -204,8 +212,10 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("[ERP-sync] upsertFromSapPackingDetail failed", e);
 			iconStatus = "E";
+		} finally {
+			DataSourceUtils.releaseConnection(conn, this.jdbc.getDataSource());
 		}
 		return iconStatus;
 	}

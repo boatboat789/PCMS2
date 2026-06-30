@@ -15,9 +15,15 @@ public class AppShutdownListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent e) {
+        try { kong.unirest.Unirest.shutDown(); } catch (Exception ignored) {}
+
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
-            try { DriverManager.deregisterDriver(drivers.nextElement()); } catch (SQLException ignored) {}
+            Driver driver = drivers.nextElement();
+            if (driver.getClass().getClassLoader() == cl) {
+                try { DriverManager.deregisterDriver(driver); } catch (SQLException ignored) {}
+            }
         }
     }
 }

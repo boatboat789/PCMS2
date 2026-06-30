@@ -25,6 +25,34 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/api-contract.md` | Gson response pattern, URL convention |
 | `.claude/rules/git-workflow.md` | commit convention, pre-commit checklist |
 
+### Prompts Library (`.claude/prompts/`)
+| ไฟล์ | ใช้เมื่อ |
+|---|---|
+| `.claude/prompts/review.md` | review code ก่อน commit |
+| `.claude/prompts/fix.md` | diagnose + fix bug |
+| `.claude/prompts/refactor.md` | ปรับโครงสร้างโดยไม่เปลี่ยน behavior |
+| `.claude/prompts/implement-feature.md` | เพิ่ม feature ใหม่ |
+
+### Business (อ่านก่อนแตะ logic)
+| ไฟล์ | เนื้อหา |
+|---|---|
+| `docs/business/roles.md` | role registry, visibility, permission matrix |
+| `docs/business/workflow.md` | status machine, transitions, process codes |
+| `docs/business/rules.md` | business rules, constraints, edge cases |
+
+### Technical Reference
+| ไฟล์ | เนื้อหา |
+|---|---|
+| `docs/architecture.md` | tech stack, layer design, package structure |
+| `docs/database.md` | qualifier, tables, SQL patch rules, temp table |
+| `docs/api.md` | Gson response, endpoint patterns |
+| `docs/deployment.md` | build, deploy, troubleshoot |
+
+### Design Decisions
+| ไฟล์ | สรุป |
+|---|---|
+| `docs/decision-records/ADR-000-template.md` | ADR template สำหรับบันทึกการตัดสินใจ |
+
 ### Shared Reference (workspace `docs/` และ `*/CLAUDE.md`)
 | ไฟล์ | เนื้อหา |
 |---|---|
@@ -50,7 +78,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | JSON | Gson — `new Gson().toJson(list)` / `new Gson().fromJson(json, Type)` เสมอ |
 | Auth | FilterLogin + AD — ไม่มี Spring Security ใน project นี้ |
 | URL ใหม่ | ไม่ต้องเพิ่ม intercept-url — FilterLogin จัดการทั้งหมด |
-| DB access | `th.in.totemplate.core.sql.Database` (core library) — ไม่ใช่ JdbcTemplate |
+| DB access | HikariCP 4.0.3 + `JdbcTemplate` + mssql-jdbc 9.4.1 (migrated 2026-06-19) — ไม่ใช่ `Database` core lib |
 | User session | `(User) session.getAttribute("user")` — ไม่ใช่ SecurityContext |
 | Context path | `/PCMS2` (server: `10.11.44.100:8080`) |
 
@@ -74,7 +102,7 @@ Deploy: Eclipse WTP → Run on Server (Tomcat) | context path: `/PCMS2`
 ## Architecture
 
 ```
-controller/ → service/ → dao/implement/ → Database (core lib) → SQL Server
+controller/ → service/ → dao/implement/ → JdbcTemplate / HikariCP → SQL Server
 ```
 
 **Package root:** `src/main/java/th/co/wacoal/atech/pcms2/`
@@ -91,7 +119,7 @@ controller/ → service/ → dao/implement/ → Database (core lib) → SQL Serv
 | `info/` | DB connection config holder classes |
 | `utilities/` | Shared helpers (`SqlStatementHandler`, `PCMSSqlService`) |
 
-- JSON: Gson (`@ResponseBody String`) — ดู `.claude/rules/backend-patterns.md`
+- JSON: Gson (`@ResponseBody String`) — ดู `backend/CLAUDE.md`
 - Auth: FilterLogin — ดู `.claude/rules/security.md`
 - JSPs: `src/main/webapp/WEB-INF/pages/`
 - Static: `src/main/webapp/resources/`
@@ -132,23 +160,27 @@ controller/ → service/ → dao/implement/ → Database (core lib) → SQL Serv
 
 ---
 
-## Temp Table Rules (✅ 2026-06-04)
+## Temp Table Rules (✅ updated 2026-06-20)
 
-PCMS2 ไม่มี JdbcTemplate — ใช้ `th.in.totemplate.core.sql.Database` (core library) ซึ่ง reuse connection จาก pool
+PCMS2 ใช้ HikariCP + JdbcTemplate (migrated 2026-06-19) — connection reuse จาก pool
 เมื่อ `#temp` จาก request ก่อนค้างบน connection → SQL Server compile batch ถัดไปด้วย schema เก่า → runtime error
 
 ### Pattern A — Read queries (`PCMSMain`, `PCMSDetail`, `PCMSDetailV2`)
 
 ```java
-// ✅ ถูกต้อง — drop-before + drop-after
+// ✅ ถูกต้อง — drop-before + drop-after; รองรับ batch ที่มี CREATE INDEX
 List<Map<String, Object>> datas =
-    SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
+    SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 
-// ❌ ห้ามใช้ตรง ๆ เมื่อ SQL มี SELECT INTO #temp
-this.database.queryList(sql);
+// ❌ ห้ามใช้ตรง ๆ เมื่อ SQL มี SELECT INTO #temp หรือ CREATE INDEX
+jdbc.queryForList(multiStatementSql);
 ```
 
-`PCMSSqlService.dropAllTemp` — ครอบคลุม 39 temp tables จาก read queries
+`PCMSSqlService.dropAllTemp` — ครอบคลุม 39+ temp tables จาก read queries
+
+`SqlStatementHandler.queryList()` ใช้ `stmt.execute()` + iterate results — รองรับ DDL (CREATE INDEX) ซึ่ง `queryForList()` (ใช้ `executeQuery()`) ทำไม่ได้
+
+**queryList() guarantees (2026-06-20):** DROP-before + main SQL + DROP-after วิ่งบน connection เดียวกัน · `finally` รัน `SET NOCOUNT OFF` + DROP-after เสมอแม้ SQL throw · `guard=50` ป้องกัน infinite loop
 
 **⚠️ ห้ามเพิ่ม PCMSSearch tables ใน `dropAllTemp`:**
 `#tempLotNoList`, `#tempUserStatusList`, `#tempCustomerList`, `#tempCustomerShortList`
@@ -156,16 +188,24 @@ this.database.queryList(sql);
 
 **Checklist เมื่อเพิ่ม `#temp` ใหม่ใน read query:**
 1. เพิ่ม entry ใน `PCMSSqlService.dropAllTemp`
-2. ใช้ `SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql)`
+2. ใช้ `SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql)`
 
 ### Pattern B — Upsert/write operations (FromSap* DAOs)
 
 ```java
+Connection conn = DataSourceUtils.getConnection(dataSource);
+try {
+    conn.setAutoCommit(false);
+    // ... PreparedStatement INSERT/UPDATE ...
+    conn.commit();
+} catch (Exception e) {
+    conn.rollback(); throw e;
 } finally {
     try (java.sql.Statement cleanup = conn.createStatement()) {
         cleanup.execute("IF OBJECT_ID('tempdb..#TempXxx') IS NOT NULL DROP TABLE #TempXxx");
     } catch (Exception ignored) {}
     try { conn.setAutoCommit(true); } catch (Exception e) { e.printStackTrace(); }
+    DataSourceUtils.releaseConnection(conn, dataSource);
 }
 ```
 

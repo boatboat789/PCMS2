@@ -4,11 +4,11 @@
 }
 
 #success-add {
-	background-color: green;
+	background-color: var(--pcms-feedback-success);
 }
 
 #fail-add {
-	background-color: salmon;
+	background-color: var(--pcms-feedback-fail);
 }
 
 .modal-content {

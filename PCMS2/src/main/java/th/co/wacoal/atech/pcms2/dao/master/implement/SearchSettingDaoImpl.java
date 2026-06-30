@@ -1,8 +1,5 @@
 package th.co.wacoal.atech.pcms2.dao.master.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +7,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.SearchSettingDao;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class SearchSettingDaoImpl implements SearchSettingDao {
@@ -26,14 +23,14 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public SearchSettingDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public SearchSettingDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -57,7 +54,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ "' and [ForPage] = '"
 				+ forPage
 				+ "' ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genSearchTableDetail(map));
@@ -109,45 +106,35 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ "            ? , ? , ? , ? , ?,"
 				+ "            ?"
 				+ "           )";
-		int index = 1;
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(index ++ , user);
-			prepared.setInt(index ++ , no);
-			prepared.setString(index ++ , customerName);
-			prepared.setString(index ++ , customerShortName);
-			prepared.setString(index ++ , saleOrder);
-			prepared.setString(index ++ , articleFG);
-			prepared.setString(index ++ , designFG);
-			prepared.setString(index ++ , prdOrder);
-			prepared.setString(index ++ , saleNumber);
-			prepared.setString(index ++ , materialNo);
-			prepared.setString(index ++ , labNo);
-			prepared.setString(index ++ , deliveryStatus);
-			prepared.setString(index ++ , dist);
-			prepared.setString(index ++ , saleStatus);
-			prepared.setString(index ++ , dueDate);
-			prepared.setString(index ++ , saleCreateDate);
-			prepared.setString(index ++ , prdCreateDate);
-			prepared.setString(index ++ , userStatus);
-			prepared.setString(index ++ , forPage);
-			prepared.setString(index ++ , division);
-			prepared.setString(index ++ , po);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.update(sql,
+					user,
+					no,
+					customerName,
+					customerShortName,
+					saleOrder,
+					articleFG,
+					designFG,
+					prdOrder,
+					saleNumber,
+					materialNo,
+					labNo,
+					deliveryStatus,
+					dist,
+					saleStatus,
+					dueDate,
+					saleCreateDate,
+					prdCreateDate,
+					userStatus,
+					forPage,
+					division,
+					po);
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		list.add(bean);
 		return list;
@@ -191,45 +178,34 @@ try {
 				+ "      ,[PrdCreateDate] = ? ,[UserStatus] = ? , [Division] = ? , [PurchaseOrder] = ?\r\n"
 				+ "  where  [EmployeeId] = ? and [ForPage] = ?";
 
-//				prepared.setString(1, userId);
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			int index = 1;
-			prepared.setInt(index ++ , no);
-			prepared.setString(index ++ , customerName);
-			prepared.setString(index ++ , customerShortName);
-			prepared.setString(index ++ , saleOrder);
-			prepared.setString(index ++ , articleFG);
-			prepared.setString(index ++ , designFG);
-			prepared.setString(index ++ , prdOrder);
-			prepared.setString(index ++ , saleNumber);
-			prepared.setString(index ++ , materialNo);
-			prepared.setString(index ++ , labNo);
-			prepared.setString(index ++ , deliveryStatus);
-			prepared.setString(index ++ , dist);
-			prepared.setString(index ++ , saleStatus);
-			prepared.setString(index ++ , dueDate);
-			prepared.setString(index ++ , saleCreateDate);
-			prepared.setString(index ++ , prdCreateDate);
-			prepared.setString(index ++ , userStatus);
-			prepared.setString(index ++ , division);
-			prepared.setString(index ++ , po);
-			prepared.setString(index ++ , user);
-			prepared.setString(index ++ , forPage);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.update(sql,
+					no,
+					customerName,
+					customerShortName,
+					saleOrder,
+					articleFG,
+					designFG,
+					prdOrder,
+					saleNumber,
+					materialNo,
+					labNo,
+					deliveryStatus,
+					dist,
+					saleStatus,
+					dueDate,
+					saleCreateDate,
+					prdCreateDate,
+					userStatus,
+					division,
+					po,
+					user,
+					forPage);
 			bean.setIconStatus("I");
 			bean.setSystemStatus("Save Success.");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		list.add(bean);
 		return list;

@@ -1,6 +1,5 @@
 package th.co.wacoal.atech.pcms2.dao.master.implement;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -10,6 +9,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapReceipeDao;
@@ -17,20 +18,19 @@ import th.co.wacoal.atech.pcms2.entities.ReceipeDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpReceipeDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapReceipeDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapReceipeDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -44,13 +44,14 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	{
 		ArrayList<ReceipeDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " a.ProductionOrder = '" + prodOrderSafe + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = "SELECT DISTINCT  \r\n"
 				+ "   [ProductionOrder],[No],[PostingDate] ,[LotNo],[Receipe],a.[DataStatus] \r\n"
 				+ " from [PCMS].[dbo].[FromSapReceipe] as a \r\n "
 				+ where
 				+ " Order by No";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genReceipeDetail(map));
@@ -61,99 +62,78 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	@Override
 	public String upsertFromSapReceipeDetail(ArrayList<FromErpReceipeDetail> paList)
 	{
-		String iconStatus = "I";
-
-		Connection conn = this.database.getConnection();
-		PreparedStatement prepared = null;
-
-		try {
+		String iconStatus = this.jdbc.execute((ConnectionCallback<String>) conn -> {
 			conn.setAutoCommit(false);
+			try {
+				try (Statement stmt = conn.createStatement()) {
+					// 1. สร้าง Temp Table (กำหนดขนาดตาม Schema ที่ส่งมา)
+					stmt.execute("IF OBJECT_ID('tempdb..#TempReceipe') IS NOT NULL DROP TABLE #TempReceipe");
 
-			try (Statement stmt = conn.createStatement()) {
-				// 1. สร้าง Temp Table (กำหนดขนาดตาม Schema ที่ส่งมา)
-				stmt.execute("IF OBJECT_ID('tempdb..#TempReceipe') IS NOT NULL DROP TABLE #TempReceipe");
-				
-				stmt.execute("CREATE TABLE #TempReceipe ("
-						+ "ProductionOrder VARCHAR(50) COLLATE DATABASE_DEFAULT, "
-						+ "LotNo VARCHAR(50) COLLATE DATABASE_DEFAULT, "
-						+ "DataStatus VARCHAR(1) COLLATE DATABASE_DEFAULT, "
-						+ "SyncDate DATETIME)");
+					stmt.execute("CREATE TABLE #TempReceipe ("
+							+ "ProductionOrder VARCHAR(50) COLLATE DATABASE_DEFAULT, "
+							+ "LotNo VARCHAR(50) COLLATE DATABASE_DEFAULT, "
+							+ "DataStatus VARCHAR(1) COLLATE DATABASE_DEFAULT, "
+							+ "SyncDate DATETIME)");
 
-				// 2. Bulk Insert ลง Temp Table
-				String insertTemp = "INSERT INTO #TempReceipe VALUES (?,?,?,?)";
-				try (PreparedStatement ps = conn.prepareStatement(insertTemp)) {
-					for (FromErpReceipeDetail bean : paList) {
-						int idx = 1;
-						ps.setString(idx ++ , bean.getProductionOrder());
-						ps.setString(idx ++ , bean.getLotNo());
-						ps.setString(idx ++ , bean.getDataStatus());
-						this.sshUtl.setSqlTimeStamp(ps, bean.getSyncDate(), idx ++ );
-						ps.addBatch();
+					// 2. Bulk Insert ลง Temp Table
+					String insertTemp = "INSERT INTO #TempReceipe VALUES (?,?,?,?)";
+					try (PreparedStatement ps = conn.prepareStatement(insertTemp)) {
+						for (FromErpReceipeDetail bean : paList) {
+							int idx = 1;
+							ps.setString(idx ++ , bean.getProductionOrder());
+							ps.setString(idx ++ , bean.getLotNo());
+							ps.setString(idx ++ , bean.getDataStatus());
+							sshUtl.setSqlTimeStamp(ps, bean.getSyncDate(), idx ++ );
+							ps.addBatch();
+						}
+						ps.executeBatch();
 					}
-					ps.executeBatch();
+					// 3 & 4. รวมเป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
+					String upsertSql =
+					      "DECLARE @Now DATETIME = GETDATE(); "
+
+					    + "/* 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน */ "
+					    + "UPDATE target SET "
+					    + "    target.LotNo = src.LotNo, "
+					    + "    target.DataStatus = src.DataStatus, "
+					    + "    target.ChangeDate = @Now, "
+					    + "    target.SyncDate = src.SyncDate "
+					    + "FROM [FromSapReceipe] AS target "
+					    + "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder; "
+
+					    + "/* 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder */ "
+					    + "INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
+					    + "SELECT "
+					    + "    src.ProductionOrder, src.LotNo, src.DataStatus, @Now, @Now, src.SyncDate "
+					    + "FROM #TempReceipe AS src "
+					    + "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
+					    + "WHERE target.ProductionOrder IS NULL "
+					    + "  AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> '';";
+
+					stmt.execute(upsertSql);
+
+					conn.commit();
+				} catch (Exception e) {
+					conn.rollback();
+					throw e;
+				} finally {
+				    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+				    try (java.sql.Statement cleanup = conn.createStatement()) {
+				        cleanup.execute("IF OBJECT_ID('tempdb..#TempReceipe') IS NOT NULL DROP TABLE #TempReceipe");
+				    } catch (Exception ignored) {}
+				    try {
+				        conn.setAutoCommit(true);
+				    } catch (Exception e) {
+				        e.printStackTrace();
+				    }
 				}
-				// 3 & 4. รวมเป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่แม่นยำ
-				String upsertSql = 
-				      "DECLARE @Now DATETIME = GETDATE(); "
-				    
-				    + "/* 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน */ "
-				    + "UPDATE target SET "
-				    + "    target.LotNo = src.LotNo, "
-				    + "    target.DataStatus = src.DataStatus, "
-				    + "    target.ChangeDate = @Now, "
-				    + "    target.SyncDate = src.SyncDate "
-				    + "FROM [FromSapReceipe] AS target "
-				    + "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder; "
-
-				    + "/* 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder */ "
-				    + "INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
-				    + "SELECT "
-				    + "    src.ProductionOrder, src.LotNo, src.DataStatus, @Now, @Now, src.SyncDate "
-				    + "FROM #TempReceipe AS src "
-				    + "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
-				    + "WHERE target.ProductionOrder IS NULL "
-				    + "  AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> '';";
-
-				stmt.execute(upsertSql);
-//				// 3. Update ข้อมูลเดิมที่มี ProductionOrder ตรงกัน
-//				stmt.execute("UPDATE target SET "
-//						+ "target.LotNo = src.LotNo, "
-//						+ "target.DataStatus = src.DataStatus, "
-//						+ "target.ChangeDate = GETDATE(), "
-//						+ "target.SyncDate = src.SyncDate "
-//						+ "FROM [FromSapReceipe] AS target "
-//						+ "INNER JOIN #TempReceipe AS src ON target.ProductionOrder = src.ProductionOrder");
-//
-//				// 4. Insert ข้อมูลใหม่ที่ยังไม่มี ProductionOrder
-//				stmt.execute(
-//						"INSERT INTO [FromSapReceipe] (ProductionOrder, LotNo, DataStatus, ChangeDate, CreateDate, SyncDate) "
-//								+ "SELECT src.ProductionOrder, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-//								+ "FROM #TempReceipe AS src "
-//								+ "LEFT JOIN [FromSapReceipe] AS target ON target.ProductionOrder = src.ProductionOrder "
-//								+ "WHERE target.ProductionOrder IS NULL "
-//								+ "AND src.ProductionOrder IS NOT NULL AND src.ProductionOrder <> ''");
-
-				conn.commit();
+				return "I";
 			} catch (Exception e) {
-				conn.rollback();
-				throw e;
-			}finally {
-			    // ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
-			    try (java.sql.Statement cleanup = conn.createStatement()) {
-			        cleanup.execute("IF OBJECT_ID('tempdb..#TempReceipe') IS NOT NULL DROP TABLE #TempReceipe");
-			    } catch (Exception ignored) {}
-			    try {
-			        conn.setAutoCommit(true);
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
+				e.printStackTrace();
+				return "E";
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			iconStatus = "E";
-		}
+		});
 		return iconStatus;
-	}
 //	@Override
 //	public String upsertFromSapReceipeDetail(ArrayList<FromErpReceipeDetail> paList)
 //	{
@@ -228,4 +208,5 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 //		}
 //		return iconStatus;
 //	}
+	}
 }

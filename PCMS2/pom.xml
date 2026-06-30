@@ -172,10 +172,35 @@
 			<version>20240303</version> <!-- Use latest version -->
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/jtds/jtds -->
+		<!-- jtds เอาออก 2026-06-20: ไม่มี code ใช้ jdbc:jtds: / ไม่มี SPI auto-register = dead weight
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
 			<version>1.2.4</version>
+		</dependency> -->
+
+		<!-- HikariCP connection pool -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>4.0.3</version>
+		</dependency>
+
+		<!-- spring-jdbc (JdbcTemplate, ConnectionCallback, DataSourceUtils) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Microsoft SQL Server JDBC driver -->
+		<!-- 9.4.1.jre8: 6.x สร้าง non-daemon Timer thread ถือ webapp classloader ค้างหลัง undeploy = leak;
+		     ไม่ใช้ 10+ (เช่น 12.6.1) เพราะ default encrypt=true จะชน SSL กับ connection string ที่ไม่มี encrypt param.
+		     9.4.1 default encrypt=false → connection เดิมใช้ได้ (เหมือน PPMM2/BGJOB) -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>9.4.1.jre8</version>
 		</dependency>
 
 	</dependencies>

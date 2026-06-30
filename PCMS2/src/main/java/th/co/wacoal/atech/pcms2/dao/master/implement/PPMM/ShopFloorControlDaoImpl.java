@@ -1,4 +1,4 @@
-	package th.co.wacoal.atech.pcms2.dao.master.implement.PPMM;
+package th.co.wacoal.atech.pcms2.dao.master.implement.PPMM;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,29 +7,30 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.PPMM.ShopFloorControlDao;
 import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
-import th.in.totemplate.core.sql.Database;
 
 @Component
 public class ShopFloorControlDaoImpl implements  ShopFloorControlDao{
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public ShopFloorControlDaoImpl( @Qualifier("ppmmDatabase")Database database) {
-		this.database = database;
+    public ShopFloorControlDaoImpl( @Qualifier("ppmmDatabase")JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 	}
 	@Override
 	public  ArrayList<ShopFloorControlDetail> getShopFloorControlDetailByProductionOrder(String prodOrder){
 		ArrayList<ShopFloorControlDetail> list = null;
-		String where = " where  "; 
-		where += " dfs.ProductionOrder = '" + prodOrder + "' and \r\n"
+		String where = " where  ";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " dfs.ProductionOrder = '" + prodOrderSafe + "' and \r\n"
 			+ "		dfs.[AdminStatus] = '-'\r\n";
 		String sql =
 				  "  SELECT DISTINCT  \r\n"
@@ -122,14 +123,14 @@ public class ShopFloorControlDaoImpl implements  ShopFloorControlDao{
 				  + "      (\r\n"
 				  + "			( dfs.[Operation] >= 100 and dfs.Operation <= 104 ) or\r\n"
 				  + "			( dfs.[Operation] in ( 50,60,145,180,200,201 )   )\r\n"
-				  + "		)  \r\n" 
+				  + "		)  \r\n"
 				  + " Order by dfs.[ProductionOrder],dfs.Operation\r\n"
-				  + "";  
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				  + "";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genShopFloorControlDetail(map));
 		}
 		return list;
-	} 
+	}
 }

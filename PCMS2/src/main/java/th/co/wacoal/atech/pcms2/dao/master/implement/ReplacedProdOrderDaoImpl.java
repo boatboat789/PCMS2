@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.ReplacedProdOrderDao;
@@ -19,7 +21,6 @@ import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.ReplacedProdOrderDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
@@ -29,14 +30,14 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public ReplacedProdOrderDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public ReplacedProdOrderDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -49,6 +50,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdRP(String prodOrder)
 	{
 		ArrayList<ReplacedProdOrderDetail> list = null;
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
 		String sql = "SELECT \r\n"
 				+ "		  [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -58,11 +60,11 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where Productionorder <> [ProductionOrderRP] and DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrderRP] = '"
-				+ prodOrder
+				+ prodOrderSafe
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genReplacedProdOrderDetail(map));
@@ -74,6 +76,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrd(String prodOrder)
 	{
 		ArrayList<ReplacedProdOrderDetail> list = null;
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
 		String sql = "SELECT \r\n"
 				+ "		  [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -84,11 +87,11 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  where Productionorder <> [ProductionOrderRP] and \r\n"
 				+ "        DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ prodOrderSafe
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genReplacedProdOrderDetail(map));
@@ -101,6 +104,9 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 			String saleLine)
 	{
 		ArrayList<ReplacedProdOrderDetail> list = null;
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		String saleOrderSafe = (saleOrder == null ? "" : saleOrder.replace("'", "''"));
+		String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
 		String sql = "SELECT \r\n"
 				+ "		  [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -110,17 +116,17 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ prodOrderSafe
 				+ "' and\r\n"
 				+ "       [SaleOrder] = '"
-				+ saleOrder
+				+ saleOrderSafe
 				+ "' and\r\n"
 				+ "       [SaleLine] = '"
-				+ saleLine
+				+ saleLineSafe
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genReplacedProdOrderDetail(map));
@@ -132,6 +138,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 	public ArrayList<ReplacedProdOrderDetail> getReplacedProdOrderDetailByPrdMain(String prodOrder)
 	{
 		ArrayList<ReplacedProdOrderDetail> list = null;
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
 		String sql = "SELECT \r\n"
 				+ "		  [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -141,11 +148,11 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ prodOrderSafe
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genReplacedProdOrderDetail(map));
@@ -182,8 +189,8 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "      , ? , ? "
 				+ "      )  "
 				+ ";";
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-		Connection connection = this.database.getConnection();
+
+		Connection connection = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
@@ -208,7 +215,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
@@ -220,6 +227,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 					prepared.close();
 				} catch (Exception e) {
 				}
+			DataSourceUtils.releaseConnection(connection, this.jdbc.getDataSource());
 		}
 		return bean;
 	}
@@ -235,15 +243,14 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
-//		String caseSave = bean.getCaseSave(); 
+//		String caseSave = bean.getCaseSave();
 		String sql = " UPDATE [PCMS].[dbo].[ReplacedProdOrder]"
 				+ " 	SET [DataStatus] = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " 	WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ?  "
 				+ " declare  @rc int = @@ROWCOUNT "
 				+ ";";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-		Connection connection = this.database.getConnection();
+		Connection connection = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
@@ -257,7 +264,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 			prepared.executeUpdate();
 			prepared.close();
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 //			System.err.println("ReplacedProdOrder"+e.getMessage());
@@ -270,6 +277,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 					prepared.close();
 				} catch (Exception e) {
 				}
+			DataSourceUtils.releaseConnection(connection, this.jdbc.getDataSource());
 		}
 		return bean;
 	}

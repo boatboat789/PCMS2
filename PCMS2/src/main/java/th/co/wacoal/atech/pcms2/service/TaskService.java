@@ -23,6 +23,7 @@ public class TaskService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final ConcurrentHashMap<String, Boolean> jobLocks = new ConcurrentHashMap<>();
+	private volatile boolean scheduleEnabled = true;
 
 	private void executeWithLock(String jobName, Runnable task)
 	{
@@ -44,19 +45,44 @@ public class TaskService {
 //		isCheck = true;
 	}
 
-//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour  
-	@Scheduled(cron = "0 13/20 * * * *")
+//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour
+	@Scheduled(cron = "0 11,41 * * * *")
+//	@Scheduled(cron = "0 13/20 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
-
+		if (!scheduleEnabled) {
+			log.info("[ERP-sync] schedule disabled — skip");
+			return;
+		}
 //		System.out.println("Start Date : " + new Date());
-		executeWithLock("ERP_SYNC_JOB", () -> { 
+		executeWithLock("ERP_SYNC_JOB", () -> {
 			handlerBackGroundZATTCustomerConfirm2();
 			runAllSyncJobs();
-			backGroundJobService.sortBackGroundAfterGetERPDataProcedure(); 
+			backGroundJobService.sortBackGroundAfterGetERPDataProcedure();
 		});
-		System.out.println("End Date : " + new Date());
+//		System.out.println("End Date : " + new Date());
 	}
+
+	public void runManual(String fromDate, String toDate) {
+		if (jobLocks.putIfAbsent("ERP_SYNC_JOB", true) != null) {
+			throw new IllegalStateException("job กำลังทำงานอยู่ กรุณารอให้เสร็จก่อน");
+		}
+		long start = System.currentTimeMillis();
+		try {
+			log.info("[ERP-sync-manual] START from={} to={}", fromDate, toDate);
+			backGroundJobService.runFullErpSyncWithDateRange(fromDate, toDate);
+			log.info("[ERP-sync-manual] END ({}ms)", System.currentTimeMillis() - start);
+		} catch (Exception e) {
+			log.error("[ERP-sync-manual] failed", e);
+			throw new RuntimeException("runManual failed: " + e.getMessage(), e);
+		} finally {
+			jobLocks.remove("ERP_SYNC_JOB");
+		}
+	}
+
+	public boolean isRunning() { return jobLocks.containsKey("ERP_SYNC_JOB"); }
+	public boolean isScheduleEnabled() { return scheduleEnabled; }
+	public void setScheduleEnabled(boolean enabled) { this.scheduleEnabled = enabled; }
 
 	public void handlerBackGroundZATTCustomerConfirm2()
 	{

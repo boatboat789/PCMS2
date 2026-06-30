@@ -3,14 +3,17 @@ package th.co.wacoal.atech.pcms2.dao.master.implement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapSubmitDateDao;
@@ -19,23 +22,23 @@ import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapSubmitDateDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapSubmitDateDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -52,6 +55,9 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 		String prdOrder = bean.getProductionOrder();
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String saleLine = bean.getSaleLine();
+		String prdOrderSafe = (prdOrder == null ? "" : prdOrder.replace("'", "''"));
+		String saleOrderSafe = (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''"));
+		String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
 		String sql = " SELECT \r\n"
 				+ "    	 [ProductionOrder]\r\n"
 				+ "      , [SaleOrder]\r\n"
@@ -62,13 +68,13 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 				+ "	   , '1:PCMS' as InputFrom \r\n"
 				+ " FROM [PCMS].[dbo].[PlanCFMDate]  as a\r\n"
 				+ " where a.[ProductionOrder] = '"
-				+ prdOrder
+				+ prdOrderSafe
 				+ "' and \r\n"
 				+ "       a.[SaleOrder] = '"
-				+ bean.getSaleOrder()
+				+ saleOrderSafe
 				+ "' and \r\n"
 				+ "       a.[SaleLine] = '"
-				+ saleLine
+				+ saleLineSafe
 				+ "' \r\n"
 				+ " union ALL  \r\n "
 				+ " SELECT \r\n"
@@ -81,12 +87,12 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 				+ "	   , '0:ERP365' as InputFrom \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n"
 				+ " where a.[ProductionOrder] = '"
-				+ prdOrder
+				+ prdOrderSafe
 				+ "' and SubmitDate is not null \r\n"
 				+ "   and a.[DataStatus] = 'O' \r\n"
 				+ " ORDER BY InputFrom ,CreateDate ";
 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
@@ -97,7 +103,7 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 //	@Override
 //	public String upsertFromSapSubmitDateDetail(ArrayList<FromErpSubmitDateDetail> paList)
 //	{
-////		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine())); 
+////		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 //		Calendar calendar = Calendar.getInstance();
 //		java.util.Date currentTime = calendar.getTime();
 //		long time = currentTime.getTime();
@@ -189,10 +195,10 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 //				prepared.setString(index ++ , bean.getDataStatus());
 //				prepared.setTimestamp(index ++ , new Timestamp(time));
 //				prepared.setTimestamp(index ++ , new Timestamp(time));
-//				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ ); 
+//				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 //				// ... set parameters ...
 //			    prepared.addBatch();
-//			    
+//
 //			    if (++count % 1000 == 0) { // ส่งทุกๆ 1000 records
 //			        prepared.executeBatch();
 //			        count =0 ;System.out.println(new Date());
@@ -200,7 +206,7 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 //			}
 //			prepared.executeBatch();
 //			prepared.close();
-//		} catch (SQLException e) { 
+//		} catch (SQLException e) {
 //			e.printStackTrace();
 //			iconStatus = "E";
 //		} finally {
@@ -213,19 +219,19 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 	public String upsertFromSapSubmitDateDetail(ArrayList<FromErpSubmitDateDetail> paList)
 	{
 		String iconStatus = "I";
-		Timestamp now = new Timestamp(System.currentTimeMillis());
 
-		Connection conn = this.database.getConnection();
+		Connection conn = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
 			conn.setAutoCommit(false);
 
 			try (Statement stmt = conn.createStatement()) {
+				stmt.setQueryTimeout(300);
 				// 1. สร้าง Temp Table ที่มีโครงสร้างเหมือนตารางจริง
 				// แก้ไขจุดสร้าง Temp Table
 				stmt.execute("IF OBJECT_ID('tempdb..#TempSubmitDate') IS NOT NULL DROP TABLE #TempSubmitDate");
-				 
+
 
 				stmt.execute("CREATE TABLE #TempSubmitDate (" + "ProductionOrder NVARCHAR(50) COLLATE DATABASE_DEFAULT, " + // เพิ่ม
 																															// COLLATE
@@ -239,6 +245,7 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 				// 2. Bulk Insert ข้อมูลทั้งหมดลง Temp Table
 				String insertTemp = "INSERT INTO #TempSubmitDate VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				try (PreparedStatement ps = conn.prepareStatement(insertTemp)) {
+					ps.setQueryTimeout(300);
 					for (FromErpSubmitDateDetail bean : paList) {
 						ps.setString(1, bean.getProductionOrder());
 						ps.setString(2, bean.getSaleOrder());
@@ -275,9 +282,10 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 //								+ "WHERE target.ProductionOrder IS NULL AND src.DataStatus != 'X'";
 //				stmt.execute(insertSql);
 				// รวมข้อ 3 และ 4 เป็น Batch เดียวเพื่อคุมเวลาและเพิ่มประสิทธิภาพ
-				String upsertSql = 
-				      "DECLARE @Now DATETIME = GETDATE(); "
-				    
+				String upsertSql =
+				      "SET XACT_ABORT ON; SET DEADLOCK_PRIORITY LOW; "
+				    + "DECLARE @Now DATETIME = GETDATE(); "
+
 				    + "/* 3. Update ข้อมูลเดิม โดยมีการเช็ก DataStatus = 'X' เพื่อรักษาค่าเดิม */ "
 				    + "UPDATE target SET "
 				    + "    target.SubmitDate = CASE WHEN src.DataStatus = 'X' THEN target.SubmitDate ELSE src.SubmitDate END, "
@@ -322,8 +330,10 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 			    }
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("[ERP-sync] upsertFromSapSubmitDateDetail failed", e);
 			iconStatus = "E";
+		} finally {
+			DataSourceUtils.releaseConnection(conn, this.jdbc.getDataSource());
 		}
 		return iconStatus;
 	}

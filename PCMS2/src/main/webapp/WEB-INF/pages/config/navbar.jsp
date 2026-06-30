@@ -26,8 +26,7 @@
                     PCMS - Detail
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDetailDropdown"> 
-                    <a id="PCMSDetailPage" class="dropdown-item" href="${contextpath}/Detail">PCMS - Detail</a> 
-<%--                     <a id="PCMSDetailV2Page" class="dropdown-item" href="${contextpath}/DetailV2">PCMS - Detail (ViewOnly)</a> --%>
+                    <a id="PCMSDetailPage" class="dropdown-item" href="${contextpath}/Detail">PCMS - Detail</a>
                 </div>
             </li>
         </c:if>
@@ -50,8 +49,17 @@
                 </div>
             </li> 
         </c:if>
+        <c:if test="${permit.permitId == 'ADMIN' || permit.permitId == 'ITSUPP'}">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Setting </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="${contextpath}/Setting/JobManagement">Job Management</a>
+                    <a class="dropdown-item" href="${contextpath}/Setting/PermitManagement">Permit Management</a>
+                </div>
+            </li>
+        </c:if>
     </ul>
-</div>   
+</div>
 	<ul class="nav navbar-nav navbar-right ml-auto">    
 				<li class="nav-item dropdown">
 					<a class="nav-item nav-link dropdown-toggle mr-md-2" 
@@ -61,13 +69,13 @@
 						aria-haspopup="true" 
 						aria-expanded="false">
 						<span>
-						<i class="fa fa-user"  ></i> &nbsp;<%=session.getAttribute("user")%> </span>
+						<i class="fas fa-user"  ></i> &nbsp;<%=session.getAttribute("user")%> </span>
 					</a> 
 					<div id="navbarDropdownLogout" 
 						class="dropdown-menu dropdown-menu-right " 
 						aria-labelledby="navbarViewPagesDropdownMenuLink">
 						<a href="${contextpath}/logout" class=" dropdown-item">
-							<i class="fa fa-sign-out" aria-hidden="true"></i>Sign Out
+							<i class="fas fa-sign-out" aria-hidden="true"></i>Sign Out
 						</a>
 					</div>
 				</li>

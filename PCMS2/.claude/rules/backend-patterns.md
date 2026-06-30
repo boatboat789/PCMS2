@@ -7,7 +7,7 @@
 public class FooDaoImpl implements FooDao {
 
     @Autowired
-    @Qualifier("xxxJdbcTemplate")   // ← ตรวจให้ถูก qualifier ก่อนเสมอ
+    @Qualifier("pcmsDatabase")   // ← pcmsDatabase / ppmmDatabase / sorDatabase / erpDatabase
     private JdbcTemplate jdbc;
 
     @Override
@@ -18,31 +18,44 @@ public class FooDaoImpl implements FooDao {
 }
 ```
 
-## Temp Table — Pattern A (2-arg queryList)
+## Temp Table — Pattern A (SqlStatementHandler.queryList)
 
-ใช้เมื่อ DAO มี helper `queryList(db, dropSql, sql)` ที่ DROP ใน finally:
+ใช้เมื่อ SQL มี `SELECT INTO #temp` หรือ `CREATE INDEX` ใน batch เดียวกัน:
 
 ```java
-String dropSql = "IF OBJECT_ID('tempdb..#MyTemp') IS NOT NULL DROP TABLE #MyTemp";
-String sql = "SELECT * INTO #MyTemp FROM ... ; SELECT * FROM #MyTemp";
-return queryList(jdbc, dropSql, sql);
+// ✅ ถูกต้อง — drop-before + drop-after + รองรับ DDL (CREATE INDEX)
+List<Map<String, Object>> datas =
+    SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
+
+// ❌ ห้าม — executeQuery() expect result set เป็น response แรก; DDL done packet ทำให้ error
+jdbc.queryForList(multiStatementSql);
 ```
 
-## Temp Table — Pattern B (try/finally DROP)
+`SqlStatementHandler.queryList()` ใช้ `stmt.execute()` + iterate `getMoreResults()` แทน `executeQuery()` — จึงรองรับ batch ที่มี `CREATE INDEX` ซึ่งส่ง done packet ก่อน result set
 
-ใช้เมื่อไม่มี helper หรือต้องการควบคุมเอง:
+> ⚠️ PCMS2: ห้ามรวม `PCMSSearch` tables ใน `PCMSSqlService.dropAllTemp`:
+> `#tempLotNoList`, `#tempUserStatusList`, `#tempCustomerList`, `#tempCustomerShortList`
+
+## Temp Table — Pattern B (explicit connection, try/finally DROP)
+
+ใช้เมื่อ upsert/write ด้วย explicit connection:
 
 ```java
-String dropSql = "IF OBJECT_ID('tempdb..#MyTemp') IS NOT NULL DROP TABLE #MyTemp";
+Connection conn = DataSourceUtils.getConnection(dataSource);
 try {
-    String sql = "SELECT * INTO #MyTemp FROM ...; SELECT * FROM #MyTemp";
-    return jdbc.query(sql, new BeanPropertyRowMapper<>(Foo.class));
+    conn.setAutoCommit(false);
+    // ... PreparedStatement INSERT/UPDATE ...
+    conn.commit();
+} catch (Exception e) {
+    conn.rollback(); throw e;
 } finally {
-    jdbc.execute(dropSql);
+    try (java.sql.Statement cleanup = conn.createStatement()) {
+        cleanup.execute("IF OBJECT_ID('tempdb..#MyTemp') IS NOT NULL DROP TABLE #MyTemp");
+    } catch (Exception ignored) {}
+    try { conn.setAutoCommit(true); } catch (Exception e) { e.printStackTrace(); }
+    DataSourceUtils.releaseConnection(conn, dataSource);
 }
 ```
-
-> ⚠️ PCMS2: ห้ามรวม `PCMSSearch` tables ใน dropAllTemp — มี lifecycle ต่างออกไป
 
 ## Stored Procedure ที่ต้องการ Output Parameter
 
@@ -94,7 +107,7 @@ private static final ThreadLocal<SimpleDateFormat> SDF =
 
 อย่าเก็บ mutable state เป็น field ของ singleton — จะ race condition ระหว่าง threads
 
-## Security (Spring Security — ใช้เฉพาะโปรเจกต์ที่ระบุ)
+## Auth — PCMS2 ใช้ FilterLogin เท่านั้น
 
-3 โปรเจกต์หลัก (PCMS2/SFC/PPMM2) **ไม่ใช้ Spring Security** — ใช้ `FilterLogin` + AD แทน  
-ดู `docs/<project>.md` ถ้าโปรเจกต์นั้นใช้ Spring Security
+PCMS2 **ไม่ใช้ Spring Security** — ไม่มี `@PreAuthorize`, ไม่มี SecurityContext  
+ดูรายละเอียดใน `.claude/rules/security.md`

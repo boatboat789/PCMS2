@@ -128,6 +128,9 @@ $('#mySelect').append(new Option(text, value, false, true)).selectpicker('refres
 |---|---|
 | 403 หน้าใหม่ | intercept-url ใน spring-security.xml ไม่ครอบ URL |
 | #temp table already exists | ไม่มี DROP ใน finally — ใช้ Pattern A/B |
+| #temp ค้างแม้มี DROP (concurrent load) | DROP กับ main SQL วิ่งบน connection คนละตัว — ต้องย้าย DROP เข้าใน `StatementCallback` (`stmt.execute(dropSql)`) |
+| `jdbc.update()` คืน 0 ทั้งที่ row update จริง | `SET NOCOUNT ON` ติดค้างที่ connection session — ต้อง `SET NOCOUNT OFF` ใน finally ก่อน release connection |
+| SimpleDateFormat: corrupt date ตอน concurrent | `SimpleDateFormat` instance field ใน singleton — ต้อง `ThreadLocal<SimpleDateFormat>` ทั้ง static และ instance field |
 | selectpicker blank | ไม่ได้ refresh() หลัง container visible |
 | Cache ส่งข้อมูลผิด user | cache key ไม่มี userId |
 | Status transition ไม่เกิด | ไม่มี record ใน workflow transition table |

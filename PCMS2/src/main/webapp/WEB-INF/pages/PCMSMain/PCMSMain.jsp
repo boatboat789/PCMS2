@@ -18,8 +18,8 @@
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
-	<div id="wrapper-center" class="row" style="margin: 0px 5px;">
-		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px; margin: 0px 0px;">
+	<div id="wrapper-center">
+		<div class="content-panel">
 			<div class="table-responsive ">
 				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%; font-size: 12.5px; width: 100%">
 					<thead>
@@ -98,8 +98,13 @@ var dd = String('0' + today.getDate()).slice(-2);
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy;      
-var MainTable ;  
-var poTable ;       
+var MainTable ;
+var poTable ;
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+}       
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
@@ -222,11 +227,12 @@ $(document) .ready( function() {
     $('#btn_loadDefault').on( 'click', function () {       
 	     loadDefault();
 	} );
-    $('#btn_search').on( 'click', function () {      
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
     	$("#submit_button").click()
-    	soLineTmp = '';            
-		soTmp = '';   
-    	searchByDetail();          
+    	soLineTmp = '';
+		soTmp = '';
+    	searchByDetail();
  	} );                             
     $('#btn_colSetting').on( 'click', function () {      
 // 		MainTable. colReorder.order( [ 5,24,25,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ,1  ] ); 
@@ -250,23 +256,23 @@ $(document) .ready( function() {
     $('#btn_prdDetail').on( 'click', function () {    
     	var tblData = MainTable.rows( '.selected').data();    
 		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
+			Swal.fire({
+	   		    title: 'คำเตือน',   
 	   		    text: 'Need to select atleast 1 row.',
 	   		    icon: 'warning',
 	   		    timer: 1000,
-	   		    buttons: false,
+	   		    showConfirmButton: false,
 	   		})
 		}         
 		else {
 			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
+				Swal.fire({
+		   		    title: 'คำเตือน',   
 		   		    text: 'Need to select atleast 1 row.',
 		   		    icon: 'warning',
 		   		    timer: 1000, 
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}      
 			else {
@@ -350,7 +356,7 @@ $(document) .ready( function() {
 			columnDefs :  [	        
 				{ targets:[10]  ,           
 					render: function (data, type, row) {	   
-						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
+						let html = '<div name="n_'+row.productionOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.productionOrder+'</div>'
 						return  html; 
 				   	  }    
 				},     
@@ -396,8 +402,8 @@ $(document) .ready( function() {
 					$('td', row).eq(mapsDataHeader.get("deliveryDate")).addClass('bg-color-azure');  
 				} 
 			},      
-			drawCallback: function( settings ) { 
-//	 			console.log(settings) 
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
 			},   
 			initComplete: function () {  
 				if ( isCustomer == 1 ) {      
@@ -835,22 +841,22 @@ function searchByDetail(){
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
-		swal({
-   		    title: 'Warning',
+		Swal.fire({
+   		    title: 'คำเตือน',
    		    text: 'Need select some field for search.',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	} 
 
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
+		Swal.fire({
+   		    title: 'คำเตือน',
    		    text: 'Need to choose distribute channel from check box.',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
@@ -1048,10 +1054,9 @@ function getPrdDetailByRow(arrayTmp) {
 			setModalDetail(data);   
 		},     
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});      
 }     
 function clearInput(){
@@ -1076,23 +1081,24 @@ function clearInput(){
 	$('#multi_cusShortName').selectpicker('refresh'); 
 	$('#multi_division').selectpicker('refresh');       
 }
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",   
-		data: JSON.stringify(arrayTmp),    
-		url: ctx+"/Main/searchByDetail", 
-		success: function(data) {   
-			MainTable.clear();        
-			MainTable.rows.add(data);           
-			MainTable.draw();      
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Main/searchByDetail",
+		success: function(data) {
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }      
 function setModalDetail(data){
     
@@ -1316,29 +1322,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }     
 function addUserStatusOption(data ){ 
@@ -1494,29 +1498,27 @@ function saveDefault( ){
 			if(response.length > 0){
 				var bean = response[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  //E
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
@@ -1530,20 +1532,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
 				 	text: "No search default data."  , 
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 

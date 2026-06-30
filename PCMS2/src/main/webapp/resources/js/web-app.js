@@ -11,29 +11,32 @@ var urlQCMSObj;
 var os;
 var userId = '';
 var isCustomer;
+
+var VIRTUAL_PRD_ORDERS = ["รอจัด Lot", "ขาย stock", "รับจ้างถัก", "พ่วงแล้วรอสวม", "รอสวมเคยมี Lot", "Lot ขายแล้ว"];
+
 $(document).ready(function() {
     initializeData();
     //--------------------------------------- SEARCH ----------------------------------------------
     $('#btn_lbms').on('click', function() {
         var tblData = MainTable.rows('.selected').data();
         if (tblData.length == 0) {
-            swal({
-                title: 'Warning',
+            Swal.fire({
+                title: 'คำเตือน',
                 text: 'Need to select atleast 1 row.',
                 icon: 'warning',
                 timer: 1000,
-                buttons: false,
+                showConfirmButton: false,
             })
         }
         else {
             var prdOrder = tblData[0].productionOrder
-            if (prdOrder == "รอจัด Lot" || prdOrder == "ขาย stock" || prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม" || prdOrder == "รอสวมเคยมี Lot" || prdOrder == "Lot ขายแล้ว") {
-                swal({
-                    title: 'Warning',
+            if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
+                Swal.fire({
+                    title: 'คำเตือน',
                     text: 'Need to select atleast 1 row.',
                     icon: 'warning',
                     timer: 1000,
-                    buttons: false,
+                    showConfirmButton: false,
                 })
             }
             else {
@@ -46,23 +49,23 @@ $(document).ready(function() {
     $('#btn_inspect').on('click', function() {
         var tblData = MainTable.rows('.selected').data();
         if (tblData.length == 0) {
-            swal({
-                title: 'Warning',
+            Swal.fire({
+                title: 'คำเตือน',
                 text: 'Need to select atleast 1 row.',
                 icon: 'warning',
                 timer: 1000,
-                buttons: false,
+                showConfirmButton: false,
             })
         }
         else {
             var prdOrder = tblData[0].productionOrder
-            if (prdOrder == "รอจัด Lot" || prdOrder == "ขาย stock" || prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม" || prdOrder == "รอสวมเคยมี Lot" || prdOrder == "Lot ขายแล้ว") {
-                swal({
-                    title: 'Warning',
+            if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
+                Swal.fire({
+                    title: 'คำเตือน',
                     text: 'Need to select atleast 1 row.',
                     icon: 'warning',
                     timer: 1000,
-                    buttons: false,
+                    showConfirmButton: false,
                 })
             }
             else {
@@ -76,23 +79,23 @@ $(document).ready(function() {
     $('#btn_sfc').on('click', function() {
         var tblData = MainTable.rows('.selected').data();
         if (tblData.length == 0) {
-            swal({
-                title: 'Warning',
+            Swal.fire({
+                title: 'คำเตือน',
                 text: 'Need to select atleast 1 row.',
                 icon: 'warning',
                 timer: 1000,
-                buttons: false,
+                showConfirmButton: false,
             })
         }
         else {
             var prdOrder = tblData[0].productionOrder
-            if (prdOrder == "รอจัด Lot" || prdOrder == "ขาย stock" || prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม" || prdOrder == "รอสวมเคยมี Lot" || prdOrder == "Lot ขายแล้ว") {
-                swal({
-                    title: 'Warning',
+            if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
+                Swal.fire({
+                    title: 'คำเตือน',
                     text: 'Need to select atleast 1 row.',
                     icon: 'warning',
                     timer: 1000,
-                    buttons: false,
+                    showConfirmButton: false,
                 })
             }
             else {
@@ -107,23 +110,23 @@ $(document).ready(function() {
     $('#btn_qcms').on('click', function() {
         var tblData = MainTable.rows('.selected').data();
         if (tblData.length == 0) {
-            swal({
-                title: 'Warning',
+            Swal.fire({
+                title: 'คำเตือน',
                 text: 'Need to select atleast 1 row.',
                 icon: 'warning',
                 timer: 1000,
-                buttons: false,
+                showConfirmButton: false,
             })
         }
         else {
             var prdOrder = tblData[0].productionOrder
-            if (prdOrder == "รอจัด Lot" || prdOrder == "ขาย stock" || prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม" || prdOrder == "รอสวมเคยมี Lot" || prdOrder == "Lot ขายแล้ว") {
-                swal({
-                    title: 'Warning',
+            if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
+                Swal.fire({
+                    title: 'คำเตือน',
                     text: 'Need to select atleast 1 row.',
                     icon: 'warning',
                     timer: 1000,
-                    buttons: false,
+                    showConfirmButton: false,
                 })
             }
             else {
@@ -160,14 +163,14 @@ async function initializeData() {
     urlInspectObj = domain + "/InspectSystem/search/home.html";
     urlQCMS = domain + "/QCMS/first.html";
     urlQCMSObj = domain + "/QCMS/request/search.html";
-    // ---------------------------------------- set---------- 
+    // ---------------------------------------- set----------
     if (isCustomer == true) {
         isCustomer = 1
     }
     else {
         isCustomer = 0;
     }
-}  
+}
 function getEncrypted(webApp, tblData, userId, arrayTmp) {
     $.ajax({
         type: "POST",
@@ -194,27 +197,27 @@ function getEncrypted(webApp, tblData, userId, arrayTmp) {
 function goToLBMS(tblData, pUserId, data) {
     var prdOrder = tblData[0].productionOrder
     var article = tblData[0].articleFG
-    var color = tblData[0].color	 
-	var matNo = tblData[0].materialNo	     
-	if (typeof article === 'undefined' || typeof color === 'undefined' ) {  
+    var color = tblData[0].color
+	var matNo = tblData[0].materialNo
+	if (typeof article === 'undefined' || typeof color === 'undefined' ) {
 		// 1. เช็คว่ามีข้อมูล และยาวพอที่จะตัด (Prefix 1 + Article 8 = 9 ตัว)
 		article = '';
 		color = '';
 		if (matNo.length >= 9) {
-		    
+
 		    // 2. เช็ค Prefix ตัวแรก (K, P, O)
 		    var prefix = matNo.charAt(0).toUpperCase();
 		    if (prefix === 'K' || prefix === 'P' || prefix === 'O'|| prefix === 'H'|| prefix === 'V') {
-		        
+
 		        article = matNo.substring(1, 9); // ตัดเอาตัวที่ 2 ถึง 9
 		        color = matNo.substring(9);      // ที่เหลือคือ Color
-		        
+
 		        // 3. ถ้า color ว่าง (กรณีไม่มีข้อมูลต่อท้าย) ให้ใส่ default
 		        if (color === "") color = "-";
 		    }
 		}
-	} 
-    $.ajax({    
+	}
+    $.ajax({
         url: urlLBMS,
         type: 'GET',
         data: {
@@ -226,7 +229,7 @@ function goToLBMS(tblData, pUserId, data) {
             var tab = window.open(url);  //var tab = window.open(url, '_blank').focus();
             tab.onload = function() {
                 tab.document.getElementById('input_article').value = article;
-                tab.document.getElementById('input_color').value = color;  //'S2A001'  
+                tab.document.getElementById('input_color').value = color;  //'S2A001'
                 tab.searchHistory();
                 tab.document.getElementById('nav-prd-tab').click();
                 setTimeout(function() {
@@ -238,10 +241,8 @@ function goToLBMS(tblData, pUserId, data) {
             });
         },
         error: function(e) {
-            swal("Fail", "Please contact to IT", "error");
+            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
-        },
-        done: function(e) {
         }
     });
 }
@@ -264,10 +265,8 @@ function goToSFC(tblData, pUserId, data) {
             };
         },
         error: function(e) {
-            swal("Fail", "Please contact to IT", "error");
+            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
-        },
-        done: function(e) {
         }
     });
 }
@@ -289,10 +288,8 @@ function goToInspect(tblData, pUserId, data) {
             };
         },
         error: function(e) {
-            swal("Fail", "Please contact to IT", "error");
+            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
-        },
-        done: function(e) {
         }
     });
 }
@@ -300,25 +297,25 @@ function goToQCMS(tblData, pUserId, data) {
     var article = tblData[0].articleFG
     var lotNo = tblData[0].lotNo
     var color = tblData[0].color
-	var matNo = tblData[0].materialNo	     
-	if (typeof article === 'undefined' || typeof color === 'undefined' ) {  
+	var matNo = tblData[0].materialNo
+	if (typeof article === 'undefined' || typeof color === 'undefined' ) {
 		// 1. เช็คว่ามีข้อมูล และยาวพอที่จะตัด (Prefix 1 + Article 8 = 9 ตัว)
 		article = '';
 		color = '';
 		if (matNo.length >= 9) {
-		    
+
 		    // 2. เช็ค Prefix ตัวแรก (K, P, O)
 		    var prefix = matNo.charAt(0).toUpperCase();
 		    if (prefix === 'K' || prefix === 'P' || prefix === 'O'|| prefix === 'H'|| prefix === 'V') {
-		        
+
 		        article = matNo.substring(1, 9); // ตัดเอาตัวที่ 2 ถึง 9
 		        color = matNo.substring(9);      // ที่เหลือคือ Color
-		        
+
 		        // 3. ถ้า color ว่าง (กรณีไม่มีข้อมูลต่อท้าย) ให้ใส่ default
 		        if (color === "") color = "-";
 		    }
 		}
-	} 
+	}
     $.ajax({
         url: urlQCMSObj,
         type: 'GET',
@@ -333,19 +330,17 @@ function goToQCMS(tblData, pUserId, data) {
             tab.onload = function() {
                 tab.document.getElementById('article').value = article;  //'S2A001'
                 tab.document.getElementById('lotNumber').value = lotNo;  //'S2A001'
-                tab.document.getElementById('color').value = color;  //'S2A001' 
+                tab.document.getElementById('color').value = color;  //'S2A001'
                 if (isCustomer != 1) {
                     setTimeout(function() {
                         tab.document.getElementById('btnSearchRequest').click();
                     }, 500);
                 }
             };
-        }			,
-        error: function(e) {
-            swal("Fail", "Please contact to IT", "error");
-            console.log(e)
         },
-        done: function(e) {
+        error: function(e) {
+            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+            console.log(e)
         }
     });
-} 
+}

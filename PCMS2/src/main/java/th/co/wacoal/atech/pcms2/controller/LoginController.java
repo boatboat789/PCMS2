@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import th.co.wacoal.atech.pcms2.entities.EmployeeDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.UserDetail;
-import th.co.wacoal.atech.pcms2.info.AdInfo;
 import th.co.wacoal.atech.pcms2.service.LogInService;
 import th.co.wacoal.atech.pcms2.service.master.EmployeePermitsService;
 import th.co.wacoal.atech.pcms2.service.master.PermitsService;
@@ -105,33 +104,29 @@ public class LoginController {
 		} else { 
 			user.setUserId(userId);
 			user.setPassword(userPassword);
-			try {
-				AdInfo info = AdInfo.getInstance();
-				ActiveDirectory.getAttributes(ActiveDirectory.getContext(info, user.getUserId(), user.getPassword()),
-						info.getSearchName(), info.getSearchFilter(user.getUserId()), new AuthenAttributes() {
-							@Override
-							public void set(Attributes attribute)
-							{
-								try {
-									user.setDepartment(((attribute.get("department") == null) ? ""
-											: attribute.get("department").get().toString()));
-									user.setFirstName(((attribute.get("givenName") == null) ? ""
-											: attribute.get("givenName").get().toString()));
-									user.setLastName(((attribute.get("sn") == null) ? "" : attribute.get("sn").get().toString()));
-									user.setEmail(
-											((attribute.get("mail") == null) ? "" : attribute.get("mail").get().toString()));
-									temp.setStatus(true);
-									session.setAttribute("user", userId);
-									session.setAttribute("userObject", user);
-//		                 				session.setAttribute("userObject", g.toJson(user));
-								} catch (NamingException e) {
-									e.printStackTrace();
-								}
+			ActiveDirectory.getAttributes(user.getUserId(), user.getPassword(),
+					"dc=atech,dc=co,dc=th", "(&(cn=" + user.getUserId() + ")(objectClass=*))",
+					new AuthenAttributes() {
+						@Override
+						public void set(Attributes attribute)
+						{
+							try {
+								user.setDepartment(((attribute.get("department") == null) ? ""
+										: attribute.get("department").get().toString()));
+								user.setFirstName(((attribute.get("givenName") == null) ? ""
+										: attribute.get("givenName").get().toString()));
+								user.setLastName(((attribute.get("sn") == null) ? "" : attribute.get("sn").get().toString()));
+								user.setEmail(
+										((attribute.get("mail") == null) ? "" : attribute.get("mail").get().toString()));
+								user.setPassword("");
+								temp.setStatus(true);
+								session.setAttribute("user", userId);
+								session.setAttribute("userObject", user);
+							} catch (NamingException e) {
+								e.printStackTrace();
 							}
-						});
-			} catch (NamingException e) { 
-				e.printStackTrace();
-			}
+						}
+					});
 			// if authen pass
 			if ( ! temp.getStatus()) {
 				UserDetail userTMP = logInService.getUserDetail(userId, userPassword);

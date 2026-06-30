@@ -1,4 +1,4 @@
-	package th.co.wacoal.atech.pcms2.dao.master.implement;
+package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapDyeingDao;
 import th.co.wacoal.atech.pcms2.entities.DyeingDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
@@ -41,14 +41,14 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public FromSapDyeingDaoImpl(@Qualifier("pcmsDatabase")Database database) {
-		this.database = database;
+    public FromSapDyeingDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -58,8 +58,9 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	@Override
 	public  ArrayList<DyeingDetail> getFromSapDyeingDetailByProductionOrder(String prodOrder){
 		ArrayList<DyeingDetail> list = null;
-		String where = " where  "; 
-		where += " dfs.ProductionOrder = '" + prodOrder + "'  and "
+		String where = " where  ";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " dfs.ProductionOrder = '" + prodOrderSafe + "'  and "
 				+ "		dfs.[Operation] >= 100 and dfs.Operation <= 104 and\r\n"
 				+ "	    dfs.[AdminStatus] = '-'\r\n";
 		String sql =
@@ -70,12 +71,12 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 				 + "  left join [PPMM].[dbo].[ShopFloorControlDetail] as sfc on sfc.[ProductionOrder] = dfs.[ProductionOrder] and\r\n"
 				 + "													        sfc.[Operation] = dfs.[Operation]\r\n "
 				 + where
-				 + " Order by dfs.Operation"; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				 + " Order by dfs.Operation";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genDyeingDetail(map));
 		}
 		return list;
-	} 
+	}
 }

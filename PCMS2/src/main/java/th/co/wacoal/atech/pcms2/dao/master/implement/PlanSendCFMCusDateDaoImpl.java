@@ -1,4 +1,4 @@
-	package th.co.wacoal.atech.pcms2.dao.master.implement;
+package th.co.wacoal.atech.pcms2.dao.master.implement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.PlanSendCFMCusDateDao;
@@ -14,7 +15,6 @@ import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
@@ -24,14 +24,14 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-    public PlanSendCFMCusDateDaoImpl(@Qualifier("pcmsDatabase")Database database) {
-		this.database = database;
+    public PlanSendCFMCusDateDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -41,7 +41,8 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 	@Override
 	public ArrayList<InputDateDetail> getSendCFMCusDateDetail(ArrayList<PCMSSecondTableDetail> poList) {
 		ArrayList<InputDateDetail> list = null;
-		PCMSSecondTableDetail bean = poList.get(0); 
+		PCMSSecondTableDetail bean = poList.get(0);
+		String productionOrderSafe = (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''"));
 		String sql =
 				  " SELECT [ProductionOrder]\r\n"
 			    + "       ,[SendCFMCusDate] as [PlanDate]\r\n"
@@ -53,11 +54,11 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 			    + "			end as InputFrom \r\n"
 			    + "       , LotNo \r\n"
 			    + " FROM [PCMS].[dbo].[PlanSendCFMCusDate] as a\r\n"
-			  	+ " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' \r\n"
+			  	+ " where a.[ProductionOrder] = '" + productionOrderSafe + "' \r\n"
 			  	+ " ORDER BY  [ChangeDate] desc ";
 
 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));

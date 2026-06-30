@@ -4,8 +4,9 @@
 <%@ page isELIgnored="false"%>              	               
 <iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
 <form target="fakeSubmit" method="post" action="Main/fakeSubmit" >    
-	<div id="wrapper-top" class="row" style="  margin: 2px 5px; background-color: azure;     zoom: 85%; " >   
-		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >            
+	<div id="wrapper-top" class="search-panel" style="margin: 2px 5px; zoom: 85%;">
+		<div class="row">
+		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >
 			<div class="row">                   
 				<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >  
 						<label class=" label-input  margin-0" style=" min-width: 100px; " for="multi_cusName">Customer</label>                
@@ -150,12 +151,12 @@
 								    overflow: hidden;              
 								    text-overflow: ellipsis; 
 							        padding: 1% 0;" > 
-		                    <i class="fa fa-search"></i>   
+		                    <i class="fas fa-search"></i>   
 		                    Search    
 		              	</button>    
 	              		<button id="btn_clear" class="btn btn-secondary w-100" type="button" 
 		              		style="     padding: 1% 0;width: -webkit-fill-available;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" >   
-	                    <i class="fa fa-eraser"></i> 
+	                    <i class="fas fa-eraser"></i> 
 	                    Clear Search
 	              		</button>          
 	              	</div>    
@@ -163,14 +164,15 @@
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
 	              	<button id="btn_download" class="btn btn-primary" type="button" 
 	              		style="padding: 1% 0; width: -webkit-fill-available; " >
-	                    <i class="fa fa-download"></i>     
+	                    <i class="fas fa-download"></i>     
 	                    Download Excel     
 	              	</button>      
 				</div>               
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
-	              	<button id="btn_colSetting" class="btn btn-primary" type="button" 
-	              			style=" padding: 1% 0;width: -webkit-fill-available; " >
-	                    <i class="fa fa-cogs"></i> 
+	              	<button id="btn_colSetting" class="btn btn-primary" type="button"
+	              			style=" padding: 1% 0;width: -webkit-fill-available; "
+	              			title="เลือกคอลัมน์ที่ต้องการแสดง/ซ่อน" >
+	                    <i class="fas fa-cogs"></i> 
 	                    Column Setting  
 	              	</button>        
 				</div>    
@@ -178,11 +180,11 @@
 	              	<div class="btn-group d-flex" style="    width: inherit; ">
 		              	<button id="btn_saveDefault" class="btn btn-success w-100" type="button" 
 		              		style=" padding: 1% 0;width: -webkit-fill-available; " >
-		                    <i class="fa fa-save"></i> 
+		                    <i class="fas fa-save"></i> 
 		                    Save Default   
 		              	</button>  
 		              	<button id="btn_loadDefault" class="btn btn-info  w-100" type="button" style="padding: 1% 0; width: -webkit-fill-available; " >
-		                    <i class="fa fa-wrench"></i> 
+		                    <i class="fas fa-wrench"></i> 
 		                    Load Default 
 	              		</button>       
 	              	</div>   
@@ -280,6 +282,7 @@
 				</div>      
 			</div>    
 		</div>                  
-	</div>   
+		</div>
+	</div>
 	<button id="submit_button"type="submit" style="    display: none;"></button>
 </form>

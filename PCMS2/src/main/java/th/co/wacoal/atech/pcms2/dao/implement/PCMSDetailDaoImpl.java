@@ -1,8 +1,6 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,6 +9,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSDetailDao;
@@ -30,7 +30,6 @@ import th.co.wacoal.atech.pcms2.service.master.SearchSettingService;
 import th.co.wacoal.atech.pcms2.service.master.SwitchProdOrderService;
 import th.co.wacoal.atech.pcms2.service.master.TEMP_UserStatusAutoService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class PCMSDetailDaoImpl implements PCMSDetailDao {
@@ -430,82 +429,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , a.TypePrdRemark \r\n"
 			+ "   , a.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n";
-	private String selectOP = ""
-			+ "	a.SaleOrder,\r\n"
-			+ "    a.[SaleLine],\r\n"
-			+ "    a.Division,\r\n"
-			+ "    a.CustomerShortName,\r\n"
-			+ "    a.SaleCreateDate,\r\n"
-			+ "    a.PurchaseOrder,\r\n"
-			+ "    a.MaterialNo,\r\n"
-			+ "    a.CustomerMaterial,\r\n"
-			+ "    a.Price,\r\n"
-			+ "    a.SaleUnit,\r\n"
-			+ "    a.OrderAmount,\r\n"
-			+ "    a.SaleQuantity,\r\n"
-			+ "    a.RemainQuantity,\r\n"
-			+ "    a.RemainAmount,\r\n"
-			+ "    b.TotalQuantity,\r\n"
-			+ "    a.Grade,\r\n"
-			+ "    a.BillSendWeightQuantity,\r\n"
-			+ "    a.BillSendQuantity,\r\n"
-			+ "    a.BillSendMRQuantity,\r\n"
-			+ "    a.BillSendYDQuantity,\r\n"
-			+ "    a.CustomerDue,\r\n"
-			+ "    a.DueDate,\r\n"
-			+ "    b.ProductionOrder,\r\n"
-			+ "    b.LotNo,\r\n"
-			+ "    b.LabNo,\r\n"
-			+ "    b.LabStatus,\r\n"
-			+ "    e.CFMPlanLabDate, \r\n"
-			+ "    a.CFMActualLabDate,\r\n"
-			+ "    a.CFMCusAnsLabDate,\r\n"
-			+ "    a.UserStatusCal                      AS UserStatus,\r\n"
-			+ "    COALESCE(TAPP.SORCFMDate, j.CFMDate) AS TKCFM,\r\n"
-			+ "    a.CFMPlanDate,\r\n"
-			+ "    a.SendCFMCusDate,\r\n"
-			+ "    CASE\r\n"
-			+ "        WHEN h.[ProductionOrder] IS NOT NULL THEN h.DeliveryDate\r\n"
-			+ "        ELSE b.CFTYPE\r\n"
-			+ "    END                                  AS DeliveryDate,\r\n"
-			+ "    a.CFMDateActual,\r\n"
-			+ "    a.CFMDetailAll,\r\n"
-			+ "    a.CFMNumberAll,\r\n"
-			+ "    a.CFMRemarkAll,\r\n"
-			+ "    a.RollNoRemarkAll,\r\n"
-			+ "    a.ShipDate,\r\n"
-			+ "    b.RemarkOne,\r\n"
-			+ "    b.RemarkTwo,\r\n"
-			+ "    b.RemarkThree,\r\n"
-			+ "    k.ReplacedRemark,-- ดึงจาก InputReplacedRemark\r\n"
-			+ "    l.StockRemark,-- ดึงจาก InputStockRemark\r\n"
-			+ "    a.GRSumKG,\r\n"
-			+ "    a.GRSumYD,\r\n"
-			+ "    a.GRSumMR,\r\n"
-			+ "    a.DyePlan,\r\n"
-			+ "    a.DyeActual,\r\n"
-			+ "    p.PCRemark,\r\n"
-			+ "    InputDD.[DelayedDep],\r\n"
-			+ "    InputCOD.[CauseOfDelay],\r\n"
-			+ "    q.[SwitchRemark],\r\n"
-			+ "    SL.[StockLoad],\r\n"
-			+ "    b.[PrdCreateDate],\r\n"
-			+ "    a.LotShipping,\r\n"
-			+ "    CASE\r\n"
-			+ "        WHEN a.Grade = 'A'\r\n"
-			+ "            OR a.Grade is null THEN a.Volumn\r\n"
-			+ "        ELSE NULL\r\n"
-			+ "    END                                  AS Volumn,\r\n"
-			+ "    CASE\r\n"
-			+ "        WHEN a.Grade = 'A'\r\n"
-			+ "            OR a.Grade is null THEN a.Price * a.Volumn\r\n"
-			+ "        ELSE NULL\r\n"
-			+ "    END                                  AS VolumnFGAmount,\r\n"
-			+ "    'OrderPuang'                         as TypePrd,\r\n"
-			+ "    a.TypePrdRemark,\r\n"
-			+ "    a.[DyeStatus],\r\n"
-			+ "    a.[CustomerMaterialBase] \n";
-
 	private String leftJoinBSelect = ""
 			+ "                 a.[SaleOrder]\r\n"
 			+ "                ,a.[Saleline]\r\n"
@@ -916,7 +839,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ this.pss.buildLeftJoinUserStatusAuto("UCALRP", "b", "m")
 			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")
 			+ " where 1 = 1 \r\n";
-	private final Database database;
+	private final JdbcTemplate jdbc;
 
 	private final PCMSSearchService psService;
 
@@ -925,7 +848,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	private final PlanCFMLabDateService planCFMLabDateService;
 
 	@Autowired
-	public PCMSDetailDaoImpl(@Qualifier("pcmsDatabase") Database database, BackGroundJobService bgjService,
+	public PCMSDetailDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc, BackGroundJobService bgjService,
 			PCMSSearchService psService,
 
 			// Services เพิ่มเติมที่เคย new ไว้
@@ -934,7 +857,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			PlanCFMDateService planCFMDateService, PlanDeliveryDateService planDeliveryDateService,
 			PlanCFMLabDateService planCFMLabDateService, TEMP_UserStatusAutoService tusaService) {
 
-		this.database = database;
+		this.jdbc = jdbc;
 		this.psService = psService;
 		this.planCFMDateService = planCFMDateService;
 		this.planDeliveryDateService = planDeliveryDateService;
@@ -966,7 +889,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ buildSqlFinalSelect();
 
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1264,8 +1187,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			beanInput.setIconStatus("I");
 			beanInput.setSystemStatus("Date : " + planDate + " already confirm.Try to refresh again.");
 		} else {
-			String sql = "";
-			sql = " insert into "
+			String sql = " insert into "
 					+ fromTable
 					+ " ( "
 					+ "		[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[PlanDate]  ,[CreateBy]  , " // 5
@@ -1276,32 +1198,34 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 					+ " ) ;";
 
 
-			Connection connection = this.database.getConnection();
-			try (PreparedStatement prepared = connection.prepareStatement(sql)) { 
-				int index = 1;
-				prepared.setString(index ++ , bean.getProductionOrder());
-				prepared.setString(index ++ , bean.getSaleOrder());
-				prepared.setString(index ++ , saleLine);
-				this.sshUtl.setSqlDate(prepared, planDate, index ++ );
-				prepared.setString(index ++ , bean.getUserId());
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , bean.getLotNo());
-				prepared.executeUpdate();
-				prepared.close();
+			try {
+				final String finalPlanDate = planDate;
+				this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+					try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+						int index = 1;
+						prepared.setString(index++, bean.getProductionOrder());
+						prepared.setString(index++, bean.getSaleOrder());
+						prepared.setString(index++, saleLine);
+						this.sshUtl.setSqlDate(prepared, finalPlanDate, index++);
+						prepared.setString(index++, bean.getUserId());
+						prepared.setTimestamp(index++, new Timestamp(time));
+						prepared.setString(index++, bean.getLotNo());
+						prepared.executeUpdate();
+					}
+					return null;
+				});
 				if (caseSave.equals("CFMPlanDate")) {
 					beanInput.setIconStatus("I0");
 				} else {
 					beanInput.setIconStatus("I1");
 				}
-				beanInput.setSystemStatus("Update Success.");
+				beanInput.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 				if (listCount.size() > 0) {
 					beanInput.setCountPlanDate(listCount.get(0).getCountPlanDate()+1);
 				} else {
 					beanInput.setCountPlanDate(1);
 				}
-//				}
-			} catch (SQLException e) {
-//				System.err.println(e.getMessage());
+			} catch (Exception e) {
 				e.printStackTrace();
 				beanInput.setIconStatus("E");
 				beanInput.setSystemStatus("Something happen, Please contact IT.");
@@ -1325,7 +1249,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				PCMSSecondTableDetail bean = listRP.get(i);
 				saleOrder = bean.getSaleOrder();
 				saleLine = bean.getSaleLine();
-				where = where + " ( a.SaleOrder = '" + saleOrder + "' and a.SaleLine = '" + saleLine + "' ) ";
+				String saleOrderSafe = (saleOrder == null ? "" : saleOrder.replace("'", "''"));
+				String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
+				where = where + " ( a.SaleOrder = '" + saleOrderSafe + "' and a.SaleLine = '" + saleLineSafe + "' ) ";
 				if (i != sizeList-1) {
 					where += " or ";
 				}
@@ -1356,7 +1282,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.getLeftJoinInputStockLoad("b", "a")
 				+ where
 				+ " and ( SumVol = 'B' OR countProdRP > 0 ) ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1400,7 +1326,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " and CFType is not null  \r\n"
 				+ " ORDER BY InputFrom ,CreateDate desc ";
 
-		List<Map<String, Object>> datas = this.database.queryList(sql, bean.getProductionOrder(), bean.getSaleOrder(),
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql, bean.getProductionOrder(), bean.getSaleOrder(),
 				bean.getSaleLine(), bean.getProductionOrder());
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1424,7 +1350,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 					prodOrder = poList.get(i).getProductionOrderRP();
 				}
-				where = where + "'" + prodOrder + "' ";
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				where = where + "'" + prodOrderSafe + "' ";
 				if (i != poList.size()-1) {
 					where += " , ";
 				}
@@ -1476,7 +1403,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " SELECT * \r\n"
 				+ "	FROM #tempMain\r\n"
 				+ orderBy;
-		List<Map<String, Object>> datas = this.database.queryList(sqlMain);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlMain);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1495,22 +1422,26 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			if (prdOrderType.equals(this.C_PRODORDER)) {
 				prodOrder = poList.get(i).getProductionOrder();
 				String saleLine = poList.get(i).getSaleLine();
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				String saleOrderSafe = (poList.get(i).getSaleOrder() == null ? "" : poList.get(i).getSaleOrder().replace("'", "''"));
+				String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
 				where = where
 						+ " ( a."
-						+ prdOrderType
+						+ this.C_PRODORDER
 						+ " = '"
-						+ prodOrder
+						+ prodOrderSafe
 						+ "' and\r\n"
 						+ "    a.[SaleOrder] = '"
-						+ poList.get(i).getSaleOrder()
+						+ saleOrderSafe
 						+ "' and\r\n"
 						+ "    a.[SaleLine] = '"
-						+ saleLine
+						+ saleLineSafe
 						+ "' \r\n"
 						+ " ) \r\n";
 			} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 				prodOrder = poList.get(i).getProductionOrderRP();
-				where = where + " " + prdOrderType + " = '" + prodOrder + "' ";
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				where = where + " " + this.C_PRODORDERRP + " = '" + prodOrderSafe + "' ";
 			}
 			if (i != poList.size()-1) {
 				where += " or ";
@@ -1544,7 +1475,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " select \r\n"
 				+ this.selectAll
 				+ " from PRD_REPLACED as a \r\n";
-		List<Map<String, Object>> datas = this.database.queryList(sqlRP);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlRP);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1559,7 +1490,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
+			String ProductionOrderSafe = (ProductionOrder == null ? "" : ProductionOrder.replace("'", "''"));
+			where = where + " '" + ProductionOrderSafe + "' ";
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
@@ -1593,7 +1525,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " from #tempPrdSW as a \r\n"
 				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus");
-		List<Map<String, Object>> datas = this.database.queryList(sqlSW);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlSW);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1608,7 +1540,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
+			String ProductionOrderSafe = (ProductionOrder == null ? "" : ProductionOrder.replace("'", "''"));
+			where = where + " '" + ProductionOrderSafe + "' ";
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
@@ -1641,7 +1574,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
 				+ " where 1 = 1 "
 				+ "    AND SPO.ProductionOrderSW IS NULL ";
-		List<Map<String, Object>> datas = this.database.queryList(sqlOP);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlOP);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1659,7 +1592,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			List<String> productionOrders = new ArrayList<>();
 
 			for (PCMSSecondTableDetail detail : poList) {
-				productionOrders.add("'" + detail.getProductionOrder() + "'");
+				String productionOrderSafe = (detail.getProductionOrder() == null ? "" : detail.getProductionOrder().replace("'", "''"));
+				productionOrders.add("'" + productionOrderSafe + "'");
 			}
 
 			where += String.join(", ", productionOrders) + ") \r\n";
@@ -1689,7 +1623,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
 				+ " SELECT * \r\n"
 				+ "	FROM #tempPrdOPSW \r\n";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1716,29 +1650,24 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ ";";
 		int index = 1;
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(index ++ , prdOrder);
-			this.sshUtl.setSqlDate(prepared, planDate, index ++ );
-			prepared.setString(index ++ , bean.getUserId());
-			prepared.setTimestamp(index ++ , new Timestamp(time));
-			prepared.setString(index ++ , bean.getLotNo());
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(index, prdOrder);
+					this.sshUtl.setSqlDate(prepared, planDate, index + 1);
+					prepared.setString(index + 2, bean.getUserId());
+					prepared.setTimestamp(index + 3, new Timestamp(time));
+					prepared.setString(index + 4, bean.getLotNo());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("upSertRemarkCaseThree" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1762,30 +1691,25 @@ try {
 				+ "		and [SaleLine] = ? "
 				+ "		and DataStatus = 'O'; ";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6, bean.getSaleLine());
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1809,30 +1733,25 @@ try {
 				+ " = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' ";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, valueChange);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6, bean.getSaleLine());
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, valueChange);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1855,31 +1774,26 @@ try {
 				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' ";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, Status);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6, bean.getSaleLine());
-			prepared.setString(7, grade);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, Status);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.setString(7, grade);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkWithGrade" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1899,26 +1813,21 @@ try {
 				+ " SET DataStatus = ?  "
 				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, prdOrder);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, prdOrder);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1945,30 +1854,25 @@ try {
 				+ ", ? )  "
 				+ ";";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, saleOrder);
-			prepared.setString(3, bean.getSaleLine());
-			prepared.setString(4, valueChange);
-			prepared.setString(5, bean.getUserId());
-			prepared.setTimestamp(6, new Timestamp(time));
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, saleOrder);
+					prepared.setString(3, bean.getSaleLine());
+					prepared.setString(4, valueChange);
+					prepared.setString(5, bean.getUserId());
+					prepared.setTimestamp(6, new Timestamp(time));
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("upSertRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -1988,28 +1892,23 @@ try {
 				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
 				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -2033,28 +1932,23 @@ try {
 				+ " values(? , ? , ? , ?   )  "
 				+ ";";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, valueChange);
-			prepared.setString(3, bean.getUserId());
-			prepared.setTimestamp(4, new Timestamp(time));
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, valueChange);
+					prepared.setString(3, bean.getUserId());
+					prepared.setTimestamp(4, new Timestamp(time));
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("upSertRemarkCaseTwo" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		}  finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}
@@ -2082,31 +1976,26 @@ try {
 				+ "		(? , ? , ? , ? , ? "
 				+ "    , ? , ? )  ;";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
-
-try {
-    prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, saleOrder);
-			prepared.setString(3, bean.getSaleLine());
-			prepared.setString(4, valueChange);
-			prepared.setString(5, bean.getUserId());
-			prepared.setTimestamp(6, new Timestamp(time));
-			prepared.setString(7, grade);
-			prepared.executeUpdate();
-			prepared.close();
+		try {
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, saleOrder);
+					prepared.setString(3, bean.getSaleLine());
+					prepared.setString(4, valueChange);
+					prepared.setString(5, bean.getUserId());
+					prepared.setTimestamp(6, new Timestamp(time));
+					prepared.setString(7, grade);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("upSertRemarkCaseWithGrade" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
 		}
 		return bean;
 	}

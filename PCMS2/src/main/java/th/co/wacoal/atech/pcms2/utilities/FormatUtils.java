@@ -8,23 +8,24 @@ import java.util.Date;
 import java.util.Map;
 
 public class FormatUtils {
+	// SimpleDateFormat/DecimalFormat ไม่ thread-safe — ใช้ ThreadLocal กัน race ตอนหลาย request พร้อมกัน
 	// Date formatters with descriptive names
-	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-	public static final SimpleDateFormat DAY_MONTH_YEAR_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-	public static final SimpleDateFormat COMPACT_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	public static final SimpleDateFormat STANDARD_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	public static final SimpleDateFormat DAY_MONTH_YEAR_TIME_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-	public static final SimpleDateFormat DATE_TIME_SECONDS_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	public static final SimpleDateFormat STANDARD_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	public static final SimpleDateFormat TIME_ONLY_FORMAT = new SimpleDateFormat("HH:mm:ss");
-	public static final SimpleDateFormat FULL_DATE_TIME_MILLIS_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	public static final ThreadLocal<SimpleDateFormat> DATE_ONLY_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy/MM/dd"));
+	public static final ThreadLocal<SimpleDateFormat> DAY_MONTH_YEAR_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("dd/MM/yyyy"));
+	public static final ThreadLocal<SimpleDateFormat> COMPACT_DATE_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMdd"));
+	public static final ThreadLocal<SimpleDateFormat> STANDARD_DATE_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
+	public static final ThreadLocal<SimpleDateFormat> DAY_MONTH_YEAR_TIME_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
+	public static final ThreadLocal<SimpleDateFormat> DATE_TIME_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy/MM/dd HH:mm"));
+	public static final ThreadLocal<SimpleDateFormat> DATE_TIME_SECONDS_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"));
+	public static final ThreadLocal<SimpleDateFormat> STANDARD_DATE_TIME_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+	public static final ThreadLocal<SimpleDateFormat> TIME_ONLY_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("HH:mm:ss"));
+	public static final ThreadLocal<SimpleDateFormat> FULL_DATE_TIME_MILLIS_FORMAT = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
 	// Number formatters with descriptive names
-	public static final DecimalFormat FOUR_DECIMAL_FORMAT = new DecimalFormat("0.0000");
-	public static final DecimalFormat WHOLE_NUMBER_FORMAT = new DecimalFormat("###,###,##0");
-	public static final DecimalFormat TWO_DECIMAL_FORMAT = new DecimalFormat("###,###,##0.00");
-	public static final DecimalFormat FOUR_DECIMAL_WITH_COMMAS = new DecimalFormat("###,###,##0.0000");
+	public static final ThreadLocal<DecimalFormat> FOUR_DECIMAL_FORMAT = ThreadLocal.withInitial(() -> new DecimalFormat("0.0000"));
+	public static final ThreadLocal<DecimalFormat> WHOLE_NUMBER_FORMAT = ThreadLocal.withInitial(() -> new DecimalFormat("###,###,##0"));
+	public static final ThreadLocal<DecimalFormat> TWO_DECIMAL_FORMAT = ThreadLocal.withInitial(() -> new DecimalFormat("###,###,##0.00"));
+	public static final ThreadLocal<DecimalFormat> FOUR_DECIMAL_WITH_COMMAS = ThreadLocal.withInitial(() -> new DecimalFormat("###,###,##0.0000"));
 
 	// Private constructor to prevent instantiation
 	private FormatUtils() {
@@ -34,86 +35,86 @@ public class FormatUtils {
 
 	public static String formatDateOnly(Date date)
 	{
-		return date != null ? DATE_ONLY_FORMAT.format(date) : "";
+		return date != null ? DATE_ONLY_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatDayMonthYear(Date date)
 	{
-		return date != null ? DAY_MONTH_YEAR_FORMAT.format(date) : "";
+		return date != null ? DAY_MONTH_YEAR_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatCompactDate(Date date)
 	{
-		return date != null ? COMPACT_DATE_FORMAT.format(date) : "";
+		return date != null ? COMPACT_DATE_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatStandardDate(Date date)
 	{
-		return date != null ? STANDARD_DATE_FORMAT.format(date) : "";
+		return date != null ? STANDARD_DATE_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatDayMonthYearTime(Date date)
 	{
-		return date != null ? DAY_MONTH_YEAR_TIME_FORMAT.format(date) : "";
+		return date != null ? DAY_MONTH_YEAR_TIME_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatDateTime(Date date)
 	{
-		return date != null ? DATE_TIME_FORMAT.format(date) : "";
+		return date != null ? DATE_TIME_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatDateTimeWithSeconds(Date date)
 	{
-		return date != null ? DATE_TIME_SECONDS_FORMAT.format(date) : "";
+		return date != null ? DATE_TIME_SECONDS_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatStandardDateTime(Date date)
 	{
-		return date != null ? STANDARD_DATE_TIME_FORMAT.format(date) : "";
+		return date != null ? STANDARD_DATE_TIME_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatTimeOnly(Date date)
 	{
-		return date != null ? TIME_ONLY_FORMAT.format(date) : "";
+		return date != null ? TIME_ONLY_FORMAT.get().format(date) : "";
 	}
 
 	public static String formatFullDateTimeWithMillis(Date date)
 	{
-		return date != null ? FULL_DATE_TIME_MILLIS_FORMAT.format(date) : "";
+		return date != null ? FULL_DATE_TIME_MILLIS_FORMAT.get().format(date) : "";
 	}
 
 	// ========== NUMBER FORMATTING METHODS ==========
 
 	public static String formatWithFourDecimals(Number number)
 	{
-		return number != null ? FOUR_DECIMAL_FORMAT.format(number) : "";
+		return number != null ? FOUR_DECIMAL_FORMAT.get().format(number) : "";
 	}
 
 	public static String formatWholeNumber(Number number)
 	{
-		return number != null ? WHOLE_NUMBER_FORMAT.format(number) : "";
+		return number != null ? WHOLE_NUMBER_FORMAT.get().format(number) : "";
 	}
 
 	public static String formatWithTwoDecimals(Number number)
 	{
-		return number != null ? TWO_DECIMAL_FORMAT.format(number) : "";
+		return number != null ? TWO_DECIMAL_FORMAT.get().format(number) : "";
 	}
 
 	public static String formatWithFourDecimalsAndCommas(Number number)
 	{
-		return number != null ? FOUR_DECIMAL_WITH_COMMAS.format(number) : "";
+		return number != null ? FOUR_DECIMAL_WITH_COMMAS.get().format(number) : "";
 	}
 
 	// ========== MAP EXTRACTION METHODS ==========
 
 	public static String getDateOnlyFromMap(Map<String, Object> map, String key)
 	{
-		return getFormattedDateFromMap(map, key, DATE_ONLY_FORMAT, "");
+		return getFormattedDateFromMap(map, key, DATE_ONLY_FORMAT.get(), "");
 	}
 
 	public static String getDayMonthYearFromMap(Map<String, Object> map, String key)
 	{
-		return getFormattedDateFromMap(map, key, DAY_MONTH_YEAR_FORMAT, "");
+		return getFormattedDateFromMap(map, key, DAY_MONTH_YEAR_FORMAT.get(), "");
 	}
 
 	// Generic value extraction with default

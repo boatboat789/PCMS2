@@ -11,8 +11,8 @@ body {
 .body-error{
 	
     font-family: Arial, sans-serif;
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: var(--pcms-error-bg);
+    color: var(--pcms-error-text);
 /*             display: flex; */
     justify-content: center;   
     align-items: center;
@@ -31,16 +31,17 @@ body {
     place-content: space-evenly;
     
 	text-align: center;
-	border: 1px solid #f5c6cb;
-	background-color: #f8d7da;
+	border: 1px solid var(--pcms-error-border);
+	background-color: var(--pcms-error-bg);
 	padding: 20px;
 	border-radius: 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 		
 }
-.tooltip-inner { 
+.tooltip-inner {
 	padding: 8px;
-	background: #00D500;
+	background: var(--pcms-tooltip-bg);
+	color: #ffffff;
 	/* 	position: absolute; */
 	max-width: 300px;
 	-webkit-box-shadow: 0 0 5px #aaa;
@@ -78,7 +79,7 @@ body {
 	height: 100%;
 	width: 100%;
 	opacity: 0.4;
-	background-color: #fff;
+	background-color: var(--pcms-surface-overlay);
 	-ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity= 40);
 	filter: alpha(opacity = 40)
 }
@@ -88,71 +89,71 @@ body {
 }
 
 .bg-imp-unavai {
-	background-color: lightsteelblue !important;
+	background-color: var(--pcms-status-cfm-ok) !important;
 }
 
 .bg-imp-avai {
-	background-color: lightgreen !important;
+	background-color: var(--pcms-status-finish) !important;
 }
 
 .bg-alert-im {
-	background-color: salmon;
+	background-color: var(--pcms-status-alert);
 }
 
 .bg-planning-im {
-	background-color: sandybrown;
+	background-color: var(--pcms-status-planning);
 }
 
 .bg-finish-im {
-	background-color: lightgreen;
+	background-color: var(--pcms-status-finish);
 }
 
 .bg-start-im {
-	background-color: #72e1ff;
+	background-color: var(--pcms-status-start);
 }
 
 .bg-warning-im {
-	background-color: #ffff009c;
+	background-color: var(--pcms-status-warning);
 }
 
 .bg-idle-im {
-	background-color: #6c757d52;
+	background-color: var(--pcms-status-idle);
 }
 
 .bg-sale-cfm-nook {
-	background-color: papayawhip;
+	background-color: var(--pcms-status-cfm-pending);
 }
 
 .bg-sale-cfm-ok {
-	background-color: lightsteelblue;
+	background-color: var(--pcms-status-cfm-ok);
 }
 
 .bg-alert {
-	background-color: salmon;
+	background-color: var(--pcms-status-alert);
 }
 
 .bg-planning {
-	background-color: sandyrown;
+	background-color: var(--pcms-status-planning);
 }
 
 .bg-finish {
-	background-color: lightgreen;
+	background-color: var(--pcms-status-finish);
 }
 
 .bg-start {
-	background-color: #72e1ff;
+	background-color: var(--pcms-status-start);
 }
 
 .bg-warning {
-	background-color: #ffff009c;
+	background-color: var(--pcms-status-warning);
 }
 
 .bg-idle {
-	background-color: #6c757d52;
+	background-color: var(--pcms-status-idle);
 }
 
 .border-sketch {
-	border: 3px solid #333333;
+	border: 3px solid var(--pcms-border-strong);
 	border-radius: 2% 6% 5% 4%/1% 1% 2% 4%;
 	position: relative;
 }
@@ -168,7 +169,7 @@ body {
 }
 
 .content-split {
-	border: 2px solid #5B5B5B;
+	border: 2px solid var(--pcms-border-medium);
 	padding: 20px;
 	box-shadow: 0px 4px 4px rgb(155 155 155/ 70%);
 	border-radius: 20px;
@@ -289,43 +290,43 @@ body {
 }
 
 .groupActual {
-	background-color: #f0f0f0;
+	background-color: var(--pcms-row-g1);
 }
 
 .groupStdG1 {
-	background-color: #f0f0f0;
+	background-color: var(--pcms-row-g1);
 }
 
 .groupStdG2 {
-	background-color: #dee2e6;
+	background-color: var(--pcms-row-g2);
 }
 
 .groupStdG2 {
-	background-color: #dee2e6;
+	background-color: var(--pcms-row-g2);
 }
 
 .groupStdG3 {
-	background-color: #abd9aa;
+	background-color: var(--pcms-row-g3);
 }
 
 .groupStdG4 {
-	background-color: #63c16196;
+	background-color: var(--pcms-row-g4);
 }
 
 .groupStdG5 {
-	background-color: #ffc6077d;
+	background-color: var(--pcms-row-g5);
 }
 
 .groupStdG6 {
-	background-color: #ff8d07a8;
+	background-color: var(--pcms-row-g6);
 }
 
 .groupStdG7 {
-	background-color: #ec07ff54;
+	background-color: var(--pcms-row-g7);
 }
 
 .groupStdG8 {
-	background-color: beige;
+	background-color: var(--pcms-row-g8);
 }
 
 .float-right {
@@ -478,11 +479,28 @@ body {
 .dt-custom-overdue {
 	color: white;
 	font-weight: normal;
-	background-color: darksalmon !important
+	background-color: var(--pcms-dt-overdue-bg) !important
 }
 
 .dt-custom-lotNo {
-	color: darkcyan;
+	color: var(--pcms-dt-lotno-color);
 	font-weight: 900;
 	/*     background-color: darksalmon !important */
+}
+
+/* navbar: พื้นดำสนิท + ตัวอักษรขาว + Sarabun (ให้เหมือน SFC/LBMS) */
+#navbar.bg-dark,
+#navbar.navbar {
+	background-color: #181715 !important;
+	border-bottom: 1px solid #252320;
+}
+#navbar .nav-link {
+	font-family: "Sarabun", "Segoe UI", Tahoma, "Helvetica Neue", Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+	color: #faf9f5 !important;
+}
+#navbar .nav-link:hover,
+#navbar .nav-link:focus {
+	color: #ffffff !important;
 }

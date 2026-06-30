@@ -1,4 +1,4 @@
-﻿	package th.co.wacoal.atech.pcms2.dao.implement;
+package th.co.wacoal.atech.pcms2.dao.implement;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSMainDao;
@@ -25,7 +26,6 @@ import th.co.wacoal.atech.pcms2.entities.PPMM.ShopFloorControlDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSearchService;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
-import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 import th.co.wacoal.atech.pcms2.service.master.FromSapCFMService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapPackingService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapSaleService;
@@ -35,17 +35,17 @@ import th.co.wacoal.atech.pcms2.service.master.InspectSystem.InspectOrdersServic
 import th.co.wacoal.atech.pcms2.service.master.LBMS.ImportDetailService;
 import th.co.wacoal.atech.pcms2.service.master.PPMM.RollFromSapService;
 import th.co.wacoal.atech.pcms2.service.master.PPMM.ShopFloorControlService;
-import th.in.totemplate.core.sql.Database;
+import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 @Repository // Spring annotation to mark this as a DAO component
-public class PCMSMainDaoImpl implements PCMSMainDao { 
+public class PCMSMainDaoImpl implements PCMSMainDao {
 	private PCMSSqlService pss = new PCMSSqlService();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database; 
+	private JdbcTemplate jdbc;
 	private String selectOPSWA =
 			    "   "
 		      + "     a.SaleOrder \r\n"
 			  + "	, a.[SaleLine] \r\n"
-			  + "   , a.[SaleFullName] \r\n" 
+			  + "   , a.[SaleFullName] \r\n"
 			  + "   , a.DesignFG\r\n"
 			  + "   , a.ArticleFG\r\n"
 			  + "   , a.DistChannel\r\n"
@@ -97,7 +97,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private String selectSW = ""
 			  + "   a.SaleOrder \r\n"
 			  + "	, a.[SaleLine] \r\n"
-			  + "   , a.[SaleFullName] \r\n" 
+			  + "   , a.[SaleFullName] \r\n"
 			  + "   , a.DesignFG\r\n"
 			  + "   , a.ArticleFG\r\n"
 			  + "   , a.DistChannel\r\n"
@@ -149,7 +149,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private String selectOP = ""
 			  + "     a.SaleOrder \r\n"
 			  + "	, a.[SaleLine] \r\n"
-			  + "   , a.[SaleFullName] \r\n" 
+			  + "   , a.[SaleFullName] \r\n"
 			  + "   , a.DesignFG\r\n"
 			  + "   , a.ArticleFG\r\n"
 			  + "   , a.DistChannel\r\n"
@@ -198,7 +198,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private String selectMainV2 = ""
 			+ "    b.SaleOrder \r\n"
 			+ "	  , b.[SaleLine] \r\n"
-			+ "   , b.[SaleFullName] \r\n" 
+			+ "   , b.[SaleFullName] \r\n"
 			+ "   , b.DesignFG\r\n"
 			+ "   , b.ArticleFG\r\n"
 			+ "   , b.DistChannel\r\n"
@@ -247,7 +247,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	private String selectRP =""
 			  + "     a.SaleOrder \r\n"
 			  + "	, a.[SaleLine] \r\n"
-			  + "   , a.[SaleFullName] \r\n" 
+			  + "   , a.[SaleFullName] \r\n"
 			  + "   , a.DesignFG\r\n"
 			  + "   , a.ArticleFG\r\n"
 			  + "   , a.DistChannel\r\n"
@@ -349,7 +349,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	  		      "       \r\n"
 	  		      + "     a.SaleOrder 		\r\n"
 				  + "	, a.[SaleLine] \r\n"
-				  + "   , a.[SaleFullName] \r\n" 
+				  + "   , a.[SaleFullName] \r\n"
 	  		      + "   , a.DesignFG\r\n"
 	  		      + "   , a.ArticleFG\r\n"
 	  		      + "   , a.DistChannel\r\n"
@@ -404,7 +404,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		    + ",b.[PrdCreateDate]\r\n"
 		    + ",b.[DueDate]\r\n"
 		    + ",b.[SaleOrder]\r\n"
-		    + "	, b.[SaleLine] \r\n"  
+		    + "	, b.[SaleLine] \r\n"
 		    + ",b.PurchaseOrder\r\n"
 		    + ",b.ArticleFG\r\n"
 		    + ",b.DesignFG\r\n"
@@ -441,7 +441,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		    + ",b.GreigeDesign\r\n"
 		    + ",b.[PurchaseOrder] \r\n";
 
- 
+
 	 private String leftJoinBSelect =  ""
 	 		  + "			      a.[BillSendQuantity]\r\n"
 	 		  + "                ,a.[SaleOrder]\r\n"
@@ -480,7 +480,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.[ProductionOrder]\r\n"
 	 		  + "                ,a.[LotNo]\r\n"
 			  + "			     , adjVol AS SumVol\r\n"
-			  + "				 , a.Price * adjVol AS SumVolFGAmount"  
+			  + "				 , a.Price * adjVol AS SumVolFGAmount"
 	 		  + "                ,a.Volumn           as RealVolumn\r\n"
 	 		  + "                ,g.[DyePlan]\r\n"
 	 		  + "                ,g.[DyeActual]\r\n"
@@ -517,7 +517,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.RemainAmount\r\n"
 	 		  + "                ,a.CustomerDue\r\n"
 	 		  + "                ,a.DueDate\r\n"
-	 		  + "                ,a.ShipDate\r\n" 
+	 		  + "                ,a.ShipDate\r\n"
 	 		  + "                ,a.[SaleNumber]\r\n"
 	 		  + "                ,a.[SaleFullName]\r\n"
 	 		  + "                ,a.DistChannel\r\n"
@@ -527,47 +527,47 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 	 		  + "                ,a.DeliveryStatus\r\n"
 	 		  + "                ,a.SaleStatus\r\n"
 	 		  + pss.passFilterExpr;
-	    private final PCMSSearchService psService;
-	    private final ShopFloorControlService sfcService;
-	    private final RollFromSapService rfsService;
-	    private final ImportDetailService idService;
-	    private final InspectOrdersService insOrderService;
-	    private final InspectNcService insNCService;
+    private final PCMSSearchService psService;
+    private final ShopFloorControlService sfcService;
+    private final RollFromSapService rfsService;
+    private final ImportDetailService idService;
+    private final InspectOrdersService insOrderService;
+    private final InspectNcService insNCService;
 
-	    // Services เพิ่มเติมจากที่คุณส่งมา (เปลี่ยนชื่อให้สอดคล้องและชัดเจน)
-	    private final FromSapSaleService fromSapSaleService;
-	    private final FromSapCFMService fromSapCFMService;
-	    private final FromSapPackingService fromSapPackingService;
-	    private final FromSapSubmitDateService fromSapSubmitDateService; 
- 
-	    @Autowired
-	    public PCMSMainDaoImpl(
-	            @Qualifier("pcmsDatabase") Database database,
-	            PCMSSearchService psService,
-	            ShopFloorControlService sfcService,
-	            RollFromSapService rfsService,
-	            ImportDetailService idService,
-	            InspectOrdersService insOrderService,
-	            InspectNcService insNCService, 
-	            FromSapSaleService fromSapSaleService,
-	            FromSapCFMService fromSapCFMService,
-	            FromSapPackingService fromSapPackingService,
-	            FromSapSubmitDateService fromSapSubmitDateService ) {
+    // Services เพิ่มเติมจากที่คุณส่งมา (เปลี่ยนชื่อให้สอดคล้องและชัดเจน)
+    private final FromSapSaleService fromSapSaleService;
+    private final FromSapCFMService fromSapCFMService;
+    private final FromSapPackingService fromSapPackingService;
+    private final FromSapSubmitDateService fromSapSubmitDateService;
 
-	        this.database = database;
-	        this.psService = psService;
-	        this.sfcService = sfcService;
-	        this.rfsService = rfsService;
-	        this.idService = idService;
-	        this.insOrderService = insOrderService;
-	        this.insNCService = insNCService;
+    @Autowired
+    public PCMSMainDaoImpl(
+            @Qualifier("pcmsDatabase") JdbcTemplate jdbc,
+            PCMSSearchService psService,
+            ShopFloorControlService sfcService,
+            RollFromSapService rfsService,
+            ImportDetailService idService,
+            InspectOrdersService insOrderService,
+            InspectNcService insNCService,
+            FromSapSaleService fromSapSaleService,
+            FromSapCFMService fromSapCFMService,
+            FromSapPackingService fromSapPackingService,
+            FromSapSubmitDateService fromSapSubmitDateService ) {
 
-	        this.fromSapSaleService = fromSapSaleService;
-	        this.fromSapCFMService = fromSapCFMService;
-	        this.fromSapPackingService = fromSapPackingService;
-	        this.fromSapSubmitDateService = fromSapSubmitDateService; 
- 
-	    } 
+        this.jdbc = jdbc;
+        this.psService = psService;
+        this.sfcService = sfcService;
+        this.rfsService = rfsService;
+        this.idService = idService;
+        this.insOrderService = insOrderService;
+        this.insNCService = insNCService;
+
+        this.fromSapSaleService = fromSapSaleService;
+        this.fromSapCFMService = fromSapCFMService;
+        this.fromSapPackingService = fromSapPackingService;
+        this.fromSapSubmitDateService = fromSapSubmitDateService;
+
+    }
 	@Override
 	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList) {
 		ArrayList<PCMSTableDetail> list = null;
@@ -591,7 +591,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ buildSummaryMainAndWaitLot(whereBase, whereWaitLot)
 				+ buildSummaryFinalSelect();
 
-		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSTableDetail(map));
@@ -881,22 +881,24 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String prdOrder = "" ;
 		PCMSTableDetail bean = poList.get(0);
 		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "' \r\n";
+		String prdOrderSafe = (prdOrder == null) ? "" : prdOrder.replace("'", "''");
+		where += " a.ProductionOrder = '" + prdOrderSafe + "' \r\n";
 		String fromMainB = ""
 				+ " from ( \r\n"
 				+ "			SELECT distinct \r\n"
 				+ this.leftJoinBSelect
-	    	    + this.pss.fromProdA  
-				+ this.pss.getLeftJoinTempPlandeliveryDate("a","a") 
+    	        + this.pss.fromProdA
+				+ this.pss.getLeftJoinTempPlandeliveryDate("a","a")
 				+ this.pss.buildLeftJoinTempProdWorkDate("a")
 				+ this.pss.buildLeftJoinSCC("a")
-				+ this.pss.buildLeftJoinTempSumGR("a") 
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","a","m") 
+				+ this.pss.buildLeftJoinTempSumGR("a")
+				+ this.pss.buildLeftJoinUserStatusAuto("UCAL","a","m")
 				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal",0)
-				+ this.pss.getLeftJoinCRP("a")   
+				+ this.pss.getLeftJoinCRP("a")
 				+ where
 				  + " ) as b \r\n";
 		String sql =  ""
+				+ "SET NOCOUNT ON;\r\n"
 				+ this.pss.createTempMainSale
 				+ this.pss.createTempPlanDeliveryDate
 			 	+ this.pss.createTempSumBill
@@ -904,24 +906,24 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			 	+ this.pss.createTempSCC
 			 	+ this.pss.createTempProdWorkDate
 				+ this.pss.createTempForMainAndWaitLot
-	  		    + this.pss.withProdData
+  		        + this.pss.withProdData
 				+  " SELECT distinct top 1  \r\n "
 				+ this.selectTwo
 				+ fromMainB
 				+ this.pss.buildLeftJoinTempProdWorkDate("b")
-				+ " Order by SaleOrder , 	SaleLine"; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				+ " Order by SaleOrder , 	SaleLine";
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSAllDetail(map));
 		}
 		if (list.size() > 0) {
 			boolean isCheck = false ;
-//			isCheck = true; 
+//			isCheck = true;
 			String productionOrder = bean.getProductionOrder();
 			if(isCheck) { System.out.println("1: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-//			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder); 
-			ArrayList<PODetail> poDetailList = rfsService.getRollFromSapDetailByProductionOrder(productionOrder) ; 
+//			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder);
+			ArrayList<PODetail> poDetailList = rfsService.getRollFromSapDetailByProductionOrder(productionOrder) ;
 //			ArrayList<SendTestQCDetail> sendTestQCDetailList = fsstQCModel.getFromSapSendTestQCByProductionOrder(productionOrder);
 //			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
 			if(isCheck) { System.out.println("2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
@@ -936,7 +938,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			ArrayList<SaleDetail> saleDetailList = fromSapSaleService.getFromSapSaleDetailByProductionOrder(productionOrder);
 			if(isCheck) { System.out.println("6: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 //			ArrayList<SaleInputDetail> saleInputDetailList = fssiModel.getFromSapSaleInputDetailByProductionOrder(productionOrder);
-//			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);  
+//			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);
 
 			ArrayList<InputDateDetail> submitdatDetailList = fromSapSubmitDateService.getSubmitDateDetail(poList);
 			if(isCheck) { System.out.println("7: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
@@ -944,8 +946,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			if(isCheck) { System.out.println("8: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 //			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
 //			if(isCheck) { System.out.println("9: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-			
- 
+
+
 			ArrayList<ShopFloorControlDetail> presetDetailList = new ArrayList<ShopFloorControlDetail>();
 			ArrayList<ShopFloorControlDetail> dyeingDetailList = new ArrayList<ShopFloorControlDetail>();
 			ArrayList<ShopFloorControlDetail> insDetailList = new ArrayList<ShopFloorControlDetail>();
@@ -996,5 +998,5 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 
 		}
 		return list;
-	}    
+	}
 }

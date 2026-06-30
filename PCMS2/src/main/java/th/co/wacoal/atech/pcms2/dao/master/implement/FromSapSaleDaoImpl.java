@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapSaleDao;
@@ -17,23 +21,23 @@ import th.co.wacoal.atech.pcms2.entities.SaleDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapSaleDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapSaleDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -47,11 +51,12 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	{
 		ArrayList<SaleDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " a.ProductionOrder = '" + prodOrderSafe + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = " SELECT DISTINCT  \r\n"
 				+ "   [ProductionOrder],[BillDate]\r\n"
 				+ "   ,[BillQtyPerSale],[SaleOrder] \r\n"
-				+ "	  ,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
+				+ "	  ,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ')\r\n"
 				+ "			WHEN 0 THEN ''  \r\n"
 				+ "			ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
 				+ "			END AS [SaleLine] \r\n"
@@ -62,7 +67,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 				+ " from [PCMS].[dbo].[FromSapSale] as a \r\n "
 				+ where
 				+ " Order by [No]";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genSaleDetail(map));
@@ -72,15 +77,16 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	@Override
 	public String upsertFromSapSaleDetail(ArrayList<FromErpSaleDetail> paList) {
 	    String iconStatus = "I";
-		Connection conn = this.database.getConnection();
+		Connection conn = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
 	        conn.setAutoCommit(false);
 
 	        try (Statement stmt = conn.createStatement()) {
+	        	stmt.setQueryTimeout(300);
 	        	stmt.execute("IF OBJECT_ID('tempdb..#TempSale') IS NOT NULL DROP TABLE #TempSale");
-	        	
+
 	            // 1. สร้าง Temp Table ตาม Schema (Decimal 13,3 และขนาด Varchar ที่กำหนด)
 	            stmt.execute("CREATE TABLE #TempSale (" +
 	                         "ProductionOrder VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
@@ -102,6 +108,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	            // 2. Bulk Insert ลง Temp Table
 	            String insertTemp = "INSERT INTO #TempSale VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	            try (PreparedStatement ps = conn.prepareStatement(insertTemp)) {
+	                ps.setQueryTimeout(300);
 	                for (FromErpSaleDetail bean : paList) {
 	                    int idx = 1;
 	                    ps.setString(idx++, bean.getProductionOrder());
@@ -162,9 +169,10 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 //	                         "WHERE target.ProductionOrder IS NULL AND src.DataStatus <> 'X'");
 //
 	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลา GETDATE() ให้เท่ากัน และลดภาระของ Database
-	            String upsertSql = 
-	                  "DECLARE @Now DATETIME = GETDATE(); "
-	                
+	            String upsertSql =
+	                  "SET XACT_ABORT ON; SET DEADLOCK_PRIORITY LOW; "
+	                + "DECLARE @Now DATETIME = GETDATE(); "
+
 	                + "/* 3. จัดการ DataStatus = 'X' (ปิดรายการตาม SaleOrder เดิม) */ "
 	                + "UPDATE target SET "
 	                + "    target.DataStatus = 'X', "
@@ -223,8 +231,10 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	            }
 	        }
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	        log.error("[ERP-sync] upsertFromSapSaleDetail failed", e);
 	        iconStatus = "E";
+	    } finally {
+	        DataSourceUtils.releaseConnection(conn, this.jdbc.getDataSource());
 	    }
 
 	    return iconStatus;
@@ -356,9 +366,9 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 //				prepared.setTimestamp(index ++ , new Timestamp(time));
 //				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 ////				prepared.setString(index++, bean.get    );
-////this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+////this.sshUtl.setSqlDate(prepared, bean.get , index++);
 ////				prepared.setTimestamp(index++, new Timestamp(time));
-////this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+////this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++);
 //				prepared.addBatch();
 //				batchSize ++ ;
 //				if (batchSize % 500 == 0) { // Execute batch every 500 records

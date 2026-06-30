@@ -17,7 +17,7 @@
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include> 
 	<jsp:include page="/WEB-INF/pages/config/Log/searchLog.jsp"></jsp:include>
 	<div id="wrapper">
-		<div class="col-12 col-sm-12 col-md-12 col-xl-12">
+		<div class="content-panel">
 			<div class="table-responsive font-Group14" style="margin-top: 10px;">
 				<table id="reportTable" class="table compact  table-bordered table-striped text-center" style="width: 100%">
 					<thead> 
@@ -233,17 +233,17 @@
 		});
 		$('#btn_search').on('click', function() {
 			var createDate = document.getElementById("input_createDate").value.trim();
-			if (document.getElementById("input_createDate").value.trim() == '' && 
+			if (document.getElementById("input_createDate").value.trim() == '' &&
 				document.getElementById("input_saleOrder").value.trim() == '') {
-				swal({
-					title : "Warning ",
+				Swal.fire({
+					title: 'คำเตือน',
 					text : "Change Date or SaleOrder must input data.",
 					icon : 'warning',
-					button : "confirm",
-				})  
-			}  
-			else {    
-				searchByDetail(); 
+				})
+			}
+			else {
+				$('#btn_search').prop('disabled', true);
+				searchByDetail();
 			}
 		});
 
@@ -318,39 +318,25 @@
 			success : function(response) {
 				reportTable.clear();
 				if(response.status === "success") {
-					if (response.data.length > 0) { 
-						reportTable.rows.add(response.data); 
-					} 
-// 					swal({
-// 						title: "Success",
-// 						text: response.message,
-// 						icon: "info",
-// 						button: "confirm"
-// 					});
-				} else {
-// 					swal({
-// 						title: "Warning",
-// 						text: response.message,
-// 						icon: "warning",
-// 						timer: 1000,
-// 						buttons: false
-// 					});
+					if (response.data.length > 0) {
+						reportTable.rows.add(response.data);
+					}
 				}
 				reportTable.columns.adjust();
 				reportTable.draw(); 
 				setStickyToFilterColumn() ;   
 			},
 			error : function(e) {
-				swal("Fail", "Please contact to IT", "error");
+				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 			},
-			done : function(e) {
-				console.log(data);
+			complete : function() {
+				$('#btn_search').prop('disabled', false);
 			}
 		});
 	}
 
 
-// POST - JSONS 
+// POST - JSONS
 // 	function searchByDetail() {  
 // 		const json = createJsonData();
 // // 	    const obj = JSON.parse(json);
@@ -391,14 +377,14 @@
 // 					reportTable.columns.adjust();
 // 					reportTable.draw(); 
 // // 					swal({
-// // 						title: "Success",
+// // 						title: 'สำเร็จ',
 // // 						text: response.message,
 // // 						icon: "info",
-// // 						button: "confirm"
+// // 						button: 'ตกลง'
 // // 					});
 // 				} else {
 // // 					swal({
-// // 						title: "Warning",
+// // 						title: 'คำเตือน',
 // // 						text: response.message,
 // // 						icon: "warning",
 // // 						timer: 1000,
@@ -407,7 +393,7 @@
 // 				}
 // 			},
 // 			error : function(e) {
-// 				swal("Fail", "Please contact to IT", "error");
+// 				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 // 			},
 // 			done : function(e) {
 // 				console.log(response);
@@ -467,14 +453,14 @@
 // 					reportTable.columns.adjust();
 // 					reportTable.draw(); 
 // // 					swal({
-// // 						title: "Success",
+// // 						title: 'สำเร็จ',
 // // 						text: response.message,
 // // 						icon: "info",
-// // 						button: "confirm"
+// // 						button: 'ตกลง'
 // // 					});
 // 				} else {
 // // 					swal({
-// // 						title: "Warning",
+// // 						title: 'คำเตือน',
 // // 						text: response.message,
 // // 						icon: "warning",
 // // 						timer: 1000,
@@ -483,7 +469,7 @@
 // 				}
 // 			},
 // 			error : function(e) {
-// 				swal("Fail", "Please contact to IT", "error");
+// 				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 // 			},
 // 			done : function(e) {
 // 				console.log(response);

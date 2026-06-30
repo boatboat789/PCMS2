@@ -5,9 +5,9 @@ public class SqlErrorHandler {
 	{
 		String systemStatus = "";
 		if (iconStatus.equals("I")) {
-			systemStatus = "Update Success.";
+			systemStatus = "อัพเดตข้อมูลสำเร็จ";
 		} else {
-			systemStatus = "Something happen! Please contact IT.";
+			systemStatus = "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT";
 		}
 		return systemStatus;
 	}

@@ -1,12 +1,15 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.BackGroundJobDao;
@@ -33,12 +36,12 @@ import th.co.wacoal.atech.pcms2.service.master.FromSapSaleService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapSubmitDateService;
 import th.co.wacoal.atech.pcms2.service.master.Z_ATT_CustomerConfirm2Service;
 import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class BackGroundJobDaoImpl implements BackGroundJobDao {
-	private final Database database;
+	private final JdbcTemplate jdbc;
 	private final ERPAtechService erpService;
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	// Services เหล่านี้จะถูก inject โดย Spring (ต้องมี @Service ในคลาสนั้น ๆ)
 	private final FromSapMainProdService fromSapMainProdService;
@@ -54,7 +57,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	private final Z_ATT_CustomerConfirm2Service zattCustomerConfirm2Service;
 
 	@Autowired
-	public BackGroundJobDaoImpl(@Qualifier("pcmsDatabase") Database database, ERPAtechService erpService,
+	public BackGroundJobDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc, ERPAtechService erpService,
 
 			FromSapMainProdService fromSapMainProdService, FromSapCFMService fromSapCFMService,
 			FromSapMainProdSaleService fromSapMainProdSaleService, FromSapPackingService fromSapPackingService,
@@ -63,7 +66,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			FromSapSaleService fromSapSaleService, CustomerService customerService,
 			Z_ATT_CustomerConfirm2Service zattCustomerConfirm2Service) {
 
-		this.database = database;
+		this.jdbc = jdbc;
 		this.erpService = erpService;
 
 		this.fromSapMainProdService = fromSapMainProdService;
@@ -81,51 +84,32 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 
 	@FunctionalInterface
 	private interface PreparedStatementSetter {
-		void set(PreparedStatement ps) throws SQLException;
+		void set(CallableStatement cs) throws SQLException;
 	}
 
 	private void executeProcedure(String sql)
 	{
-
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-		Connection connection = this.database.getConnection();
-		PreparedStatement prepared = null;
-
-		try {
-			prepared = connection.prepareStatement(sql);
-			prepared.execute();
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
-			if (prepared != null)
-				try {
-					prepared.close();
-				} catch (Exception e) {
-				}
-		}
+		this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+			try (CallableStatement cs = conn.prepareCall(sql)) {
+				cs.setQueryTimeout(300);
+				cs.execute();
+			}
+			return null;
+		});
 	}
 
 	private void executeProcedure(String sql, PreparedStatementSetter setter)
 	{
-		Connection connection = this.database.getConnection();
-		PreparedStatement prepared = null;
-
-		try {
-			prepared = connection.prepareStatement(sql);
-			setter.set(prepared);
-			prepared.execute();
-
-		} catch (SQLException e) {
-			throw new RuntimeException("Execute procedure failed : " + sql, e);
-		} finally {
-			if (prepared != null)
-				try {
-					prepared.close();
-				} catch (Exception e) {
-				}
-		}
+		this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+			try (CallableStatement cs = conn.prepareCall(sql)) {
+				setter.set(cs);
+				cs.setQueryTimeout(300);
+				cs.execute();
+			} catch (SQLException e) {
+				throw new RuntimeException("Execute procedure failed : " + sql, e);
+			}
+			return null;
+		});
 	}
 
 	@Override
@@ -167,7 +151,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	@Override
 	public void execUpsertToTEMPUserStatusOnWebWithProdOrder(String prodOrder)
 	{
-		executeProcedure("EXEC [spd_UpsertToTEMP_UserStatusOnWebWithProdOrder] ?", ps -> ps.setString(1, prodOrder));
+		executeProcedure("EXEC [spd_UpsertToTEMP_UserStatusOnWebWithProdOrder] ?", cs -> cs.setString(1, prodOrder));
 	}
 
 	@Override
@@ -216,58 +200,69 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			fromSapMainProdService.upsertFromSapMainProdDetail(frmpList);
 			this.execUpsertToMainProd();
 		} catch (Exception e) {
-			System.err.println("Error processing Main Production Order: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Main Production Order step failed", e);
 		}
 		try {
 			ArrayList<FromErpCFMDetail> frcfmList = erpService.getFromErpCFMDetail();
 			fromSapCFMService.upsertFromSapCFMDetail(frcfmList);
 			this.execUpsertToCFM();
 		} catch (Exception e) {
-			System.err.println("Error processing CFM Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] CFM Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpMainProdSaleDetail> frmpsList = erpService.getFromErpMainProdSaleDetail();
 			fromSapMainProdSaleService.upsertFromSapMainProdSaleDetail(frmpsList);
 			this.execUpsertToMainProdSale();
 		} catch (Exception e) {
-			System.err.println("Error processing Main Production Sale Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Main Production Sale Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpPackingDetail> frpList = erpService.getFromErpPackingDetail();
 			fromSapPackingService.upsertFromSapPackingDetail(frpList);
 			this.execUpsertToPacking();
 		} catch (Exception e) {
-			System.err.println("Error processing Packing Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Packing Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpSubmitDateDetail> fesdList = erpService.getFromErpSubmitDateDetail();
 			fromSapSubmitDateService.upsertFromSapSubmitDateDetail(fesdList);
 			this.execUpsertToSubmitDate();
 		} catch (Exception e) {
-			System.err.println("Error processing Submit Date Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Submit Date Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpGoodReceiveDetail> frgrList = erpService.getFromErpGoodReceiveDetail();
 			fromSapGoodReceiveService.upsertFromSapGoodReceiveDetail(frgrList);
 			this.execUpsertToGoodReceive();
 		} catch (Exception e) {
-			System.err.println("Error processing Good Receive Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Good Receive Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpMainBillBatchDetail> frmbbList = erpService.getFromErpMainBillBatchDetail();
 			fromSapMainBillBatchService.upsertFromSapMainBillBatchDetail(frmbbList);
 			this.execUpsertToMainBillBatch();
 		} catch (Exception e) {
-			System.err.println("Error processing Main Bill Batch Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Main Bill Batch Detail step failed", e);
 		}
 
+	}
+
+	@Override
+	public void runFullErpSyncWithDateRange(String fromDate, String toDate) {
+		// รันลำดับเดียวกับ scheduled job (TaskService.sortBackGroundAfterGetERPDataProcedure)
+		// แต่ override @oneHourAgo ให้ดึงตั้งแต่ fromDate (lower bound) ถึงปัจจุบัน
+		// ThreadLocal override apply กับทุก getFromErp* ที่รันในเธรดนี้
+		try {
+			erpService.setRepairDateFrom(fromDate);
+			log.info("[ERP-sync-manual] date override set: from={} (toDate={} display only)", fromDate, toDate);
+			this.handlerBackGroundZ_ATT_CustomerConfirm2();
+			this.handlerERPAtechToWebAppCustomer();
+			this.handlerERPAtechToWebAppSaleOrder();
+			this.handlerERPAtechToWebAppProductionOrder();
+			this.sortBackGroundAfterGetERPDataProcedure();
+		} finally {
+			erpService.clearRepairDate();
+		}
 	}
 
 	@Override
@@ -278,16 +273,14 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			fromSapMainSaleService.upsertFromSapMainSaleDetail(frmsList);
 			this.execUpsertToMainSale();
 		} catch (Exception e) {
-			System.err.println("Error processing Main Sale Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Main Sale Detail step failed", e);
 		}
 		try {
 			ArrayList<FromErpSaleDetail> frsList = erpService.getFromErpSaleDetail();
 			fromSapSaleService.upsertFromSapSaleDetail(frsList);
 			this.execUpsertToSale();
 		} catch (Exception e) {
-			System.err.println("Error processing Sale Detail: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] Sale Detail step failed", e);
 		}
 	}
 
@@ -296,27 +289,24 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 	{
 
 		try {
-//		System.out.println("sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+//		System.out.println("sortBackGroundAfterGetERPDataProcedure: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 			this.execUpsertToTEMPProdWorkDate();
 		} catch (Exception e) {
-			System.err.println("Error execUpsertToTEMPProdWorkDate: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] execUpsertToTEMPProdWorkDate failed", e);
 		}
 		try {
-//		System.out.println("after execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date())); 
+//		System.out.println("after execUpsertToTEMPProdWorkDate: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 			this.execUpsertToTEMPUserStatusOnWeb();
 		} catch (Exception e) {
-			System.err.println("Error execUpsertToTEMPUserStatusOnWeb: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] execUpsertToTEMPUserStatusOnWeb failed", e);
 		}
 		try {
-//		System.out.println("After execUpsertToTEMPUserStatusOnWeb: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));   
+//		System.out.println("After execUpsertToTEMPUserStatusOnWeb: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 			this.execSumBillAndGoodReceive();
 		} catch (Exception e) {
-			System.err.println("Error execSumBillAndGoodReceive: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] execSumBillAndGoodReceive failed", e);
 		}
-//		System.out.println("After execSumBillAndGoodReceive: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));   
+//		System.out.println("After execSumBillAndGoodReceive: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));
 	}
 
 	@Override
@@ -326,8 +316,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			ArrayList<CustomerDetail> cusList = erpService.getCustomerDetail();
 			customerService.upsertCustomerDetail(cusList);
 		} catch (Exception e) {
-			System.err.println("Error handlerERPAtechToWebAppCustomer: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] handlerERPAtechToWebAppCustomer failed", e);
 		}
 	}
 
@@ -339,8 +328,7 @@ public class BackGroundJobDaoImpl implements BackGroundJobDao {
 			zattCustomerConfirm2Service.upsertZ_ATT_CustomerConfirm2Detail(zCustList);
 			this.execHandlerCustomerConfirm2();
 		} catch (Exception e) {
-			System.err.println("Error handlerBackGroundZ_ATT_CustomerConfirm2: " + e.getMessage());
-			e.printStackTrace();
+			log.error("[ERP-sync] handlerBackGroundZ_ATT_CustomerConfirm2 failed", e);
 		}
 	}
 }

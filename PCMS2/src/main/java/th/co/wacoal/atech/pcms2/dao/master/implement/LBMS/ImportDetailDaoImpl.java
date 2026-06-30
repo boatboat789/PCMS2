@@ -1,5 +1,5 @@
-	package th.co.wacoal.atech.pcms2.dao.master.implement.LBMS;
- 
+package th.co.wacoal.atech.pcms2.dao.master.implement.LBMS;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,30 +7,30 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import th.co.wacoal.atech.pcms2.dao.master.LBMS.ImportDetailDao;
 import th.co.wacoal.atech.pcms2.entities.LBMS.ImportDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Component
 public class ImportDetailDaoImpl implements  ImportDetailDao{
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
-	// Sale - Lab-New 
+	// Sale - Lab-New
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
     @Autowired
-	public ImportDetailDaoImpl(@Qualifier("pcmsDatabase")Database database) {
-		this.database = database;
+	public ImportDetailDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -40,8 +40,9 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 	@Override
 	public  ArrayList<ImportDetail> getImportDetailByProductionOrder(String prodOrder){
 		ArrayList<ImportDetail> list = null;
-		String where = " where  "; 
-		where += " imd.ProductionOrder = '" + prodOrder + "'  AND "
+		String where = " where  ";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " imd.ProductionOrder = '" + prodOrderSafe + "'  AND "
 				+ " SendFrom in (\r\n"
 				+ "  'QA',\r\n"
 				+ "  'Dye',\r\n"
@@ -51,7 +52,7 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 				  "  "
 				  + " SELECT DISTINCT  \r\n"
 				  + "	   imd.[ProductionOrder] \r\n"
-				  + "      ,imd.[LabNo]\r\n" 
+				  + "      ,imd.[LabNo]\r\n"
 				  + "      ,imd.[Remark]\r\n"
 				  + "      ,imd.[ImportStatus]\r\n"
 				  + "      ,imd.[SendFrom]\r\n"
@@ -71,19 +72,19 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 				  + "	from [LBMS].[dbo].[LabWorkProcessDetail] as main\r\n"
 				  + "	INNER join (\r\n"
 				  + "		select ImportId ,max(No) as maxNo \r\n"
-				  + "		from [LBMS].[dbo].[LabWorkProcessDetail] \r\n" 
+				  + "		from [LBMS].[dbo].[LabWorkProcessDetail] \r\n"
 				  + "		group by ImportId\r\n"
 				  + "	) as sub on main.ImportId = sub.ImportId and\r\n"
 				  + "				main.[No] = sub.[maxNo]\r\n"
 				  + "  ) as lwpd on imd.[Id] = lwpd.[ImportId]"
-				  + where  
+				  + where
 				  + " Order by imd.[ProductionOrder],imd.SendLabDate\r\n"
-				  + ""; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				  + "";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genImportDetail(map));
 		}
 		return list;
-	} 
+	}
 }

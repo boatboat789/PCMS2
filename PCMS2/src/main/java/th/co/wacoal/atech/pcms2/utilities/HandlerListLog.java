@@ -2,18 +2,17 @@ package th.co.wacoal.atech.pcms2.utilities;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
-import th.co.wacoal.atech.pcms2.entities.ChangeSettingLogDetail; 
-  
+import th.co.wacoal.atech.pcms2.entities.ChangeSettingLogDetail;
+
 
 public class HandlerListLog {
 
-	public static SimpleDateFormat SDF_DDMMYYY_HHMMSS_1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	public static DecimalFormat df = new DecimalFormat("#.##"); // 2 decimal places
+	private static final ThreadLocal<DecimalFormat> df =
+			ThreadLocal.withInitial(() -> new DecimalFormat("#.##")); // 2 decimal places — ไม่ซ้ำ FormatUtils (format ต่างกัน)
     public static <T> ArrayList<ChangeSettingLogDetail> compareAndLogChanges(
             T oldObj,
             T newObj,
@@ -98,13 +97,13 @@ public class HandlerListLog {
 	        return "";
 	    }
 	    if (value instanceof Double) {
-	        return df.format((Double) value);
+	        return df.get().format((Double) value);
 	    }
 	    if (value instanceof Number) {
 	        return Integer.toString(((Number) value).intValue());
 	    }
 	    if (value instanceof Date) {
-	        return SDF_DDMMYYY_HHMMSS_1.format((Date) value);
+	        return FormatUtils.DAY_MONTH_YEAR_TIME_FORMAT.get().format((Date) value);
 	    }
 	    return value.toString();
 	}

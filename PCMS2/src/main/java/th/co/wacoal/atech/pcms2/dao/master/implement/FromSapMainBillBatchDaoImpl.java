@@ -6,31 +6,34 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapMainBillBatchDao;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpMainBillBatchDetail;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
 //import model.BeanCreateModel;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 //	private BeanCreateModel bcModel = new BeanCreateModel();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapMainBillBatchDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapMainBillBatchDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -38,19 +41,18 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 	{
 		return this.message;
 	}
- 
+
 
 	@Override
 	public String upsertFromSapMainBillBatchDetail(ArrayList<FromErpMainBillBatchDetail> paList)
 	{
-		String iconStatus = "I";
-		Connection conn = this.database.getConnection();
-//		PreparedStatement prepared = null;
+		String[] iconStatusHolder = { "I" };
 
-		try {
+		this.jdbc.execute((Connection conn) -> {
 			conn.setAutoCommit(false);
 
 			try (Statement stmt = conn.createStatement()) {
+				stmt.setQueryTimeout(300);
 				// 1. สร้าง Temp Table ให้ตรงตาม Schema (13, 3) และใช้ COLLATE DATABASE_DEFAULT
 				stmt.execute("IF OBJECT_ID('tempdb..#TempMainBill') IS NOT NULL DROP TABLE #TempMainBill");
 				stmt.execute("CREATE TABLE #TempMainBill ("
@@ -72,6 +74,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 				// 2. Bulk Insert ลง Temp Table
 				String insertTemp = "INSERT INTO #TempMainBill VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				try (PreparedStatement ps = conn.prepareStatement(insertTemp)) {
+					ps.setQueryTimeout(300);
 					for (FromErpMainBillBatchDetail bean : paList) {
 						int idx = 1;
 						ps.setString(idx ++ , bean.getBillDoc());
@@ -93,45 +96,11 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 					ps.executeBatch();
 				}
 
-//				// 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder)
-//				stmt.execute("UPDATE target SET target.DataStatus = 'X', target.ChangeDate = GETDATE() "
-//						+ "FROM [FromSapMainBillBatch] AS target "
-//						+ "INNER JOIN #TempMainBill AS src ON target.ProductionOrder = src.ProductionOrder "
-//						+ "WHERE src.DataStatus = 'X' AND target.DataStatus = 'O'");
-//
-//				// 4. Update ข้อมูลเดิม (Matching 6 Keys)
-//				stmt.execute("UPDATE target SET "
-//						+ "  target.LotShipping = src.LotShipping, target.Grade = src.Grade, "
-//						+ "  target.QuantityKG = src.QuantityKG, target.QuantityYD = src.QuantityYD, "
-//						+ "  target.QuantityMR = src.QuantityMR, target.LotNo = src.LotNo, "
-//						+ "  target.DataStatus = src.DataStatus, target.ChangeDate = GETDATE(), "
-//						+ "  target.SyncDate = src.SyncDate "
-//						+ "FROM [FromSapMainBillBatch] AS target "
-//						+ "INNER JOIN #TempMainBill AS src ON "
-//						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
-//						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
-//						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
-//						+ "WHERE src.DataStatus <> 'X'");
-//
-//				// 5. Insert ข้อมูลใหม่
-//				stmt.execute("INSERT INTO [FromSapMainBillBatch] (BillDoc, BillItem, LotShipping, ProductionOrder, "
-//						+ "SaleOrder, SaleLine, Grade, RollNumber, QuantityKG, QuantityYD, QuantityMR, LotNo, "
-//						+ "DataStatus, ChangeDate, CreateDate, SyncDate) "
-//						+ "SELECT src.BillDoc, src.BillItem, src.LotShipping, src.ProductionOrder, "
-//						+ "src.SaleOrder, src.SaleLine, src.Grade, src.RollNumber, src.QuantityKG, src.QuantityYD, "
-//						+ "src.QuantityMR, src.LotNo, src.DataStatus, GETDATE(), GETDATE(), src.SyncDate "
-//						+ "FROM #TempMainBill AS src "
-//						+ "LEFT JOIN [FromSapMainBillBatch] AS target ON "
-//						+ "  target.BillDoc = src.BillDoc AND target.BillItem = src.BillItem AND "
-//						+ "  target.SaleOrder = src.SaleOrder AND target.SaleLine = src.SaleLine AND "
-//						+ "  target.RollNumber = src.RollNumber AND target.ProductionOrder = src.ProductionOrder "
-//						+ "WHERE target.ProductionOrder IS NULL "
-//						+ "  AND src.DataStatus <> 'X' "
-//						+ "  AND src.BillDoc IS NOT NULL AND src.BillDoc <> ''");
 				// รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อคุมเวลา GETDATE() ให้เท่ากันทั้ง 3 Step
-				String upsertSql = 
-				      "DECLARE @Now DATETIME = GETDATE(); "
-				    
+				String upsertSql =
+				      "SET XACT_ABORT ON; SET DEADLOCK_PRIORITY LOW; "
+				    + "DECLARE @Now DATETIME = GETDATE(); "
+
 				    + "/* 3. จัดการ DataStatus = 'X' (สั่งปิดรายการตาม ProductionOrder) */ "
 				    + "UPDATE target SET "
 				    + "    target.DataStatus = 'X', "
@@ -193,11 +162,10 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 			        e.printStackTrace();
 			    }
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			iconStatus = "E";
-		}
-		return iconStatus;
+			return null;
+		});
+
+		return iconStatusHolder[0];
 	}
 //	@Override
 //	public String upsertFromSapMainBillBatchDetail(ArrayList<FromErpMainBillBatchDetail> paList)

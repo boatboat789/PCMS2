@@ -1,6 +1,5 @@
 package th.co.wacoal.atech.pcms2.dao.master.implement;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -8,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.Z_ATT_CustomerConfirm2Dao;
@@ -17,13 +19,13 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository
 public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao {
 	// PC - Lab-ReLab
 	// Dye,QA - Lab-ReDye
 	// Sale - Lab-New
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String cte = ""
 			+ " WITH OperationMax AS (\r\n"
@@ -114,14 +116,14 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 			+ "    a.[CreateDate]\r\n";
 
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public Z_ATT_CustomerConfirm2DaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public Z_ATT_CustomerConfirm2DaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -136,18 +138,22 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
 		String where = " where DataStatus = 'O' ";
-//		String where = " where 1 = 1 "; 
+//		String where = " where 1 = 1 ";
 		if ( ! custName.equals("")) {
-			where += " and a.[CustomerName] like '" + custName + "%' \r\n";
+			String custNameSafe = custName.replace("'", "''");
+			where += " and a.[CustomerName] like '" + custNameSafe + "%' \r\n";
 		}
 		if ( ! so.equals("")) {
-			where += " and a.[SO] like '" + so + "%' \r\n";
+			String soSafe = so.replace("'", "''");
+			where += " and a.[SO] like '" + soSafe + "%' \r\n";
 		}
 		if ( ! prodOrder.equals("")) {
-			where += " and a.[ProdId] like '" + prodOrder + "%' \r\n";
+			String prodOrderSafe = prodOrder.replace("'", "''");
+			where += " and a.[ProdId] like '" + prodOrderSafe + "%' \r\n";
 		}
 		if ( ! lotNubmer.equals("")) {
-			where += " and a.LotNo like '" + lotNubmer + "%' \r\n";
+			String lotNubmerSafe = lotNubmer.replace("'", "''");
+			where += " and a.LotNo like '" + lotNubmerSafe + "%' \r\n";
 		}
 		where += PCMSSqlService.buildDateClause("SendDate", sendDate, "a");
 		where += PCMSSqlService.buildDateClause("ReplyDate", replyDate, "a");
@@ -159,7 +165,7 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 				+ "FROM [PCMS].[dbo].[Z_ATT_CustomerConfirm2] AS a\r\n"
 				+ "LEFT JOIN CTE_Data AS b ON a.[ProdId] = b.[ProductionOrder]\r\n"
 				+ where;
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
@@ -173,7 +179,7 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
 		String where = " where DataStatus = 'O' ";
-//		String where = " where 1 = 1 ";  
+//		String where = " where 1 = 1 ";
 		if ( ! poList.isEmpty()) {
 			where += " AND a.Id in ( ";
 			for (int i = 0; i < poList.size(); i ++ ) {
@@ -195,158 +201,163 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 				+ "LEFT JOIN CTE_Data AS b ON a.[ProdId] = b.[ProductionOrder]\r\n"
 				+ where;
 //		System.out.println(sql);
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genZ_ATT_CustomerConfirm2Detail(map));
 		}
 		return list;
 	}
+
 	@Override
 	public String upsertZ_ATT_CustomerConfirm2Detail(ArrayList<Z_ATT_CustomerConfirm2Detail> paList) {
 	    if (paList == null || paList.isEmpty()) return "I";
 
-	    String iconStatus = "I";
-	    Connection connection = this.database.getConnection();
+	    final String[] iconStatus = {"I"};
 
-	    try {
-	        connection.setAutoCommit(false);
-	        try (Statement stmt = connection.createStatement()) {
-	            // 1. สร้าง Temp Table (เช็กชื่อคอลัมน์ให้ตรงกับตัว ps.set ด้านล่าง)
-	        	// 1. สร้าง Temp Table โดยบังคับ Collation ให้ตรงกับ Database หลัก
-	        	stmt.execute("IF OBJECT_ID('tempdb..#TempCustConfirm') IS NOT NULL DROP TABLE #TempCustConfirm");
-				 
+	    this.jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<Void>) connection -> {
+	        try {
+	            connection.setAutoCommit(false);
+	            try (Statement stmt = connection.createStatement()) {
+	            	stmt.setQueryTimeout(300);
+	                // 1. สร้าง Temp Table (เช็กชื่อคอลัมน์ให้ตรงกับตัว ps.set ด้านล่าง)
+	            	// 1. สร้าง Temp Table โดยบังคับ Collation ให้ตรงกับ Database หลัก
+	            	stmt.execute("IF OBJECT_ID('tempdb..#TempCustConfirm') IS NOT NULL DROP TABLE #TempCustConfirm");
 
-	        	stmt.execute("CREATE TABLE #TempCustConfirm (" +
-	        	    "SendDate DATE, NoPerDay INT, ReplyDate DATE, " +
-	        	    "CFMNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " + // เพิ่ม COLLATE DATABASE_DEFAULT
-	        	    "CustomerName VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "SO VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "SOLine VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "DueDate DATE, " +
-	        	    "PO VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "Material VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "ProductName VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "LabNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "Color VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "ProdId VARCHAR(50) COLLATE DATABASE_DEFAULT, " + // สำคัญมาก เพราะใช้ JOIN
-	        	    "LotNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "CFM_L DECIMAL(13,3), CFM_Da DECIMAL(13,3), CFM_Db DECIMAL(13,3), " +
-	        	    "CFM_St DECIMAL(13,3), CFM_DeltaE DECIMAL(13,3), " +
-	        	    "Result VARCHAR(10) COLLATE DATABASE_DEFAULT, " +
-	        	    "QCComment VARCHAR(200) COLLATE DATABASE_DEFAULT, " +
-	        	    "RemarkFromSubmit VARCHAR(200) COLLATE DATABASE_DEFAULT, " +
-	        	    "NextLot VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "Qty DECIMAL(13,3), " +
-	        	    "UnitId VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
-	        	    "DataStatus VARCHAR(1) COLLATE DATABASE_DEFAULT)");
-	            // 2. Batch Insert ลง Temp (27 พารามิเตอร์)
-	            String insertTemp = "INSERT INTO #TempCustConfirm VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	            try (PreparedStatement ps = connection.prepareStatement(insertTemp)) {
-	                for (Z_ATT_CustomerConfirm2Detail bean : paList) {
-	                    int idx = 1;
-	                    this.sshUtl.setSqlDate(ps, bean.getSendDate(), idx++);        // 1
-	                    this.sshUtl.setSqlInt(ps, bean.getNoPerDay(), idx++);         // 2
-	                    this.sshUtl.setSqlDate(ps, bean.getReplyDate(), idx++);       // 3
-	                    ps.setString(idx++, bean.getCfmNo());                         // 4
-	                    ps.setString(idx++, bean.getCustomerName());                  // 5
-	                    ps.setString(idx++, bean.getSo());                            // 6
-	                    ps.setString(idx++, bean.getSoLine());                        // 7
-	                    this.sshUtl.setSqlDate(ps, bean.getDueDate(), idx++);         // 8
-	                    ps.setString(idx++, bean.getPo());                            // 9
-	                    ps.setString(idx++, bean.getMaterial());                      // 10
-	                    ps.setString(idx++, bean.getProductName());                   // 11
-	                    ps.setString(idx++, bean.getLabNo());                         // 12
-	                    ps.setString(idx++, bean.getColor());                         // 13
-	                    ps.setString(idx++, bean.getProdID());                        // 14
-	                    ps.setString(idx++, bean.getLotNo());                         // 15
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getCfmL(), idx++);      // 16
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getCfmDa(), idx++);     // 17
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getCfmDb(), idx++);     // 18
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getCfmSt(), idx++);     // 19
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getCfmDeltaE(), idx++); // 20
-	                    ps.setString(idx++, bean.getResult());                        // 21
-	                    ps.setString(idx++, bean.getQcComment());                     // 22
-	                    ps.setString(idx++, bean.getRemarkFromSubmit());              // 23
-	                    ps.setString(idx++, bean.getNextLot());                        // 24
-	                    this.sshUtl.setSqlBigDecimal(ps, bean.getQty(), idx++);       // 25
-	                    ps.setString(idx++, bean.getUnitId());                        // 26
-	                    ps.setString(idx++, bean.getDataStatus());                    // 27
-	                    ps.addBatch();
+
+	            	stmt.execute("CREATE TABLE #TempCustConfirm (" +
+	            	    "SendDate DATE, NoPerDay INT, ReplyDate DATE, " +
+	            	    "CFMNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " + // เพิ่ม COLLATE DATABASE_DEFAULT
+	            	    "CustomerName VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "SO VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "SOLine VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "DueDate DATE, " +
+	            	    "PO VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "Material VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "ProductName VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "LabNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "Color VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "ProdId VARCHAR(50) COLLATE DATABASE_DEFAULT, " + // สำคัญมาก เพราะใช้ JOIN
+	            	    "LotNo VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "CFM_L DECIMAL(13,3), CFM_Da DECIMAL(13,3), CFM_Db DECIMAL(13,3), " +
+	            	    "CFM_St DECIMAL(13,3), CFM_DeltaE DECIMAL(13,3), " +
+	            	    "Result VARCHAR(10) COLLATE DATABASE_DEFAULT, " +
+	            	    "QCComment VARCHAR(200) COLLATE DATABASE_DEFAULT, " +
+	            	    "RemarkFromSubmit VARCHAR(200) COLLATE DATABASE_DEFAULT, " +
+	            	    "NextLot VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "Qty DECIMAL(13,3), " +
+	            	    "UnitId VARCHAR(50) COLLATE DATABASE_DEFAULT, " +
+	            	    "DataStatus VARCHAR(1) COLLATE DATABASE_DEFAULT)");
+	                // 2. Batch Insert ลง Temp (27 พารามิเตอร์)
+	                String insertTemp = "INSERT INTO #TempCustConfirm VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	                try (PreparedStatement ps = connection.prepareStatement(insertTemp)) {
+	                    ps.setQueryTimeout(300);
+	                    for (Z_ATT_CustomerConfirm2Detail bean : paList) {
+	                        int idx = 1;
+	                        sshUtl.setSqlDate(ps, bean.getSendDate(), idx++);        // 1
+	                        sshUtl.setSqlInt(ps, bean.getNoPerDay(), idx++);         // 2
+	                        sshUtl.setSqlDate(ps, bean.getReplyDate(), idx++);       // 3
+	                        ps.setString(idx++, bean.getCfmNo());                         // 4
+	                        ps.setString(idx++, bean.getCustomerName());                  // 5
+	                        ps.setString(idx++, bean.getSo());                            // 6
+	                        ps.setString(idx++, bean.getSoLine());                        // 7
+	                        sshUtl.setSqlDate(ps, bean.getDueDate(), idx++);         // 8
+	                        ps.setString(idx++, bean.getPo());                            // 9
+	                        ps.setString(idx++, bean.getMaterial());                      // 10
+	                        ps.setString(idx++, bean.getProductName());                   // 11
+	                        ps.setString(idx++, bean.getLabNo());                         // 12
+	                        ps.setString(idx++, bean.getColor());                         // 13
+	                        ps.setString(idx++, bean.getProdID());                        // 14
+	                        ps.setString(idx++, bean.getLotNo());                         // 15
+	                        sshUtl.setSqlBigDecimal(ps, bean.getCfmL(), idx++);      // 16
+	                        sshUtl.setSqlBigDecimal(ps, bean.getCfmDa(), idx++);     // 17
+	                        sshUtl.setSqlBigDecimal(ps, bean.getCfmDb(), idx++);     // 18
+	                        sshUtl.setSqlBigDecimal(ps, bean.getCfmSt(), idx++);     // 19
+	                        sshUtl.setSqlBigDecimal(ps, bean.getCfmDeltaE(), idx++); // 20
+	                        ps.setString(idx++, bean.getResult());                        // 21
+	                        ps.setString(idx++, bean.getQcComment());                     // 22
+	                        ps.setString(idx++, bean.getRemarkFromSubmit());              // 23
+	                        ps.setString(idx++, bean.getNextLot());                        // 24
+	                        sshUtl.setSqlBigDecimal(ps, bean.getQty(), idx++);       // 25
+	                        ps.setString(idx++, bean.getUnitId());                        // 26
+	                        ps.setString(idx++, bean.getDataStatus());                    // 27
+	                        ps.addBatch();
+	                    }
+	                    ps.executeBatch();
 	                }
-	                ps.executeBatch();
-	            }
-	         // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่สอดคล้องกัน
-	            String upsertSql =
-	                  "DECLARE @Now DATETIME = GETDATE(); "
+	             // รวมข้อ 3, 4, 5 เป็น Batch เดียวเพื่อประสิทธิภาพและเวลาที่สอดคล้องกัน
+	                String upsertSql =
+	                      "SET XACT_ABORT ON; SET DEADLOCK_PRIORITY LOW; "
+	                    + "DECLARE @Now DATETIME = GETDATE(); "
 
-	                // 3. ปิด stale records: ProdId อยู่ใน batch ใหม่ แต่ ProdId+CFMNo ไม่มาด้วย
-	                // = ERP ยกเลิก/ลบ CFMNo นั้นออกแล้ว ต้องปิดด้วย DataStatus='X'
-	                + "/* 3. CLOSE stale — ProdId in new batch but CFMNo not included */ "
-	                + " UPDATE target\r\n"
-	                + "SET\r\n"
-	                + "    target.DataStatus = 'X',\r\n"
-	                + "    target.ChangeDate = @Now\r\n"
-	                + "FROM dbo.Z_ATT_CustomerConfirm2 target\r\n"
-	                + "INNER JOIN\r\n"
-	                + "(\r\n"
-	                + "    SELECT DISTINCT ProdId\r\n"
-	                + "    FROM #TempCustConfirm\r\n"
-	                + ") p\r\n"
-	                + "    ON p.ProdId = target.ProdId\r\n"
-	                + "LEFT JOIN #TempCustConfirm src\r\n"
-	                + "    ON src.ProdId = target.ProdId\r\n"
-	                + "   AND src.CFMNo = target.CFMNo\r\n"
-	                + "WHERE src.ProdId IS NULL\r\n"
-	                + "  AND target.DataStatus <> 'X'; "
+	                    // 3. ปิด stale records: ProdId อยู่ใน batch ใหม่ แต่ ProdId+CFMNo ไม่มาด้วย
+	                    // = ERP ยกเลิก/ลบ CFMNo นั้นออกแล้ว ต้องปิดด้วย DataStatus='X'
+	                    + "/* 3. CLOSE stale — ProdId in new batch but CFMNo not included */ "
+	                    + " UPDATE target\r\n"
+	                    + "SET\r\n"
+	                    + "    target.DataStatus = 'X',\r\n"
+	                    + "    target.ChangeDate = @Now\r\n"
+	                    + "FROM dbo.Z_ATT_CustomerConfirm2 target\r\n"
+	                    + "INNER JOIN\r\n"
+	                    + "(\r\n"
+	                    + "    SELECT DISTINCT ProdId\r\n"
+	                    + "    FROM #TempCustConfirm\r\n"
+	                    + ") p\r\n"
+	                    + "    ON p.ProdId = target.ProdId\r\n"
+	                    + "LEFT JOIN #TempCustConfirm src\r\n"
+	                    + "    ON src.ProdId = target.ProdId\r\n"
+	                    + "   AND src.CFMNo = target.CFMNo\r\n"
+	                    + "WHERE src.ProdId IS NULL\r\n"
+	                    + "  AND target.DataStatus <> 'X'; "
 
-	                + "/* 4. UPDATE (ครบ 26 คอลัมน์ที่ต้องเปลี่ยน) */ "
-	                + "UPDATE target SET "
-	                + "    target.SendDate = src.SendDate, target.NoPerDay = src.NoPerDay, target.ReplyDate = src.ReplyDate, "
-	                + "    target.CustomerName = src.CustomerName, target.SO = src.SO, target.SOLine = src.SOLine, "
-	                + "    target.DueDate = src.DueDate, target.PO = src.PO, target.Material = src.Material, "
-	                + "    target.ProductName = src.ProductName, target.LabNo = src.LabNo, target.Color = src.Color, "
-	                + "    target.LotNo = src.LotNo, target.CFM_L = src.CFM_L, target.CFM_Da = src.CFM_Da, "
-	                + "    target.CFM_Db = src.CFM_Db, target.CFM_St = src.CFM_St, target.CFM_DeltaE = src.CFM_DeltaE, "
-	                + "    target.Result = src.Result, target.QCComment = src.QCComment, target.RemarkFromSubmit = src.RemarkFromSubmit, "
-	                + "    target.NextLot = src.NextLot, target.Qty = src.Qty, target.UnitId = src.UnitId, "
-	                + "    target.DataStatus = src.DataStatus, "
-	                + "    target.ChangeDate = @Now "
-	                + "FROM [dbo].[Z_ATT_CustomerConfirm2] AS target "
-	                + "INNER JOIN #TempCustConfirm AS src ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo; "
+	                    + "/* 4. UPDATE (ครบ 26 คอลัมน์ที่ต้องเปลี่ยน) */ "
+	                    + "UPDATE target SET "
+	                    + "    target.SendDate = src.SendDate, target.NoPerDay = src.NoPerDay, target.ReplyDate = src.ReplyDate, "
+	                    + "    target.CustomerName = src.CustomerName, target.SO = src.SO, target.SOLine = src.SOLine, "
+	                    + "    target.DueDate = src.DueDate, target.PO = src.PO, target.Material = src.Material, "
+	                    + "    target.ProductName = src.ProductName, target.LabNo = src.LabNo, target.Color = src.Color, "
+	                    + "    target.LotNo = src.LotNo, target.CFM_L = src.CFM_L, target.CFM_Da = src.CFM_Da, "
+	                    + "    target.CFM_Db = src.CFM_Db, target.CFM_St = src.CFM_St, target.CFM_DeltaE = src.CFM_DeltaE, "
+	                    + "    target.Result = src.Result, target.QCComment = src.QCComment, target.RemarkFromSubmit = src.RemarkFromSubmit, "
+	                    + "    target.NextLot = src.NextLot, target.Qty = src.Qty, target.UnitId = src.UnitId, "
+	                    + "    target.DataStatus = src.DataStatus, "
+	                    + "    target.ChangeDate = @Now "
+	                    + "FROM [dbo].[Z_ATT_CustomerConfirm2] AS target "
+	                    + "INNER JOIN #TempCustConfirm AS src ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo; "
 
-	                + "/* 5. INSERT (ครบ 29 คอลัมน์ตาม Schema) */ "
-	                + "INSERT INTO [dbo].[Z_ATT_CustomerConfirm2] ("
-	                + "    SendDate, NoPerDay, ReplyDate, CFMNo, CustomerName, SO, SOLine, DueDate, PO, Material, "
-	                + "    ProductName, LabNo, Color, ProdId, LotNo, CFM_L, CFM_Da, CFM_Db, CFM_St, CFM_DeltaE, "
-	                + "    Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId, DataStatus, ChangeDate, CreateDate) "
-	                + "SELECT "
-	                + "    src.SendDate, src.NoPerDay, src.ReplyDate, src.CFMNo, src.CustomerName, src.SO, src.SOLine, "
-	                + "    src.DueDate, src.PO, src.Material, src.ProductName, src.LabNo, src.Color, src.ProdId, src.LotNo, "
-	                + "    src.CFM_L, src.CFM_Da, src.CFM_Db, src.CFM_St, src.CFM_DeltaE, src.Result, src.QCComment, "
-	                + "    src.RemarkFromSubmit, src.NextLot, src.Qty, src.UnitId, src.DataStatus, @Now, @Now "
-	                + "FROM #TempCustConfirm AS src "
-	                + "LEFT JOIN [dbo].[Z_ATT_CustomerConfirm2] AS target ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo "
-	                + "WHERE target.ProdId IS NULL;";
+	                    + "/* 5. INSERT (ครบ 29 คอลัมน์ตาม Schema) */ "
+	                    + "INSERT INTO [dbo].[Z_ATT_CustomerConfirm2] ("
+	                    + "    SendDate, NoPerDay, ReplyDate, CFMNo, CustomerName, SO, SOLine, DueDate, PO, Material, "
+	                    + "    ProductName, LabNo, Color, ProdId, LotNo, CFM_L, CFM_Da, CFM_Db, CFM_St, CFM_DeltaE, "
+	                    + "    Result, QCComment, RemarkFromSubmit, NextLot, Qty, UnitId, DataStatus, ChangeDate, CreateDate) "
+	                    + "SELECT "
+	                    + "    src.SendDate, src.NoPerDay, src.ReplyDate, src.CFMNo, src.CustomerName, src.SO, src.SOLine, "
+	                    + "    src.DueDate, src.PO, src.Material, src.ProductName, src.LabNo, src.Color, src.ProdId, src.LotNo, "
+	                    + "    src.CFM_L, src.CFM_Da, src.CFM_Db, src.CFM_St, src.CFM_DeltaE, src.Result, src.QCComment, "
+	                    + "    src.RemarkFromSubmit, src.NextLot, src.Qty, src.UnitId, src.DataStatus, @Now, @Now "
+	                    + "FROM #TempCustConfirm AS src "
+	                    + "LEFT JOIN [dbo].[Z_ATT_CustomerConfirm2] AS target ON target.ProdId = src.ProdId AND target.CFMNo = src.CFMNo "
+	                    + "WHERE target.ProdId IS NULL;";
 
-	            stmt.execute(upsertSql);
-	            connection.commit();
-	        } catch (Exception e) {
-	            if (connection != null) connection.rollback();
-	            throw e;
-	        } finally {
-	            // ✅ DROP temp table ก่อนคืน connection กลับ pool
-	            if (connection != null) {
+	                stmt.execute(upsertSql);
+	                connection.commit();
+	            } catch (Exception e) {
+	                connection.rollback();
+	                throw e;
+	            } finally {
+	                // DROP temp table ก่อนคืน connection กลับ pool
 	                try (java.sql.Statement cleanup = connection.createStatement()) {
 	                    cleanup.execute("IF OBJECT_ID('tempdb..#TempCustConfirm') IS NOT NULL DROP TABLE #TempCustConfirm");
 	                } catch (Exception ignored) {}
 	                connection.setAutoCommit(true);
 	            }
+	        } catch (Exception e) {
+	            log.error("[ERP-sync] upsertZ_ATT_CustomerConfirm2Detail failed", e);
+	            iconStatus[0] = "E";
 	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        iconStatus = "E";
-	    }
-	    return iconStatus;
+	        return null;
+	    });
+
+	    return iconStatus[0];
 	}
 }

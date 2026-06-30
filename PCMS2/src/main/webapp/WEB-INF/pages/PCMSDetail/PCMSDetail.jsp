@@ -17,8 +17,8 @@
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
-	<div id="wrapper-center" class="row" style="margin: 0 5px;">
-		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="font-size: 12.5px; padding: 0px; margin: 0px 0px;">
+	<div id="wrapper-center">
+		<div class="content-panel" style="font-size: 12.5px;">
 			<div class="table-responsive ">
 				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important;">
 					<thead>
@@ -124,8 +124,13 @@ var dd = String('0' + today.getDate()).slice(-2);
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
-var MainTable ;  
-var mapsDataHeader  = new Map(); 
+var MainTable ;
+var mapsDataHeader  = new Map();
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+} 
 var mapsTitleHeader  = new Map();    
 var mapsColumnHeader  = new Map(); 
 var check1 = 0	;
@@ -258,12 +263,12 @@ $(document) .ready( function() {
 				    {"data" : "saleOrder" ,       "title":"SO No.",
 				          orderData: [ 1, 2,25 ]        ,       
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.saleOrder+'</div>'
+							let html = '<div name="n_'+row.saleOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleOrder+'</div>'
 							return  html; 
 					   	  }         },                          //1
 				    {"data" : "saleLine"   ,      "title":"SO Line" ,            
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleLine+' data-toggle="tooltip"  title="' + row.typePrd + '"> '+row.saleLine+'</div>'
+							let html = '<div name="n_'+row.saleLine+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleLine+'</div>'
 							return  html; 
 					   	  }             },                          //2
 				    {"data" : "customerShortName","title":"Cust.(Name4)" ,      	     
@@ -335,7 +340,7 @@ $(document) .ready( function() {
 				    {"data" : "lotNo",            "title":"Lot"    ,                        
 					  	  className : 'dt-custom-td100', type: 'string'           ,             
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
+							let html = '<div name="n_'+row.lotNo+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.lotNo+'</div>'
 							return  html; 
 					   	  }     },                                       //25 
 				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro',//,             
@@ -567,7 +572,9 @@ $(document) .ready( function() {
 					$('td', row).eq(mapsDataHeader.get("dyePlan")).addClass('bg-color-azure'); 
 				} 
 			},     
-			drawCallback: function( settings ){  console.log('draw')},   
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
+			},   
 			initComplete: function () { console.log('initcom')}  
 	 	 });      	
     $( MainTable.table().container() ).on( 'keyup', 'tfoot input', function () {
@@ -742,20 +749,18 @@ $(document) .ready( function() {
 	 	        leftColumns: 0,
 	 	        rightColumns: 0   
 	 	    } );   
-	    	swal({  
-				title: "Success",    
+	    	Swal.fire({  
+				title: 'สำเร็จ',    
 			 	text: "Clear Lock Success" ,
 				icon: "success",
-				button: "confirm",
 			});  
 	    }
 	    else{           
 			let colReArray = colReOrderBySelect(columnsHeader,selectedItem);
-			swal({  
-				title: "Success",    
+			Swal.fire({  
+				title: 'สำเร็จ',    
 			 	text: "Lock all previous column of "+selectedItem ,
 				icon: "success",
-				button: "confirm",
 			});  
 //			 MainTable.colReorder.order(          
 //					 colReArray   
@@ -792,10 +797,11 @@ $(document) .ready( function() {
  		addLockColOption(mapsDataHeader,mapsTitleHeader);           
  		     
  	} );     
-    $('#btn_search').on( 'click', function () {     
-    	$("#submit_button").click()  
-    	soLineTmp = '';            
-		soTmp = '';  
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
+    	$("#submit_button").click()
+    	soLineTmp = '';
+		soTmp = '';
     	searchByDetail();    
     	 var selectedItem = $('#multi_lockCol').val();    // get selected list  
  	    clearStickyInput();
@@ -847,12 +853,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				swal({   
-		   		    title: 'Warning',      
+				Swal.fire({   
+		   		    title: 'คำเตือน',      
 		   		    text: "ProductionOrder can't switch same productionOrder.",    
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 				})
 			  	rowData.switchRemark  = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -866,12 +872,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				 swal({   
-			   		    title: 'Warning',      
+				 Swal.fire({   
+			   		    title: 'คำเตือน',      
 			   		    text: "ProductionOrder can't switch same productionOrder.",    
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 			  	rowData.switchRemark = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -890,15 +896,15 @@ $(document) .ready( function() {
 			oldValue: oldValue,      
 		    idx: idx,  
 	  };  
-		 swal({ 
+		 Swal.fire({ 
 			  title: "Are you sure to change "+fieldName+" ?",
 			  text: "From : "+oldValue+" to "+newValue+" ",
 			  icon: "warning",
-			  buttons: true,      
-			  dangerMode: true,						   								   																																	  
+			  showCancelButton: true,      
+			  confirmButtonColor: '#d33',						   								   																																	  
 			})
-			.then((willDelete) => {  
-			  if (willDelete) {          
+			.then((result) => {  
+			  if (result.isConfirmed) {          
 			  	setValueWithFieldName(fieldName,rowData,newValue)
 				MainTable.row(idx).invalidate() ;  
 		 		var json = createInputDateJsonData(rowData,fieldName ); 
@@ -976,12 +982,12 @@ $(document) .ready( function() {
 					else{ break;   } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			   		    title: 'Warning',
+					Swal.fire({   
+			   		    title: 'คำเตือน',
 			   		    text: 'After = only numbers are required.',    
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else{ handlerInputField("replacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
@@ -1004,8 +1010,8 @@ $(document) .ready( function() {
 					else{ break; } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			  		    title: 'Warning',
+					Swal.fire({   
+			  		    title: 'คำเตือน',
 			  		    text: 'After = only numbers are required..',    
 			  		    icon: 'warning',
 			  		    timer: 1000,
@@ -1027,12 +1033,12 @@ $(document) .ready( function() {
 			 e.preventDefault();    
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({
-		   		    title: 'Warning',
+	        	Swal.fire({
+		   		    title: 'คำเตือน',
 		   		    text: 'This StockRemark need grade for input.',    
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 } 
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)  }
@@ -1042,12 +1048,12 @@ $(document) .ready( function() {
 			 e.preventDefault();      
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({   
-		   		    title: 'Warning',
+	        	Swal.fire({   
+		   		    title: 'คำเตือน',
 		   		    text: 'This StockRemark need grade for input.',    
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 }
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
@@ -1069,21 +1075,21 @@ $(document) .ready( function() {
 	           	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
+				Swal.fire({
+		   		    title: 'คำเตือน',
 		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
+				Swal.fire({
+		   		    title: 'คำเตือน',
 		   		    text: 'Date need greater than equal today.',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
@@ -1102,21 +1108,21 @@ $(document) .ready( function() {
 	           	MainTable.row(idx).invalidate() ; 
            }
            else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Date need greater than equal today.',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
@@ -1142,34 +1148,34 @@ $(document) .ready( function() {
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
+				Swal.fire({
+		   		    title: 'คำเตือน',
 		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
+				Swal.fire({
+		   		    title: 'คำเตือน',
 		   		    text: 'Date need greater than equal today.',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
 			else{
-				swal({ 
+				Swal.fire({ 
 					  title: "Are you sure to change date?",
 					  text: "From : "+oldValue+" to "+newValue+" ",
 					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
+					  showCancelButton: true,  
+					  confirmButtonColor: '#d33',						   																																								  
 					})
-					.then((willDelete) => {        
-					  if (willDelete) {     
+					.then((result) => {        
+					  if (result.isConfirmed) {     
 						  rowData.cfmPlanLabDate  = newValue;
 						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw();  
@@ -1197,34 +1203,34 @@ $(document) .ready( function() {
              	MainTable.row(idx).invalidate() ; 
              }
              else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Date need greater than equal today.',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
              else{  
-	           	 swal({ 
+	           	 Swal.fire({ 
 					  title: "Are you sure to change date?",
 					  text: "From : "+oldValue+" to "+newValue,
 					  icon: "warning",
-					  buttons: true,
-					  dangerMode: true,																																														  
+					  showCancelButton: true,
+					  confirmButtonColor: '#d33',																																														  
 					})
-					.then((willDelete) => {
-					  if (willDelete) {  
+					.then((result) => {
+					  if (result.isConfirmed) {  
 						  rowData.cfmPlanLabDate  = newValue;
 							MainTable.row(idx).invalidate() ;  
 	 				 		var json = createInputDateJsonData(rowData,'cfmPlanLabDate'); 
@@ -1256,34 +1262,34 @@ $(document) .ready( function() {
 	             	rowData.deliveryDate  = oldValue;
 	             	MainTable.row(idx).invalidate() ; 
 	             }else if(newValue == 'E1'){
-						swal({
-				   		    title: 'Warning',
+						Swal.fire({
+				   		    title: 'คำเตือน',
 				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}
 					else if(newValue == 'E2'){
-						swal({
-				   		    title: 'Warning',
+						Swal.fire({
+				   		    title: 'คำเตือน',
 				   		    text: 'Date need greater than equal today.',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}      
 					else if(newValue == 'E3'){ }
 				else{
-					swal({
+					Swal.fire({
 						  title: "Are you sure to change date?",
 						  text: "From : "+oldValue+" to "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 					})     
-					.then((willDelete) => {
-						if (willDelete) {  
+					.then((result) => {
+						if (result.isConfirmed) {  
 							 rowData.deliveryDate  = newValue;
 							 MainTable.row(idx).invalidate() ; 
 							 var json = createInputDateJsonData(rowData,'deliveryDate'); 
@@ -1311,34 +1317,34 @@ $(document) .ready( function() {
 	             	MainTable.row(idx).invalidate() ;
 	             }   
 				else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Please check format input date ( DD/MM/YYYY ).',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
+					Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'Date need greater than equal today.',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}      
 				else if(newValue == 'E3'){ }
 				else{
-					swal({
+					Swal.fire({
 						  title: "Are you sure to change date?",
 						  text: "From : "+oldValue+" to "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 						})     
-						.then((willDelete) => {
-						  if (willDelete) {  
+						.then((result) => {
+						  if (result.isConfirmed) {  
 							  rowData.deliveryDate  = newValue;
 							  MainTable.row(idx).invalidate() ;
 							  var json = createInputDateJsonData(rowData,'deliveryDate'); 
@@ -1429,21 +1435,21 @@ function searchByDetail(){
 		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
-		swal({
-   		    title: 'Warning',
+		Swal.fire({
+   		    title: 'คำเตือน',
    		    text: 'Need select some field for search.',
    		    icon: 'warning',   
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}  
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
+		Swal.fire({
+   		    title: 'คำเตือน',
    		    text: 'Need to choose  distribute channel from check box.',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
@@ -1692,29 +1698,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }  
 function saveInputDateToServer(arrayTmp) {   
@@ -1729,47 +1733,43 @@ function saveInputDateToServer(arrayTmp) {
 				var bean = data[0]; 
 				if(bean.iconStatus == 'I0'){    
 					if( bean.countPlanDate >= 35){
-						swal({  
-							title: "Warning",    
+						Swal.fire({  
+							title: 'คำเตือน',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "warning",
-							button: "confirm",
 	   					});  
 					} 
 					else {
-						swal({  
-							title: "Success",    
+						Swal.fire({  
+							title: 'สำเร็จ',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "success",
-							button: "confirm",
 	   					});  	
 					}
 					 
 				}
 				else if(bean.iconStatus == 'I1'){      
-					swal({  
-						title: "Success",    
+					Swal.fire({  
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "success",
-						button: "confirm",
    					});  	  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			} 
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	  
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }    
 function getSwitchProdOrderDetailByPrd( dataP) {      
@@ -1863,11 +1863,10 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			if(data.length > 0){   
 				var bean = data[0];       
 				if(bean.iconStatus == 'I'){ 
-					swal({
-						title: "Success",    
+					Swal.fire({
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",  
    					});  
 					 
 					if(objTmp.fieldName == 'switchRemark' ){ 
@@ -1885,13 +1884,12 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 					} 
 				} 
 				else{       
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',     
 // 			   		    timer: 2000,
-// 			   		    buttons: false,
-			   		    button: "confirm",    
+// 			   		    showConfirmButton: false,
 			   		})    
 			   		if(objTmp.fieldName == 'switchRemark' || objTmp.fieldName == 'replacedRemark' ){ 
 			   			setValueWithFieldName(objTmp.fieldName,objTmp.rowData,objTmp.oldValue)
@@ -1901,19 +1899,18 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});     
 }    
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/searchByDetail",  
-		success: function(data) {    
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Detail/searchByDetail",
+		success: function(data) {
 			let lastSo = "";
 			let lastLine = "";
 			data.forEach(function(row, i) {
@@ -1925,18 +1922,17 @@ function searchByDetailToServer(arrayTmp) {
 			        lastLine = row.saleLine;
 			    }
 			});
-			
-			
-			MainTable.clear();      
-			MainTable.rows.add(data);      
-			MainTable.columns.adjust().draw();     
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.columns.adjust().draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }       
 </script>
 <script type="text/javascript">  
@@ -2303,12 +2299,12 @@ function getInputDate(arrTmp,colIdx){
 		    data : JSON.stringify(arrTmp),    
 		    success : function(data) {
 		    	if(data.length == 0){
-		    		swal({
-			   		    title: 'Warning',
+		    		Swal.fire({
+			   		    title: 'คำเตือน',
 			   		    text: 'No Data found.',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 		    	}
 		    	else{
@@ -2320,7 +2316,7 @@ function getInputDate(arrTmp,colIdx){
 		    },
 		    error : function(e) {
 		        console.log("ERROR: ", e);
-		        swal("Fail", "Please contact to IT", "error");
+		        Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		    },
 		    done : function(e) {
 		    	console.log(e);
@@ -2363,29 +2359,27 @@ function saveDefault( ){
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
@@ -2400,20 +2394,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
 				 	text: "No search default data."  , 
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 
@@ -2538,11 +2531,10 @@ function getSwitchProdOrderListByRowProd(arrayTmp) {
 			if(data.length > 0){  
 				var bean = data[0];  
 				if(bean.iconStatus == 'E'){ 
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
-			   		    button: "confirm",
 			   		})
 				}
 				else{       
@@ -2555,10 +2547,9 @@ function getSwitchProdOrderListByRowProd(arrayTmp) {
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});       
 }    
 </script>

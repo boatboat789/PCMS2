@@ -4,7 +4,7 @@
 
 ## Connection Config
 
-PCMS2 ใช้ `Database` bean (core library) ไม่ใช่ JdbcTemplate:
+PCMS2 ใช้ HikariCP + JdbcTemplate (migrated 2026-06-19):
 
 | Qualifier | DB | Server |
 |---|---|---|
@@ -13,7 +13,9 @@ PCMS2 ใช้ `Database` bean (core library) ไม่ใช่ JdbcTemplate:
 | `sorDatabase` | SOR | `10.11.44.101` |
 | `erpDatabase` | ERP Atech | (SAP-side server) |
 
-Connection config: `src/main/java/th/co/wacoal/atech/pcms2/info/Sql*Info.java`
+Connection pool: HikariCP 4.0.3 · Driver: `mssql-jdbc 9.4.1.jre8`
+Config bean: `src/main/java/th/co/wacoal/atech/pcms2/config/DatabaseConfig.java`
+Credentials: `src/main/resources/database.properties` (gitignored) — โหลดผ่าน `@PropertySource` + `@Value`
 
 ---
 
@@ -67,17 +69,17 @@ IF NOT EXISTS (SELECT 1 FROM dbo.new_table WHERE name = 'value')
 
 ## Temp Table Rules
 
-PCMS2 ใช้ `Database` core lib (ไม่ใช่ JdbcTemplate) — connection จาก pool reused:
+PCMS2 ใช้ HikariCP + JdbcTemplate (migrated 2026-06-19) — connection reuse จาก pool:
 
 **ห้ามทิ้ง #temp table ข้ามการเชื่อมต่อ — ต้อง DROP ในทุก path:**
 
 ```java
-// Pattern A — Read queries (ใช้ SqlStatementHandler)
+// Pattern A — Read queries (ใช้ SqlStatementHandler — รองรับ CREATE INDEX ใน batch)
 List<Map<String, Object>> datas =
-    SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
+    SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 
 // Pattern B — Upsert (try/finally บน explicit connection)
-Connection conn = this.database.getConnection();
+Connection conn = DataSourceUtils.getConnection(dataSource);
 try {
     // ... INSERT/UPDATE ...
 } finally {
@@ -85,10 +87,16 @@ try {
         cleanup.execute("IF OBJECT_ID('tempdb..#TempXxx') IS NOT NULL DROP TABLE #TempXxx");
     } catch (Exception ignored) {}
     try { conn.setAutoCommit(true); } catch (Exception e) { e.printStackTrace(); }
+    DataSourceUtils.releaseConnection(conn, dataSource);
 }
 ```
 
 ⚠️ ห้ามเพิ่มใน `PCMSSqlService.dropAllTemp`: `#tempLotNoList`, `#tempUserStatusList`, `#tempCustomerList`, `#tempCustomerShortList` (PCMSSearch lifecycle ต่างกัน)
+
+**จุดระวัง queryList() — SET NOCOUNT ON:**
+- `SET NOCOUNT ON` ติด session ระดับ connection — HikariCP ไม่ reset
+- `queryList()` รัน `SET NOCOUNT OFF` ใน finally เสมอก่อนคืน connection กลับ pool
+- ถ้าเขียน query ที่ใช้ `stmt.execute("SET NOCOUNT ON;\n" + sql)` โดยตรง ต้อง reset เองในทุก path (รวม exception path)
 
 ---
 

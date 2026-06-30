@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.FromSapSaleInputDao;
@@ -17,7 +19,6 @@ import th.co.wacoal.atech.pcms2.entities.SaleInputDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSaleInputDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
@@ -26,14 +27,14 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 	// Sale - Lab-New
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private BeanCreateService bcModel = new BeanCreateService();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public FromSapSaleInputDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public FromSapSaleInputDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -47,11 +48,12 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 	{
 		ArrayList<SaleInputDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+		where += " a.ProductionOrder = '" + prodOrderSafe + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = " SELECT DISTINCT  \r\n"
 				+ " 	[ProductionOrder],[BillDate]\r\n"
 				+ "     ,[BillQtyPerSale],[SaleOrder]\r\n"
-				+ "		,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ‘')\r\n"
+				+ "		,CASE PATINDEX('%[^0 ]%', a.[SaleLine]  + ' ')\r\n"
 				+ "			WHEN 0 THEN ''  \r\n"
 				+ "			ELSE SUBSTRING(a.[SaleLine] , PATINDEX('%[^0 ]%', a.[SaleLine]  + ' '), LEN(a.[SaleLine] ) )\r\n"
 				+ "			END AS [SaleLine] \r\n"
@@ -62,7 +64,7 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 				+ " from [PCMS].[dbo].[FromSapSaleInput] as a \r\n "
 				+ where
 				+ " Order by [No]";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genSaleInputDetail(map));
@@ -74,7 +76,7 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 	public String upsertFromSapSaleInputDetail(ArrayList<FromErpSaleInputDetail> paList)
 	{
 		String iconStatus = "I";
-		Connection conn = this.database.getConnection();
+		Connection conn = DataSourceUtils.getConnection(this.jdbc.getDataSource());
 		PreparedStatement prepared = null;
 
 		try {
@@ -198,7 +200,7 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 			}
 
 			finally {
-				// ✅ ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
+				// ปิด transaction เสมอ ไม่ว่าจะ success หรือ error
 				try (java.sql.Statement cleanup = conn.createStatement()) {
 					cleanup.execute("IF OBJECT_ID('tempdb..#TempSaleInput') IS NOT NULL DROP TABLE #TempSaleInput");
 				} catch (Exception ignored) {}
@@ -211,6 +213,8 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 			iconStatus = "E";
+		} finally {
+			DataSourceUtils.releaseConnection(conn, this.jdbc.getDataSource());
 		}
 		return iconStatus;
 	}
@@ -306,9 +310,9 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 //				prepared.setTimestamp(index ++ , new Timestamp(time));
 //				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 ////				prepared.setString(index++, bean.get    );
-//// this.sshUtl.setSqlDate(prepared, bean.get , index++); 
+//// this.sshUtl.setSqlDate(prepared, bean.get , index++);
 ////				prepared.setTimestamp(index++, new Timestamp(time));
-//// this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
+//// this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++);
 //				prepared.addBatch();
 //			}
 //			prepared.executeBatch();

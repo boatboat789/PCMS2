@@ -44,13 +44,13 @@ refactor: extract doExecuteDetailCancel to avoid N+1 re-fetch
 
 ```
 □ Build passes: mvn clean package -DskipTests (JDK 1.8)
-□ ไม่มี hardcode status ID — ใช้ statusProvider.getIdByCode()
-□ ทุก @RestController return ApiResponse<T>  [ถ้าใช้ Jackson pattern]
-□ URL ใหม่มี intercept-url ใน spring-security.xml  [ถ้าใช้ Spring Security]
-□ Temp table มี DROP ใน Pattern A หรือ B
+□ Temp table มี DROP ใน Pattern A (queryList) หรือ Pattern B (finally)
+□ ไม่มี PCMSSearch tables (#tempLotNoList ฯลฯ) ใน dropAllTemp
+□ Batch ที่มี CREATE INDEX ใช้ SqlStatementHandler.queryList() ไม่ใช่ queryForList()
+□ @Qualifier ถูก DB — pcmsDatabase / ppmmDatabase / sorDatabase / erpDatabase
 □ ไม่มีไฟล์ credential / database.properties ใน staging area
 □ SQL scripts อยู่ใน sql/ พร้อม date prefix + IF NOT EXISTS guard
-□ @PreAuthorize บน API methods ที่ต้องกัน  [ถ้าใช้ Spring Security]
+□ ไม่มี Jackson import / ApiResponse ใน code ใหม่ (PCMS2 ใช้ Gson เท่านั้น)
 ```
 
 ---

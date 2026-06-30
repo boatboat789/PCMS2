@@ -9,14 +9,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 @EnableScheduling
 public class SchedulerConfig {
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(3); // จำกัด
+        scheduler.setPoolSize(5); // จำกัด
         scheduler.setThreadNamePrefix("schedule-pcms2");
-        scheduler.setWaitForTasksToCompleteOnShutdown(true);
-        scheduler.setAwaitTerminationSeconds(10);
-        scheduler.initialize();
+        scheduler.setDaemon(true); // daemon thread ไม่บัง classloader GC เมื่อ undeploy
+        scheduler.setWaitForTasksToCompleteOnShutdown(false);
+        scheduler.setAwaitTerminationSeconds(5);
+        // Spring calls afterPropertiesSet() → initialize() automatically — do NOT call here (causes double thread pool)
         return scheduler;
     }
 }

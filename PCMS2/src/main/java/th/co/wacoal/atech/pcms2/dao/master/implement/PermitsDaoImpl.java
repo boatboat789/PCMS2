@@ -8,20 +8,20 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.PermitsDao;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class PermitsDaoImpl implements PermitsDao {
 	private BeanCreateService bcModel = new BeanCreateService();
 	@SuppressWarnings("unused")
 	private SqlStatementHandler sshUtil = new SqlStatementHandler();
-	private Database database;
+	private JdbcTemplate jdbc;
 	private String message;
 
 	public DecimalFormat df3 = new DecimalFormat("###,###,###,##0.00");
@@ -32,27 +32,27 @@ public class PermitsDaoImpl implements PermitsDao {
 
 	private String select =""
 
-						+ "       [Id]\r\n"
-						+ "      ,[WebApp]\r\n"
-						+ "      ,[PermitId]\r\n"
-						+ "      ,[Description]\r\n"
-						+ "      ,[IsPCMSMain]\r\n"
-						+ "      ,[IsPCMSDetail]\r\n"
-						+ "      ,[IsPCMSMainToProd]\r\n"
-						+ "      ,[IsPCMSMainToLBMS]\r\n"
-						+ "      ,[IsPCMSMainToQCMS]\r\n"
-						+ "      ,[IsPCMSMainToInspect]\r\n"
-						+ "      ,[IsPCMSMainToSFC]\r\n"
-						+ "      ,[IsReport]\r\n"
-						+ "      ,[IsUserManagement]\r\n"
-						+ "      ,[DataStatus]\r\n"
-						+ "      ,[ChangeBy]\r\n"
-						+ "      ,[ChangeDate]\r\n"
-						+ "      ,[CreateBy]\r\n"
-						+ "      ,[CreateDate]\r\n";
+					+ "       [Id]\r\n"
+					+ "      ,[WebApp]\r\n"
+					+ "      ,[PermitId]\r\n"
+					+ "      ,[Description]\r\n"
+					+ "      ,[IsPCMSMain]\r\n"
+					+ "      ,[IsPCMSDetail]\r\n"
+					+ "      ,[IsPCMSMainToProd]\r\n"
+					+ "      ,[IsPCMSMainToLBMS]\r\n"
+					+ "      ,[IsPCMSMainToQCMS]\r\n"
+					+ "      ,[IsPCMSMainToInspect]\r\n"
+					+ "      ,[IsPCMSMainToSFC]\r\n"
+					+ "      ,[IsReport]\r\n"
+					+ "      ,[IsUserManagement]\r\n"
+					+ "      ,[DataStatus]\r\n"
+					+ "      ,[ChangeBy]\r\n"
+					+ "      ,[ChangeDate]\r\n"
+					+ "      ,[CreateBy]\r\n"
+					+ "      ,[CreateDate]\r\n";
 	@Autowired
-    public PermitsDaoImpl(@Qualifier("pcmsDatabase")Database database ) {
-		this.database = database ;
+    public PermitsDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc ) {
+		this.jdbc = jdbc;
 		this.message = "";
 	}
 
@@ -63,22 +63,35 @@ public class PermitsDaoImpl implements PermitsDao {
 
 
 	@Override
-	public ArrayList<PermitDetail> getPermitsDetail( )
+	public ArrayList<PermitDetail> getPermitsDetail()
 	{
-		ArrayList<PermitDetail> list = null;
-//		String sql =
-//				""
-//						+ " SELECT \r\n"
-//						+ this.select
-//						+ " FROM [PCMS2].[dbo].[Permits] as a\r\n"
-//						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
-//						+ "       A.DataStatus = 'O'   \r\n" ;  
-//		List<Map<String, Object>> datas = this.database.queryList(sql);
-//		list = new ArrayList<>();
-//		for (Map<String, Object> map : datas) {
-//			list.add(this.bcModel._genPermitDetail(map));
-//		}
-		return list;		
+		String sql = " SELECT \r\n"
+				+ this.select
+				+ " FROM [PCMS].[dbo].[Permits] as a\r\n"
+				+ " WHERE a.[WebApp] = 'PCMS2' AND a.[DataStatus] = 'O'\r\n"
+				+ " ORDER BY a.[PermitId]\r\n";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
+		ArrayList<PermitDetail> list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPermitDetail(map));
+		}
+		return list;
+	}
+
+	@Override
+	public int updatePermit(PermitDetail permit, String changeBy)
+	{
+		String sql = "UPDATE [PCMS].[dbo].[Permits]"
+				+ " SET [IsPCMSMain]=?, [IsPCMSDetail]=?, [IsPCMSMainToProd]=?, [IsPCMSMainToLBMS]=?,"
+				+ "     [IsPCMSMainToQCMS]=?, [IsPCMSMainToInspect]=?, [IsPCMSMainToSFC]=?,"
+				+ "     [IsReport]=?, [IsUserManagement]=?,"
+				+ "     [ChangeBy]=?, [ChangeDate]=GETDATE()"
+				+ " WHERE [WebApp]='PCMS2' AND [PermitId]=?";
+		return this.jdbc.update(sql,
+				permit.isPCMSMain(), permit.isPCMSDetail(), permit.isPCMSMainToProd(),
+				permit.isPCMSMainToLBMS(), permit.isPCMSMainToQCMS(), permit.isPCMSMainToInspect(),
+				permit.isPCMSMainToSFC(), permit.isReport(), permit.isUserManagement(),
+				changeBy, permit.getPermitId());
 	}
 	@Override
 	public ArrayList<PermitDetail> getPermitsDetailByPermitId(String permitId)
@@ -86,18 +99,18 @@ public class PermitsDaoImpl implements PermitsDao {
 		ArrayList<PermitDetail> list = null;
 		String sql =
 				""
-						+ " SELECT TOP (1000)" 
+						+ " SELECT TOP (1000)"
 						+ this.select
 						+ "  FROM [PCMS].[dbo].[Permits] as a\r\n"
 						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
 						+ "       A.DataStatus = 'O' and \r\n"
-						+ "		  a.[PermitId] = '"+permitId+"' \r\n";  
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+						+ "		  a.[PermitId] = '"+permitId+"' \r\n";
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPermitDetail(map));
 		}
-		return list;		
+		return list;
 	}
 
 	@Override
@@ -135,15 +148,15 @@ public class PermitsDaoImpl implements PermitsDao {
 						+ " WHERE EP.WebApp = 'PCMS2' AND\r\n"
 						+ "		  pe.WebApp = 'PCMS2' AND\r\n"
 						+ "		  pe.[PermitId] = '"+permitId+"' AND\r\n"
-						+ "		  ed.UserId = '"+userId+"' \r\n" 
+						+ "		  ed.UserId = '"+userId+"' \r\n"
 						+ " ORDER BY ed.UserId\r\n"
-						+ "\r\n"  ;   
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+						+ "\r\n"  ;
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPermitDetail(map));
 		}
-		return list;		
+		return list;
 	}
 
 }
