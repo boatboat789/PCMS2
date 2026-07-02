@@ -1091,17 +1091,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempSumGR
 				+ this.pss.createTempSCC
 				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempFromSORCFM
-				+ this.pss.createTempPlanCFMLabDate
 				+ this.pss.createTempSPO
-				+ this.pss.createTempTAPP
-				+ this.pss.createTempInputRR
-				+ this.pss.createTempInputPCR
-				+ this.pss.createTempInputCOD
-				+ this.pss.createTempInputDD
-				+ this.pss.createTempInputSR
-				+ this.pss.createTempInputSL
-				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempBillBatchFlag
 				+ this.pss.createTempSumVolOP
 				+ this.pss.createTempSumVolRP
@@ -1166,17 +1156,6 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempSumGR
 				+ this.pss.createTempSCC
 				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempFromSORCFM
-				+ this.pss.createTempPlanCFMLabDate
-				+ this.pss.createTempSPO
-				+ this.pss.createTempTAPP
-				+ this.pss.createTempInputRR
-				+ this.pss.createTempInputPCR
-				+ this.pss.createTempInputCOD
-				+ this.pss.createTempInputDD
-				+ this.pss.createTempInputSR
-				+ this.pss.createTempInputSL
-				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdReplacedFirst อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ " ; WITH PRD_REPLACED as ( \n "
 				+ this.createTempPrdReplacedFirst
@@ -1220,17 +1199,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempSumGR
 				+ this.pss.createTempSCC
 				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempFromSORCFM
-				+ this.pss.createTempPlanCFMLabDate
 				+ this.pss.createTempSPO
-				+ this.pss.createTempTAPP
-				+ this.pss.createTempInputRR
-				+ this.pss.createTempInputPCR
-				+ this.pss.createTempInputCOD
-				+ this.pss.createTempInputDD
-				+ this.pss.createTempInputSR
-				+ this.pss.createTempInputSL
-				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempPrdSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ createTempSWFromA
 				+ " select distinct\r\n"
@@ -1267,17 +1236,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempSumGR
 				+ this.pss.createTempSCC
 				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempFromSORCFM
-				+ this.pss.createTempPlanCFMLabDate
 				+ this.pss.createTempSPO
-				+ this.pss.createTempTAPP
-				+ this.pss.createTempInputRR
-				+ this.pss.createTempInputPCR
-				+ this.pss.createTempInputCOD
-				+ this.pss.createTempInputDD
-				+ this.pss.createTempInputSR
-				+ this.pss.createTempInputSL
-				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdOPA อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ createTempOPFromA
 				+ " select distinct \r\n"
@@ -1318,17 +1277,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempSumGR
 				+ this.pss.createTempSCC
 				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempFromSORCFM
-				+ this.pss.createTempPlanCFMLabDate
 				+ this.pss.createTempSPO
-				+ this.pss.createTempTAPP
-				+ this.pss.createTempInputRR
-				+ this.pss.createTempInputPCR
-				+ this.pss.createTempInputCOD
-				+ this.pss.createTempInputDD
-				+ this.pss.createTempInputSR
-				+ this.pss.createTempInputSL
-				+ this.pss.createTempInputStockRemark
 				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempOPSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ this.createTempOPSWFirst
 				+ where
