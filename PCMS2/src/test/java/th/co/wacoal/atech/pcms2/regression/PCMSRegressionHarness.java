@@ -322,7 +322,10 @@ public class PCMSRegressionHarness {
 			} else {
 				String expected = SqlOutputCanonicalizer.readFrom(baselineFile);
 				if (!expected.equals(actual)) {
-					failures.add(caseLabel + " — ผล diff จาก baseline (" + baselineFile + ")");
+					// dump ผลปัจจุบันไว้ข้าง baseline เพื่อ diff หาคอลัมน์/แถวที่ต่างได้ (.actual.txt — ห้าม commit)
+					Path actualFile = BASELINE_DIR.resolve(caseLabel + ".actual.txt");
+					SqlOutputCanonicalizer.writeTo(actualFile, result);
+					failures.add(caseLabel + " — ผล diff จาก baseline (" + baselineFile + " vs " + actualFile + ")");
 				}
 			}
 		}

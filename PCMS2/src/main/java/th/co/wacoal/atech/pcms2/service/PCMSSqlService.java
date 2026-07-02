@@ -590,12 +590,27 @@ public class PCMSSqlService {
 
 	// ใช้แทน buildLeftJoinUserStatusAuto ใน createTempProdMain
 	// join #tempUCAL (small, pre-filtered) แทน TEMP_UserStatusAuto (large permanent table)
+	// ⚠️ ระวัง: NULL-check อยู่ที่ UCAL.Grade — คนละ semantics กับ buildLeftJoinUserStatusAuto
+	//    (ของเดิม check ที่ %s.Grade ฝั่ง SumGR) — ห้ามใช้แทนกันตรงๆ ดู getLeftJoinTempUCALSameAsAuto
 	public String getLeftJoinTempUCAL(String aliasProd, String aliasGrade)
 	{
 		return String.format(
 				" LEFT JOIN #tempUCAL AS UCAL ON UCAL.ProductionOrder = %s.ProductionOrder\r\n"
 				+ "     AND (UCAL.Grade = %s.Grade OR UCAL.Grade IS NULL)\r\n",
 				aliasProd, aliasGrade);
+	}
+
+	// drop-in ของ buildLeftJoinUserStatusAuto("UCAL", aliasProd, aliasGrade) แต่ join #tempUCAL
+	// คง ON clause เดิมทุกตัวอักษร (DataStatus='O' ย้ายเข้า temp ตอนสร้างแล้ว):
+	//   เดิม:  (m.Grade = UCAL.Grade OR m.Grade IS NULL)  ← NULL-check ฝั่ง SumGR grade
+	// harness จับได้ว่า NULL-check ฝั่ง UCAL.Grade (getLeftJoinTempUCAL) ให้ผลต่าง 77 แถว (userStatus เกิน)
+	public String getLeftJoinTempUCALSameAsAuto(String aliasProd, String aliasGrade)
+	{
+		return String.format(" "
+				+ "     LEFT JOIN #tempUCAL AS UCAL \n"
+				+ "     ON %s.ProductionOrder = UCAL.ProductionOrder \n"
+				+ "     AND (%s.Grade = UCAL.Grade OR %s.Grade IS NULL) \n",
+				aliasProd, aliasGrade, aliasGrade);
 	}
 
 	// ใช้แทน buildLeftJoinViewUserStatusMappingPCMS ใน createTempProdMain

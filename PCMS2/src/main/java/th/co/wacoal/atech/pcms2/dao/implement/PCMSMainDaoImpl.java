@@ -598,21 +598,23 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ whereWaitLot
 				+ " AND (SumVol = 'B' OR countProdRP > 0)\r\n";
 
+		// #tempProdData แทน ProdData CTE (เนื้อเดียวกัน) + join #tempUCAL/#tempUSMSPE ที่ pre-filter แล้ว
+		// คง ON clause เดิมเป๊ะ (DataStatus='O' ย้ายเข้า temp) — ไม่ใช้ #tempUCALBest เพราะ path นี้เป็น
+		// plain LEFT JOIN + DISTINCT ไม่ใช่ OUTER APPLY TOP 1 แบบ searchByDetail (semantics ต่างกัน)
 		String fromProdDataB = "FROM (\r\n"
 				+ "    SELECT\r\n" + this.leftJoinBSelect
-				+ pss.fromProdA
+				+ " from #tempProdData as a \r\n"
 				+ pss.getLeftJoinTempPlandeliveryDate("a", "a")
 				+ pss.buildLeftJoinTempProdWorkDate("a")
 				+ pss.buildLeftJoinSCC("a")
 				+ pss.buildLeftJoinTempSumGR("a")
-				+ pss.buildLeftJoinUserStatusAuto("UCAL", "A", "m")
-				+ pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
+				+ pss.getLeftJoinTempUCALSameAsAuto("A", "m")   // ON เดิมเป๊ะ — อย่าใช้ getLeftJoinTempUCAL (NULL-check คนละฝั่ง)
+				+ pss.getLeftJoinTempUSMSPE()
 				+ pss.getLeftJoinCRP("a")
 				+ whereBase.replace("b.", "a.")
 				+ ") AS b\r\n";
 
-		String insertMain = pss.withProdData
-				+ "SELECT DISTINCT\r\n" + this.selectMainV2
+		String insertMain = "SELECT DISTINCT\r\n" + this.selectMainV2
 				+ "INTO #tempMain\r\n"
 				+ fromProdDataB
 				+ pss.getLeftJoinCRP("b")
@@ -621,8 +623,14 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 
 		return pss.createTempForMainAndWaitLotFiltered
 				+ insertWaitLot
+				+ pss.createTempProdData   // ต้องรันหลัง createTempForMainAndWaitLotFiltered (ใช้ #BillBatchFlag/#tmpSumVol*)
+				+ pss.createTempUCAL
+				+ pss.createTempUSMSPE
 				+ insertMain
-				+ pss.createDropTempForMainAndWaitLot;
+				+ pss.buildIfTempTableDrop("#tempUCAL")
+				+ pss.buildIfTempTableDrop("#tempUSMSPE")
+				+ pss.createDropTempForMainAndWaitLot
+				+ pss.buildIfTempTableDrop("#tempProdData");
 	}
 
 	/** UNION ALL 6 tables + ORDER BY */
