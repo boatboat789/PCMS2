@@ -731,6 +731,44 @@ public class PCMSSqlService {
 			+ " INTO #tempSumGR\r\n"
 			+ " FROM [PCMS].[dbo].SumGRCache;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
+	// filtered version — คง granularity (ProductionOrder, Grade) เดิมทุกอย่าง แค่กรอง SumGRCache
+	// เหลือเฉพาะ PO ที่ search นี้อ้างถึง (ชุดเดียวกับ createTempProdWorkDateFiltered — regular
+	// FromSapMainProd + replaced ProductionOrderRP scope ตาม #tempMainSale) → copy row น้อยลงมาก
+	// บน PRD. POs ที่ถูกตัดออกไม่เคย match join `aliasMain.ProductionOrder = m.ProductionOrder`
+	// อยู่แล้ว (aliasMain มีเฉพาะ PO ในขอบเขต) → output ต้องเท่าเดิม (harness gate)
+	// requires #tempMainSale + clustered index ก่อน
+	public String createTempSumGRFiltered = ""
+			+ this.buildIfTempTableDrop("#tempSumGR")
+			+ " SELECT sg.*\r\n"
+			+ " INTO #tempSumGR\r\n"
+			+ " FROM [PCMS].[dbo].SumGRCache AS sg\r\n"
+			+ " INNER JOIN (\r\n"
+			+ "     SELECT fsp.ProductionOrder\r\n"
+			+ "     FROM [PCMS].[dbo].[FromSapMainProd] AS fsp\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fsp.SaleOrder AND ms.SaleLine = fsp.SaleLine\r\n"
+			+ "     WHERE fsp.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT fps.ProductionOrder\r\n"   // OrderPuang subs: sale→prod mapping ทั้งหมด
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     WHERE fps.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT rpo.ProductionOrderRP\r\n"   // replaced
+			+ "     FROM [PCMS].[dbo].[ReplacedProdOrder] AS rpo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = rpo.SaleOrder AND ms.SaleLine = rpo.SaleLine\r\n"
+			+ "     WHERE rpo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrder\r\n"   // switch — ต้นทาง
+			+ "     FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "     WHERE spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrderSW\r\n"   // switch — ปลายทาง
+			+ "     FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "     WHERE spo.DataStatus = 'O'\r\n"
+			+ " ) AS flt ON flt.ProductionOrder = sg.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
 	// pre-build PlanSendCFMCusDate → #tempSCC (1 scan ครั้งเดียว แทนหลาย scan ต่อ query)
 	public String createTempSCC = ""
 			+ this.buildIfTempTableDrop("#tempSCC")

@@ -931,7 +931,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return createTempMainSale
 				+ pss.createTempMainSaleIndex
 				+ pss.createTempPlanDeliveryDate
-				+ pss.createTempSumGR
+				+ pss.createTempSumGRFiltered   // perf: กรอง SumGRCache เหลือ PO ในขอบเขต (คง output — harness gate)
 				+ pss.createTempSumBill
 				+ pss.createTempSCC
 				+ pss.createTempProdWorkDateFiltered   // filtered by #tempMainSale — was full scan (35% cost)
