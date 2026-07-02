@@ -1573,4 +1573,26 @@ public class PCMSSqlService {
 		return String.format(sqlTemplate, tempName, tempName);
 	}
 
+	/**
+	 * Common lookup preamble ที่ getPCMSSumaryDetail (PCMSMainDaoImpl) และ searchByDetail
+	 * (PCMSDetailDaoImpl) ใช้ร่วมกัน — นิยาม temp set ที่เดียว ลำดับ fragment ห้ามสลับ
+	 * (#tempMainSale ต้องมาก่อน fragment ที่ filter ด้วยมัน)
+	 *
+	 * sumGRFragment: ส่ง createTempSumGR หรือ createTempSumGRFiltered ตาม caller
+	 * (ตอนนี้ Detail ใช้ Filtered แล้ว ส่วน Main ยังใช้ตัวเต็ม — จูน perf แยกกัน)
+	 * ส่วน fragment เฉพาะของแต่ละ method ให้ caller ต่อท้ายเอง
+	 */
+	public String buildCommonLookupTables(String createUserStatus, String createCusList,
+			String whereSale, String sumGRFragment)
+	{
+		return createUserStatus + createCusList
+				+ createTempMainSaleWithJoinCustomer + whereSale
+				+ createTempMainSaleIndex
+				+ createTempPlanDeliveryDate
+				+ sumGRFragment
+				+ createTempSumBill
+				+ createTempSCC
+				+ createTempProdWorkDateFiltered;   // filtered by #tempMainSale — was full scan
+	}
+
 }

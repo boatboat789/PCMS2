@@ -643,16 +643,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String createUserStatus  = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
 		String createCusList     = psService.handlerTempTableCustomerSearchList(
 				bean.getCustomerNameList(), bean.getCustomerShortNameList());
-		String createTempMainSale = createUserStatus + createCusList
-				+ pss.createTempMainSaleWithJoinCustomer + whereSale;
-
-		return createTempMainSale
-				+ pss.createTempMainSaleIndex
-				+ pss.createTempPlanDeliveryDate
-				+ pss.createTempSumGRFiltered   // perf: กรอง SumGRCache เหลือ PO ในขอบเขต (คง output — harness gate)
-				+ pss.createTempSumBill
-				+ pss.createTempSCC
-				+ pss.createTempProdWorkDateFiltered   // filtered by #tempMainSale — was full scan (35% cost)
+		return pss.buildCommonLookupTables(createUserStatus, createCusList, whereSale,
+					pss.createTempSumGRFiltered)   // perf: กรอง SumGRCache เหลือ PO ในขอบเขต (คง output — harness gate)
 				+ pss.createTempFromSORCFM
 				+ pss.createTempPlanCFMLabDate
 				+ pss.createTempSPO

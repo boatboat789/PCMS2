@@ -386,14 +386,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String createUserStatus = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
 		String createCusList    = psService.handlerTempTableCustomerSearchList(
 				bean.getCustomerNameList(), bean.getCustomerShortNameList());
-		return createUserStatus + createCusList
-				+ pss.createTempMainSaleWithJoinCustomer + whereSale
-				+ pss.createTempMainSaleIndex
-				+ pss.createTempPlanDeliveryDate
-				+ pss.createTempSumGR
-				+ pss.createTempSumBill
-				+ pss.createTempSCC
-				+ pss.createTempProdWorkDateFiltered   // filtered by #tempMainSale — was full scan
+		return pss.buildCommonLookupTables(createUserStatus, createCusList, whereSale, pss.createTempSumGR)
 				+ pss.createTempSPO;
 	}
 
