@@ -378,7 +378,8 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ pss.buildIfTempTableDrop("#tempOP")
 				+ pss.buildIfTempTableDrop("#tempOPSW")
 				+ pss.buildIfTempTableDrop("#tempSW")
-				+ pss.buildIfTempTableDrop("#tempRP");
+				+ pss.buildIfTempTableDrop("#tempRP")
+				+ pss.buildIfTempTableDrop("#tempUSMSpecial1");
 	}
 
 	/** Lookup tables ที่ใช้ร่วมกันทุก type (#tempMainSale, #tempSumGR, #tempSPO ฯลฯ) */
@@ -386,8 +387,10 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String createUserStatus = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
 		String createCusList    = psService.handlerTempTableCustomerSearchList(
 				bean.getCustomerNameList(), bean.getCustomerShortNameList());
-		return pss.buildCommonLookupTables(createUserStatus, createCusList, whereSale, pss.createTempSumGR)
-				+ pss.createTempSPO;
+		return pss.buildCommonLookupTables(createUserStatus, createCusList, whereSale,
+					pss.createTempSumGRFiltered)   // perf: ชุด filter เดียวกับ searchByDetail (คง output — harness gate)
+				+ pss.createTempSPO
+				+ pss.createTempUSMSpecial1;       // pre-materialize viewUserStatusMappingPCMS WHERE Special=1
 	}
 
 	/**
@@ -434,7 +437,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "INTO #tempOP\r\n"
 				+ "FROM #tempPrdOP AS a\r\n"
 				+ "LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = a.ProductionOrder\r\n"
-				+ pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
 				+ "WHERE 1 = 1 AND SPO.ProductionOrderSW IS NULL\r\n"
 				+ whereCaseTry;
 
@@ -476,7 +479,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "    WHERE b.DataStatus = 'O' AND b.SaleLine <> ''\r\n"
 				+ ") AS a\r\n"
 				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrder")
-				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
 				+ pss.buildLeftJoinTempProdWorkDate("b")
 				+ pss.buildLeftJoinSCC("b")
 				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
@@ -488,7 +491,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String insertOPSW = "SELECT\r\n" + this.selectAll
 				+ "INTO #tempOPSW\r\n"
 				+ "FROM #tempPrdOPSW AS a\r\n"
-				+ pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
 				+ "WHERE 1 = 1 " + whereCaseTry;
 
 		return createOPSW + insertOPSW + pss.buildIfTempTableDrop("#tempPrdOPSW");
@@ -534,7 +537,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "    WHERE b.DataStatus = 'O'\r\n"
 				+ ") AS a\r\n"
 				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrder")
-				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
 				+ pss.buildLeftJoinTempProdWorkDate("b")
 				+ pss.buildLeftJoinSCC("b")
 				+ pss.getLeftJoinTempPlandeliveryDate("b", "a")
@@ -564,7 +567,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "          ,b.CFTYPE, b.RemarkOne, b.RemarkTwo, b.RemarkThree, b.[PrdCreateDate]\r\n"
 				+ "    FROM [PCMS].[dbo].[ReplacedProdOrder] AS a\r\n"
 				+ pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrderRP")
-				+ pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
 				+ "    WHERE a.[DataStatus] = 'O'\r\n"
 				+ ") AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
 				+ pss.buildLeftJoinTempProdWorkDate("b")
