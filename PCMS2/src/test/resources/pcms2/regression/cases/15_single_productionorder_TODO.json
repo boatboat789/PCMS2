@@ -1,0 +1,13 @@
+{
+  "name": "single_productionorder_TODO",
+  "description": "TODO: ใส่ ProductionOrder จริง 1 เลขที่รู้ว่ามีอยู่ใน PRD แล้วเปิด enabled=true",
+  "enabled": false,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [],
+    "customerShortNameList": [],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "productionOrder": "__TODO_PRODUCTIONORDER__"
+  }
+}

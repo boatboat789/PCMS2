@@ -1,0 +1,13 @@
+{
+  "name": "date_range_duedate_TODO",
+  "description": "TODO: ใส่ช่วงวันที่ dueDate จริงที่คาดว่ามีข้อมูล (format dd/MM/yyyy-dd/MM/yyyy ตาม buildDateClause) แล้วเปิด enabled=true",
+  "enabled": false,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [],
+    "customerShortNameList": [],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "dueDate": "__TODO_DD/MM/YYYY__-__TODO_DD/MM/YYYY__"
+  }
+}

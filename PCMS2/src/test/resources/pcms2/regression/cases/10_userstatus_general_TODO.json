@@ -1,0 +1,12 @@
+{
+  "name": "userstatus_general_TODO",
+  "description": "TODO: ใส่ userStatus จริงที่ไม่ใช่กลุ่ม LotNo (เช่นค่าจาก viewUserStatusMappingPCMS ที่ user ใช้บ่อย) แล้วเปิด enabled=true — ไม่ใส่ค่าเดาเพราะไม่รู้ userStatus จริงที่มีอยู่ใน PRD ตอนนี้",
+  "enabled": false,
+  "bean": {
+    "userStatusList": ["__TODO_USERSTATUS__"],
+    "customerNameList": [],
+    "customerShortNameList": [],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

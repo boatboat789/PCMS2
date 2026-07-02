@@ -1,0 +1,12 @@
+{
+  "name": "division_TODO",
+  "description": "TODO: ใส่ divisionList จริงที่มีอยู่ใน PRD แล้วเปิด enabled=true",
+  "enabled": false,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [],
+    "customerShortNameList": [],
+    "divisionList": ["__TODO_DIVISION__"],
+    "distChannel": "DM|EX|HW"
+  }
+}

@@ -1467,6 +1467,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempInputSR
 				+ this.pss.createTempInputSL
 				+ this.pss.createTempInputStockRemark
+				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdReplacedFirst อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ " ; WITH PRD_REPLACED as ( \n "
 				+ this.createTempPrdReplacedFirst
 				+ where
@@ -1520,6 +1521,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempInputSR
 				+ this.pss.createTempInputSL
 				+ this.pss.createTempInputStockRemark
+				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempPrdSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ createTempSWFromA
 				+ " select distinct\r\n"
 				+ this.selectAll
@@ -1566,6 +1568,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempInputSR
 				+ this.pss.createTempInputSL
 				+ this.pss.createTempInputStockRemark
+				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdOPA อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ createTempOPFromA
 				+ " select distinct \r\n"
 				+ this.selectAll
@@ -1616,6 +1619,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempInputSR
 				+ this.pss.createTempInputSL
 				+ this.pss.createTempInputStockRemark
+				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempOPSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ this.createTempOPSWFirst
 				+ where
 				+ " \r\n"

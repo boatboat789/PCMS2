@@ -1,8 +1,6 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -918,34 +916,15 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 			list.add(this.bcModel._genPCMSAllDetail(map));
 		}
 		if (list.size() > 0) {
-			boolean isCheck = false ;
-//			isCheck = true;
 			String productionOrder = bean.getProductionOrder();
-			if(isCheck) { System.out.println("1: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-//			ArrayList<PODetail> poDetailList = fspoModel.getFromSapPODetailByProductionOrder(productionOrder);
 			ArrayList<PODetail> poDetailList = rfsService.getRollFromSapDetailByProductionOrder(productionOrder) ;
-//			ArrayList<SendTestQCDetail> sendTestQCDetailList = fsstQCModel.getFromSapSendTestQCByProductionOrder(productionOrder);
-//			ArrayList<FinishingDetail> finDetailList = fsfModel.getFromSapFinishingDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("2: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<PackingDetail> packDetailList = fromSapPackingService.getFromSapPackingDetailByProductionOrder(productionOrder);
-//			ArrayList<WorkInLabDetail> workInLabDetailList = fswilModel.getFromSapWorkInLabDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("3: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<ImportDetail> workInLabDetailList = idService.getImportDetailByProductionOrder(prdOrder);
-//			ArrayList<WaitTestDetail> waitTestDetailList = fswtModel.getFromSapWaitTestDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("4: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<CFMDetail> cfmDetailList = fromSapCFMService.getFromSapCFMDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("5: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<SaleDetail> saleDetailList = fromSapSaleService.getFromSapSaleDetailByProductionOrder(productionOrder);
-			if(isCheck) { System.out.println("6: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-//			ArrayList<SaleInputDetail> saleInputDetailList = fssiModel.getFromSapSaleInputDetailByProductionOrder(productionOrder);
-//			ArrayList<InputDateDetail> submitdatDetailList = getSubmitDateDetail(poList);
 
 			ArrayList<InputDateDetail> submitdatDetailList = fromSapSubmitDateService.getSubmitDateDetail(poList);
-			if(isCheck) { System.out.println("7: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			ArrayList<NCDetail> ncDetailList = insNCService.getInspectNcByProductionOrder(prdOrder);
-			if(isCheck) { System.out.println("8: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
-//			ArrayList<ReceipeDetail> receipeDetailList = fsrModel.getFromSapReceipeDetailByProductionOrder(productionOrder);
-//			if(isCheck) { System.out.println("9: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 
 
 			ArrayList<ShopFloorControlDetail> presetDetailList = new ArrayList<ShopFloorControlDetail>();
@@ -977,24 +956,19 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 					finDetailList.add(sfcBean);
 				}
 			}
-			if(isCheck) { System.out.println("10: " +  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format( new Date()));}
 			PCMSAllDetail beanTmp = list.get(0);
 			beanTmp.setPoDetailList(poDetailList);
 			beanTmp.setPresetDetailList(presetDetailList);
-//			beanTmp.setSendTestQCDetailList(sendTestQCDetailList);
 			beanTmp.setDyeingDetailList(dyeingDetailList);
 			beanTmp.setFinishingDetailList(finDetailList);
 			beanTmp.setInspectDetailList(insDetailList);
 			beanTmp.setPackingDetailList(packDetailList);
 
 			beanTmp.setWorkInLabDetailList(workInLabDetailList);
-//			beanTmp.setWaitTestDetailList(waitTestDetailList);
 			beanTmp.setCfmDetailList(cfmDetailList);
 			beanTmp.setSaleDetailList(saleDetailList);
-//			beanTmp.setSaleInputDetailList(saleInputDetailList);
 			beanTmp.setSubmitDateDetailList(submitdatDetailList);
 			beanTmp.setNcDetailList(ncDetailList);
-//			beanTmp.setReceipeDetailList(receipeDetailList);
 
 		}
 		return list;
