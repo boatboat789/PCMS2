@@ -24,6 +24,9 @@ import org.springframework.jdbc.support.JdbcUtils;
 
 public class SqlStatementHandler {
 
+	// กัน statement ค้างยึด connection (pool=10) — searchByDetail ยังช้าอยู่ระหว่างจูน อย่าลดค่านี้ต่ำกว่านี้
+	private static final int QUERY_TIMEOUT_SECONDS = 300;
+
 	/**
 	 * Drop-in replacement for database.queryList() that drops stale temp tables
 	 * on the same connection BEFORE and AFTER running the SQL.
@@ -45,6 +48,7 @@ public class SqlStatementHandler {
 	 */
 	public static List<Map<String, Object>> queryList(JdbcTemplate jdbc, String dropSql, String sql) {
 		return jdbc.execute((StatementCallback<List<Map<String, Object>>>) stmt -> {
+			try { stmt.setQueryTimeout(QUERY_TIMEOUT_SECONDS); } catch (Exception ignored) {}
 			try { stmt.execute(dropSql); } catch (Exception ignored) {}
 			List<Map<String, Object>> rows = new ArrayList<>();
 			// backstop against a misbehaving driver only — NOT a segment limit.
