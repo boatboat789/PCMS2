@@ -1045,13 +1045,46 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return list;
 	}
 
+	/**
+	 * 7.2b: materialize target production orders → #tempTargetPO (distinct) เพื่อกรอง big temp
+	 * ต้นbatch (ดู createTemp*TargetFiltered ใน PCMSSqlService). safePOs = ค่าที่ escape single-quote
+	 * แล้ว (ชุดเดียวกับ IN-list). CREATE TABLE + INSERT chunk 1000 แถว (เพดาน INSERT..VALUES ของ MSSQL).
+	 */
+	private String buildTempTargetPO(java.util.Collection<String> safePOs)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("IF OBJECT_ID('tempdb..#tempTargetPO') IS NOT NULL DROP TABLE #tempTargetPO;\r\n");
+		sb.append("CREATE TABLE #tempTargetPO (ProductionOrder NVARCHAR(100));\r\n");
+		int i = 0;
+		for (String po : safePOs) {
+			if (i % 1000 == 0) {
+				if (i > 0) {
+					sb.append(";\r\n");
+				}
+				sb.append("INSERT INTO #tempTargetPO (ProductionOrder) VALUES ");
+			} else {
+				sb.append(",");
+			}
+			sb.append("('").append(po).append("')");
+			i ++ ;
+		}
+		if (i > 0) {
+			sb.append(";\r\n");
+		}
+		sb.append("CREATE CLUSTERED INDEX IX_tempTargetPO ON #tempTargetPO(ProductionOrder);\r\n");
+		return sb.toString();
+	}
+
 	@Override
 	public ArrayList<PCMSSecondTableDetail> getNormalCaseByProdOrder(String prdOrderType, ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String where = " where 1 = 1 ";
 		String orderBy = " Order by  CustomerShortName,  DueDate, [SaleOrder], [SaleLine], [ProductionOrder]";
-		if (poList.size() > 0) {
+		// 7.2b: materialize target PO ชุดเดียวกับ IN-list ท้าย query → กรอง big temp ต้นbatch
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
+		if (filterByTarget) {
 			where += " and a.ProductionOrder in ( \r\n";
 			String prodOrder = "";
 			for (int i = 0; i < poList.size(); i ++ ) {
@@ -1065,9 +1098,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				if (i != poList.size()-1) {
 					where += " , ";
 				}
+				targetPOSet.add(prodOrderSafe);
 			}
 			where += " ) \r\n";
 		}
+		// เมื่อกรองด้วย target PO ได้ (poList ไม่ว่าง) ใช้ fragment กรอง; ไม่งั้นคงพฤติกรรมเดิม (full table)
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFiltered     : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered        : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered : this.pss.createTempProdWorkDate;
 
 		String fromMainB = ""
 				+ " from (  "
@@ -1085,12 +1124,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ where
 				+ " ) as b \r\n";
 		String sqlMain = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
 				+ this.pss.createTempSCC
-				+ this.pss.createTempProdWorkDate
+				+ fragProdWorkDate
 				+ this.pss.createTempSPO
 				+ this.pss.createTempBillBatchFlag
 				+ this.pss.createTempSumVolOP
@@ -1149,13 +1189,33 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		}
 		where += " ) \r\n";
 
+		// 7.2b: child (SumGR/PWD join) = ProductionOrderRP. materialize ReplacedProdOrder rows ที่ match
+		// filter เดียวกัน (where เดิม) → #tempRPMatch แล้ว derive #tempMainSale (sale line) + #tempRelatedPO
+		// (ProductionOrderRP) จากมัน (superset ปลอดภัย). #tempRPMatch ไม่ต้องพึ่ง #tempTargetPO เพราะ
+		// where ฝังค่า inline อยู่แล้ว
+		boolean filterByTarget = poList.size() > 0;
+		String createRPMatch = filterByTarget
+				? ("IF OBJECT_ID('tempdb..#tempRPMatch') IS NOT NULL DROP TABLE #tempRPMatch;\r\n"
+						+ "SELECT a.SaleOrder, a.SaleLine, a.ProductionOrderRP\r\n"
+						+ "INTO #tempRPMatch\r\n"
+						+ "FROM [PCMS].[dbo].[ReplacedProdOrder] a\r\n"
+						+ "WHERE a.DataStatus = 'O' " + where + ";\r\n"
+						+ "CREATE CLUSTERED INDEX IX_tempRPMatch ON #tempRPMatch(SaleOrder, SaleLine);\r\n")
+				: "";
+		String createRelatedPO  = filterByTarget ? this.pss.createTempRelatedPOFromRPMatch            : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaRPMatch : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRRelatedFiltered             : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateRelatedFiltered      : this.pss.createTempProdWorkDate;
+
 		String sqlRP = ""
-				+ this.pss.createTempMainSale
+				+ createRPMatch
+				+ createRelatedPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
 				+ this.pss.createTempSCC
-				+ this.pss.createTempProdWorkDate
+				+ fragProdWorkDate
 				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdReplacedFirst อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ " ; WITH PRD_REPLACED as ( \n "
 				+ this.createTempPrdReplacedFirst
@@ -1177,6 +1237,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: target = ProductionOrder ต้นทาง (b=SwitchProdOrder); child ที่ SumGR/PWD join = ProductionOrderSW
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
@@ -1185,20 +1248,30 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
+			targetPOSet.add(ProductionOrderSafe);
 		}
 		where += " ) " + " ) \r\n";
+		// #tempMainSale กรองผ่าน SwitchProdOrder (SaleOrderSW/SaleLineSW); SumGR/PWD กรองด้วย
+		// #tempRelatedPO = ProductionOrderSW ของ target (child) — reuse RelatedFiltered ได้
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String createRelatedPO  = filterByTarget ? this.pss.createTempRelatedPOFromSwitchChild            : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaSwitchSW   : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRRelatedFiltered                : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateRelatedFiltered         : this.pss.createTempProdWorkDate;
 		String createTempSWFromA = ""
 
 				+ this.createTempPrdSWFirst
 				+ where
 				+ this.createTempPrdSWSecond;
 		String sqlSW = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ createRelatedPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
 				+ this.pss.createTempSCC
-				+ this.pss.createTempProdWorkDate
+				+ fragProdWorkDate
 				+ this.pss.createTempSPO
 				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempPrdSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
@@ -1219,6 +1292,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getOrderPuangListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: materialize target PO (b.ProductionOrder = puang child) ชุดเดียวกับ IN-list
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
@@ -1227,16 +1303,24 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
+			targetPOSet.add(ProductionOrderSafe);
 		}
 		where += " ) " + " ) \r\n";
+		// OP: #tempMainSale กรองผ่าน FromSapMainProdSale; SumGR/ProdWorkDate กรอง target PO ตรง
+		// (surviving row มี b.ProductionOrder ∈ targetPOs) — reuse fragment เดียวกับ Normal ได้
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaProdSale : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered               : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered        : this.pss.createTempProdWorkDate;
 		String createTempOPFromA = "" + this.createTempPrdOPA + "         " + where + this.createTempOP;
 		String sqlOP = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
 				+ this.pss.createTempSCC
-				+ this.pss.createTempProdWorkDate
+				+ fragProdWorkDate
 				+ this.pss.createTempSPO
 				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdOPA อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ createTempOPFromA
@@ -1259,27 +1343,37 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getOrderPuangSWListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: target = b.ProductionOrder (#tempSPOSale mapped PO) = output PO → SumGR/PWD กรอง target ตรง
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = ! poList.isEmpty();
 		String where = " ";
-		if ( ! poList.isEmpty()) {
+		if (filterByTarget) {
 			where = " and b.ProductionOrder IN (";
 			List<String> productionOrders = new ArrayList<>();
 
 			for (PCMSSecondTableDetail detail : poList) {
 				String productionOrderSafe = (detail.getProductionOrder() == null ? "" : detail.getProductionOrder().replace("'", "''"));
 				productionOrders.add("'" + productionOrderSafe + "'");
+				targetPOSet.add(productionOrderSafe);
 			}
 
 			where += String.join(", ", productionOrders) + ") \r\n";
 		}
+		// #tempMainSale กรองผ่าน #tempSPOSale → ต้องสร้าง #tempSPO+#tempSPOSale ก่อน MainSale (ย้ายขึ้น)
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaSPOSale : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered              : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered       : this.pss.createTempProdWorkDate;
 		String sql = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ this.pss.createTempSPO
+				+ this.pss.createTempSPOSale   // ย้ายขึ้นก่อน MainSale: fragMainSale (ViaSPOSale) อ้าง #tempSPOSale
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
 				+ this.pss.createTempSCC
-				+ this.pss.createTempProdWorkDate
-				+ this.pss.createTempSPO
-				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempOPSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
+				+ fragProdWorkDate
 				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
 				+ this.createTempOPSWFirst
 				+ where
