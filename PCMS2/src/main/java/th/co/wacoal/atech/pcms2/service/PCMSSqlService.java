@@ -1565,13 +1565,8 @@ public class PCMSSqlService {
 		);
 	}
 
-	public String buildInnerJoinViewUSM_SPE(String aliasMain, int specialCon,String aliasUserStatus )
-	{
-		return String.format(" "
-				+ "	INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] AS viewUSM_SPE \r\n"
-				+ "		ON %s.%s = viewUSM_SPE.UserStatus \n"
-				+ "     and viewUSM_SPE.[Special] = %s  \n", aliasMain, aliasUserStatus, specialCon);
-	}
+	// buildInnerJoinViewUSM_SPE ถูกลบ 2026-07-03 — ทุก caller ย้ายไปใช้ buildInnerJoinTempUSMSpecial1
+	// (join #tempUSMSpecial1 ที่ pre-materialize จาก viewUserStatusMappingPCMS WHERE Special=1)
 
 //	public String buildLeftJoinViewUSM_SPE(String aliasMain, int specialCon)
 //	{
