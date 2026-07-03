@@ -1201,11 +1201,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempProdWorkDate
 				+ this.pss.createTempSPO
 				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempPrdSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
+				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
 				+ createTempSWFromA
 				+ " select distinct\r\n"
 				+ this.selectAll
 				+ " from #tempPrdSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus");
+				+ this.pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus");
 		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlSW);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -1243,7 +1244,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.selectAll
 				+ " from #tempPrdOP as a \r\n"
 				+ this.pss.getLeftJoinSwitchProdOrder("A")
-				+ this.pss.buildInnerJoinViewUSM_SPE("a", 1, "UserStatus")
+				+ this.pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
 				+ " where 1 = 1 "
 				+ "    AND SPO.ProductionOrderSW IS NULL ";
 		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlOP);
@@ -1279,11 +1280,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ this.pss.createTempProdWorkDate
 				+ this.pss.createTempSPO
 				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempOPSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
+				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
 				+ this.createTempOPSWFirst
 				+ where
 				+ " \r\n"
 				+ this.createTempOPSWSecond
-				+ this.pss.buildInnerJoinViewUSM_SPE("b", 1, "UserStatus")
+				+ this.pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
 				+ " SELECT * \r\n"
 				+ "	FROM #tempPrdOPSW \r\n";
 		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
