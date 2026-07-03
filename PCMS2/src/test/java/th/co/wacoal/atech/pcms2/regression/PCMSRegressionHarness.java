@@ -13,6 +13,7 @@ import java.util.Map;
 import org.junit.Assume;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSDetailDao;
 import th.co.wacoal.atech.pcms2.dao.PCMSMainDao;
@@ -90,6 +91,7 @@ public class PCMSRegressionHarness {
 		try {
 			PCMSMainDao mainDao = ctx.getBean(PCMSMainDao.class);
 			PCMSDetailDao detailDao = ctx.getBean(PCMSDetailDao.class);
+			JdbcTemplate jdbc = ctx.getBean("pcmsJdbcTemplate", JdbcTemplate.class); // qualifier "pcmsDatabase", bean name = method name
 
 			List<PCMSHarnessCase> allCases = PCMSHarnessCase.loadAll(CASES_DIR);
 			List<PCMSHarnessCase> cases = new ArrayList<>();
@@ -121,7 +123,7 @@ public class PCMSRegressionHarness {
 				harvestSecond(firstRowByTypePrd, detail);
 			}
 
-			runExpansionMethods(mode, detailDao, firstRowByTypePrd, failures);
+			runExpansionMethods(mode, detailDao, jdbc, firstRowByTypePrd, failures);
 
 			return failures;
 		} finally {
@@ -133,7 +135,7 @@ public class PCMSRegressionHarness {
 	// 6 expansion methods — ใช้แถวตัวแทนที่เก็บจาก static case ด้านบน (discovery)
 	// ไม่ได้ query แบบกว้างแยกต่างหาก เพื่อไม่เพิ่มโหลดให้ PRD เกินจำเป็น
 	// =====================================================================
-	private static void runExpansionMethods(String mode, PCMSDetailDao detailDao,
+	private static void runExpansionMethods(String mode, PCMSDetailDao detailDao, JdbcTemplate jdbc,
 			Map<String, ProbeRow> firstRowByTypePrd, List<String> failures) throws Exception {
 
 		ProbeRow main = firstRowByTypePrd.get("Main");
@@ -180,7 +182,17 @@ public class PCMSRegressionHarness {
 					"ไม่มีแถว Main/OrderPuang/Switch พร้อม SaleOrder/SaleLine ให้ discover");
 		}
 
-		if (switchType != null) {
+		// getSwitchProdOrderListByPrd ต้องการ PO "ต้นทาง" (SwitchProdOrder.ProductionOrder) แต่แถว
+		// grid TypePrd='Switch' ถือ ProductionOrderSW (ปลายทาง — ดู createTempPrdSWFirst:
+		// b.ProductionOrderSW as ProductionOrder) → probe จาก harvest ได้ 0 แถวเสมอ
+		// จึง discover ต้นทางตรงจากตารางด้วย ORDER BY ตายตัว (deterministic ระหว่าง capture/verify)
+		String swSourcePO = discoverSwitchSourcePO(jdbc);
+		if (swSourcePO != null) {
+			System.out.println("[harness] discovery: Switch source PO = " + swSourcePO);
+			PCMSSecondTableDetail probe = secondDetailWithProductionOrder(swSourcePO);
+			callAndVerify(mode, "getSwitchProdOrderListByPrd", failures,
+					() -> detailDao.getSwitchProdOrderListByPrd(singletonSecond(probe)));
+		} else if (switchType != null) {
 			PCMSSecondTableDetail probe = secondDetailWithProductionOrder(switchType.productionOrder);
 			callAndVerify(mode, "getSwitchProdOrderListByPrd", failures,
 					() -> detailDao.getSwitchProdOrderListByPrd(singletonSecond(probe)));
@@ -193,11 +205,15 @@ public class PCMSRegressionHarness {
 			callAndVerify(mode, "getOrderPuangListByPrd", failures,
 					() -> detailDao.getOrderPuangListByPrd(singletonSecond(probe1)));
 
-			// หมายเหตุ: หลัง UNION แล้ว OrderPuang กับ OrderPuang+Switch ใช้ TypePrd='OrderPuang'
-			// เหมือนกัน แยกกันไม่ได้จากผลลัพธ์ summary/detail grid เฉยๆ — ใช้แถวเดียวกัน probe
-			// ถ้า PO นี้ไม่ได้อยู่ใน #tempSPO จริง ผลลัพธ์ที่ถูกต้องคือ "ว่าง" ก็ยังนับเป็น
-			// regression signal ที่ใช้ได้ (ว่าง=ว่าง เทียบ baseline ได้ปกติ)
-			PCMSSecondTableDetail probe2 = secondDetailWithProductionOrder(orderPuang.productionOrder);
+			// getOrderPuangSWListByPrd filter ด้วย #tempSPOSale.ProductionOrder (= ProductionOrderSW
+			// ของ switch pair ที่มี FromSapMainProdSale) — probe จาก harvest OrderPuang ธรรมดา
+			// แทบไม่มีทาง match → discover ตรงจากตารางด้วย ORDER BY ตายตัว; fallback แถว harvest เดิม
+			String opswPO = discoverOrderPuangSWPO(jdbc);
+			String probe2PO = (opswPO != null) ? opswPO : orderPuang.productionOrder;
+			if (opswPO != null) {
+				System.out.println("[harness] discovery: OrderPuangSW PO = " + opswPO);
+			}
+			PCMSSecondTableDetail probe2 = secondDetailWithProductionOrder(probe2PO);
 			callAndVerify(mode, "getOrderPuangSWListByPrd", failures,
 					() -> detailDao.getOrderPuangSWListByPrd(singletonSecond(probe2)));
 		} else {
@@ -251,6 +267,55 @@ public class PCMSRegressionHarness {
 	 * tie-reorder ได้ (ดู SqlOutputCanonicalizer) → probe input ของ 6 expansion method จะไม่แน่นอน
 	 * และทำให้ baseline ของ method เหล่านั้น flaky
 	 */
+	/**
+	 * หา PO ต้นทางของ Switch ที่ join แบบเดียวกับ createTempPrdSWFirst แล้วได้แถวจริง
+	 * (#tempMainSale = FromSapMainSale ทั้งตาราง ไม่มี DataStatus filter — ห้ามเติมเงื่อนไขเกิน)
+	 * TOP 1 + ORDER BY ตายตัว → deterministic ระหว่าง capture/verify บน DB เดียวกัน
+	 */
+	private static String discoverSwitchSourcePO(JdbcTemplate jdbc) {
+		List<String> pos = jdbc.queryForList(""
+				+ "SELECT TOP 1 b.ProductionOrder\r\n"
+				+ "FROM [PCMS].[dbo].[SwitchProdOrder] AS b\r\n"
+				+ "INNER JOIN [PCMS].[dbo].[FromSapMainSale] AS a\r\n"
+				+ "    ON a.SaleOrder = b.SaleOrderSW AND a.SaleLine = b.SaleLineSW\r\n"
+				+ "WHERE b.DataStatus = 'O'\r\n"
+				+ "ORDER BY b.ProductionOrder DESC", String.class);
+		return pos.isEmpty() ? null : pos.get(0);
+	}
+
+	/**
+	 * หา PO สำหรับ getOrderPuangSWListByPrd: filter จับ #tempSPOSale.ProductionOrder ซึ่งเคส switch
+	 * ต้นทางคือ ProductionOrderSW (ดู createTempSPOSale: CASE WHEN B.ProductionOrderSW IS NOT NULL)
+	 * — replicate เงื่อนไข FromSapMainProdSale (DataStatus='O', SaleLine<>'') + join MainSale
+	 */
+	private static String discoverOrderPuangSWPO(JdbcTemplate jdbc) {
+		// #tempSPOSale.ProductionOrder มี 2 กรณี (CASE ใน createTempSPOSale):
+		//   B: FromSapMainProdSale.PO = switch source  → ค่าออก = ProductionOrderSW
+		//   C: FromSapMainProdSale.PO = switch dest    → ค่าออก = ProductionOrder (source)
+		List<String> pos = jdbc.queryForList(""
+				+ "SELECT TOP 1 po FROM (\r\n"
+				+ "    SELECT spo.ProductionOrderSW AS po\r\n"
+				+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+				+ "    INNER JOIN [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+				+ "        ON fps.ProductionOrder = spo.ProductionOrder\r\n"
+				+ "       AND fps.DataStatus = 'O' AND fps.SaleLine <> ''\r\n"
+				+ "    INNER JOIN [PCMS].[dbo].[FromSapMainSale] AS ms\r\n"
+				+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+				+ "    WHERE spo.DataStatus = 'O'\r\n"
+				+ "    UNION\r\n"
+				+ "    SELECT spo.ProductionOrder AS po\r\n"
+				+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+				+ "    INNER JOIN [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+				+ "        ON fps.ProductionOrder = spo.ProductionOrderSW\r\n"
+				+ "       AND fps.DataStatus = 'O' AND fps.SaleLine <> ''\r\n"
+				+ "    INNER JOIN [PCMS].[dbo].[FromSapMainSale] AS ms\r\n"
+				+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+				+ "    WHERE spo.DataStatus = 'O'\r\n"
+				+ ") AS candidates\r\n"
+				+ "ORDER BY po DESC", String.class);
+		return pos.isEmpty() ? null : pos.get(0);
+	}
+
 	private static void harvest(Map<String, ProbeRow> bucket, List<PCMSTableDetail> rows) {
 		List<PCMSTableDetail> sorted = new ArrayList<>(rows);
 		Collections.sort(sorted, new Comparator<PCMSTableDetail>() {
