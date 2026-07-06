@@ -41,8 +41,9 @@
   --c-hairline-soft: #dde6f1;
 
   /* override PCMS2 token เดิม (tokens.css) ให้หัว DataTable เลิกฟ้าจัด
-     → ทุก rule ที่อ้าง var นี้กลายเป็นฟ้าอ่อนกลมกลืนชุดเดียว */
-  --pcms-dt-header-bg: #e3edf9;
+     → ทุก rule ที่อ้าง var นี้กลายเป็นฟ้าอ่อนกลมกลืนชุดเดียว
+     เข้มขึ้นกว่าเดิม (#e3edf9 → #cfe2f6) เพื่อให้แยกจาก search-panel/content-panel สีขาวชัดเจน */
+  --pcms-dt-header-bg: #cfe2f6;
   /* แถบ striped เดิม #e9ecf0 สว่างพอๆ กับหัวฟ้า → กลืนกัน
      เปลี่ยนเป็นเทาอ่อนกลางๆ ให้แถวอยู่ "ต่ำกว่า" หัวตารางชัด */
   --pcms-dt-odd-bg: #f2f4f7;
@@ -198,7 +199,7 @@ a:hover { color: var(--c-primary-active); }
 }
 
 /* ════════════════ DATATABLES (เฉพาะ header/hover — ไม่แตะสีแถวข้อมูล) ════════════════ */
-.table { color: #2c3a48; font-size: 14px; }
+.table { color: #2c3a48; font-size: 15px; }
 /* หัวตาราง — บังคับโทนฟ้าอ่อนเดียวกันทุกหน้า (ชนะ datatable.overide.css
    ที่ตั้ง .table thead = สี cyan เดิม) ครอบ thead/th/td + header ที่ DataTables
    clone ตอน scrollX ด้วย */
@@ -208,15 +209,60 @@ a:hover { color: var(--c-primary-active); }
 table.dataTable thead th,
 table.dataTable thead td,
 .dataTables_scrollHead .table thead th {
-  background-color: var(--c-surface-soft) !important;
-  color: var(--c-body-strong) !important;
-  border-bottom: 2px solid var(--c-hairline);
-  font-size: 13px;
-  font-weight: 600;
+  background-color: var(--pcms-dt-header-bg) !important;
+  color: var(--c-ink) !important;
+  border-bottom: 2px solid var(--c-primary);
+  font-size: 13.5px;
+  font-weight: 700;
   text-transform: none;
-  letter-spacing: 0;
+  letter-spacing: .01em;
 }
-.table-bordered td, .table-bordered th { border-color: var(--c-hairline-soft); }
+.table-bordered td, .table-bordered th { border-color: var(--c-hairline); }
+
+/* คอลัมน์ที่ปักหมุดด้วย FixedColumns (sticky) ต้องมีพื้นทึบเอง
+   ไม่งั้นข้อมูลคอลัมน์อื่นที่เลื่อนอยู่ข้างล่างจะโผล่ทะลุให้เห็น */
+table.dataTable td.dtfc-fixed-left,
+table.dataTable th.dtfc-fixed-left {
+  background-color: #fff;
+}
+table.table-striped tbody tr:nth-of-type(odd) td.dtfc-fixed-left {
+  background-color: var(--pcms-dt-odd-bg);
+}
+table.dataTable tbody tr:hover:not(.selected) td.dtfc-fixed-left {
+  background-color: var(--c-primary-soft) !important;
+}
+table.dataTable tbody tr.selected td.dtfc-fixed-left {
+  background-color: var(--pcms-dt-selected-cell-bg) !important;
+}
+
+/* ช่องกรองคอลัมน์ในหัวตาราง (.monitor_search) — เดิมไม่มีกรอบ มองไม่ออกว่าพิมพ์ได้ */
+.table thead .monitor_search {
+  background: #fff;
+  border: 1px solid #b9cee2;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-ink);
+  box-sizing: border-box;
+}
+.table thead .monitor_search:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(91,138,201,.20);
+  outline: none;
+}
+.table thead .monitor_search::placeholder { color: var(--c-muted-soft); }
+.table thead .monitor_search.has-value {
+  border-color: var(--c-primary);
+  background-color: var(--c-primary-soft);
+  font-weight: 600;
+}
+
+/* hover ทั้งแถว — ตารางมี 30-50 คอลัมน์ scrollX เวลาลากตาข้ามคอลัมน์เยอะๆ มักหลุดแถว
+   ไม่ทับสีป้ายประเภทงาน (bg-orderpuang/switch/replaced) และแถวที่ select ไว้อยู่แล้ว */
+.table.dataTable tbody tr:hover:not(.selected) > td:not(.bg-orderpuang):not(.bg-switch):not(.bg-replaced) {
+  background-color: var(--c-primary-soft) !important;
+}
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
   background: var(--c-primary) !important;
@@ -257,11 +303,11 @@ hr { border-top-color: var(--c-hairline); }
   margin: 4px 6px 2px;
   padding: 14px 18px;
   font-size: 13px;
-  background: #fff;
+  background: linear-gradient(180deg, #eaf2fb 0%, #ffffff 60%);
   border: 1px solid var(--c-hairline);
-  border-bottom: 3px solid var(--c-primary);
+  border-bottom: 4px solid var(--c-primary);
   border-radius: 0 0 var(--r-md) var(--r-md);
-  box-shadow: 0 3px 10px rgba(20,30,45,.08);
+  box-shadow: 0 3px 10px rgba(20,30,45,.10);
 }
 #wrapper-top.search-panel .search-panel-header {
   border-bottom: 1px solid var(--c-hairline);
@@ -292,31 +338,32 @@ hr { border-top-color: var(--c-hairline); }
   margin: 0 0 10px;
 }
 
-/* labels — สีเข้มอ่านง่าย ไม่หนา ไม่ uppercase */
+/* labels — เข้มขึ้น+หนาขึ้นกว่าเดิม (400→600, 0.82rem→0.86rem) ให้อ่านหัวข้อ filter ได้ไวขึ้น */
 #wrapper-top.search-panel label {
   display: block;
-  color: var(--c-body-strong);
-  font-size: 0.82rem;
-  font-weight: 400;
+  color: var(--c-ink);
+  font-size: 0.86rem;
+  font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 4px;
 }
 #wrapper-top.search-panel .input-group label {
   text-transform: none;
-  font-size: 0.82rem;
-  font-weight: 400;
-  color: var(--c-body-strong);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--c-ink);
   letter-spacing: 0;
 }
 
-/* inputs ในแผง */
+/* inputs ในแผง — ตัวหนังสือค่าที่กรอกชัดขึ้น (0.82rem→0.86rem, เพิ่ม weight) */
 #wrapper-top.search-panel .form-control {
   background: #fff;
   border: 1px solid #b9cee2;
   color: var(--c-ink);
   border-radius: 4px;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
+  font-weight: 500;
   padding: 3px 9px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -330,7 +377,8 @@ hr { border-top-color: var(--c-hairline); }
   border: 1px solid #b9cee2 !important;
   color: var(--c-ink) !important;
   border-radius: 4px !important;
-  font-size: 0.82rem !important;
+  font-size: 0.86rem !important;
+  font-weight: 500 !important;
   padding: 3px 28px 3px 9px !important;
 }
 #wrapper-top.search-panel .bootstrap-select > .dropdown-toggle:focus,

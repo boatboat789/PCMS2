@@ -45,9 +45,18 @@ public class TaskService {
 //		isCheck = true;
 	}
 
+//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour 
+	@Scheduled(cron = "0 0 1 * * *")
+	public void bgJobHandlerDataFromOrgatex()
+	{ 
+		executeWithLock("ORGATEX_IMPORT", () -> { 
+			ArrayList<SORDetail> list = dataImportSORService.getList();
+			fromSORCFMService.upSertFromSORCFMDetail(list);
+			
+		});
+	}
 //	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour
-	@Scheduled(cron = "0 11,41 * * * *")
-//	@Scheduled(cron = "0 13/20 * * * *")
+	@Scheduled(cron = "0 14,44 * * * *")
 	public void sortBackGroundAfterGetERPDataProcedure()
 	{
 		if (!scheduleEnabled) {
@@ -138,14 +147,4 @@ public class TaskService {
 			System.out.println("End sortBackGroundSaleOrder: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 	}
 
-//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour 
-	@Scheduled(cron = "0 0 1 * * *")
-	public void bgJobHandlerDataFromOrgatex()
-	{ 
-		executeWithLock("ORGATEX_IMPORT", () -> { 
-			ArrayList<SORDetail> list = dataImportSORService.getList();
-			fromSORCFMService.upSertFromSORCFMDetail(list);
-			
-		});
-	}
 }

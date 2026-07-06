@@ -4,7 +4,7 @@
 <%@ page isELIgnored="false"%>              	               
 <iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
 <form target="fakeSubmit" method="post" action="Main/fakeSubmit" >    
-	<div id="wrapper-top" class="search-panel" style="margin: 2px 5px; zoom: 85%;">
+	<div id="wrapper-top" class="search-panel" style="margin: 2px 5px;">
 		<div class="row">
 		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >
 			<div class="row">                   

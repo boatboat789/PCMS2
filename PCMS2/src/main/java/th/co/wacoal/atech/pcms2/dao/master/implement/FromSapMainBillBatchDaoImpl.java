@@ -34,7 +34,7 @@ public class FromSapMainBillBatchDaoImpl implements FromSapMainBillBatchDao {
 	@Autowired
 	public FromSapMainBillBatchDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

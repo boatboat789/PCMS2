@@ -32,7 +32,7 @@ public class PlanDeliveryDateDaoImpl implements  PlanDeliveryDateDao{
 	@Autowired
     public PlanDeliveryDateDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

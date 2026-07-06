@@ -21,7 +21,7 @@
 	<div id="wrapper-center">
 		<div class="content-panel">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%; font-size: 12.5px; width: 100%">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font-size: 15px; width: 100%">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">SO No.</th>
@@ -88,6 +88,9 @@
 .p-r-15 {
 	padding-right: 15px !important;
 }
+#MainTable td {
+	font-variant-numeric: tabular-nums;
+}
 </style>  
 <script>              	   
 var userId = '' ;   
@@ -114,9 +117,8 @@ var colList ;
 var userStatusList ;  	
 var cusNameList ; 
 var divisionList ;  
-var cusShortNameList ;  
-var isCustomer = 0 ;  	
-var workInLabTable ; 
+var cusShortNameList ;
+var workInLabTable ;
 var cfmTable;
 var saleTable; 
 var submitDateTable;
@@ -258,7 +260,7 @@ $(document) .ready( function() {
 		if(tblData.length == 0 ){
 			Swal.fire({
 	   		    title: 'คำเตือน',   
-	   		    text: 'Need to select atleast 1 row.',
+	   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 	   		    icon: 'warning',
 	   		    timer: 1000,
 	   		    showConfirmButton: false,
@@ -269,7 +271,7 @@ $(document) .ready( function() {
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
 				Swal.fire({
 		   		    title: 'คำเตือน',   
-		   		    text: 'Need to select atleast 1 row.',
+		   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 		   		    icon: 'warning',
 		   		    timer: 1000, 
 		   		    showConfirmButton: false,
@@ -289,9 +291,9 @@ $(document) .ready( function() {
 //     var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
 // 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
-	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
-		var title = $(this).text();         
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
+	$('#MainTable thead tr:eq(1) th') .each( function(i) {
+		var title = $(this).text();
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" placeholder="ค้นหา..." aria-label="กรอง ' + title + '"/>');
 	});     
 	 MainTable = $('#MainTable').DataTable({    
 //	     	stateSave: true ,    
@@ -315,23 +317,25 @@ $(document) .ready( function() {
 //	 		colReorder: {      
 //	             realtime: true       
 //	         },                     
-			deferRender: true, // run again in column     
-	 		colReorder: true,  
-			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
-	 	   	columns :    
-	 	   		[      
+			deferRender: true, // run again in column
+	 		/* iFixedColumnsLeft: 2 ปักหมุด SO No. + SO Line (2 คอลัมน์แรก อยู่ริมซ้ายอยู่แล้ว ไม่ต้องย้าย)
+	 		   ให้ลากสลับไม่ได้และ fix ซ้ายไว้เสมอ — คอลัมน์อื่นยังลากสลับได้อิสระเหมือนเดิม */
+	 		colReorder: { realtime: true, iFixedColumnsLeft: 2 },
+			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],
+	 	   	columns :
+	 	   		[
 			    {"data" : "saleOrder",  "title": 'SO No.'} ,         //0
 			    {"data" : "saleLine",  "title": 'SO Line'},              //1
-			    {"data" : "purchaseOrder",  "title": 'PO'}, 
-			    {"data" : "articleFG",  "title": 'Article No'}, 
-			    {"data" : "designFG",  "title": 'Design No'}, 
+			    {"data" : "purchaseOrder",  "title": 'PO'},
+			    {"data" : "articleFG",  "title": 'Article No'},
+			    {"data" : "designFG",  "title": 'Design No'},
 			    {"data" : "color",  "title": 'ATT Color'},               //5
 			    {"data" : "colorCustomer",  "title": 'Cust.Color'},      //6
 			    {"data" : "saleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
 			    {"data" : "billQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
 			    {"data" : "saleUnit",  "title": 'Unit'},                              //9
 			    {"data" : "productionOrder",  "title": 'Prod.No.'},                   //10
-			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
+			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11
 			    {"data" : "planGreigeDate",  "title": 'Plan Greige Date' ,'type': 'date-euro'},            //12
 			    {"data" : "greigeInDate",  "title": 'Greige In' ,'type': 'date-euro'},                     //13
 			    {"data" : "userStatus",  "title": 'User Status'},                     //14
@@ -353,13 +357,13 @@ $(document) .ready( function() {
 			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //30    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
-			columnDefs :  [	        
-				{ targets:[10]  ,           
-					render: function (data, type, row) {	   
+			columnDefs :  [
+				{ targets:[10]  ,
+					render: function (data, type, row) {
 						let html = '<div name="n_'+row.productionOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.productionOrder+'</div>'
-						return  html; 
-				   	  }    
-				},     
+						return  html;
+				   	  }
+				},
 				{ targets : [ 25],     
 			   	  render: function (data, type, row) {	 
 				   		var htmlEx = dateDDMMYYYToDDMM(row.cfmPlanDate);     
@@ -405,18 +409,25 @@ $(document) .ready( function() {
 			drawCallback: function( settings ) {
 				$('[data-toggle="tooltip"]').tooltip();
 			},   
-			initComplete: function () {  
-				if ( isCustomer == 1 ) {      
+			initComplete: function () {
+				if ( isCustomer == 1 ) {
 			        // Hide Office column
-// 			        api.column(27).visible( false );    
-// 			        api.column(28).visible( false );    
+// 			        api.column(27).visible( false );
+// 			        api.column(28).visible( false );
 
 // 			        api.column(mapsDataHeader.get("cfmDetailAll")).visible( false );
 // 			        api.column(mapsDataHeader.get("rollNoRemarkAll")).visible( false );
-			                
-			      }       
-			}      
-	 	 });        
+
+			      }
+			}
+	 	 });
+	 	// ปักหมุด SO No. + SO Line (คอลัมน์ 0-1) ไว้ซ้ายสุดเสมอ แม้เลื่อนตารางแนวนอน
+	 	// ต้องเรียกหลัง MainTable ถูก assign แล้วเท่านั้น — ห้ามเรียกใน initComplete
+	 	// เพราะตอนนั้นตัวแปร MainTable ยังเป็น undefined อยู่ (assignment ยังไม่เสร็จ)
+	 	new $.fn.dataTable.FixedColumns( MainTable, {
+	 		leftColumns: 2,
+	 		rightColumns: 0
+	 	} );
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
     var startdate = moment();
@@ -687,8 +698,9 @@ $(document) .ready( function() {
 					} ,           
 			],     order: [[ 0, "desc" ]]        
 	 	 });        
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
-		let searchVal = this.value;      
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
 // 		console.log($(this),$(this).data('index'),indexAfterReCol)
 // 		11 , 14-25 date
@@ -843,7 +855,7 @@ function searchByDetail(){
   			)  { 
 		Swal.fire({
    		    title: 'คำเตือน',
-   		    text: 'Need select some field for search.',
+   		    text: 'กรุณาเลือกอย่างน้อย 1 ช่องเพื่อค้นหา',
    		    icon: 'warning',
    		    timer: 1000,
    		    showConfirmButton: false,
@@ -853,7 +865,7 @@ function searchByDetail(){
 	else if (distChannel == ''){
 		Swal.fire({
    		    title: 'คำเตือน',
-   		    text: 'Need to choose distribute channel from check box.',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
    		    showConfirmButton: false,
@@ -1054,7 +1066,7 @@ function getPrdDetailByRow(arrayTmp) {
 			setModalDetail(data);   
 		},     
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});      
@@ -1093,7 +1105,7 @@ function searchByDetailToServer(arrayTmp) {
 			MainTable.draw();
 		},
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		},
 		complete: function() {
 			$('#btn_search').prop('disabled', false);
@@ -1340,7 +1352,7 @@ function saveColSettingToServer(arrayTmp) {
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -1516,7 +1528,7 @@ function saveDefault( ){
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -1534,7 +1546,7 @@ function loadDefault(){
 			else{
 				Swal.fire({   
 					title: 'แจ้งเตือน',    
-				 	text: "No search default data."  , 
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1542,7 +1554,7 @@ function loadDefault(){
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   

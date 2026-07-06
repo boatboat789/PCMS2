@@ -42,7 +42,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 	@Autowired
 	public FromSapMainSaleDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

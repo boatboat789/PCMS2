@@ -53,7 +53,7 @@ public class PermitsDaoImpl implements PermitsDao {
 	@Autowired
     public PermitsDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc ) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

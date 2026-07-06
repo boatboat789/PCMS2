@@ -116,10 +116,10 @@ th.dt-custom-thdate {
 	overflow-wrap: break-word;
 }
 
-td.dt-custom-td80 {
-	width: 80px !important;
-	min-width: 80px !important;
-	max-width: 80px !important;
+td.dt-custom-td85 {
+	width: 85px !important;
+	min-width: 85px !important;
+	max-width: 85px !important;
 	overflow-wrap: break-word;
 	/*vertical-align: middle !important;*/
 }

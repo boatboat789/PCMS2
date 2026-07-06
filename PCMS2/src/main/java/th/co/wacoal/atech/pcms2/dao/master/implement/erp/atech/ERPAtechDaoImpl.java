@@ -38,7 +38,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 
 	@Autowired
 	public ERPAtechDaoImpl(@Qualifier("erpDatabase") JdbcTemplate jdbc) {
-		this.message = "";
+		
 		this.jdbc = jdbc;
 	}
 

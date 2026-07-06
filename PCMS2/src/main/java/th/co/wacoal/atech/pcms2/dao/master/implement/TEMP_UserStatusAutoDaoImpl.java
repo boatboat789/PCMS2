@@ -32,7 +32,7 @@ public class TEMP_UserStatusAutoDaoImpl implements TEMP_UserStatusAutoDao {
 	@Autowired
 	public TEMP_UserStatusAutoDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

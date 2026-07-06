@@ -38,7 +38,7 @@ public class FromSapPresetDaoImpl implements  FromSapPresetDao{
 	@Autowired
     public FromSapPresetDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

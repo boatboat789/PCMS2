@@ -31,7 +31,7 @@ public class ConfigCustomerUserDaoImpl implements  ConfigCustomerUserDao{
     @Autowired
 	public ConfigCustomerUserDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

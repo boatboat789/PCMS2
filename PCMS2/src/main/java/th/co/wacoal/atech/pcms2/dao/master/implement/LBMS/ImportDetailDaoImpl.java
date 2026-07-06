@@ -31,7 +31,7 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
     @Autowired
 	public ImportDetailDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

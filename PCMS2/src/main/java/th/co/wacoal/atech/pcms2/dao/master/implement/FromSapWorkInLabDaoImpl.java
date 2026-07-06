@@ -31,7 +31,7 @@ public class FromSapWorkInLabDaoImpl  implements  FromSapWorkInLabDao{
 	@Autowired
     public FromSapWorkInLabDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

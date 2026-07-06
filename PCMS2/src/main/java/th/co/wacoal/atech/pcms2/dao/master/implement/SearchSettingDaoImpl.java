@@ -31,7 +31,7 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 	@Autowired
 	public SearchSettingDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

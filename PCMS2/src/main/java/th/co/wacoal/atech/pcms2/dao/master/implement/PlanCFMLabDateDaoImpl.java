@@ -32,7 +32,7 @@ public class PlanCFMLabDateDaoImpl implements  PlanCFMLabDateDao{
 	@Autowired
     public PlanCFMLabDateDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

@@ -38,7 +38,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 	@Autowired
 	public ReplacedProdOrderDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

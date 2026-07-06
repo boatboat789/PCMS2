@@ -34,7 +34,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 	@Autowired
 	public SwitchProdOrderDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

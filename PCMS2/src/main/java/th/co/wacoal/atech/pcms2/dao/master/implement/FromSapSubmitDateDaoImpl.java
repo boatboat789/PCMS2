@@ -39,7 +39,7 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 	@Autowired
 	public FromSapSubmitDateDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

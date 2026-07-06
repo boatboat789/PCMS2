@@ -40,7 +40,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 	@Autowired
 	public FromSapMainProdDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

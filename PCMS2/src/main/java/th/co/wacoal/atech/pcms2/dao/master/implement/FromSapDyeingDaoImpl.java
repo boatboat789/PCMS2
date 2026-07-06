@@ -49,7 +49,7 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	@Autowired
     public FromSapDyeingDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

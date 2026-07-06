@@ -14,6 +14,21 @@
 	background-color: var(--pcms-row-replaced) !important;
 }
 
+/* บอกประเภทงานด้วยตัวอักษรนำหน้า ไม่ใช่พึ่งสีพื้นหลังอย่างเดียว
+   (ผู้ใช้ตาบอดสีแยก puang/switch/replaced จากสีล้วนไม่ออก — มี tooltip เดิมอยู่แล้วแต่ต้อง hover) */
+td.bg-orderpuang > div::before {
+	content: "[พ่วง] ";
+	font-weight: 700;
+}
+td.bg-switch > div::before {
+	content: "[สวม] ";
+	font-weight: 700;
+}
+td.bg-replaced > div::before {
+	content: "[ย้าย] ";
+	font-weight: 700;
+}
+
 .font-bold {
 	font-weight: bold;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);

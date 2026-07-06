@@ -32,7 +32,7 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 	@Autowired
     public PlanSendCFMCusDateDaoImpl(@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

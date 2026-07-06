@@ -12,7 +12,7 @@
 <style>
 .permit-table th, .permit-table td { text-align: center; vertical-align: middle; white-space: nowrap; }
 .permit-table td:first-child { text-align: left; font-weight: bold; }
-.readonly-note { font-size: 0.8rem; color: #888; }
+.readonly-note { font-size: 0.8rem; color: #6c757d; }
 </style>
 </head>
 <body>
@@ -44,7 +44,7 @@
                 <!-- Tab 1: Permit Definitions -->
                 <div class="tab-pane fade show active" id="tab-permits" role="tabpanel">
                     <p class="text-muted small">แก้ไขสิทธิ์การเข้าถึงในแต่ละ Permit Role — ADMIN ไม่สามารถแก้ไขได้ (ป้องกันล็อกตัวเอง)</p>
-                    <div id="permits-loading" class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> กำลังโหลด...</div>
+                    <div id="permits-loading" class="text-center py-4" aria-live="polite"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> กำลังโหลด…</div>
                     <div id="permits-content" style="display:none;">
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm permit-table" id="permit-table">
@@ -73,9 +73,9 @@
                 <div class="tab-pane fade" id="tab-users" role="tabpanel">
                     <p class="text-muted small">กำหนด Permit Role ให้แต่ละ user — คลิกที่ Permit ของ user เพื่อเปลี่ยน</p>
                     <div class="mb-2">
-                        <input type="text" id="user-search" class="form-control" placeholder="ค้นหา userId / ชื่อ..." style="max-width:300px;">
+                        <input type="text" id="user-search" class="form-control" placeholder="ค้นหา userId / ชื่อ…" aria-label="ค้นหาผู้ใช้" style="max-width:300px;">
                     </div>
-                    <div id="users-loading" class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> กำลังโหลด...</div>
+                    <div id="users-loading" class="text-center py-4" aria-live="polite"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> กำลังโหลด…</div>
                     <div id="users-content" style="display:none;">
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm table-hover" id="user-table">
@@ -103,7 +103,7 @@
 <div class="modal fade" id="modalUserPermit" tabindex="-1">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">เปลี่ยน Permit</h5><button type="button" class="close" data-dismiss="modal">&times;</button></div>
+            <div class="modal-header"><h5 class="modal-title">เปลี่ยน Permit</h5><button type="button" class="close" data-dismiss="modal" aria-label="ปิด">&times;</button></div>
             <div class="modal-body">
                 <p>User: <strong id="modal-userId"></strong></p>
                 <div class="form-group">
@@ -173,7 +173,8 @@ function renderPermits(list) {
         FLAGS.forEach(function(f) {
             var cb = $('<input type="checkbox">').prop('checked', !!p[f]);
             if (disabled) cb.prop('disabled', true);
-            cb.attr('data-permit', p.permitId).attr('data-field', f);
+            cb.attr('data-permit', p.permitId).attr('data-field', f)
+              .attr('aria-label', p.permitId + ' — ' + f);
             tr.append($('<td>').append(cb));
         });
         var btnCell = $('<td>');
@@ -196,17 +197,27 @@ function savePermit(permitId, tr) {
     FLAGS.forEach(function(f) {
         payload[f] = tr.find('input[data-field="' + f + '"]').is(':checked');
     });
-    $.ajax({
-        url: BASE_URL + '/api/permit/update',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(payload),
-        success: function(res) {
-            var data = typeof res === 'string' ? JSON.parse(res) : res;
-            if (data.status === 'SUCCESS') Swal.fire({ icon: 'success', title: 'สำเร็จ', text: data.message, showConfirmButton: false, timer: 1500 });
-            else Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message });
-        },
-        error: function() { Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถเชื่อมต่อได้' }); }
+    Swal.fire({
+        title: 'ยืนยัน',
+        text: 'บันทึกการเปลี่ยนสิทธิ์ของ ' + permitId + ' ใช่ไหม?',
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: 'ยืนยัน'
+    }).then(function(result) {
+        if (!result.isConfirmed) return;
+        $.ajax({
+            url: BASE_URL + '/api/permit/update',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function(res) {
+                var data = typeof res === 'string' ? JSON.parse(res) : res;
+                if (data.status === 'SUCCESS') Swal.fire({ icon: 'success', title: 'สำเร็จ', text: data.message, showConfirmButton: false, timer: 1500 });
+                else Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message });
+            },
+            error: function() { Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถเชื่อมต่อได้' }); }
+        });
     });
 }
 
@@ -234,8 +245,8 @@ function renderUsers(list) {
     list.forEach(function(u) {
         var permitBadge;
         if (CAN_EDIT_USERS) {
-            permitBadge = $('<a href="#">').addClass('badge badge-info').text(u.permitId || '(ไม่มี)')
-                .on('click', function(e) { e.preventDefault(); openUserPermitModal(u.userId, u.permitId); });
+            permitBadge = $('<button type="button">').addClass('badge badge-info border-0').text(u.permitId || '(ไม่มี)')
+                .on('click', function() { openUserPermitModal(u.userId, u.permitId); });
         } else {
             permitBadge = $('<span>').addClass('badge badge-secondary').text(u.permitId || '(ไม่มี)');
         }

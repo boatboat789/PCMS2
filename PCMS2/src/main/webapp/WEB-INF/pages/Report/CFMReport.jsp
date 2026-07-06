@@ -92,6 +92,9 @@ tr.even td {
 .form-group {
 	margin-bottom: 5px;
 }
+#mainTable td {
+	font-variant-numeric: tabular-nums;
+}
 </style>
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
 <script src="<c:url value="/resources/js/General.js" />"></script>
@@ -145,7 +148,7 @@ $(document) .ready( function() {
 	$('#mainTable thead tr').clone(true).appendTo('#mainTable thead');
 	$('#mainTable thead tr:eq(1) th') .each( function(i) {
 		var title = $(this).text();
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" aria-label="กรอง ' + title + '"/>');
 	});      
    
 	$('#input_replyDate').val(''); 
@@ -156,7 +159,7 @@ $(document) .ready( function() {
 	mainTable = $('#mainTable').DataTable({ 
 		columns : [
 			{ data : "sendDate"                        
-			  	, className : 'dt-custom-td80'    
+			  	, className : 'dt-custom-td85'    
 // 				, render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en') 
 			    , render: function (data, type, row) {
 			      if (type === 'display' || type === 'filter') {
@@ -183,7 +186,7 @@ $(document) .ready( function() {
 			{ data : "noPerDay" },              //1
 			{ 
 			    data: "replyDate",
-			    className: 'dt-custom-td80',
+			    className: 'dt-custom-td85',
 			    render: function (data, type, row) {
 			        if (type === 'display' || type === 'filter') {
 			            // 1. เช็คเบื้องต้นว่ามีข้อมูลไหม
@@ -213,7 +216,7 @@ $(document) .ready( function() {
 			{ data : "soLine"
 					, type:'num-fmt' },         //6
 			{ data : "dueDate"                      
-// 			  		, className : 'dt-custom-td80'  
+// 			  		, className : 'dt-custom-td85'  
 				    , render: function (data, type, row) {
 						if (type === 'display' || type === 'filter') {
 					        const date = moment(data, 'MMM D, YYYY', true); // Strict parsing
@@ -319,8 +322,12 @@ $(document) .ready( function() {
 // 		   fixedColumns: {
 // 		        left: 3        
 // 		    },
-		scrollX: true,       
- 	  	scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง       
+		language: {
+			emptyTable: 'ยังไม่มีข้อมูล — กรุณาระบุเงื่อนไขแล้วกดค้นหา',
+			zeroRecords: 'ไม่พบข้อมูลตามเงื่อนไขที่ค้นหา'
+		},
+		scrollX: true,
+ 	  	scrollY: '70vh' , //ขนาดหน้าจอแนวตั้ง
 // 		scrollY: '100vh',             	
         scrollCollapse: true,            
 	    orderCellsTop : true,   
@@ -357,52 +364,6 @@ $(document) .ready( function() {
 	$("#mainTable_filter").hide();  
 	preLoaderHandler( preloader)        
 });     
-// function searchByDetail(){    
-// 	var json = createJsonData(); 
-//     var  obj = JSON.parse(json);    
-// 	var arrayTmp = [];   
-// 	arrayTmp.push(obj); 
-// 	getReportSplitWorkDetail(arrayTmp);  
-// } 
-
-// function createJsonData(){  
-// 	var prodOrder = document.getElementById("input_prodOrder").value .trim();  
-// 	var lotNo = document.getElementById("lotNo").value .trim();  
-// 	var dueDate = document.getElementById("input_dueDate").value .trim(); 
-// 	var replyDate = document.getElementById("replyDate").value .trim();  
-// 	var json = '' +
-// 	   '{'+  
-// 	   ' "prodID":'+JSON.stringify(prodOrder)+       
-// 	   ',"lotNo":'+JSON.stringify(lotNo)+    
-// 	   ',"replyDate":'+JSON.stringify(replyDate)+     
-// 	   '} ';      
-// 	   return json;           
-// } 
-// 	function getReportSplitWorkDetail(value) {
-// 		$.ajax({
-// 			type : "POST",
-// 			dataType : "json",
-// 			contentType : "application/json; charset=utf-8",
-// 			url : ctx + "/Report/CFM/getReportDetail",
-// 			data : JSON.stringify(value),
-// 			success : function(data) {
-// 				mainTable.clear();
-// 				if (data.length > 0) {
-// 					mainTable.rows.add(data);
-// 				} else {
-// 					// 					swal("Warnning !", "No Data", "error");   
-// 				}
-// 				mainTable.columns.adjust();
-// 				mainTable.draw();
-// 			},
-// 			error : function(e) {
-// 				swal("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
-// 			},
-// 			done : function(e) {
-// 				console.log(data);
-// 			}
-// 		});
-// 	} 
 	function searchByDetail() {    
 	    const custName = document.getElementById("input_custName").value.trim(); 
 	    const sO = document.getElementById("input_saleOrder").value.trim();  
@@ -420,7 +381,7 @@ $(document) .ready( function() {
 		    getReportSplitWorkDetail(arrayTmp); 
 	    } else {
 	        // All fields are empty
-	        Swal.fire("Fail", "Please fill at least one field to proceed.", "error");
+	        Swal.fire("คำเตือน", "กรุณากรอกอย่างน้อย 1 ช่องเพื่อค้นหา", "warning");
 // 	        console.log("Please fill at least one field to proceed.");
 	    } 
 	}    
@@ -463,7 +424,7 @@ $(document) .ready( function() {
 	            mainTable.draw();
 	        },
 	        error: function(e) {
-	            Swal.fire("Fail", "Please contact IT", "error");
+	            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 	            console.log(e);
 	        },
 	        complete: function() {
@@ -506,7 +467,7 @@ $(document) .ready( function() {
 	            link.remove();
 	        },
 	        error: function(e) {
-	            Swal.fire("Fail", "Please contact IT", "error");
+	            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 	            console.log(e);
 	        },
 	        complete: function() {
@@ -514,210 +475,6 @@ $(document) .ready( function() {
 	        }
 	    });
 	}
-// 	function exportCSV(data) {
-// 		var createXLSLFormatObj = [];
-// 		/* XLS Head Columns */
-// 		var xlsHeader = [ "po", "poLine", "productionOrder", "lotNo", "batch", "materialNo", "customerMaterial", "articleFG", "designFG", "customerName", "quantityMR", "quantityKG", "userStatus", "labStatus", "planGreigeDate", "griegeInDate", "dueDate", "sorDueDate", "groupNo", "subGroup", "planDyeDate", "ppmmStatus", "saleOrder", "saleLine", "bookNo", "labNo", "shade", "planningRemark" ]
-// 		/* XLS Rows Data */
-// 		var xlsRows = data
-// 		createXLSLFormatObj.push(xlsHeader);
-// 		$.each(xlsRows, function(index, value) {
-// 			var innerRowData = [];
-// 			$.each(value, function(data, val) {
-// 				if (data == 'userStatusList' || data == 'labStatusList') {
-
-// 				} else if (data == 'quantityMR' || data == 'quantityKG') {
-// 					if (val == '') {
-// 						innerRowData.push('');
-// 					} else {
-// 						innerRowData.push(parseFloat(val.replace(/,/g, '')));
-// 					}
-// 					// 				}  
-// 				} else if (data == 'planGreigeDate' || data == 'griegeInDate' || data == 'dueDate' || data == 'sorDueDate' || data == 'planDyeDate') {
-// 					if (val == '') {
-// 						innerRowData.push('');
-// 					} else {
-// 						innerRowData.push(stringToDate(val));
-// 					}
-// 				} else {
-// 					innerRowData.push(val);
-// 				}
-// 			});
-// 			createXLSLFormatObj.push(innerRowData);
-// 		});
-// 		/* File Name */
-// 		var filename = "CFMReport.xlsx";
-// 		/* Sheet Name */
-// 		var ws_name = "CFMReport";
-// 		if (typeof console !== 'undefined')
-// 			console.log(new Date());
-// 		var wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
-
-// 		/* Add worksheet to workbook */
-// 		XLSX.utils.book_append_sheet(wb, ws, ws_name);
-// 		/* Write workbook and Download */
-// 		if (typeof console !== 'undefined')
-// 			console.log(new Date());
-// 		XLSX.writeFile(wb, filename);
-// 		if (typeof console !== 'undefined')
-// 			console.log(new Date()); 
-// 	}
-
-// 	function exportCSV(data) {
-// 	    var createXLSLFormatObj = [];    
-	    
-// 	    // XLS Head Columns based on your DataTable column definitions
-// 	    var xlsHeader = [
-// 	        "sendDate", "noPerDay", "replyDate", "cFMNo", "customerName", 
-// 	        "sO", "sOLine", "dueDate", "pO", "material", 
-// 	        "productName", "labNo", "color", "prodID", "lotNo", 
-// 	        "dye_L", "dye_Da", "dye_DB", "dye_St", "dye_DeltaE", 
-// 	        "colorCheck_L", "colorCheck_Da", "colorCheck_DB", "colorCheck_St", 
-// 	        "colorCheck_DeltaE", "cFM_L", "cFM_Da", "cFM_DB", "cFM_St", 
-// 	        "cFM_DeltaE", "colorCheckDate", "colorCheckStatus", "colorCheckRemark", 
-// 	        "result", "qCComment", "remarkFromSubmit", "nextLot", "qty", "unitId"
-// 	    ];
-// 	 // Convert to uppercase    
-// // 	    var upperCaseHeader = toUpperCaseArray(xlsHeader);
-// 	 // Convert to capitalize first letter
-// 	    var capitalizedHeader = xlsHeader.map(function(header) {
-// 	        return capitalizeFirstLetter(header);
-// 	    });
-// 	    // Add header to the XLS format object
-// 	    createXLSLFormatObj.push(capitalizedHeader);
-	       
-// 	    // Process each row of data
-// 	    $.each(data, function(index, value) {
-// 	        var innerRowData = [];
-	        
-// 	        // Extract values based on the header
-// 	        xlsHeader.forEach(function(header) {
-// 	            var val = value[header] || ''; // Get the value or default to empty string
-// 	            // Convert date strings into Date objects for Excel to recognize datetime type
-// 	            if (header === 'sendDate' || header === 'replyDate' || header === 'dueDate') {
-// 	            	 var dateObj = parseDateStringToDate(val, true); // มีเวลาส่ง true
-// 	            	    innerRowData.push(dateObj ? dateObj : '');    
-// 	            } else if (header === 'colorCheckDate') {
-// 	            	var dateObj = parseDateStringToDate(val, false); // ไม่มีเวลาส่ง false
-// 	                innerRowData.push(dateObj ? dateObj : '');
-// 	            }  
-// 	            else if (header === 'qty' || header === 'dye_L' || header === 'dye_Da' || header === 'dye_DB' || 
-//                     header === 'dye_St' || header === 'dye_DeltaE' || header === 'colorCheck_L' || header === 'colorCheck_Da' || 
-//                     header === 'colorCheck_DB' || header === 'colorCheck_St' || header === 'colorCheck_DeltaE' || header === 'cFM_L' || 
-//                     header === 'cFM_Da' || header === 'cFM_DB' || header === 'cFM_DeltaE'  || header === 'cFM_St' || header === 'qty') {
-// 		             // attempt to parse to number, fallback empty string
-// 		             var numVal = val === '' ? '' : Number(val.toString().replace(/,/g, ''));
-// 		             innerRowData.push(isNaN(numVal) ? '' : numVal);
-// 		         } else {
-// 	                innerRowData.push(val);
-// 	            }
-// 	        });
-	         
-// 	        // Add the processed row to the XLS format object
-// 	        createXLSLFormatObj.push(innerRowData);
-// 	    });
-	    
-// 	 // File Name and Sheet Name
-// 	    var filename = "CFMReport.xlsx";
-// 	    var ws_name = "CFMReport";
-
-// 	    var ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
-// 	    // 🟢 **ตำแหน่งที่ 2: หลังจากสร้าง Worksheet** 🟢
-
-// 	    // Define border style
-// 	    const borderStyle = {
-// 	        top: { style: "thin" },
-// 	        bottom: { style: "thin" },
-// 	        left: { style: "thin" },
-// 	        right: { style: "thin" },
-// 	    };
-
-// 	    // Define header style
-// 	    const headerStyle = {
-// 	        font: { bold: true, color: { rgb: "FFFFFF" } },
-// 	        fill: { fgColor: { rgb: "4F81BD" } },
-// 	        border: borderStyle,
-// 	    };
-
-// 	    // Define alternate row colors
-// 	    const evenRowStyle = {
-// 	        fill: { fgColor: { rgb: "D9EAD3" } },
-// 	        border: borderStyle,
-// 	    };
-
-// 	    const oddRowStyle = {
-// 	        fill: { fgColor: { rgb: "FFFFFF" } },
-// 	        border: borderStyle,
-// 	    };
-
-// 	    // Apply Header Style
-// 	    capitalizedHeader.forEach(function(_, colIdx) {
-// 	        var cellRef = XLSX.utils.encode_cell({ r: 0, c: colIdx });
-// 	        if (ws[cellRef]) {
-// 	            ws[cellRef].s = headerStyle;
-// 	        }
-// 	    });
-
-// 	    // Apply Row Styles
-// 	    data.forEach(function(_, rowIdx) {
-// 	        var isEven = (rowIdx + 1) % 2 === 0;
-// 	        var rowStyle = isEven ? evenRowStyle : oddRowStyle;
-
-// 	        xlsHeader.forEach(function(_, colIdx) {
-// 	            var cellRef = XLSX.utils.encode_cell({ r: rowIdx + 1, c: colIdx });
-// 	            if (ws[cellRef]) {
-// 	                ws[cellRef].s = rowStyle;
-// 	            }
-// 	        });
-// 	    });
-  
-// 	    // Create a new workbook and add the worksheet
-// 		var dateColsIndices = [];
-// 		xlsHeader.forEach(function(colName, idx) {
-// 		    if (colName === 'sendDate' || colName === 'replyDate' || colName === 'dueDate' || colName === 'colorCheckDate') {
-// 		        dateColsIndices.push(idx);
-// 		    }
-// 		});
-		
-// 		// ตั้งค่ารูปแบบวันที่เป็น Text
-// 		dateColsIndices.forEach(function(C) {
-// 		    var isColorCheckDate = (xlsHeader[C] === 'colorCheckDate');
-// 		    var format = isColorCheckDate ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm:ss';
-		    
-// 		    for (var R = 1; R <= data.length; ++R) {
-// 		        var cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
-// 		        var cell = ws[cell_ref];
-		        
-// 		        if (!cell) continue;
-		
-// 		        // แปลงเป็น Date Object
-// 		        var dateObj = parseDateStringToDate(cell.v, !isColorCheckDate);
-// 		        if (dateObj) {
-// 		            // แปลงเป็น String ในรูปแบบ dd/MM/yyyy หรือ dd/MM/yyyy HH:mm:ss
-// 		            var day = String(dateObj.getDate()).padStart(2, '0');
-// 		            var month = String(dateObj.getMonth() + 1).padStart(2, '0');
-// 		            var year = dateObj.getFullYear();
-// 		            var hours = String(dateObj.getHours()).padStart(2, '0');
-// 		            var minutes = String(dateObj.getMinutes()).padStart(2, '0');
-// 		            var seconds = String(dateObj.getSeconds()).padStart(2, '0');
-		
-// 		            var formattedDate = isColorCheckDate 
-// 		                ? `${day}/${month}/${year}`
-// 		                : `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-		
-// 		            // แปลงเป็น Text เพื่อป้องกันการแปลงโดย Excel
-// 		            cell.v = formattedDate;
-// 		            cell.t = 's'; // Set type to string
-// 		        }
-// 		    }
-// 		});
-
-// 	    var wb = XLSX.utils.book_new(); 
-// 	    XLSX.utils.book_append_sheet(wb, ws, ws_name);
-	    
-// 	    // Write workbook and download
-// 	    XLSX.writeFile(wb, filename);
-// 	}     
 	// Capitalize First Letter  
 	function capitalizeFirstLetter(str) {
 	    return str.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('_');

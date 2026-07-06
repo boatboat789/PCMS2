@@ -31,7 +31,7 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	@Autowired
 	public FromSapReceipeDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

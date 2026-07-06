@@ -22,7 +22,7 @@ $(document).ready(function() {
         if (tblData.length == 0) {
             Swal.fire({
                 title: 'คำเตือน',
-                text: 'Need to select atleast 1 row.',
+                text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                 icon: 'warning',
                 timer: 1000,
                 showConfirmButton: false,
@@ -33,7 +33,7 @@ $(document).ready(function() {
             if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
                 Swal.fire({
                     title: 'คำเตือน',
-                    text: 'Need to select atleast 1 row.',
+                    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                     icon: 'warning',
                     timer: 1000,
                     showConfirmButton: false,
@@ -51,7 +51,7 @@ $(document).ready(function() {
         if (tblData.length == 0) {
             Swal.fire({
                 title: 'คำเตือน',
-                text: 'Need to select atleast 1 row.',
+                text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                 icon: 'warning',
                 timer: 1000,
                 showConfirmButton: false,
@@ -62,7 +62,7 @@ $(document).ready(function() {
             if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
                 Swal.fire({
                     title: 'คำเตือน',
-                    text: 'Need to select atleast 1 row.',
+                    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                     icon: 'warning',
                     timer: 1000,
                     showConfirmButton: false,
@@ -81,7 +81,7 @@ $(document).ready(function() {
         if (tblData.length == 0) {
             Swal.fire({
                 title: 'คำเตือน',
-                text: 'Need to select atleast 1 row.',
+                text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                 icon: 'warning',
                 timer: 1000,
                 showConfirmButton: false,
@@ -92,7 +92,7 @@ $(document).ready(function() {
             if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
                 Swal.fire({
                     title: 'คำเตือน',
-                    text: 'Need to select atleast 1 row.',
+                    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                     icon: 'warning',
                     timer: 1000,
                     showConfirmButton: false,
@@ -112,7 +112,7 @@ $(document).ready(function() {
         if (tblData.length == 0) {
             Swal.fire({
                 title: 'คำเตือน',
-                text: 'Need to select atleast 1 row.',
+                text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                 icon: 'warning',
                 timer: 1000,
                 showConfirmButton: false,
@@ -123,7 +123,7 @@ $(document).ready(function() {
             if (VIRTUAL_PRD_ORDERS.includes(prdOrder)) {
                 Swal.fire({
                     title: 'คำเตือน',
-                    text: 'Need to select atleast 1 row.',
+                    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
                     icon: 'warning',
                     timer: 1000,
                     showConfirmButton: false,
@@ -241,7 +241,7 @@ function goToLBMS(tblData, pUserId, data) {
             });
         },
         error: function(e) {
-            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
         }
     });
@@ -265,7 +265,7 @@ function goToSFC(tblData, pUserId, data) {
             };
         },
         error: function(e) {
-            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
         }
     });
@@ -288,7 +288,7 @@ function goToInspect(tblData, pUserId, data) {
             };
         },
         error: function(e) {
-            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
         }
     });
@@ -339,7 +339,7 @@ function goToQCMS(tblData, pUserId, data) {
             };
         },
         error: function(e) {
-            Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
             console.log(e)
         }
     });

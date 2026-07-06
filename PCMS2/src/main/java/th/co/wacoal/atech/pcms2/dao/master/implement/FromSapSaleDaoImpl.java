@@ -38,7 +38,7 @@ public class FromSapSaleDaoImpl implements FromSapSaleDao {
 	@Autowired
 	public FromSapSaleDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

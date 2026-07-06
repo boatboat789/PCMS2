@@ -31,7 +31,7 @@ public class ColumnSettingDaoImpl implements ColumnSettingDao {
 	@Autowired
 	public ColumnSettingDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage()

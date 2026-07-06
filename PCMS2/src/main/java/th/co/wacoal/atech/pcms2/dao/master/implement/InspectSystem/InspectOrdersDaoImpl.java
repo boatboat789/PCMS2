@@ -31,7 +31,7 @@ public class InspectOrdersDaoImpl implements  InspectOrdersDao{
     @Autowired
 	public InspectOrdersDaoImpl ( @Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

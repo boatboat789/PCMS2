@@ -18,9 +18,9 @@
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
 	<div id="wrapper-center">
-		<div class="content-panel" style="font-size: 12.5px;">
+		<div class="content-panel" style="font-size: 15px;">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important;">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="width: 100%; margin: 0px !important;">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">DIV</th>
@@ -112,6 +112,9 @@
 <style>
 .p-r-15 {
 	padding-right: 15px !important;
+}
+#MainTable td {
+	font-variant-numeric: tabular-nums;
 }
 /* tfoot .dtfc-fixed-left{   */
 /*     background-color: white;    */
@@ -235,9 +238,10 @@ $(document) .ready( function() {
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {        
 		var title = $(this).text();      	      
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '  
-// 				+'placeholder="Search '+title+'" '    
-				+ '/>');   	     
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '
+				+ 'placeholder="ค้นหา..." '
+				+ 'aria-label="กรอง ' + title + '" '
+				+ '/>');
 	});             
 	    MainTable = $('#MainTable').DataTable({   
 			scrollX: true,                         
@@ -275,7 +279,7 @@ $(document) .ready( function() {
 						  	  	className : 'dt-custom-td140',      
 						  	  	type: 'string'    },                              //3
 				    {"data" : "saleCreateDate" ,  "title":"SO Date"   ,            
-					  	  className : 'dt-custom-td80',    	           
+					  	  className : 'dt-custom-td85',    	           
 					  	  type: 'date-euro'  },           //4 
 				    {"data" : "purchaseOrder" ,   "title":"P/O" ,                    
 				  	  	className : 'dt-custom-td160',      
@@ -327,10 +331,10 @@ $(document) .ready( function() {
 						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }    },                   //20
 				    {"data" : "customerDue" ,     "title":"Due Cus.",            
-					  	  className : 'dt-custom-td80',    	        
+					  	  className : 'dt-custom-td85',    	        
 					  	  type: 'date-euro'  },              //21
 				    {"data" : "dueDate" ,         "title":"Due Date",            
-					  	  className : 'dt-custom-td80',    	        
+					  	  className : 'dt-custom-td85',    	        
 					  	  type: 'date-euro'  },              //22  
 				    {"data" : "labNo",			  "title":"Lab No",                        
 						  	  className : 'dt-custom-td100', type: 'string'      },                                    //23
@@ -361,7 +365,7 @@ $(document) .ready( function() {
 				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",
 				    	  'type': 'date-euro',    
 				  		  orderable: false,                   
-					  	  className : 'CFMPlanLabDateParent dt-custom-td80',            
+					  	  className : 'CFMPlanLabDateParent dt-custom-td85',            
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
 				   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
@@ -369,7 +373,7 @@ $(document) .ready( function() {
 									htmlEx = '';     
 								}
 							else{
-								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
 							}
 							return  htmlEx;
 					   	  }             
@@ -378,11 +382,11 @@ $(document) .ready( function() {
 				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //31
 				    {"data" : "tkCFM","title":"TK CFM"},                       						     //32 
 				    {"data" : "cfmPlanDate","title":"Plan CFM Date" ,                      
-					  	  className : 'CFMPlanDateParent dt-custom-td80',       
+					  	  className : 'CFMPlanDateParent dt-custom-td85',       
 						  orderable: false,   
 				  	      type: 'date-euro' },                //33  
 				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro',                      
-					  	  className : 'SendCFMCusDateParent dt-custom-td80',    
+					  	  className : 'SendCFMCusDateParent dt-custom-td85',    
 						  orderable: false,
 		   	  			  render: function (data, type, row) {	
 		 				   		var htmlEx = ''  
@@ -391,12 +395,12 @@ $(document) .ready( function() {
 									htmlEx = row.sendCFMCusDate ; 
 								}
 								else{
-									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
 									+ row.sendCFMCusDate
 									+ '" autocomplete="off" >';
 								} 
 								return  htmlEx
-					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
 						
  				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //35 
 				    {"data" : "userStatus","title":"User Status",      	     
@@ -420,12 +424,12 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}
 							else{   
-								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
 							}
 							return  htmlEx           
 							}	},       //40
 				    {"data" : "lotShipping","title":"Bill Date" ,            
-							  	  className : 'dt-custom-td80',    	        
+							  	  className : 'dt-custom-td85',    	        
 							  	  type: 'date-euro'  },                 //41 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
 				    {"data" : "remark","title":"EFFECT"  , 
 				  	  	className : 'dt-custom-td450 p-r-15',      
@@ -446,12 +450,12 @@ $(document) .ready( function() {
 				   						row.typePrdRemark == "SUB" || 
 				   						row.typePrdRemark == "" ||
 			   						  	row.typePrd == "OrderPuang"){ 
-				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
+				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
 				   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
 								}      
 								else{   
 									htmlEx = '<input data-search="' + row.causeOfDelay
-									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
+									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
 									+ row.causeOfDelay+ '" autocomplete="off" >'; 
 								}
 								return  htmlEx      
@@ -491,7 +495,7 @@ $(document) .ready( function() {
 				  	  	type: 'string'  ,     
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = ''    
-								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
 								return  htmlEx      
 								}    },                                         //45
 				    {"data" : "replacedRemark","title":"ReplacedRemark",                       
@@ -500,16 +504,16 @@ $(document) .ready( function() {
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = '';
 						   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								}         
 						   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								} 
 								else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
 									htmlEx = ''; 
 								}         
 								else{   
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								}
 						   		return  htmlEx            
 								}    
@@ -519,7 +523,7 @@ $(document) .ready( function() {
 				   	  	render: function (data, type, row) {	          
 							var htmlEx = ''           
 							if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 							}        
 							else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
 									||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
@@ -527,7 +531,7 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}     
 							else{   
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 							}
 							return  htmlEx      
 							}    },                                 //47
@@ -536,7 +540,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,       
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''    
-							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}      },                                   //48
 				    {"data" : "stockLoad","title":"StockLoad",                       
@@ -544,7 +548,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,     
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''       
-							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}       
 						} ,                                                  //49
@@ -589,11 +593,12 @@ $(document) .ready( function() {
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
     } );      
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {                  
-// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
-		let searchVal = this.value;      
-		soLineTmp = '';            
-		soTmp = '';       
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+// 		MainTable.column($(this).data('index')).search(this.value).draw();
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
+		soLineTmp = '';
+		soTmp = '';
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
 		let colHeaderData = columnsHeader[indexAfterReCol].data; 
 		let regrex = '';   
@@ -646,7 +651,7 @@ $(document) .ready( function() {
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if(row.typePrd == "MAIN"  ){  
-			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 			   			}
 					else{   
 						 htmlEx = '';
@@ -673,7 +678,7 @@ $(document) .ready( function() {
 		],        	         
 		columnDefs :  [   
 			{ targets : [0,1, 3 ],                    
-// 			  	  className : 'dt-custom-td80',    
+// 			  	  className : 'dt-custom-td85',    
 			  	  type: 'date-euro'  
 				} ,                      
 			{ targets : [2,4 ],                       
@@ -751,7 +756,7 @@ $(document) .ready( function() {
 	 	    } );   
 	    	Swal.fire({  
 				title: 'สำเร็จ',    
-			 	text: "Clear Lock Success" ,
+			 	text: "ปลดล็อกสำเร็จ" ,
 				icon: "success",
 			});  
 	    }
@@ -759,7 +764,7 @@ $(document) .ready( function() {
 			let colReArray = colReOrderBySelect(columnsHeader,selectedItem);
 			Swal.fire({  
 				title: 'สำเร็จ',    
-			 	text: "Lock all previous column of "+selectedItem ,
+			 	text: "ล็อกคอลัมน์ก่อนหน้าทั้งหมดของ "+selectedItem ,
 				icon: "success",
 			});  
 //			 MainTable.colReorder.order(          
@@ -855,7 +860,7 @@ $(document) .ready( function() {
 			 else{
 				Swal.fire({   
 		   		    title: 'คำเตือน',      
-		   		    text: "ProductionOrder can't switch same productionOrder.",    
+		   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -874,7 +879,7 @@ $(document) .ready( function() {
 			 else{
 				 Swal.fire({   
 			   		    title: 'คำเตือน',      
-			   		    text: "ProductionOrder can't switch same productionOrder.",    
+			   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -897,8 +902,8 @@ $(document) .ready( function() {
 		    idx: idx,  
 	  };  
 		 Swal.fire({ 
-			  title: "Are you sure to change "+fieldName+" ?",
-			  text: "From : "+oldValue+" to "+newValue+" ",
+			  title: "ยืนยันการเปลี่ยน "+fieldName+" ?",
+			  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 			  icon: "warning",
 			  showCancelButton: true,      
 			  confirmButtonColor: '#d33',						   								   																																	  
@@ -984,7 +989,7 @@ $(document) .ready( function() {
 				if(!checkDigit)  {
 					Swal.fire({   
 			   		    title: 'คำเตือน',
-			   		    text: 'After = only numbers are required.',    
+			   		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1012,7 +1017,7 @@ $(document) .ready( function() {
 				if(!checkDigit)  {
 					Swal.fire({   
 			  		    title: 'คำเตือน',
-			  		    text: 'After = only numbers are required..',    
+			  		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			  		    icon: 'warning',
 			  		    timer: 1000,
 			  		    buttons: false,
@@ -1035,7 +1040,7 @@ $(document) .ready( function() {
 			 else if(rowData.grade == ''){
 	        	Swal.fire({
 		   		    title: 'คำเตือน',
-		   		    text: 'This StockRemark need grade for input.',    
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1050,7 +1055,7 @@ $(document) .ready( function() {
 			 else if(rowData.grade == ''){
 	        	Swal.fire({   
 		   		    title: 'คำเตือน',
-		   		    text: 'This StockRemark need grade for input.',    
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1077,7 +1082,7 @@ $(document) .ready( function() {
 			else if(newValue == 'E1'){ 
 				Swal.fire({
 		   		    title: 'คำเตือน',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1086,7 +1091,7 @@ $(document) .ready( function() {
 			else if(newValue == 'E2'){
 				Swal.fire({
 		   		    title: 'คำเตือน',
-		   		    text: 'Date need greater than equal today.',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1110,7 +1115,7 @@ $(document) .ready( function() {
            else if(newValue == 'E1'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1119,7 +1124,7 @@ $(document) .ready( function() {
 				else if(newValue == 'E2'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Date need greater than equal today.',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1150,7 +1155,7 @@ $(document) .ready( function() {
 			else if(newValue == 'E1'){ 
 				Swal.fire({
 		   		    title: 'คำเตือน',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1159,7 +1164,7 @@ $(document) .ready( function() {
 			else if(newValue == 'E2'){
 				Swal.fire({
 		   		    title: 'คำเตือน',
-		   		    text: 'Date need greater than equal today.',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -1168,8 +1173,8 @@ $(document) .ready( function() {
 			else if(newValue == 'E3'){ }
 			else{
 				Swal.fire({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 					  icon: "warning",
 					  showCancelButton: true,  
 					  confirmButtonColor: '#d33',						   																																								  
@@ -1205,7 +1210,7 @@ $(document) .ready( function() {
              else if(newValue == 'E1'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1214,7 +1219,7 @@ $(document) .ready( function() {
 				else if(newValue == 'E2'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Date need greater than equal today.',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1223,8 +1228,8 @@ $(document) .ready( function() {
 				else if(newValue == 'E3'){ }
              else{  
 	           	 Swal.fire({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue,
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue,
 					  icon: "warning",
 					  showCancelButton: true,
 					  confirmButtonColor: '#d33',																																														  
@@ -1264,7 +1269,7 @@ $(document) .ready( function() {
 	             }else if(newValue == 'E1'){
 						Swal.fire({
 				   		    title: 'คำเตือน',
-				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+				   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 				   		    icon: 'warning',
 				   		    timer: 1000,
 				   		    showConfirmButton: false,
@@ -1273,7 +1278,7 @@ $(document) .ready( function() {
 					else if(newValue == 'E2'){
 						Swal.fire({
 				   		    title: 'คำเตือน',
-				   		    text: 'Date need greater than equal today.',
+				   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 				   		    icon: 'warning',
 				   		    timer: 1000,
 				   		    showConfirmButton: false,
@@ -1282,8 +1287,8 @@ $(document) .ready( function() {
 					else if(newValue == 'E3'){ }
 				else{
 					Swal.fire({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
 						  showCancelButton: true,
 						  confirmButtonColor: '#d33',																																														  
@@ -1319,7 +1324,7 @@ $(document) .ready( function() {
 				else if(newValue == 'E1'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Please check format input date ( DD/MM/YYYY ).',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1328,7 +1333,7 @@ $(document) .ready( function() {
 				else if(newValue == 'E2'){
 					Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'Date need greater than equal today.',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -1337,8 +1342,8 @@ $(document) .ready( function() {
 				else if(newValue == 'E3'){ }
 				else{
 					Swal.fire({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
 						  showCancelButton: true,
 						  confirmButtonColor: '#d33',																																														  
@@ -1437,7 +1442,7 @@ function searchByDetail(){
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
 		Swal.fire({
    		    title: 'คำเตือน',
-   		    text: 'Need select some field for search.',
+   		    text: 'กรุณาเลือกอย่างน้อย 1 ช่องเพื่อค้นหา',
    		    icon: 'warning',   
    		    timer: 1000,
    		    showConfirmButton: false,
@@ -1446,7 +1451,7 @@ function searchByDetail(){
 	else if (distChannel == ''){
 		Swal.fire({
    		    title: 'คำเตือน',
-   		    text: 'Need to choose  distribute channel from check box.',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
    		    showConfirmButton: false,
@@ -1716,7 +1721,7 @@ function saveColSettingToServer(arrayTmp) {
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -1767,7 +1772,7 @@ function saveInputDateToServer(arrayTmp) {
 			} 
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -1899,7 +1904,7 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			}     
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});     
@@ -1927,7 +1932,7 @@ function searchByDetailToServer(arrayTmp) {
 			MainTable.columns.adjust().draw();
 		},
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		},
 		complete: function() {
 			$('#btn_search').prop('disabled', false);
@@ -2301,7 +2306,7 @@ function getInputDate(arrTmp,colIdx){
 		    	if(data.length == 0){
 		    		Swal.fire({
 			   		    title: 'คำเตือน',
-			   		    text: 'No Data found.',
+			   		    text: 'ไม่พบข้อมูล',
 			   		    icon: 'warning',
 			   		    timer: 1000,
 			   		    showConfirmButton: false,
@@ -2316,7 +2321,7 @@ function getInputDate(arrTmp,colIdx){
 		    },
 		    error : function(e) {
 		        console.log("ERROR: ", e);
-		        Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		        Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		    },
 		    done : function(e) {
 		    	console.log(e);
@@ -2377,7 +2382,7 @@ function saveDefault( ){
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -2396,7 +2401,7 @@ function loadDefault(){
 			else{
 				Swal.fire({   
 					title: 'แจ้งเตือน',    
-				 	text: "No search default data."  , 
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
 		   		    showConfirmButton: false,
@@ -2404,7 +2409,7 @@ function loadDefault(){
 			}
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});   
@@ -2547,7 +2552,7 @@ function getSwitchProdOrderListByRowProd(arrayTmp) {
 			}     
 		},   
 		error: function(e) {
-			Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		}
 
 	});       

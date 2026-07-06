@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,9 +29,18 @@ public class JobManagementController {
     private final TaskService taskService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    @Value("${internal.job.token:}")
+    private String internalToken;
+
     @Autowired
     public JobManagementController(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    /** BGJOB (or other trusted internal caller) can skip the session/permit check with this header. */
+    private boolean isInternalCall(HttpServletRequest request) {
+        return internalToken != null && !internalToken.isEmpty()
+                && internalToken.equals(request.getHeader("X-Internal-Token"));
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -53,12 +63,13 @@ public class JobManagementController {
     }
 
     @RequestMapping(value = "/api/status", method = RequestMethod.GET)
-    public void getStatus(HttpSession session, HttpServletResponse response) throws IOException {
+    public void getStatus(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
         PrintWriter out = response.getWriter();
         String user = (String) session.getAttribute("user");
         PermitDetail permit = (PermitDetail) session.getAttribute("permit");
-        if (user == null || permit == null || !isAdminOrIT(permit.getPermitId())) {
+        boolean authorized = isInternalCall(request) || (user != null && permit != null && isAdminOrIT(permit.getPermitId()));
+        if (!authorized) {
             out.print("{\"status\":\"FAIL\",\"message\":\"Unauthorized\"}");
             return;
         }
@@ -74,7 +85,8 @@ public class JobManagementController {
         PrintWriter out = response.getWriter();
         String user = (String) session.getAttribute("user");
         PermitDetail permit = (PermitDetail) session.getAttribute("permit");
-        if (user == null || permit == null || !isAdminOrIT(permit.getPermitId())) {
+        boolean authorized = isInternalCall(request) || (user != null && permit != null && isAdminOrIT(permit.getPermitId()));
+        if (!authorized) {
             out.print("{\"status\":\"FAIL\",\"message\":\"Unauthorized\"}");
             return;
         }
@@ -109,12 +121,13 @@ public class JobManagementController {
     }
 
     @RequestMapping(value = "/api/schedule/toggle", method = RequestMethod.POST)
-    public void toggleSchedule(HttpSession session, HttpServletResponse response) throws IOException {
+    public void toggleSchedule(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
         PrintWriter out = response.getWriter();
         String user = (String) session.getAttribute("user");
         PermitDetail permit = (PermitDetail) session.getAttribute("permit");
-        if (user == null || permit == null || !isAdminOrIT(permit.getPermitId())) {
+        boolean authorized = isInternalCall(request) || (user != null && permit != null && isAdminOrIT(permit.getPermitId()));
+        if (!authorized) {
             out.print("{\"status\":\"FAIL\",\"message\":\"Unauthorized\"}");
             return;
         }

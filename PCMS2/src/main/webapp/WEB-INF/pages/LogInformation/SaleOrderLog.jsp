@@ -237,7 +237,7 @@
 				document.getElementById("input_saleOrder").value.trim() == '') {
 				Swal.fire({
 					title: 'คำเตือน',
-					text : "Change Date or SaleOrder must input data.",
+					text : "กรุณากรอกวันที่เปลี่ยนแปลง หรือ SaleOrder อย่างน้อย 1 ช่อง",
 					icon : 'warning',
 				})
 			}
@@ -327,7 +327,7 @@
 				setStickyToFilterColumn() ;   
 			},
 			error : function(e) {
-				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+				Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 			},
 			complete : function() {
 				$('#btn_search').prop('disabled', false);
@@ -393,7 +393,7 @@
 // 				}
 // 			},
 // 			error : function(e) {
-// 				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+// 				Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 // 			},
 // 			done : function(e) {
 // 				console.log(response);
@@ -469,7 +469,7 @@
 // 				}
 // 			},
 // 			error : function(e) {
-// 				Swal.fire("Fail", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+// 				Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 // 			},
 // 			done : function(e) {
 // 				console.log(response);

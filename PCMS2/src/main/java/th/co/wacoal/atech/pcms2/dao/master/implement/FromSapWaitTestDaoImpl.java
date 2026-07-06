@@ -31,7 +31,7 @@ public class FromSapWaitTestDaoImpl implements  FromSapWaitTestDao{
 	@Autowired
     public FromSapWaitTestDaoImpl (@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {

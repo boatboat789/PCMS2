@@ -28,20 +28,20 @@
 						<div class="row">
 							<div class="col-md-6">
 								<p class="mb-1">สถานะ Job:</p>
-								<span id="badge_running" class="badge badge-secondary" style="font-size:1rem;">กำลังโหลด...</span>
+								<span id="badge_running" class="badge badge-secondary" style="font-size:1rem;" aria-live="polite">กำลังโหลด…</span>
 							</div>
 							<div class="col-md-6">
 								<p class="mb-1">Schedule อัตโนมัติ:</p>
-								<span id="badge_schedule" class="badge badge-secondary" style="font-size:1rem;">กำลังโหลด...</span>
+								<span id="badge_schedule" class="badge badge-secondary" style="font-size:1rem;" aria-live="polite">กำลังโหลด…</span>
 							</div>
 						</div>
 						<div class="row mt-3">
 							<div class="col-12">
-								<button id="btn_toggle_schedule" class="btn btn-warning" onclick="toggleSchedule()">
-									<i class="fas fa-power-off"></i> เปิด/ปิด Schedule
+								<button type="button" id="btn_toggle_schedule" class="btn btn-warning" onclick="toggleSchedule()">
+									<i class="fas fa-power-off" aria-hidden="true"></i> เปิด/ปิด Schedule
 								</button>
-								<button class="btn btn-outline-secondary ml-2" onclick="refreshStatus()">
-									<i class="fas fa-refresh"></i> รีเฟรชสถานะ
+								<button type="button" class="btn btn-outline-secondary ml-2" onclick="refreshStatus()">
+									<i class="fas fa-sync" aria-hidden="true"></i> รีเฟรชสถานะ
 								</button>
 							</div>
 						</div>
@@ -54,27 +54,27 @@
 					<div class="card-body">
 						<div class="row">
 							<div class="col-md-5 mb-2">
-								<label>วันที่เริ่มต้น (From)</label>
+								<label for="fromDate">วันที่เริ่มต้น (From)</label>
 								<input type="text" id="fromDate" class="form-control" placeholder="yyyy-MM-dd" readonly>
 							</div>
 							<div class="col-md-5 mb-2">
-								<label>วันที่สิ้นสุด (To)</label>
+								<label for="toDate">วันที่สิ้นสุด (To)</label>
 								<input type="text" id="toDate" class="form-control" placeholder="yyyy-MM-dd" readonly>
 							</div>
 						</div>
 						<div class="row mt-1">
 							<div class="col-12">
-								<button id="btn_run" class="btn btn-danger" onclick="runJob()">
-									<i class="fas fa-play"></i> Run Now (ซ่อมข้อมูล)
+								<button type="button" id="btn_run" class="btn btn-danger" onclick="runJob()">
+									<i class="fas fa-play" aria-hidden="true"></i> Run Now (ซ่อมข้อมูล)
 								</button>
 								<small class="text-muted ml-2">* อาจใช้เวลา 5-10 นาที</small>
 							</div>
 						</div>
 						<div id="div_progress" class="mt-3" style="display:none;">
 							<div class="alert alert-info mb-2">
-								<strong><i class="fas fa-cog fa-spin"></i> กำลังซ่อมข้อมูล ERP</strong>
+								<strong><i class="fas fa-cog fa-spin" aria-hidden="true"></i> กำลังซ่อมข้อมูล ERP</strong>
 								<div class="progress mt-2 mb-1" style="height:18px;">
-									<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width:100%;">กำลังประมวลผล...</div>
+									<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width:100%;">กำลังประมวลผล…</div>
 								</div>
 								<div class="d-flex justify-content-between">
 									<small>เวลาที่ใช้ไป: <strong id="elapsed_time">00:00</strong></small>
@@ -82,7 +82,7 @@
 								</div>
 							</div>
 							<div class="alert alert-warning py-2 mb-0">
-								<i class="fas fa-info-circle"></i> Job กำลังรันอยู่ในพื้นหลัง ปิดหน้านี้ได้โดยไม่กระทบการทำงาน — คาดว่าใช้เวลา <strong>5–10 นาที</strong>
+								<i class="fas fa-info-circle" aria-hidden="true"></i> Job กำลังรันอยู่ในพื้นหลัง ปิดหน้านี้ได้โดยไม่กระทบการทำงาน — คาดว่าใช้เวลา <strong>5–10 นาที</strong>
 							</div>
 						</div>
 					</div>

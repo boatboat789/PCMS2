@@ -31,7 +31,7 @@ public class InspectNcDaoImpl implements  InspectNcDao{
     @Autowired
 	public InspectNcDaoImpl (@Qualifier("pcmsDatabase")JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-		this.message = "";
+		
 	}
 
 	public String getMessage() {
