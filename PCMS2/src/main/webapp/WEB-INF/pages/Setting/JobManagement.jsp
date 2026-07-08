@@ -38,10 +38,10 @@
 						<div class="row mt-3">
 							<div class="col-12">
 								<button type="button" id="btn_toggle_schedule" class="btn btn-warning" onclick="toggleSchedule()">
-									<i class="fas fa-power-off" aria-hidden="true"></i> เปิด/ปิด Schedule
+									<i class="fas fa-power-off" aria-hidden="true"></i> Toggle Schedule
 								</button>
 								<button type="button" class="btn btn-outline-secondary ml-2" onclick="refreshStatus()">
-									<i class="fas fa-sync" aria-hidden="true"></i> รีเฟรชสถานะ
+									<i class="fas fa-sync" aria-hidden="true"></i> Refresh Status
 								</button>
 							</div>
 						</div>
@@ -65,7 +65,7 @@
 						<div class="row mt-1">
 							<div class="col-12">
 								<button type="button" id="btn_run" class="btn btn-danger" onclick="runJob()">
-									<i class="fas fa-play" aria-hidden="true"></i> Run Now (ซ่อมข้อมูล)
+									<i class="fas fa-play" aria-hidden="true"></i> Run Now (Repair Data)
 								</button>
 								<small class="text-muted ml-2">* อาจใช้เวลา 5-10 นาที</small>
 							</div>

@@ -89,8 +89,8 @@ a:hover { color: var(--c-primary-active); }
 #navbar .nav-link {
   color: var(--c-on-dark) !important;
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   transition: color .15s ease;
 }
 #navbar .nav-link:hover,
@@ -159,12 +159,12 @@ a:hover { color: var(--c-primary-active); }
   box-shadow: none;
 }
 
-.btn-outline-secondary { color: var(--c-body); border-color: var(--c-hairline); }
+.btn-outline-secondary { color: var(--c-body-strong); border-color: var(--c-muted); background-color: #fff; }
 .btn-outline-secondary:hover,
 .btn-outline-secondary:focus,
 .btn-outline-secondary:active {
   background-color: var(--c-surface-card) !important;
-  border-color: var(--c-hairline) !important;
+  border-color: var(--c-muted) !important;
   color: var(--c-ink) !important;
   box-shadow: none;
 }
@@ -303,7 +303,7 @@ hr { border-top-color: var(--c-hairline); }
   margin: 4px 6px 2px;
   padding: 14px 18px;
   font-size: 13px;
-  background: linear-gradient(180deg, #eaf2fb 0%, #ffffff 60%);
+  background: #f7fafd;
   border: 1px solid var(--c-hairline);
   border-bottom: 4px solid var(--c-primary);
   border-radius: 0 0 var(--r-md) var(--r-md);

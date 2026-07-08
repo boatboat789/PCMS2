@@ -204,7 +204,7 @@ public class LoginController {
 				alertmsgText = "Unauthorized Access Prohibited";
 				alerttypText = "error"; 
 			} else {
-				alertmsgText = "Username or Password is incorrect";
+				alertmsgText = "Username หรือ Password ไม่ถูกต้อง";
 				alerttypText = "warning"; 
 			}
 		}

@@ -293,7 +293,7 @@ $(document) .ready( function() {
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {
 		var title = $(this).text();
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" placeholder="ค้นหา..." aria-label="กรอง ' + title + '"/>');
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" placeholder="" aria-label="กรอง ' + title + '"/>');
 	});     
 	 MainTable = $('#MainTable').DataTable({    
 //	     	stateSave: true ,    

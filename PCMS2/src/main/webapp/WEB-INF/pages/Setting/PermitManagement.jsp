@@ -112,8 +112,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-                <button class="btn btn-primary" onclick="saveUserPermit()">บันทึก</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUserPermit()">Save</button>
             </div>
         </div>
     </div>
