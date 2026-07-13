@@ -22,7 +22,7 @@
         <%-- ปรับส่วน Detail ให้เป็น Dropdown --%>
         <c:if test="${permit.isPCMSDetail() == true}">
             <li class="nav-item">
-                <a id="PCMSDetailPage" class="dropdown-item" href="${contextpath}/Detail">PCMS - Detail</a> --%>
+                <a id="PCMSDetailPage" class="nav-link" href="${contextpath}/Detail">PCMS - Detail</a> 
             </li>
 <!--             <li class="nav-item dropdown"> -->
 <!--                 <a class="nav-link dropdown-toggle" href="#" id="navbarDetailDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
