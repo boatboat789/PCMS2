@@ -57,6 +57,15 @@
 			<groupId>org.dhatim</groupId>
 			<artifactId>fastexcel-reader</artifactId>
 			<version>${dhatim.version}</version>
+			<exclusions>
+				<!-- aalto-xml ไม่มีโค้ดในระบบนี้เรียกใช้ StAX เลย (fastexcel-reader เองก็ไม่มีใครเรียกใช้เลย
+				     ยืนยันแล้ว 2026-07-17) — ทำ Tomcat classloader leak ผ่าน
+				     EncodingDetector.XML_INPUT_FACTORY static cache -->
+				<exclusion>
+					<groupId>com.fasterxml</groupId>
+					<artifactId>aalto-xml</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.dhatim/fastexcel -->
 		<dependency>

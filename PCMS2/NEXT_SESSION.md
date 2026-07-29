@@ -2,7 +2,108 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-07-17 (ต่อ) — เพิ่ม ActivityCorrelator ThreadLocal sweeper เชิงป้องกัน
+
+เพิ่ม `sweepThreadLocals()` + `sweepMap()` ใน `AppShutdownListener.java` — verify `mvn compile` BUILD SUCCESS
+ดูรายละเอียดที่ memory `classloader_leak_checklist_new_projects.md` ข้อ 6a
+
+**✅ DEPLOYED PROD แล้ว 2026-07-17** (fix ทั้ง aalto-xml exclusion + sweeper — ยืนยันด้วย full local-repro
+ครั้งสุดท้ายก่อน deploy: deploy→request หลายครั้ง→undeploy→ไม่มี SEVERE→heap dump rootset ว่างเปล่า 100%)
+— **🔲 ครั้งหน้า:** Find Leaks บน PROD ยืนยันอีกชั้น + สังเกตผลระยะยาว
+
+## ✅ 2026-07-17 — Classloader leak: aalto-xml (จาก fastexcel-reader — คนละทางกับที่เคยแก้ผ่าน BGJobLib) — FIX + LOCAL-REPRO VERIFIED
+
+**สำคัญ:** memory เดิม (`memory_leak_investigation.md`) เขียนว่า "PCMS2 ไม่ bundle BGJobLib เลย ไม่ต้องกังวล
+aalto-xml" — **ถูกแค่ครึ่งเดียว** ไม่ bundle ผ่าน BGJobLib จริง แต่มี aalto-xml เข้ามาทางอื่น: **`org.dhatim:
+fastexcel-reader`** (ประกาศตรงใน pom.xml) ลาก aalto-xml 1.3.2 มาด้วย — และ **fastexcel-reader เองก็ไม่มีใคร
+เรียกใช้เลยในโค้ดทั้งระบบ** (grep dhatim/fastexcel = 0) เป็น dead-weight ซ้อน dead-weight
+
+**Fix:** เพิ่ม `<exclusions>` ตัด `aalto-xml` ออกจาก `fastexcel-reader` ใน `pom.xml`
+
+**Verify ครบ:** `mvn dependency:tree` ยืนยัน aalto-xml หายจริง + `mvn compile` BUILD SUCCESS (240 ไฟล์) +
+**full local-repro** (deploy WAR จริงบน Tomcat 8.5.99 → ยิง request follow-redirect ถึงหน้า login → ยืนยัน
+Jasper compile JSP จริง → undeploy → ไม่มี SEVERE เลย → heap dump + jhat → GC roots exclude-weak ว่างเปล่า
+100%) — ปิดเคสระดับ local ได้ ดู memory ส่วนกลาง `inspectsystem_qcms_leak.md`
+
+**🔲 ครั้งหน้า:** deploy DEV จริง → Find Leaks ยืนยันอีกชั้น → PRD
+
 ---
+
+## ✅ 2026-07-17 — FIX: schedule toggle ครอบไม่ครบทั้ง 2 jobs (BUILD SUCCESS)
+
+### อาการ / เป้าหมาย
+สืบเนื่องจากพบใน PPMM2 ว่าปุ่ม "ปิด Schedule" ในหน้า JobManagement ครอบไม่ครบทุก `@Scheduled` — สำรวจ PCMS2 พบปัญหาเดียวกัน: `TaskService.java` มี `scheduleEnabled` + ปุ่ม toggle จริง แต่เช็คแค่ `sortBackGroundAfterGetERPDataProcedure` (1 ใน 2 jobs) ส่วน `bgJobHandlerDataFromOrgatex` (cron เที่ยงคืน, sync ข้อมูล Orgatex) ไม่เช็ค flag เลย
+
+### แก้ / ทำอะไร
+เพิ่ม guard `if (!scheduleEnabled) { log.info(...); return; }` ให้ `bgJobHandlerDataFromOrgatex()` เหมือนกับอีก job — ใช้ mechanism เดิมที่มีอยู่แล้ว (ปุ่ม `Setting/JobManagement` เดิม) ไม่ต้องเพิ่มอะไรใหม่
+
+### 🔲 ครั้งหน้า
+- [ ] deploy + ทดสอบว่ากด "ปิด Schedule" แล้ว Orgatex sync ข้ามจริงตอนเที่ยงคืน
+- บริบทเต็ม (ทำไมต้องมีปุ่มนี้ครบ — DEV ชี้ DB PRD เป็นลิงค์สำรอง) ดู memory ส่วนกลาง `scheduled_jobs_toggle_audit.md`
+
+---
+
+## ✅ 2026-07-17 — Find Leaks entry ของ PCMS2 = false alarm ยืนยันด้วย heap dump (ปิดเคส ไม่ต้องแก้โค้ด)
+
+### บริบท
+user ให้ดู Tomcat Manager "Find Leaks" ที่ขึ้นชื่อ PCMS2/QCMS/PPMM2 (x2)/InspectSystem(x7) ค้างข้ามคืน — สืบ InspectSystem/QCMS/SFC เจอ root cause จริง (aalto-xml จาก BGJobLib ดู memory `memory_leak_investigation` + `BGJobApi/NEXT_SESSION.md`) **แต่ PCMS2 ไม่ได้ bundle BGJobLib เลย** ต้องหาแยก
+
+### วิธีตรวจ (local repro บน Tomcat 8.5.69/JDK8 เดียวกับที่ยืนยัน InspectSystem)
+1. Comment `@Scheduled` 2 ตัวใน `TaskService.java` ชั่วคราวก่อนเทส (กัน cron job จริงยิง API/DB) — **revert กลับเรียบร้อยแล้วหลังเทส** ยืนยัน `mvn compile` BUILD SUCCESS
+2. `mvn clean package` → deploy local Tomcat → เจอ TLS1.0 negotiation error ตอน deploy (JDK 8 update ล่าสุดของเครื่อง test ปิด TLSv1/1.1 default — เป็นปัญหาสภาพแวดล้อมเครื่อง test ไม่เกี่ยวกับโค้ด) → ใช้ `-Djava.security.properties=` override ชั่วคราวแก้ปัญหานี้เฉพาะรอบทดสอบ → deploy สำเร็จ (HTTP 302)
+3. Stop context → `jcmd GC.class_histogram` เจอ `ParallelWebappClassLoader` ค้าง 5 (baseline 4) แม้ force GC แล้ว
+4. `jmap` heap dump → `jhat` → หา classloader ผ่าน `heap.findClass("...DatabaseConfig")` → เช็ค **"Exclude weak refs" (Path to GC Roots) = ว่างเปล่า 100%** — ไม่มี strong reference เลย
+5. เช็ค "Include weak refs" — เจอแต่ `WeakHashMap`/`ClassLoaderLogManager` (JULI logging) ปกติ ไม่ใช่บั๊ก
+
+### สรุป
+**PCMS2 ไม่มี classloader leak จริงในโค้ด** — ที่ Tomcat Manager ขึ้นชื่อ PCMS2 ใน Find Leaks เป็น **false positive ปกติของเครื่องมือ** (Tomcat เตือนแค่ "ยังอยู่ในหน่วยความจำ" ไม่ได้แยกแยะว่า pin จริงหรือรอ GC cycle — ตัว warning เขียนกำกับไว้เองว่า "use a profiler to confirm") ไม่ต้องแก้โค้ดอะไรเพิ่ม
+
+### 🔲 ครั้งหน้า (ไม่เร่งด่วน)
+- [ ] ถ้า admin ยังกังวล PCMS2 ให้ลองกด Find Leaks ซ้ำหลัง full GC หรือรอเวลาผ่านไปสักพัก — น่าจะหายเอง (ไม่ใช่ pin ถาวร)
+
+## ✅ 2026-07-16 (รอบ 2 ค่ำ) — Re-verify อิสระ (ต่อจาก LBMS/SFC jasper sweep): ตรงกับ audit รอบแรกทุกจุด ไม่เจอเพิ่ม
+
+### บริบท
+หลังเจอ Jasper Metaspace churn ใน LBMS (19 จุด) + SFC (1 จุด) ไล่ตรวจ PCMS2 ด้วย checklist เดียวกัน (connection release, thread/static/ThreadLocal, library ที่ generate class)
+
+### ผลตรวจ (ยืนยันซ้ำ ตรงกับ entry ด้านล่างที่ทำไว้ก่อนหน้าในวันเดียวกัน)
+- **Jasper: ไม่มีความเสี่ยง** — pom ไม่มี `net.sf.jasperreports` dependency เลย; property `jasper.version=6.16.0` เป็นค่าที่ไม่ได้ใช้จริง (เหลือค้าง ไม่ใช่ JasperReports)
+- **POI (Excel):** `ExportExcelCFMReportService` — per-request `new`, `workbook.close()` ใน finally ครบ (ยืนยัน fix @Controller ด้านล่างยังอยู่ — ไม่มี annotation กลับมา)
+- **jxls:** ใน pom แต่ไม่มีโค้ดเรียก `JxlsHelper` เลย = dead dependency ไม่มี churn
+- **Connection release:** count-comparison `getConnection`/`releaseConnection` ครบ **7/7 ไฟล์** ไม่มีรั่ว (pattern เดียวกับที่เจอใน SFC EmployeeDetailDaoImpl — PCMS2 ไม่มี)
+- **DatabaseConfig:** 4 HikariDataSource ครบ `destroyMethod=close`
+- **SchedulerConfig:** `destroyMethod=shutdown` + daemon ครบ
+- **web.xml:** AppShutdownListener ประกาศก่อน ContextLoaderListener (destroyed last) ถูกต้อง
+- **ThreadLocal ทั้งหมด:** `FormatUtils`/`SqlStatementHandler` = SimpleDateFormat/DecimalFormat (JDK class, ไม่ pin classloader); `ERPAtechDaoImpl.timeFocusOverride` มี set/remove คู่ใน try-finally ที่ `BackGroundJobDaoImpl:255-265` — ปลอดภัย
+- **TaskService.jobLocks** (ConcurrentHashMap) — key คงที่ 2 ตัว (`ORGATEX_IMPORT`/`ERP_SYNC_JOB`) ไม่ใช่ unbounded (ไม่ใช่ pattern แบบ SFC DashboardController ที่ key ผูก session id)
+- **JobManagementController** — `setDaemon(true)` ที่แก้ไปตอนเช้ายังอยู่ครบ
+- **kong.unirest** — เรียกแค่ `Unirest.shutDown()` ใน listener (defensive no-op, ไม่มีจุดสร้าง client จริงเพราะ BGJobApiService bean comment ออกหมดใน AppConfig) ไม่ใช่ปัญหา
+
+### สรุป: PCMS2 ไม่มีอะไรต้องแก้เพิ่มจาก session นี้ — ครบทั้ง connection/lifecycle/thread/jasper/POI
+
+---
+
+## ✅ 2026-07-16 (ค่ำ) — Deep hunt leak audit + FIX กับดัก latent แล้ว (BUILD SUCCESS, รอ deploy)
+
+### FIX ที่ทำ (2026-07-16 ค่ำ)
+- `service/ExportExcelCFMReportService.java` — **เอา `@Controller` ออก** + ลบ import + ใส่ comment ห้ามทำเป็น Spring bean (ต้อง `new` ต่อ request เท่านั้น)
+- ตรวจก่อนแก้: caller เดียวคือ `ReportController:130` ใช้ `new` (ไม่มี @Autowired/XML bean ที่ไหน) → เอา annotation ออกปลอดภัย
+- ตรวจหลังแก้: `mvn compile` BUILD SUCCESS; กวาดซ้ำทั้งโปรเจกต์ไม่มี bean+workbook ตัวอื่น; `workbook.close()` ใน finally (:148-150) มีอยู่แล้วถูกต้อง
+- ผล: Spring ไม่สร้าง singleton ถือ workbook เปล่าตอน startup อีก + ปิดกับดัก refactor เป็น @Autowired แล้วได้บั๊กแบบ PPMM2
+
+### ผลตรวจ (ไม่มี active leak ใหม่นอก checklist เดิม)
+- ThreadLocal ทุกจุดปลอดภัย (`ERPAtechDaoImpl.timeFocusOverride` มี set/remove คู่ใน try-finally ที่ `BackGroundJobDaoImpl:255-265`; ที่เหลือ value เป็น JDK class)
+- `SqlStatementHandler` มี setQueryTimeout(300) + temp table DROP before/after ครบ + SET NOCOUNT reset
+- ไม่มี live `new Database(` จาก core เลย — import ที่เห็นใน FromSap*/getDocStep เป็น dead code comment หมด
+- session เก็บแต่ object เล็ก, ไม่มี Unirest instance ค้าง, ไม่มี addShutdownHook/MBean/Introspector
+- pom: jxls/fastexcel/jasper property = dead weight ไม่มี import (ลบได้), ไม่มี SXSSF
+
+### ⚠️ กับดัก latent: `service/ExportExcelCFMReportService.java`
+Pattern เดียวกับบั๊ก PPMM2 (workbook+rowCount เป็น instance field สร้างใน constructor ไม่ reset) **แต่ยังไม่แสดงอาการ** เพราะ caller เดียว (`ReportController.java:130`) ใช้ `new ExportExcelCFMReportService()` ต่อ request + close ใน finally ถูกต้อง — ปัญหาคือ class ติด `@Controller` (ทั้งที่ไม่มี @RequestMapping) + PCMS2-servlet.xml component-scan package service → Spring สร้าง singleton ถือ workbook เปล่า 1 ใบตลอดอายุแอป และ**ถ้าวันไหนใครเปลี่ยน ReportController เป็น @Autowired ตัว bean นี้ (refactor ที่ดูถูกต้อง) จะได้บั๊กไฟล์ export ปนข้อมูลเก่าแบบ PPMM2 ทันที**
+
+### 🔲 ครั้งหน้า
+- [ ] เอา `@Controller` ออกจาก ExportExcelCFMReportService (หรือ refactor เป็น initWorkbook ต่อ request แบบ PPMM2) — แก้เล็ก ปลอดภัย
+- [ ] (ไม่เกี่ยว leak) `info/*Info.java` hardcode DB/LDAP credentials — ควรย้ายเข้า properties ที่ไม่ commit
 
 ## ✅ 2026-06-26 — UX/UI Improvements
 

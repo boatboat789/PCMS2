@@ -24,6 +24,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/security.md` | FilterLogin, auth guards |
 | `.claude/rules/api-contract.md` | Gson response pattern, URL convention |
 | `.claude/rules/git-workflow.md` | commit convention, pre-commit checklist |
+| `.claude/rules/input-validation.md` | maxlength ต้องตรงกับความยาวคอลัมน์ DB จริงทุก field ใหม่ |
 
 ### Prompts Library (`.claude/prompts/`)
 | ไฟล์ | ใช้เมื่อ |

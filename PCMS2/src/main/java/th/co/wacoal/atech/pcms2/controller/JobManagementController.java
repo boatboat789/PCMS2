@@ -110,13 +110,15 @@ public class JobManagementController {
         }
         final String from = fromDate;
         final String to = toDate;
-        new Thread(() -> {
+        Thread t = new Thread(() -> {
             try {
                 taskService.runManual(from, to);
             } catch (Exception e) {
                 log.error("[JobManagement] runManual failed", e);
             }
-        }).start();
+        });
+        t.setDaemon(true); // daemon thread ไม่บัง classloader GC เมื่อ undeploy ระหว่าง job ยังรันอยู่
+        t.start();
         out.print("{\"status\":\"STARTED\",\"message\":\"เริ่มการซ่อมข้อมูลแล้ว\"}");
     }
 

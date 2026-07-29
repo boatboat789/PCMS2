@@ -45,11 +45,15 @@ public class TaskService {
 //		isCheck = true;
 	}
 
-//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour 
+//	@Scheduled(initialDelay = 0, fixedRate = 3600000) // Runs now, then every hour
 	@Scheduled(cron = "0 0 1 * * *")
 	public void bgJobHandlerDataFromOrgatex()
-	{ 
-		executeWithLock("ORGATEX_IMPORT", () -> { 
+	{
+		if (!scheduleEnabled) {
+			log.info("[Orgatex] schedule disabled — skip");
+			return;
+		}
+		executeWithLock("ORGATEX_IMPORT", () -> {
 			ArrayList<SORDetail> list = dataImportSORService.getList();
 			fromSORCFMService.upSertFromSORCFMDetail(list);
 			
