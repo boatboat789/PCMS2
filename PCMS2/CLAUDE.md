@@ -25,6 +25,8 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/api-contract.md` | Gson response pattern, URL convention |
 | `.claude/rules/git-workflow.md` | commit convention, pre-commit checklist |
 | `.claude/rules/input-validation.md` | maxlength ต้องตรงกับความยาวคอลัมน์ DB จริงทุก field ใหม่ |
+| `.claude/rules/session-logging.md` | บันทึกงานสำคัญลง .md เสมอ (NEXT_SESSION.md หรือสร้างใหม่ถ้าไม่มี) |
+| `.claude/rules/documentation-mapping.md` | เพิ่ม doc/diagram/rule ใหม่ → mapping ใน Document Index ทันที; แยกหมวดเมื่อ index ยาวเกิน ~200 บรรทัด |
 
 ### Prompts Library (`.claude/prompts/`)
 | ไฟล์ | ใช้เมื่อ |
