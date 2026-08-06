@@ -28,6 +28,14 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/session-logging.md` | บันทึกงานสำคัญลง .md เสมอ (NEXT_SESSION.md หรือสร้างใหม่ถ้าไม่มี) |
 | `.claude/rules/documentation-mapping.md` | เพิ่ม doc/diagram/rule ใหม่ → mapping ใน Document Index ทันที; แยกหมวดเมื่อ index ยาวเกิน ~200 บรรทัด |
 
+### Claude Code Tooling (`.claude/`)
+| โฟลเดอร์ | สถานะ | เนื้อหา |
+|---|---|---|
+| `.claude/commands/` | 🔲 scaffold — ยังไม่มี command จริง | slash command (`/ชื่อไฟล์`) ต่างจาก `prompts/` ที่ต้องเปิดอ่านเอง — ดู `.claude/commands/README.md` |
+| `.claude/skills/` | 🔲 scaffold — ยังไม่มี skill จริง | ชุดขั้นตอนสำเร็จรูปที่โหลดเข้าบทสนทนาปัจจุบัน ต่างจาก agent ที่รันแยก context — ดู `.claude/skills/README.md` |
+| `.claude/agents/` | 🔲 scaffold — ยังไม่มี agent จริง | sub-agent รันแยก context/tool/model เฉพาะตัว (ตัวอย่างใช้จริง: DyeingRecord) — ดู `.claude/agents/README.md` |
+| `.claude/hooks/` | 🔲 scaffold — ยังไม่มี hook จริง | สคริปต์รันอัตโนมัติก่อน/หลังใช้เครื่องมือ ต้องลงทะเบียนใน `settings.json` ด้วย — ดู `.claude/hooks/README.md` |
+
 ### Prompts Library (`.claude/prompts/`)
 | ไฟล์ | ใช้เมื่อ |
 |---|---|
