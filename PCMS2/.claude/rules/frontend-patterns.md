@@ -61,6 +61,21 @@ Swal.fire({
 });
 ```
 
+## SweetAlert2 — icon/ข้อความต้องตรงกับผลจริงเสมอ
+
+ทุกครั้งที่ยิง action (save/delete/approve/cancel ฯลฯ) แล้วเด้ง Swal แจ้งผล **ห้าม hardcode icon/ข้อความไว้ตายตัว
+โดยไม่เช็คผลจริงจาก response** — ต้อง map ตาม `data.status` ทุกครั้ง (ดู Standard AJAX Pattern ด้านบน):
+
+### ต้องทำ
+- **icon ต้องสอดคล้องกับ `data.status` เสมอ** — `'success'` → `'success'`, อื่นๆ (`'error'`/`'fail'`) → `'error'`
+- AJAX `error:` callback (HTTP 4xx/5xx, network fail) ต้องขึ้น icon `'error'` เสมอ — ห้ามปล่อย `success:` callback จับ error case
+- ถ้า action มีหลาย step ใน callback เดียว (เช่น save แล้ว reload list) และ step หลังพัง (throw/reject) **ห้ามให้ Swal success ที่โชว์ไปแล้วค้างอยู่โดยไม่แจ้งว่า step หลังพัง** — ต้อง catch แล้วแจ้งแยก
+
+### ห้ามทำ
+- ห้าม `Swal.fire(..., 'success')` แบบ hardcode ก่อนเช็ค `data.status`
+- ห้ามเขียน logic ที่ยิง Swal success ใน `success:` callback ของ jQuery AJAX โดยไม่ดู response body — `success:` callback หมายถึง "HTTP call สำเร็จ" ไม่ใช่ "business logic สำเร็จ" (Gson คืน HTTP 200 เสมอแม้ business logic fail)
+- ห้ามใช้ข้อความ generic เดียวกันทั้ง success/error (เช่น "ดำเนินการเสร็จสิ้น" ทั้งสองกรณี) — ต้องใช้ `data.message` จาก backend หรือข้อความที่บอกผลจริง
+
 ## JSP Layout
 
 ทุก JSP ใช้ `<jsp:include page="../config/layout/Header.jsp"/>` และ `Sidebar.jsp` / `Footer.jsp`  
