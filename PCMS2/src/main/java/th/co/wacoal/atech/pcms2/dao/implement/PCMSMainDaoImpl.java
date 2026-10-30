@@ -436,7 +436,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String insertOP = "SELECT\r\n" + this.selectAll
 				+ "INTO #tempOP\r\n"
 				+ "FROM #tempPrdOP AS a\r\n"
-				+ "LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = a.ProductionOrder\r\n"
+				+ "LEFT JOIN #tempSPOAnti AS SPO ON SPO.ProductionOrderSW = a.ProductionOrder\r\n"
 				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
 				+ "WHERE 1 = 1 AND SPO.ProductionOrderSW IS NULL\r\n"
 				+ whereCaseTry;
@@ -618,7 +618,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ "INTO #tempMain\r\n"
 				+ fromProdDataB
 				+ pss.getLeftJoinCRP("b")
-				+ " LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = b.ProductionOrder\r\n"
+				+ " LEFT JOIN #tempSPOAnti AS SPO ON SPO.ProductionOrderSW = b.ProductionOrder\r\n"
 				+ "WHERE b.PassFilter = 1 AND SPO.ProductionOrderSW IS NULL\r\n";
 
 		return pss.createTempForMainAndWaitLotFiltered

@@ -46,6 +46,7 @@ public class PCMSSqlService {
 		  + "IF OBJECT_ID('tempdb..#tempProdWorkDate')       IS NOT NULL DROP TABLE #tempProdWorkDate;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempProdWorkDateFiltered') IS NOT NULL DROP TABLE #tempProdWorkDateFiltered;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempSPO')                IS NOT NULL DROP TABLE #tempSPO;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSPOAnti')            IS NOT NULL DROP TABLE #tempSPOAnti;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempSPOSale')            IS NOT NULL DROP TABLE #tempSPOSale;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempPlanCFMLabDate')     IS NOT NULL DROP TABLE #tempPlanCFMLabDate;\r\n"
 		  + "IF OBJECT_ID('tempdb..#FlagHasRP')              IS NOT NULL DROP TABLE #FlagHasRP;\r\n"
@@ -1012,7 +1013,16 @@ public class PCMSSqlService {
 			+ "FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 			+ "WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O';\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSPO_SW ON #tempSPO(ProductionOrderSW);\r\n"
-			+ "CREATE NONCLUSTERED INDEX IX_tempSPO_PO ON #tempSPO(ProductionOrder);\r\n";
+			+ "CREATE NONCLUSTERED INDEX IX_tempSPO_PO ON #tempSPO(ProductionOrder);\r\n"
+			// anti-join แยกจาก #tempSPO: ต้องรวมแถว self-switch (ProductionOrder = ProductionOrderSW)
+			// เหมือนโค้ดเดิมที่ join SwitchProdOrder ตรงๆ — #tempSPO ตัดแถว self ออกเพราะใช้ map PO (CASE B/C)
+			// ถ้าใช้ #tempSPO ทำ anti-join PO แบบ self-switch จะหลุดกลับมาในรายการปกติ
+			+ this.buildIfTempTableDrop("#tempSPOAnti")
+			+ "SELECT DISTINCT ProductionOrderSW\r\n"
+			+ "INTO #tempSPOAnti\r\n"
+			+ "FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSPOAnti_SW ON #tempSPOAnti(ProductionOrderSW);\r\n";
 
 	// pre-build FromSapMainProdSale filtered to SPO rows only → #tempSPOSale (reused by OPSW and SW)
 	public String createTempSPOSale = ""
@@ -1674,7 +1684,8 @@ public class PCMSSqlService {
 
 	public String getLeftJoinSwitchProdOrder(String aliasProd)
 	{
-		return String.format(" LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = %s.ProductionOrder\r\n", aliasProd);
+		// #tempSPOAnti (รวม self-switch) ไม่ใช่ #tempSPO — ดูเหตุผลที่ createTempSPO
+		return String.format(" LEFT JOIN #tempSPOAnti AS SPO ON SPO.ProductionOrderSW = %s.ProductionOrder\r\n", aliasProd);
 	}
 
 	public String getLeftJoinTempPlandeliveryDate(String aliasProd, String aliasSale)
