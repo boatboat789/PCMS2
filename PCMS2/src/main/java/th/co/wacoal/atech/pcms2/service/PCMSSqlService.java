@@ -751,10 +751,10 @@ public class PCMSSqlService {
 			+ " FROM [PCMS].[dbo].SumGRCache;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
 	// filtered version — คง granularity (ProductionOrder, Grade) เดิมทุกอย่าง แค่กรอง SumGRCache
-	// เหลือเฉพาะ PO ที่ search นี้อ้างถึง (ชุดเดียวกับ createTempProdWorkDateFiltered — regular
-	// FromSapMainProd + replaced ProductionOrderRP scope ตาม #tempMainSale) → copy row น้อยลงมาก
-	// บน PRD. POs ที่ถูกตัดออกไม่เคย match join `aliasMain.ProductionOrder = m.ProductionOrder`
-	// อยู่แล้ว (aliasMain มีเฉพาะ PO ในขอบเขต) → output ต้องเท่าเดิม (harness gate)
+	// เหลือเฉพาะ PO ที่ search นี้อ้างถึง → copy row น้อยลงมากบน PRD. ชุด PO ต้องตรงกับ
+	// createTempProdWorkDateFiltered ทุก UNION (regular, OrderPuang, replaced, switch ต้นทาง/ปลายทาง,
+	// OPSW) — แก้ UNION ที่หนึ่งต้องแก้อีกที่ด้วย. POs ที่ถูกตัดออกไม่เคย match join
+	// `aliasMain.ProductionOrder = m.ProductionOrder` อยู่แล้ว (ถ้าชุดนี้ครอบ PO ที่ query จริง join) → output ต้องเท่าเดิม (harness gate)
 	// requires #tempMainSale + clustered index ก่อน
 	public String createTempSumGRFiltered = ""
 			+ this.buildIfTempTableDrop("#tempSumGR")
@@ -837,7 +837,8 @@ public class PCMSSqlService {
 	//   switch POs   : SwitchProdOrder ที่ SaleOrderSW ∈ #tempMainSale — SW join g ด้วย ProductionOrderSW
 	//                  แต่แถว FromSapMainProd ของ PO นั้นผูกกับ sale ต้นทาง (อาจไม่อยู่ในขอบเขต → g.* เป็น NULL)
 	//   OPSW POs     : PO คู่ switch ของ PO ใน ProdSale (mirror CASE B/C ของ createTempSPOSale แต่ไม่กรอง <> = superset)
-	// ชุดเดียวกับ createTempSumGRFiltered + 2 UNION ท้าย (OPSW) — superset ปลอดภัย: join ผูก ProductionOrder ตัวเดียว
+	// ชุด PO เหมือน createTempSumGRFiltered ทุก UNION (แก้ที่หนึ่งต้องแก้อีกที่ด้วย) — superset ปลอดภัย:
+	// join ผูก ProductionOrder ตัวเดียว
 	// eliminates ~90% of TEMP_ProdWorkDate rows → cuts tempdb I/O dramatically
 	public String createTempProdWorkDateFiltered = ""
 			+ this.buildIfTempTableDrop("#tempProdWorkDate")
