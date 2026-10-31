@@ -786,6 +786,20 @@ public class PCMSSqlService {
 			+ "     FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
 			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
 			+ "     WHERE spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			// OPSW: PO คู่ switch ของ PO ใน ProdSale (mirror CASE B/C ของ createTempSPOSale แต่ไม่กรอง <> = superset)
+			// ไม่ต้องพึ่ง sale ปลายทางอยู่ใน scope — ชุดเดียวกับ createTempProdWorkDateFiltered
+			+ "     SELECT spo.ProductionOrderSW\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งต้นทาง → คู่คือ ProductionOrderSW
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrder = fps.ProductionOrder\r\n"
+			+ "     WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrder\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งปลายทาง → คู่คือ ProductionOrder
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrderSW = fps.ProductionOrder\r\n"
+			+ "     WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
 			+ " ) AS flt ON flt.ProductionOrder = sg.ProductionOrder;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
 	// pre-build PlanSendCFMCusDate → #tempSCC (1 scan ครั้งเดียว แทนหลาย scan ต่อ query)
