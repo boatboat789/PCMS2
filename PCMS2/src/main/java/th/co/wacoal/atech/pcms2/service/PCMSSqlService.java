@@ -819,6 +819,11 @@ public class PCMSSqlService {
 	// filters to only POs relevant to the current search:
 	//   regular POs  : FromSapMainProd   JOIN #tempMainSale (SaleOrder, SaleLine)
 	//   replaced POs : ReplacedProdOrder JOIN #tempMainSale (SaleOrder, SaleLine) -> ProductionOrderRP
+	//   puang POs    : FromSapMainProdSale JOIN #tempMainSale — OP join g ด้วย PO จาก ProdSale (ไม่ใช่ FromSapMainProd)
+	//   switch POs   : SwitchProdOrder ที่ SaleOrderSW ∈ #tempMainSale — SW join g ด้วย ProductionOrderSW
+	//                  แต่แถว FromSapMainProd ของ PO นั้นผูกกับ sale ต้นทาง (อาจไม่อยู่ในขอบเขต → g.* เป็น NULL)
+	//   OPSW POs     : PO คู่ switch ของ PO ใน ProdSale (mirror CASE B/C ของ createTempSPOSale แต่ไม่กรอง <> = superset)
+	// ชุดเดียวกับ createTempSumGRFiltered + 2 UNION ท้าย (OPSW) — superset ปลอดภัย: join ผูก ProductionOrder ตัวเดียว
 	// eliminates ~90% of TEMP_ProdWorkDate rows → cuts tempdb I/O dramatically
 	public String createTempProdWorkDateFiltered = ""
 			+ this.buildIfTempTableDrop("#tempProdWorkDate")
@@ -832,11 +837,43 @@ public class PCMSSqlService {
 			+ "        ON ms.SaleOrder = fsp.SaleOrder AND ms.SaleLine = fsp.SaleLine\r\n"
 			+ "    WHERE fsp.DataStatus = 'O'\r\n"
 			+ "    UNION\r\n"
-			+ "    SELECT rpo.ProductionOrderRP\r\n"
+			+ "    SELECT fps.ProductionOrder\r\n"   // OrderPuang subs
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    WHERE fps.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT rpo.ProductionOrderRP\r\n"   // replaced
 			+ "    FROM [PCMS].[dbo].[ReplacedProdOrder] AS rpo\r\n"
 			+ "    INNER JOIN #tempMainSale AS ms\r\n"
 			+ "        ON ms.SaleOrder = rpo.SaleOrder AND ms.SaleLine = rpo.SaleLine\r\n"
 			+ "    WHERE rpo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrder\r\n"   // switch — ต้นทาง
+			+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "    WHERE spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrderSW\r\n"   // switch — ปลายทาง
+			+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "    WHERE spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrderSW\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งต้นทาง → คู่คือ ProductionOrderSW
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrder = fps.ProductionOrder\r\n"
+			+ "    WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrder\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งปลายทาง → คู่คือ ProductionOrder
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrderSW = fps.ProductionOrder\r\n"
+			+ "    WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
 			+ ") AS flt ON flt.ProductionOrder = pwd.ProductionOrder;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
 
