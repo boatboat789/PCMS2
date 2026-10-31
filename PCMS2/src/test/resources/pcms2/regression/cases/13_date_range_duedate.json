@@ -1,13 +1,13 @@
 {
-  "name": "date_range_duedate_TODO",
-  "description": "TODO: ใส่ช่วงวันที่ dueDate จริงที่คาดว่ามีข้อมูล (format dd/MM/yyyy-dd/MM/yyyy ตาม buildDateClause) แล้วเปิด enabled=true",
-  "enabled": false,
+  "name": "date_range_duedate",
+  "description": "G TECH + DueDate 01/01/2022-30/06/2022 (รูปแบบ dd/MM/yyyy-dd/MM/yyyy ตาม buildDateClause) — บีบ #tempMainSale ด้วยช่วงวันที่; ค่าจริงจาก DEV",
+  "enabled": true,
   "bean": {
     "userStatusList": [],
-    "customerNameList": [],
-    "customerShortNameList": [],
+    "customerNameList": ["G TECH MATERIAL CO.,LTD."],
+    "customerShortNameList": ["G TECH"],
     "divisionList": [],
     "distChannel": "DM|EX|HW",
-    "dueDate": "__TODO_DD/MM/YYYY__-__TODO_DD/MM/YYYY__"
+    "dueDate": "01/01/2022-30/06/2022"
   }
 }

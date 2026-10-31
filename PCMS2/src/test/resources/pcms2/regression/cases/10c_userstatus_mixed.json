@@ -1,0 +1,12 @@
+{
+  "name": "userstatus_mixed",
+  "description": "G TECH + userStatus ผสม LotNo กับทั่วไป: รอจัด Lot, ขายแล้ว — ครอบเส้นทางที่ทั้งสองกลุ่มอยู่ใน WHERE เดียวกัน; ค่าจริงจาก DEV",
+  "enabled": true,
+  "bean": {
+    "userStatusList": ["รอจัด Lot", "ขายแล้ว"],
+    "customerNameList": ["G TECH MATERIAL CO.,LTD."],
+    "customerShortNameList": ["G TECH"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}
