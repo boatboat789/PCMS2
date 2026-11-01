@@ -2,6 +2,38 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 📌 2026-11-01 — สรุปสถานะ PERF_SEARCH (หยุดเพิ่มงานใหม่ — อ่านอันนี้ก่อนเริ่ม session ถัดไป)
+
+ทดสอบทั้งหมดบน **DEV** เท่านั้น (Tomcat ทดสอบ `tools/dev-web-local` พอร์ต 8082 · harness) · **ยังไม่มีอะไรทดสอบบน PRD**
+
+### ✅ แก้แล้ว + ทดสอบแล้ว
+| งาน | commit | หลักฐาน |
+|---|---|---|
+| anti-join self-switch ใช้ `#tempSPOAnti` | `336eb0f` | A/B harness: แถว Main self-switch 6 แถว (SO 1107011300/1107011676/1111002704/1107011020) หายตามโค้ด `main` เดิม · หน้า Summary SO 1107011323 = 4 แถวตรง baseline |
+| `#tempProdWorkDate` filtered ครอบ PO ของ OP/SW/OPSW | `f317d48` | A/B 22 เคส: ค่าไม่ว่างเปลี่ยน **0** · แถวเพิ่ม **0** · เซลล์ว่างมีค่า 2,205 · หน้า Detail/Summary แถว S2K032H มีวันที่ย้อม · เคส 16 (คู่ switch จริง) แถว SUB ได้วันที่ |
+| `#tempSumGR` filtered ครอบ PO คู่ switch | `33860c6` | เคส 16: P2K069 ได้ GR 124.20 KG / 331.00 MR (เดิมว่าง) |
+| เคส harness 10/10b/10c/12/13/14/14b/15/16 + `PCMSServiceGsonCheck` | `9d1c840` `5c0d39a` `ebb83af` | harness verify ผ่านทุกเคส (exit 0) |
+| navbar แบบ SFC (`aria-current`, เป้ากด ≥44px) | `f35756b` | 7 หน้า (Main/Detail/Report CFM/Log ×4) `aria-current` ถูกหน้า · 1366px ไม่ล้น · 800/375px ตรวจบน Summary |
+| เครื่องมือ `tools/dev-web-local` | `daba1cb` | รันจริง scheduler OFF |
+| ตัวกรอง Summary + Detail: userStatus / SO Date / Prod.Date / Due Date | — | ในช่วง/นอกช่วง ให้ผลถูก (SO 1107011323) |
+| Report CFM บน DEV (ตารางเปล่า) | `d33affa` | ตอบ 200 (0 แถว) — user รัน script บน DEV แล้ว |
+| rules 8 ไฟล์ + Document Index | `4630ca3` | — |
+
+### 🔲 ค้างไว้ (บันทึกแทนการทำ — ยังไม่ได้เริ่ม)
+เรียงตามความเสี่ยง:
+1. **PRD ยังไม่ได้ทดสอบเลย** (ทั้ง 3 fix) · DEV ล้าหลัง PRD · ถ้าจะตรวจต้องตกลงสิทธิ์อ่าน PRD ก่อน (รอบนี้ระบบบล็อกการอ่านข้อมูลระดับแถวของ PRD)
+2. **ข้อมูลทดสอบ switch น้อย:** DEV มี switch ไม่ใช่ self 17 คู่ มี sale แค่ 1 คู่ · ไม่มีคู่ที่ sale ต่างใบทั้งสองฝั่ง (เส้นทาง "PO คู่ OPSW ที่ sale ปลายทางอยู่นอก scope" ทดสอบกับข้อมูลจริงได้แค่ 1 เคส)
+3. **แถวที่หาย 6 แถว** ยืนยันจากการอ่านโค้ด `gitlab_master/main` ไม่ได้รัน `main` จริง
+4. **ความเร็ว:** ช้าลง ~11% บน DEV วัดครั้งเดียว ยังไม่วัดซ้ำ/บน PRD
+5. เคส harness ที่ SKIP (หาข้อมูลตัวอย่างไม่เจอ): `...ProductionOrderRP` ×2, `getWaitLotCaseBySaleOrder`
+6. **ยังไม่ได้ทดสอบ:** Download Excel ของ Detail · Download Excel ของ Report CFM · Report CFM กับข้อมูลจริง (ตาราง DEV ว่าง) · ปุ่ม Search ของ Report ไม่ยิง request เมื่อไม่กรอกตัวกรอง (ยังไม่ไล่ว่า validation ตั้งใจ)
+7. **UX (ยังไม่แก้ ต้องให้ user เลือกคำ):** เมนู Report มีข้อความซ้ำ 2 คู่ "Log - Production Order"/"Log - Sale Order" (ATT vs ERP365) — `config/navbar.jsp`
+8. ล้นแนวนอน ~75px ที่จอ ≤800px หน้า Summary (ช่องกรอง bootstrap-select) — แก้เมื่อต้องรองรับแท็บเล็ต
+9. TaskService ลำดับ sync (ข้อ 4 จาก code-review) ยังไม่ได้ตรวจ — น่าจะตั้งใจ
+10. job ERP sync ช่วง 21:14 (รอบแรก) อาจรันกับ DEV ยืนยันไม่ได้ (log เป็น NOP)
+11. **ยังไม่ได้ push ทั้ง 2 remote** (ตรวจ 2026-11-01 ดึก): `origin` ค้าง 7 commit · `gitlab_master` ค้าง 16 commit (ต้องต่อ VPN ถึงจะ push ได้) — ตามกฎ dual-remote ต้อง push ครบทั้งคู่ · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
+12. เก่าจาก 07-17: guard schedule toggle ของ Orgatex ยังเขียนว่ารอ deploy+ทดสอบ — ไม่ทราบสถานะปัจจุบัน
+
 ## ✅ 2026-11-01 — ตรวจงาน PERF_SEARCH + navbar บนหน้าจอจริง (เครื่องมือ tools/dev-web-local ใหม่)
 
 ### ทำอะไร
