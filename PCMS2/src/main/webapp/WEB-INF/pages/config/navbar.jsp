@@ -3,14 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
 <%@include file="../config/common/commonBase.jsp"%>
-<header id="navbar" class="navbar navbar-expand-sm navbar-dark bg-dark flex-column flex-md-row">
-	<!-- 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="padding: 2px 10px;"> -->
+<header id="navbar" class="navbar navbar-expand navbar-dark bg-dark">
+<!-- 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="padding: 2px 10px;"> -->
 	<!-- Brand/logo -->
-	<a class="navbar-brand mr-0 mr-md-2" href="#">
+	<a class="navbar-brand mr-2" href="#">
 		<img src="${contextpath}/resources/images/icons/logo.png" style="width: 50px; height: auto;" />
 	</a>
 
-<div class="navbar-nav-scroll" id="navbarNavDropdown">
+<nav class="navbar-collapse" id="navbarNavDropdown" aria-label="เมนูหลัก">
     <ul class="navbar-nav mr-auto">
         <%-- ส่วนของ Summary --%>
         <c:if test="${permit.isPCMSMain() == true}">
@@ -62,8 +62,7 @@
             </li>
         </c:if>
     </ul>
-</div>
-	<ul class="nav navbar-nav navbar-right ml-auto">    
+		<ul class="navbar-nav navbar-right ml-lg-auto">    
 				<li class="nav-item dropdown">
 					<a class="nav-item nav-link dropdown-toggle mr-md-2" 
 						href="#" 
@@ -75,7 +74,7 @@
 						<i class="fas fa-user"  ></i> &nbsp;<%=session.getAttribute("user")%> </span>
 					</a> 
 					<div id="navbarDropdownLogout" 
-						class="dropdown-menu dropdown-menu-right " 
+						class="dropdown-menu dropdown-menu-lg-right" 
 						aria-labelledby="navbarViewPagesDropdownMenuLink">
 						<a href="${contextpath}/logout" class=" dropdown-item">
 							<i class="fas fa-sign-out" aria-hidden="true"></i>Sign Out
@@ -83,4 +82,26 @@
 					</div>
 				</li>
 			</ul>
-	</header> 
+	</nav>
+</header>
+<script>
+// ทำเครื่องหมายหน้าปัจจุบันในเมนู (aria-current + class active) — ไม่ต้องแก้ทีละหน้า
+(function () {
+	var path = location.pathname.replace(/\/+$/, '');
+	var best = null, bestLen = 0;
+	var links = document.querySelectorAll('#navbarNavDropdown a[href]:not([href="#"]):not(.disabled-href)');
+	for (var i = 0; i < links.length; i++) {
+		var p = links[i].pathname.replace(/\/+$/, '');
+		if (p && (path === p || path.indexOf(p + '/') === 0) && p.length > bestLen) { best = links[i]; bestLen = p.length; }
+	}
+	if (!best) return;
+	best.classList.add('active');
+	best.setAttribute('aria-current', 'page');
+	var menu = best.closest('.dropdown-menu');
+	if (menu && menu.parentElement) {
+		var toggle = menu.parentElement.querySelector('.dropdown-toggle');
+		if (toggle) toggle.classList.add('active');
+	}
+})();
+</script>
+ 
