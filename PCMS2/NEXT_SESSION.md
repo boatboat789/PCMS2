@@ -2,6 +2,31 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-01 — ตรวจงาน PERF_SEARCH + navbar บนหน้าจอจริง (เครื่องมือ tools/dev-web-local ใหม่)
+
+### ทำอะไร
+- **harness** (`PCMSRegressionHarness` verify, DEV) ผ่านทุกเคส (exit 0) — baseline ถูกแช่แข็ง 2026-10-31 จึงยืนยันแค่ "ผลคงที่" ไม่ใช่เทียบก่อนแก้ · เคสที่ SKIP: `...ProductionOrderRP` ×2, `getWaitLotCaseBySaleOrder` (หาข้อมูลตัวอย่างไม่เจอ)
+- **`PCMSServiceGsonCheck`** รัน 11 เคส → JSON 33 ไฟล์ ไม่ว่าง parse ได้ (ไม่ได้เทียบ A/B รอบนี้)
+- **เครื่องมือใหม่ `tools/dev-web-local/`** (ดัดแปลงจาก LBMS): รัน WAR บน Tomcat แยก `C:/Users/94687/pcms2-dev-tomcat` พอร์ต 8082 ชี้ DEV ทั้ง 4 datasource
+  ใช้ `src/test/resources/database.properties` (gitignored) · `DevTestLoginFilter` ล็อกอิน ZZTEST สิทธิ์ VIEWONLY + ปิด `TaskService` scheduler · README ในโฟลเดอร์มีขั้นตอน
+- **ทดสอบหน้าจอจริง:** Summary ค้น G TECH + SO 1107011323 (เลือก radio All) ได้ 4 แถว ตรง baseline เห็น S2K032H (self-switch) · `/Main/*` ตอบ 200
+- **navbar `f35756b`:** `aria-current`+เส้นใต้ถูกหน้า · 1366px แถวเดียว · 800px แถวเดียว ปุ่ม 44px · 375px 2 แถว ปุ่ม 44px หน้าไม่ล้น
+
+### กับดัก/บทเรียน
+- **Tomcat อยู่ `D:\apache-tomcat-9.0.100`** (เคยสรุปผิดว่าไม่มีเพราะหาแค่ C:)
+- DEV PCMS2 มีสิทธิ์แค่ CUST01/CUST02/VIEWONLY (ไม่มี ADMIN/ITSUPP)
+- bean ของ controller/service อยู่ใน context ของ DispatcherServlet (`FrameworkServlet.CONTEXT.PCMS2`) ไม่ใช่ root — filter รุ่นแรกหาผิดที่ ปิด scheduler ไม่ได้
+- 🔴 สตาร์ตครั้งแรก 21:13 แล้ว stop 21:14:14 หลัง cron `:14` ผ่านไป 14 วินาที → **job ERP sync อาจรันกับ DEV (ไม่ใช่ PRD) ช่วงสั้นๆ ยืนยันไม่ได้** เพราะ log แอปเป็น NOP (ไม่มี slf4j binding) · อย่าสตาร์ตใกล้ 01:00 / :14 / :44
+- หน้า Summary ค่าเริ่มต้นตัวกรองสถานะ = In-Process → SO ที่ปิดแล้วต้องเลือก All
+- ที่ 800px หน้า Summary ล้นแนวนอน ~75px มาจากช่องกรอง bootstrap-select ในเนื้อหา (ไม่ใช่ navbar)
+
+### 🔲 ครั้งหน้า
+- [ ] ตรวจ DEV ว่ามีแถว job/log ช่วง 21:14 วันที่ 2026-11-01 หรือไม่ (ถ้าห่วง)
+- [ ] ทดสอบหน้าจอที่ยังไม่ได้ไล่: Detail, Report, ตัวกรองวันที่/userStatus, เคส ProdWorkDate/SumGR ผ่านหน้าเว็บ
+- [ ] แก้ล้นแนวนอนของช่องกรอง bootstrap-select ที่จอ ≤800px (ถ้าต้องรองรับแท็บเล็ต)
+- [ ] push `gitlab_master` (วันที่ 2026-11-01 resolve host `twcgit.wacoal.co.th` ไม่ได้ — ต้องต่อ VPN/เครือข่ายบริษัท)
+- [ ] หยุด Tomcat ทดสอบ (`catalina.bat stop`, CATALINA_BASE=`C:\Users\94687\pcms2-dev-tomcat`) เมื่อเลิกใช้
+
 ## ✅ 2026-07-17 (ต่อ) — เพิ่ม ActivityCorrelator ThreadLocal sweeper เชิงป้องกัน
 
 เพิ่ม `sweepThreadLocals()` + `sweepMap()` ใน `AppShutdownListener.java` — verify `mvn compile` BUILD SUCCESS
