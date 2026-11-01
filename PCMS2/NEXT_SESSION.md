@@ -68,6 +68,15 @@
 - ⚠️ **ข้อจำกัด:** DEV มี switch ไม่เป็น self แค่ 17 คู่ และมี sale แค่ 1 คู่ · ไม่มีคู่ที่ sale ต่างใบทั้งสองฝั่ง (PRD ก็ไม่มีตามจำนวนนับ: 2 จาก 30 มี sale) → เส้นทาง "PO คู่ OPSW ที่ sale ปลายทางอยู่นอก scope" ยังทดสอบด้วยข้อมูลจริงได้แค่ 1 เคส · ไม่ได้ดูข้อมูลระดับแถวของ PRD (ถูกบล็อกสิทธิ์อ่าน PRD)
 - baseline ใน `src/test/resources/pcms2/regression/baseline/` (gitignored) ถูก re-freeze เป็นโค้ดปัจจุบันแล้ว (29 ไฟล์ รวมเคส 16) · เก็บ baseline เก่าไว้ใน scratchpad
 
+## ✅ 2026-11-01 (ดึก 2) — ตรวจ Summary + ตัวกรอง และ navbar ทุกหน้าบน dev-web-local (DEV) — ผ่าน
+
+สตาร์ต 22:08 (scheduler OFF ก่อน :14) · หยุดแล้ว · อ่านอย่างเดียว
+
+- **Summary (`/Main`)** SO 1107011323 เลือก All: userStatus "ขายแล้ว" → 3 แถว (ตรงกับ Detail) · SO Date ในช่วง 4 / นอกช่วง 0 · Prod.Date ปี 2022 → 4 / 2024 → 0 · Due Date ในช่วง 4 / นอกช่วง 0
+- **navbar** (`aria-current` ตั้งด้วย JS ฝั่ง client ไม่อยู่ใน HTML ที่ server ส่ง — ต้องตรวจใน DOM จริง ไม่ใช่ fetch): Main, Detail, Report/CFM, Log Production/Sale × ATT/ERP365 รวม 7 หน้า → `aria-current=page` ถูกลิงก์ทุกหน้า · ทุกหน้า HTTP 200 · ไม่ล้นแนวนอนที่ 1366px · หน้า Log ทั้ง 4 โหลดได้บน DEV
+- ⚠️ **UX:** เมนู Report มี 2 คู่ที่ข้อความเหมือนกันเป๊ะ — "Log - Production Order" (ATT / ERP365) และ "Log - Sale Order" (ATT / ERP365) แยกไม่ออกจากชื่อ (ผู้ใช้ต้องรู้ว่าตัวไหนคือ ATT/ERP365 จากลำดับ) · **ยังไม่ได้แก้** — ต้องถาม user ว่าอยากให้ต่อท้ายชื่อว่าอะไร (`config/navbar.jsp`)
+- ไม่ได้ตรวจ navbar ที่ 800/375px รอบนี้ (ตรวจไปแล้วรอบก่อนบน Summary)
+
 ## ✅ 2026-07-17 (ต่อ) — เพิ่ม ActivityCorrelator ThreadLocal sweeper เชิงป้องกัน
 
 เพิ่ม `sweepThreadLocals()` + `sweepMap()` ใน `AppShutdownListener.java` — verify `mvn compile` BUILD SUCCESS
