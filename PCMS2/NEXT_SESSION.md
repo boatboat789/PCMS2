@@ -27,6 +27,28 @@
 - [ ] push `gitlab_master` (วันที่ 2026-11-01 resolve host `twcgit.wacoal.co.th` ไม่ได้ — ต้องต่อ VPN/เครือข่ายบริษัท)
 - [ ] หยุด Tomcat ทดสอบ (`catalina.bat stop`, CATALINA_BASE=`C:\Users\94687\pcms2-dev-tomcat`) เมื่อเลิกใช้
 
+## ✅ 2026-11-01 (ค่ำ) — ทดสอบหน้าเว็บบน dev-web-local ต่อ: Detail + ตัวกรอง ผ่าน · Report CFM พังเพราะ DEV ขาดตาราง
+
+สตาร์ต Tomcat 21:34 (ก่อน cron :44, log ยืนยัน `[DevTest] scheduled jobs OFF`) · หยุดแล้ว 21:40 (พอร์ต 8082 ปิด) · ทดสอบแบบอ่านอย่างเดียว ไม่เขียน DB
+
+| หน้า/เคส | ผล |
+|---|---|
+| Detail ค้น SO 1107011323 (เลือก All) | ✅ 4 แถว ตรงกับ Summary · แถว self-switch `S2K032H` มีวันที่ย้อม (17/10, 22/10/2022) = fix `f317d48` ทำงานบนหน้าจริง |
+| Detail userStatus = "ขายแล้ว" | ✅ 3 จาก 4 แถว (แถวที่ 4 สถานะ "ปิดเพื่อแก้ไข" ถูกกรองออกถูกต้อง) |
+| Detail SO Date ในช่วง / นอกช่วง | ✅ 4 แถว / 0 แถว |
+| Detail Prod.Date ปี 2022 / 2024 | ✅ 4 แถว / 0 แถว |
+| Report CFM (`/Report/CFM/getReportDetail`) | ❌ HTTP 500 `Invalid object name 'PCMS.dbo.Z_ATT_CustomerConfirm2'` — **DEV ไม่มีตารางนี้** · branch นี้ไม่ได้แตะ DAO/Report นี้ (`git log 8371211..HEAD` ว่าง) → ไม่ใช่ regression · ยังไม่รู้ว่า PRD มีตารางหรือไม่ |
+
+### กับดักที่เจอตอนทดสอบ (กันเสียเวลาซ้ำ)
+- ปุ่ม **Clear Search ของหน้า Detail ล้างการเลือกลูกค้า/Cust.(Name4)/UserStatus/Division ทั้งหมด** แล้วปุ่ม Search จะไม่ยิงเลย (validation บรรทัด ~1442 ของ `PCMSDetail.jsp` ต้องมีครบทั้ง 4 กลุ่ม) → ได้ "0 แถว" แบบเงียบ ๆ ดูเหมือนบั๊ก · ทดสอบอย่ากด Clear ให้เซ็ตค่าทับเอง
+- `getReportDetail` รับ **JSON array** (`[{...}]` แล้ว `list.get(0)`) ไม่ใช่ object เดี่ยว — ส่ง object ได้ 500 จาก Gson
+- `javascript_tool` ตอน pane ซ่อน timeout 45 วินาที → แยกการค้นหาทีละเคส (รอ ≤8 วินาที/call)
+
+### 🔲 ครั้งหน้า
+- [ ] ถาม/ตรวจว่า DEV ควรมี `PCMS.dbo.Z_ATT_CustomerConfirm2` หรือไม่ (ถ้าต้องทดสอบ Report CFM บน DEV) · ตรวจ PRD ว่ามีตารางจริง
+- [ ] ยังไม่ได้ทดสอบ: Download Excel ของ Detail, หน้า Log, PRD
+- [ ] push `gitlab_master` (ยังต้องต่อ VPN) · commit `PCMS2/CLAUDE.md` + `.claude/rules/*` ที่ค้าง
+
 ## ✅ 2026-07-17 (ต่อ) — เพิ่ม ActivityCorrelator ThreadLocal sweeper เชิงป้องกัน
 
 เพิ่ม `sweepThreadLocals()` + `sweepMap()` ใน `AppShutdownListener.java` — verify `mvn compile` BUILD SUCCESS
