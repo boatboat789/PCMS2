@@ -51,6 +51,23 @@
 - [ ] ยังไม่ได้ทดสอบ: Download Excel ของ Detail, หน้า Log, PRD
 - [ ] push `gitlab_master` (ยังต้องต่อ VPN) · commit `PCMS2/CLAUDE.md` + `.claude/rules/*` ที่ค้าง
 
+## ✅ 2026-11-01 (ดึก) — A/B ก่อน-หลัง fix ของ PERF_SEARCH ด้วย harness (DEV) — ผ่าน ไม่มีค่าเดิมถูกเปลี่ยน
+
+วิธี: worktree โค้ดเก่า `8371211` (ก่อน 336eb0f/f317d48/33860c6) capture → ใช้เป็น baseline → verify กับโค้ดปัจจุบัน (`4630ca3`) · 22 เคส (Summary+Detail) · เพิ่มเคส 16 (`16_single_saleorder_switch_target.json`: PT/KB SO 1109009155 = คู่ switch จริงเดียวที่ DEV มีและมี sale)
+
+| ผลต่าง old → new | จำนวน |
+|---|---|
+| ค่าไม่ว่างถูกเปลี่ยนเป็นค่าอื่น | **0** |
+| แถวเพิ่ม | **0** |
+| เซลล์ว่างที่มีค่า (วันที่ย้อม/CFM/GR/ฯลฯ) | 2,205 |
+| แถวหาย | 12 (ซ้ำกัน Summary/Detail = 6 แถวไม่ซ้ำ: Main self-switch `S2K032H` SO 1107011300, `S2K244` 1107011676, `W2B083/2` 1111002704, `S2F167` 1107011020) |
+
+- แถวที่หาย = Main ที่ PO อยู่ใน SwitchProdOrder (รวม self-switch) ซึ่งโค้ด `main` เดิมก็ตัดออก (`getLeftJoinSwitchProdOrder` + `SPO.ProductionOrderSW IS NULL`) แต่ c6e6109 ทำให้หลุดกลับมา — ตรวจจาก **อ่านโค้ด `gitlab_master/main`** ไม่ได้รัน `main` จริง (ไม่มี harness)
+- เคส 16: แถว SUB ได้วันที่ย้อม/สถานะย้อม และ P2K069 (ปลายทาง switch) ได้ GR Qty 124.20 KG / 331.00 MR (เดิมว่าง) = fix `f317d48`+`33860c6` ทำงานกับข้อมูลจริง
+- ข้อสังเกตข้อมูล (ไม่ใช่ผลของ fix): `P2I114/3R` dyePlan 17/04/2025 แต่ dyeActual 12/10/2022 · Detail มีแถว SUB ซ้ำคู่ (เหมือนเดิมทั้ง old/new)
+- ⚠️ **ข้อจำกัด:** DEV มี switch ไม่เป็น self แค่ 17 คู่ และมี sale แค่ 1 คู่ · ไม่มีคู่ที่ sale ต่างใบทั้งสองฝั่ง (PRD ก็ไม่มีตามจำนวนนับ: 2 จาก 30 มี sale) → เส้นทาง "PO คู่ OPSW ที่ sale ปลายทางอยู่นอก scope" ยังทดสอบด้วยข้อมูลจริงได้แค่ 1 เคส · ไม่ได้ดูข้อมูลระดับแถวของ PRD (ถูกบล็อกสิทธิ์อ่าน PRD)
+- baseline ใน `src/test/resources/pcms2/regression/baseline/` (gitignored) ถูก re-freeze เป็นโค้ดปัจจุบันแล้ว (29 ไฟล์ รวมเคส 16) · เก็บ baseline เก่าไว้ใน scratchpad
+
 ## ✅ 2026-07-17 (ต่อ) — เพิ่ม ActivityCorrelator ThreadLocal sweeper เชิงป้องกัน
 
 เพิ่ม `sweepThreadLocals()` + `sweepMap()` ใน `AppShutdownListener.java` — verify `mvn compile` BUILD SUCCESS
