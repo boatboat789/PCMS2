@@ -27,6 +27,14 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/input-validation.md` | maxlength ต้องตรงกับความยาวคอลัมน์ DB จริงทุก field ใหม่ |
 | `.claude/rules/session-logging.md` | บันทึกงานสำคัญลง .md เสมอ (NEXT_SESSION.md หรือสร้างใหม่ถ้าไม่มี) |
 | `.claude/rules/documentation-mapping.md` | เพิ่ม doc/diagram/rule ใหม่ → mapping ใน Document Index ทันที; แยกหมวดเมื่อ index ยาวเกิน ~200 บรรทัด |
+| `.claude/rules/adr-conflict-notification.md` | ขัด ADR ต้องแจ้ง user ก่อนเสมอ, user ข้ามได้ด้วยสิทธิ์สูงสุด (แล้วบันทึกการตัดสินใจ) |
+| `.claude/rules/inspect-related-before-editing.md` | 🔴 ตรวจสิ่งที่เกี่ยวข้องก่อนแก้ทุกครั้ง — หาว่าระบบทำเรื่องเดียวกันที่อื่นแล้วหรือยัง ใช้กติกาเดียวกัน ห้ามเดากติกาธุรกิจ/คำเฉพาะของ user |
+| `.claude/rules/code-quality-metrics.md` | ตัวเลขอ้างอิง (ฟังก์ชัน≤30บรรทัด/ไฟล์≤300/nesting≤3/param≤4) — สัญญาณเตือนตอนแก้โค้ดที่แตะอยู่แล้ว ห้ามอ้างเป็นเหตุ refactor นอกขอบเขต |
+| `.claude/rules/dual-remote-push.md` | ต้อง push 2 remote (`origin` personal + gitlab company — ชื่อ remote ไม่เหมือนกันทุก repo เช็คตารางก่อน push) |
+| `.claude/rules/verify-in-browser-not-only-tests.md` | 🔴 เทสเขียวไม่ใช่หลักฐาน — ต้องยิงของจริง (เบราว์เซอร์/HTTP/ไฟล์ดาวน์โหลด) ก่อนบอกว่าเสร็จเสมอ |
+| `.claude/rules/ux-confusing-but-correct-review.md` | ถูก business rule แต่ user งง — roleplay naive user + เทียบ UX heuristics ก่อนบอกว่า UI เสร็จ |
+| `.claude/rules/user-manual-design.md` | คู่มือ/เอกสาร user-facing ใช้ visual component (chip diagram/step-card/card grid) แทนข้อความล้วน |
+| `.claude/rules/webapp-classloader-leak-redeploy.md` | ⭐ WAR บน Tomcat: Metaspace ค้างหลัง redeploy — สถานะ leak ของโปรเจกต์นี้ + วิธีพิสูจน์ (heap dump/jstat MU) + ตัวการที่เจอจริง + กับดัก (ห้ามตัด jar จาก grep import) |
 
 ### Claude Code Tooling (`.claude/`)
 | โฟลเดอร์ | สถานะ | เนื้อหา |
