@@ -45,7 +45,8 @@
 - `javascript_tool` ตอน pane ซ่อน timeout 45 วินาที → แยกการค้นหาทีละเคส (รอ ≤8 วินาที/call)
 
 ### 🔲 ครั้งหน้า
-- [ ] ถาม/ตรวจว่า DEV ควรมี `PCMS.dbo.Z_ATT_CustomerConfirm2` หรือไม่ (ถ้าต้องทดสอบ Report CFM บน DEV) · ตรวจ PRD ว่ามีตารางจริง
+- [x] ตรวจแล้ว (read-only metadata, 2026-11-01): **PRD มี** `PCMS.dbo.Z_ATT_CustomerConfirm2` (17,567 แถว, สร้าง 2025-05-13, แก้ล่าสุด 2026-04-23) · **DEV ไม่มีตาราง** แต่มี SP `spd_UpsertToZ_ATT_CustomerConfirm2` · DEV ล้าหลัง PRD: 76 vs 77 ตาราง, 1 vs 5 view, 30 vs 33 proc (proc ล่าสุดแก้ 2026-07-02 vs 2026-07-17) · SP `spd_*` ชุดเดียวกัน (DEV มีเกิน 2 ตัว: `spd_HandlerCustomerDetail`, `spd_OrderImport_20190408`)
+- [ ] ถ้าต้องทดสอบ Report CFM บน DEV: สร้างตารางบน DEV (script ต้นฉบับไม่อยู่ใน repo — ต้อง script จาก PRD) · ยังไม่ได้สร้าง
 - [ ] ยังไม่ได้ทดสอบ: Download Excel ของ Detail, หน้า Log, PRD
 - [ ] push `gitlab_master` (ยังต้องต่อ VPN) · commit `PCMS2/CLAUDE.md` + `.claude/rules/*` ที่ค้าง
 
