@@ -2,6 +2,23 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
+
+**สถานะ ณ 2026-11-02:** PERF_SEARCH (3 fix + navbar + เครื่องมือทดสอบ) merge เข้า `main` แล้ว · ทดสอบ DEV + PRD (อ่านอย่างเดียว) ผ่าน: ค่าเดิมเปลี่ยน 0, ความเร็ว 1.01× · **เหลือบั๊ก 1 ตัวใน main**
+
+ลำดับงาน:
+1. 🔴 **แก้ `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder`** (syntax error `near 'where'` บน PRD) — รายละเอียด/สาเหตุ/ทางแก้ที่น่าจะถูกอยู่ในหัวข้อ 🔴 ด้านล่าง · ย้าย `createTempFromSORCFM` ไปก่อน `createTempMainSale` แล้วตรวจว่า `createTempPrepWaitLot` พึ่ง `#tempMainSale` ไหม · เทียบลำดับกับ `PCMSMainDaoImpl.buildCommonLookupTables` · อ่านโค้ด `main` เดิม `b150c87` เป็นตัวอ้างอิงโครงสร้างที่ถูก
+2. เพิ่มเคส harness ให้ WaitLot ถูก discover บน PRD (ตอนนี้ DEV ไม่มีข้อมูล WaitLot เคสถูก SKIP จึงมองไม่เห็นบั๊กนี้)
+3. รัน `powershell -ExecutionPolicy Bypass -File tools\run-harness-ab.ps1 -Target PRD -Rounds 3 -Out C:\temp\pcms2_ab_prd -Yes` (เริ่มตอน :20/:50, ปิด Eclipse/Tomcat ก่อน) — เคส WaitLot ต้องผ่านเฉพาะโค้ดใหม่ · คู่มือเต็ม `docs/prd-verification-perf-search.md`
+4. push **ทั้ง 2 remote** (`origin` + `gitlab_master`) แล้วเปิด MR: `git push gitlab_master <branch> -o merge_request.create -o merge_request.target=main -o "merge_request.title=..."` (ต้องมี commit ใหม่ใน push ถึงจะสร้าง MR · ไม่มี glab/gh)
+5. ยังไม่ได้ทดสอบ: ปุ่มบันทึก Replaced PO บนหน้า Detail จริง (ต้องทำบน DEV เท่านั้น ห้ามบน PRD — เขียนข้อมูล) · Download Excel (Detail/Report CFM) · Report CFM กับข้อมูลจริง (ตาราง DEV ว่าง) · เมนู Report ชื่อซ้ำ ATT/ERP365 (รอ user เลือกคำ)
+
+**ข้อควรระวัง:**
+- อย่ารัน `mvn test`/harness พร้อม Tomcat หรือ Eclipse ที่ใช้ `target/classes` · `mvn clean` ลบ `target/` → Eclipse ต้อง Maven > Update Project
+- `PCMS/` ในโฟลเดอร์ repo root เป็น **git repo ซ้อน** ห้าม `git add` · `target/m2e-wtp/.../MANIFEST.MF` ที่ถูกลบ = ผลจาก `mvn clean` ไม่ต้อง commit
+- สิทธิ์ PRD: user อนุญาตให้ Claude ทดสอบเฉพาะที่ **ไม่ update/delete** (SELECT, harness) เท่านั้น
+- scheduler ของ PCMS2 รัน 01:00 และ :14/:44 ทุกชั่วโมง — อย่าสตาร์ต Tomcat ทดสอบ (`tools/dev-web-local`) ใกล้เวลานั้น
+
 ## 🔴 2026-11-02 — ทดสอบบน PRD (อ่านอย่างเดียว) เสร็จ: ผลเทียบผ่าน · ความเร็วเท่าเดิม · **เจอบั๊กใหม่ที่ DEV มองไม่เห็น**
 
 ⚠️ **MR !4 ถูก merge เข้า `gitlab_master/main` แล้ว** (`18b621f`) ก่อนทดสอบ PRD — โค้ดด้านล่างที่ "พัง" จึงอยู่ใน main แล้ว (commit ของรอบนี้ยังไม่อยู่ใน main)
@@ -57,7 +74,7 @@
 8. ล้นแนวนอน ~75px ที่จอ ≤800px หน้า Summary (ช่องกรอง bootstrap-select) — แก้เมื่อต้องรองรับแท็บเล็ต
 9. TaskService ลำดับ sync (ข้อ 4 จาก code-review) ยังไม่ได้ตรวจ — น่าจะตั้งใจ
 10. job ERP sync ช่วง 21:14 (รอบแรก) อาจรันกับ DEV ยืนยันไม่ได้ (log เป็น NOP)
-11. ✅ **push แล้วทั้ง 2 remote (2026-11-02)** ถึง `cbe855a`: `origin/PERF_SEARCH` + `gitlab_master/PERF_SEARCH` (MR เข้า `main`: https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/4 · สถานะ **Draft** — ห้าม merge จนกว่าจะทดสอบ/วัดความเร็วบน PRD · ขนาด: 41 commit, 2,379 ไฟล์ รวมลบ SAP JCo `sapjco3.dll/jar` + JSP เก่า 5 ไฟล์ + `FilterLogin20250526.java` · `main` ไม่มี commit ใหม่ → fast-forward ได้) · ไฟล์ที่ **จงใจไม่ commit**: `PCMS/` เป็น git repo ซ้อน (มี `.git` ของตัวเอง 85MB) ไม่ใช่ของ repo นี้ · `target/m2e-wtp/.../MANIFEST.MF` ถูกลบจาก `mvn clean` (ไฟล์ generated ที่ถูก track) · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
+11. ✅ **(อัปเดต 2026-11-02 ดึก) MR !4 ถูก MERGE เข้า `gitlab_master/main` แล้ว** (`18b621f`, https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/4) ทั้งที่เปิดเป็น Draft และยังไม่ทดสอบ PRD · ขนาด: 41 commit, 2,379 ไฟล์ รวมลบ SAP JCo `sapjco3.dll/jar` + JSP เก่า 5 ไฟล์ + `FilterLogin20250526.java` · ต่อมาทดสอบ PRD แล้ว (ดูหัวข้อ 🔴 ด้านบน) · งานรอบถัดมาเข้า main ผ่าน MR ใหม่ (ดู "ส่งต่อ") · ไฟล์ที่ **จงใจไม่ commit**: `PCMS/` เป็น git repo ซ้อน (มี `.git` ของตัวเอง 85MB) ไม่ใช่ของ repo นี้ · `target/m2e-wtp/.../MANIFEST.MF` ถูกลบจาก `mvn clean` (ไฟล์ generated ที่ถูก track) · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
 12. เก่าจาก 07-17: guard schedule toggle ของ Orgatex ยังเขียนว่ารอ deploy+ทดสอบ — ไม่ทราบสถานะปัจจุบัน
 
 ## ✅ 2026-11-01 — ตรวจงาน PERF_SEARCH + navbar บนหน้าจอจริง (เครื่องมือ tools/dev-web-local ใหม่)
