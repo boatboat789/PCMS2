@@ -1,3 +1,9 @@
+// escape ค่าที่จะใส่ใน attribute ของ HTML ที่ต่อสตริงเอง (value="...", data-search="...") — กัน " ตัดค่า / XSS
+function escAttr(v) {
+    if (v === null || v === undefined) { return ''; }
+    return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function preLoaderHandler(x) {
 	x.style.display = 'none';
 }

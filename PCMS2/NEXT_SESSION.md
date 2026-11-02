@@ -4,6 +4,11 @@
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
+### ✅ 2026-11-02 (สาย) — UX ช่องกรอกในตารางหน้า Detail (ทดสอบ DEV ผ่าน)
+- ที่มา: ช่องหมายเหตุต่อสตริง HTML ตรงๆ (โค้ดปี 2022) ไม่ escape → ค่าที่มี `"` ถูกตัดและเด้ง Swal ยืนยันเองตอน blur · แก้: `escAttr()` ใน `General.js` ครอบ `value=`/`data-search=` 20 จุดใน `PCMSDetail.jsp` · Switch Remark `name` จาก StockRemark → SwitchRemark · `aria-label` ทุกช่อง · `cursor:text` (theme-claude.css) · ชื่อฟิลด์ใน Swal เป็นภาษาคน
+- ตรวจแล้วไม่ต้องแก้: `maxlength=200` ตรงกับ varchar(200) ของ DEV · focus ring มีอยู่แล้ว (ที่เคยวัดว่าไม่มีเกิดจาก pane ไม่ได้โฟกัส)
+- 🔲 ค้าง: `.form-control{height:30px}` < 32px และหน้าล้น 20px ที่ 1024px (กระทบทุกหน้า) · เช็ค `reverseButtons` ของ Swal · ตัวกัน `check1` ยังไม่ได้กดทดสอบ
+
 ### ✅ 2026-11-02 (สาย) — แก้บั๊ก WaitLot แล้ว (code-complete · ทดสอบ DEV แบบ syntax-only · **ยังไม่ทดสอบ PRD**)
 - `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder` มี **2 บั๊กซ้อน**: (1) `createTempMainSale` เปิดค้างแต่มี fragment คั่นก่อน `where` → ปิดด้วย `where` + `;` ก่อนต่อ fragment อื่น (2) join helper อ่าน `#tempTAPP/#tempInputRR/PCR/COD/DD/SL` ที่เมธอดไม่ได้สร้าง (`Invalid object name '#tempTAPP'`) → เพิ่ม `createTemp*` ที่ขาด
 - เทสต์ใหม่ `PCMSWaitLotSyntaxCheck` (SO ปลอม ได้ 0 แถว ไม่ error) ผ่านบน DEV · **ยังไม่ได้เทียบผลกับ main เดิม** → 🔲 รัน `run-harness-ab.ps1 -Target PRD` (เริ่ม :20/:50) ให้เคส WaitLot ถูก discover ก่อน merge/deploy

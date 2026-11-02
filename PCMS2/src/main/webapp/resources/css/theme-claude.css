@@ -533,3 +533,11 @@ table.dataTable thead.thead-dark th {
 @media (max-width: 575.98px) {
   #navbar .navbar-nav .nav-link { padding: .5rem .45rem; font-size: 14px; }
 }
+
+/* ช่องพิมพ์ข้อความในตาราง (หมายเหตุ/Stock Load) ใช้เคอร์เซอร์พิมพ์ — inline style เดิมตั้ง pointer ไว้ */
+#MainTable td input.PCRemarkInput,
+#MainTable td input.ReplacedRemarkInput,
+#MainTable td input.SwitchRemarkInput,
+#MainTable td input.StockRemarkInput,
+#MainTable td input.StockLoadInput,
+#MainTable td input.CauseOfDelayInput { cursor: text !important; }
