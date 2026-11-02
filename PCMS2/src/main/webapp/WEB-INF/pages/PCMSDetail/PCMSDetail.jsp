@@ -11,15 +11,16 @@
 <jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
 <link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">
 <link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/pcms-style.css" />" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
-	<div id="wrapper-center" class="row" style="margin: 0 5px;">
-		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="font-size: 12.5px; padding: 0px; margin: 0px 0px;">
+	<div id="wrapper-center">
+		<div class="content-panel" style="font-size: 15px;">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important; zoom: 95%;">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="width: 100%; margin: 0px !important;">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">DIV</th>
@@ -47,8 +48,6 @@
 							<th class="row-table" style="vertical-align: middle;">GR Qty KG</th>
 							<th class="row-table" style="vertical-align: middle;">GR Qty MR</th>
 							<th class="row-table" style="vertical-align: middle;">GR Qty YD</th>
-<!-- 							<th class="row-table" style="vertical-align: middle;">GR Qty</th> -->
-
 							<th class="row-table" style="vertical-align: middle;">จำนวน (FG) <span class="c" style="display: block;">KG/MR/YD</span>
 							</th>
 							<th class="row-table" style="vertical-align: middle;">จำนวนที่ส่ง</th>
@@ -109,24 +108,32 @@
 </body>
 <script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
 <script src="<c:url value="/resources/js/General.js" />"></script>
+<script src="<c:url value="/resources/js/web-app.js" />"></script>
 <style>
 .p-r-15 {
 	padding-right: 15px !important;
+}
+#MainTable td {
+	font-variant-numeric: tabular-nums;
 }
 /* tfoot .dtfc-fixed-left{   */
 /*     background-color: white;    */
 /* }      */
 </style>
-<script>       	   
-var userId = '' ; 
+<script>       	    
 var preloader = document.getElementById('loader');    
 var today = new Date();        //modalForm  
 var dd = String('0' + today.getDate()).slice(-2); 
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
-var MainTable ;  
-var mapsDataHeader  = new Map(); 
+var MainTable ;
+var mapsDataHeader  = new Map();
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+} 
 var mapsTitleHeader  = new Map();    
 var mapsColumnHeader  = new Map(); 
 var check1 = 0	;
@@ -135,13 +142,12 @@ var check3 = 0	;
 var checkReplaced = 0;
 var saleNumberList ; 
 var userStatusList ; 
-var cusNameList ;  	
-var cusShortNameList ;  
+var cusNameList ;  
+var cusShortNameList ;  	  
 var selectOptionDepText ; 
 var depList ;  
 var divisionList ; 
-var colList ; 
-// var configCusList;
+var colList ;  
 var soTmp ;   
 var soLineTmp;
 var soTmpExcel ;   
@@ -197,14 +203,7 @@ $('#input_saleOrderDate').daterangepicker({
 // 	 	  autoApply: true,                 
 	  } 
 , function(start, end, label) {   
-});       
-// 	function showThing() {
-//   		$( "#loading").css("display","block");
-// 	  	setTimeout(removeThing, 11000)  	
-// 	}
-//   	function removeThing() {
-//   		$("#loading" ).css("display","none");       
-//   	}
+});        
      $('#input_dueDate').daterangepicker({
 	   opens: 'right', 	
 	    locale: {
@@ -224,59 +223,25 @@ $('#input_saleOrderDate').daterangepicker({
     	        $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
     	    }, 0);
   	});  
-$(document) .ready( function() {         
-// 	showThing();       
-// 	document.getElementById("div_toOtherPath").style.display = "none"; 
-// document.getElementById("btn_lockColumn").style.display = "none";
-// EMERGENCY
-
-	let os = JSON.parse('${OS}');   
-	let result = os.includes("win");	
-	let domain ='';
-	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
-	else{ domain = "https://"+window.location.hostname;  } 
-// 	configCusList = JSON.parse('${ConfigCusList}'); 
-// 	if(configCusList.length > 0 ){   
-// 		if(!configCusList[0].isPCMSDetailPage ){
-// 			window.location.replace(domain+"/PCMS2/login");
-// 		}
-// 	}
-	 
-	userId = JSON.parse('${UserID}');   ;     
-// 	console.log(document.getElementById("btn_prdDetail"))   
-	if(document.getElementById("btn_prdDetail") != null){
-		document.getElementById("btn_prdDetail").style.display = "none";        
-	} 
-	if(document.getElementById("btn_lbms") != null){ 
-		document.getElementById("btn_lbms").style.display = "none"; 
-	} 
-	if(document.getElementById("btn_qcms") != null){ 
-		document.getElementById("btn_qcms").style.display = "none";  
-	} 
-	if(document.getElementById("btn_inspect") != null){  
-		document.getElementById("btn_inspect").style.display = "none"; 
-	} 
-	if(document.getElementById("btn_sfc") != null){  
-		document.getElementById("btn_sfc").style.display = "none";    
-	} 
+$(document) .ready( function() {           
 	$('#input_saleOrderDate').val('');    
 	$('#input_prdOrderDate').val('');       
 	$('#input_dueDate').val('');
-	<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%>    
+	if(document.getElementById("btn_prdDetail") != null){
+		document.getElementById("btn_prdDetail").style.display = "none";        
+	}  
 	 $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
 	      $(this).val('');     
 	  });
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });    
-//   	var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
-// 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
-       	
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {        
 		var title = $(this).text();      	      
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '  
-// 				+'placeholder="Search '+title+'" '    
-				+ '/>');   	     
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '
+				+ 'placeholder="" '
+				+ 'aria-label="กรอง ' + title + '" '
+				+ '/>');
 	});             
 	    MainTable = $('#MainTable').DataTable({   
 			scrollX: true,                         
@@ -289,12 +254,11 @@ $(document) .ready( function() {
 	  		},         
 	  		paging: true,
 			pageLength:	 100,	          
-// 		    lengthChange : false,   
-// 		    "paging": true,
 			colReorder: {            
 			   realtime: false,   
 			   enable: false           
-			},             
+			},            
+			order: [[1, 'asc'],[2,'asc']],
 			deferRender: true, // run again in column
 		    lengthMenu: [[100, 250, 500, 1000, 2500],[100, 250, 500, 1000, 2500]],
 	 	   	columns :                    
@@ -303,19 +267,19 @@ $(document) .ready( function() {
 				    {"data" : "saleOrder" ,       "title":"SO No.",
 				          orderData: [ 1, 2,25 ]        ,       
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.saleOrder+'</div>'
+							let html = '<div name="n_'+row.saleOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleOrder+'</div>'
 							return  html; 
 					   	  }         },                          //1
 				    {"data" : "saleLine"   ,      "title":"SO Line" ,            
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleLine+' data-toggle="tooltip"  title="' + row.typePrd + '"> '+row.saleLine+'</div>'
+							let html = '<div name="n_'+row.saleLine+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleLine+'</div>'
 							return  html; 
 					   	  }             },                          //2
 				    {"data" : "customerShortName","title":"Cust.(Name4)" ,      	     
 						  	  	className : 'dt-custom-td140',      
 						  	  	type: 'string'    },                              //3
 				    {"data" : "saleCreateDate" ,  "title":"SO Date"   ,            
-					  	  className : 'dt-custom-td80',    	           
+					  	  className : 'dt-custom-td85',    	           
 					  	  type: 'date-euro'  },           //4 
 				    {"data" : "purchaseOrder" ,   "title":"P/O" ,                    
 				  	  	className : 'dt-custom-td160',      
@@ -367,10 +331,10 @@ $(document) .ready( function() {
 						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }    },                   //20
 				    {"data" : "customerDue" ,     "title":"Due Cus.",            
-					  	  className : 'dt-custom-td80',    	        
+					  	  className : 'dt-custom-td85',    	        
 					  	  type: 'date-euro'  },              //21
 				    {"data" : "dueDate" ,         "title":"Due Date",            
-					  	  className : 'dt-custom-td80',    	        
+					  	  className : 'dt-custom-td85',    	        
 					  	  type: 'date-euro'  },              //22  
 				    {"data" : "labNo",			  "title":"Lab No",                        
 						  	  className : 'dt-custom-td100', type: 'string'      },                                    //23
@@ -380,7 +344,7 @@ $(document) .ready( function() {
 				    {"data" : "lotNo",            "title":"Lot"    ,                        
 					  	  className : 'dt-custom-td100', type: 'string'           ,             
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
+							let html = '<div name="n_'+row.lotNo+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.lotNo+'</div>'
 							return  html; 
 					   	  }     },                                       //25 
 				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro',//,             
@@ -401,19 +365,7 @@ $(document) .ready( function() {
 				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",
 				    	  'type': 'date-euro',    
 				  		  orderable: false,                   
-					  	  className : 'CFMPlanLabDateParent dt-custom-td80',              
-// 						  render: function (data, type, row) {	 
-// 						   		var htmlEx = data;                                       
-// 			   					htmlEx = ''      
-// 			   					+ '<div data-search="' + data + '" '          
-// //		 	   					+ ' class="form-control DateInput" '    
-// 			   					+ ' name="DateInput" type="text" '
-// 			   					+ ' value = "' + data   + "' "                 
-// 			   					+ ' autocomplete="off" >'    
-// 			   					+ dateDDMMYYYToDDMM(data)     
-// 			   					+ '</div>';       
-// 						   		return  htmlEx     ;         
-// 							}       
+					  	  className : 'CFMPlanLabDateParent dt-custom-td85',            
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
 				   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
@@ -421,7 +373,7 @@ $(document) .ready( function() {
 									htmlEx = '';     
 								}
 							else{
-								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
 							}
 							return  htmlEx;
 					   	  }             
@@ -430,11 +382,11 @@ $(document) .ready( function() {
 				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //31
 				    {"data" : "tkCFM","title":"TK CFM"},                       						     //32 
 				    {"data" : "cfmPlanDate","title":"Plan CFM Date" ,                      
-					  	  className : 'CFMPlanDateParent dt-custom-td80',       
+					  	  className : 'CFMPlanDateParent dt-custom-td85',       
 						  orderable: false,   
 				  	      type: 'date-euro' },                //33  
 				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro',                      
-					  	  className : 'SendCFMCusDateParent dt-custom-td80',    
+					  	  className : 'SendCFMCusDateParent dt-custom-td85',    
 						  orderable: false,
 		   	  			  render: function (data, type, row) {	
 		 				   		var htmlEx = ''  
@@ -443,12 +395,12 @@ $(document) .ready( function() {
 									htmlEx = row.sendCFMCusDate ; 
 								}
 								else{
-									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
 									+ row.sendCFMCusDate
 									+ '" autocomplete="off" >';
 								} 
 								return  htmlEx
-					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
 						
  				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //35 
 				    {"data" : "userStatus","title":"User Status",      	     
@@ -472,12 +424,12 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}
 							else{   
-								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
 							}
 							return  htmlEx           
 							}	},       //40
 				    {"data" : "lotShipping","title":"Bill Date" ,            
-							  	  className : 'dt-custom-td80',    	        
+							  	  className : 'dt-custom-td85',    	        
 							  	  type: 'date-euro'  },                 //41 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
 				    {"data" : "remark","title":"EFFECT"  , 
 				  	  	className : 'dt-custom-td450 p-r-15',      
@@ -498,15 +450,14 @@ $(document) .ready( function() {
 				   						row.typePrdRemark == "SUB" || 
 				   						row.typePrdRemark == "" ||
 			   						  	row.typePrd == "OrderPuang"){ 
-				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
+				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
 				   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
 								}      
 								else{   
 									htmlEx = '<input data-search="' + row.causeOfDelay
-									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
+									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
 									+ row.causeOfDelay+ '" autocomplete="off" >'; 
 								}
-//		 						htmlEx = '<input class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' + row.CauseOfDelay+ '" autocomplete="off" >'; 
 								return  htmlEx      
 							}         
 				    },                               //43<-------------
@@ -544,7 +495,7 @@ $(document) .ready( function() {
 				  	  	type: 'string'  ,     
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = ''    
-								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
 								return  htmlEx      
 								}    },                                         //45
 				    {"data" : "replacedRemark","title":"ReplacedRemark",                       
@@ -553,16 +504,16 @@ $(document) .ready( function() {
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = '';
 						   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								}         
 						   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								} 
 								else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
 									htmlEx = ''; 
 								}         
 								else{   
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
 								}
 						   		return  htmlEx            
 								}    
@@ -572,7 +523,7 @@ $(document) .ready( function() {
 				   	  	render: function (data, type, row) {	          
 							var htmlEx = ''           
 							if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 							}        
 							else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
 									||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
@@ -580,7 +531,7 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}     
 							else{   
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 							}
 							return  htmlEx      
 							}    },                                 //47
@@ -589,7 +540,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,       
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''    
-							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}      },                                   //48
 				    {"data" : "stockLoad","title":"StockLoad",                       
@@ -597,335 +548,15 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,     
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''       
-							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}       
 						} ,                                                  //49
      
 			],        	                
-            columnDefs :  [	
-// 			    { targets: [ 1 ],
-// 		          orderData: [ 1, 2,25 ]  
-// 		        },   	    
-		        
-// 			 	{  			     
-// 				  targets : [26,29],             
-// 				  render: function (data, type, row) {	 
-// 				   		var htmlEx = data;                                      
-// 	   					htmlEx = ''      
-// 	   					+ '<div data-search="' + data + '" '         
-// // 	   					+ ' class="form-control DateInput" '    
-// 	   					+ ' name="DateInput" type="text" '
-// 	   					+ ' value = "' + data   + "' "                 
-// 	   					+ ' autocomplete="off" >'   
-// 	   					+ dateDDMMYYYToDDMM(data) 
-// 	   					+ '</div>';       
-// 				   		return  htmlEx     ;         
-// 					}                          
-// 				} ,     
-// 				{ targets : [ 4,21 , 22,30 ,41 ],                        
-// 				  	  className : 'dt-custom-td80',    	        
-// 				  	  type: 'date-euro'  
-// 					} ,                              
-// 				{ targets : [ 12,13,14,15,23,25,31 ,35 ],                        
-// 				  	  className : 'dt-custom-td100', type: 'string'     
-// 				} ,   
-// 				{ targets : [ 17,18 ],                        
-// 				  	  className : 'dt-custom-td160',    
-// 				  	  type: 'string'     
-// 				} ,                 
-// 				{ targets : [ 23 ],                            
-// 				  	  className : 'dt-custom-td120',    
-// 				  	  type: 'string'            
-// 				} ,     
-// 				{ targets : [ 29  ],                      
-// 			  	  className : 'CFMPlanLabDateParent dt-custom-td80',       
-// 			  	  type: 'date-euro'     
-// 				} ,   
-// 					{ targets : [ 33 ],                      
-// 				  	  className : 'CFMPlanDateParent dt-custom-td80',   
-// 					  orderable: false,   
-// 			  	      type: 'date-euro'  
-// 				} ,  
-// 				{ targets : [ 34 ],                       
-// 				  	  className : 'SendCFMCusDateParent dt-custom-td80',       
-// 				  	  type: 'date-euro'  
-// 					} ,
-// 				{ targets : [ 40 ],                      
-// 			  	  className : 'DeliveryDateParent dt-custom-td100',       
-// 			  	  type: 'date-euro'  
-// 				} ,   
-// 				{ targets : [3 ,6,24,36,38 ],             	     
-// 			  	  	className : 'dt-custom-td140',      
-// 			  	  	type: 'string'   
-// 					} ,               
-// 				{ targets : [5  ],                    
-// 			  	  	className : 'dt-custom-td160',      
-// 			  	  	type: 'string'   
-// 					} ,            
-// 				{ targets : [ 7,8 ,44 ],                    
-// 			  	  	className : 'dt-custom-td240',       
-// 			  	  	type: 'string'   
-// 				} ,       
-// 				{ targets : [  37,39 ],                          
-// 			  	  	className : 'dt-custom-td300',         
-// 			  	  	type: 'string'     
-// 					} ,            
-// 				{ targets : [  42,43,45,46 ,48,49],                       
-// 			  	  	className : 'dt-custom-td450 p-r-15',      
-// 			  	  	type: 'string'  
-// 					} ,   
-// 					{ targets:[1]  ,       
-// 						render: function (data, type, row) {	     
-// 							let html = '<div name="n_'+row.saleOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.saleOrder+'</div>'
-// 							return  html; 
-// 					   	  }    
-// 					},  
-// 					{ targets:[2]  ,            
-// 						render: function (data, type, row) {	     
-// 							let html = '<div name="n_'+row.saleLine+' data-toggle="tooltip"  title="' + row.typePrd + '"> '+row.saleLine+'</div>'
-// 							return  html; 
-// 					   	  }    
-// 					},  
-// 				{ targets : [ 12 ],                   
-// 			   	  render: function (data, type, row) {	               
-// 						var htmlEx = '';               
-// // 	   					console.log(" omg "+caseDupli+"  "+data+" row.saleLine "+row.lotNo+" "+row.grade+" "+row.saleLine+" "+row.saleOrder+" soLineTmp "+soLineTmp+" soTmp "+soTmp)
-// 			   			if(soLineTmp == '' && soTmp == ''  ){ 
-// 			   				soLineTmp = row.saleLine;     
-// 				   			soTmp = row.saleOrder;        
-// 				   			caseDupli = 0; 
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-// 				   		}  
-// 			   			else if(soLineTmp == row.saleLine && soTmp == row.saleOrder  ){
-// 			   				caseDupli = 1;
-// 				   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+
-// // 				   			row.remainQuantity
-// 				   			data+' </div>'; 
-// 				   		}   
-// 				   		else{       
-// 				   			soLineTmp = row.saleLine;     
-// 				   			soTmp = row.saleOrder;       
-// 				   			caseDupli = 2;
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+data+' </div>'; 
-// 				   		}      
-// // 	   					console.log(htmlEx)
-// 						return  htmlEx
-// 				   	  }     
-// 						} ,       
-// 				{ targets : [ 13 ],        
-// 			   	  render: function (data, type, row) {	   
-// 	   					var htmlEx = '';   
-// 		   				if(caseDupli == 0  ){ 
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-// 				   		}  
-// 			   			else if(caseDupli == 1  ){ 
-// 				   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-// 				   		}   
-// 				   		else{          
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.remainAmount+' </div>'; 
-// 				   		}  
-// 						return  htmlEx
-// 				   	  }    
-// 					} ,  
-// 				{ targets : [ 20 ],        
-// 				   	  render: function (data, type, row) {	               
-// 				   		var htmlEx = '';  
-// 		   				if(caseDupli == 0  ){ 
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-// 				   		}  
-// 			   			else if(caseDupli == 1  ){ 
-// 				   			htmlEx = '<div style="visibility: hidden;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-// 				   		}      
-// 				   		else{          
-// 				   			htmlEx = '<div style="visibility: visible;color: red; font-weight: bolder;">'+row.orderAmount+' </div>'; 
-// 				   		}   
-// 						return  htmlEx
-// 				   	  }    
-// 					} , 
-					         	
-// 					{ targets:[25]  ,       
-// 						render: function (data, type, row) {	     
-// 							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
-// 							return  html; 
-// 					   	  }    
-// 					},  
-// 				{ targets : [ 29 ],    
-// 		  		  orderable: false,    
-// 			   	  render: function (data, type, row) {
-// 		   			var htmlEx = ''     
-// 		   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-// 	   					|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-// 							htmlEx = ''; 
-// 						}
-// 					else{
-// 						htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
-// 					}
-// 					return  htmlEx;
-// 			   	  }            
-// 				} ,
-// 				{ targets : [ 33 ],    
-// 				  orderable: false,
-// 				   	  render: function (data, type, row) {	
-// // 				   		var htmlEx = '' 
-// // 				   			if(row.lotNo  == "รอจัด Lot"	 || row.lotNo  == "ขาย stock"	){ 
-// // 								htmlEx = ''; 
-// // 							}
-// // 						else{
-// // 							htmlEx = '<input class="form-control CFMPlanDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanDate" type="text"  value = "' + row.CFMPlanDate+ '" autocomplete="off" >';
-// // 						} 
-// 						return  row.cfmPlanDate 
-// 				   	  }         
-// 					} ,    
-// 				{ targets : [ 34 ],             
-// 				  orderable: false,
-//    	  			  render: function (data, type, row) {	
-//  				   		var htmlEx = ''  
-// 			   			if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-// 	   					|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-// 							htmlEx = row.sendCFMCusDate ; 
-// 						}
-// 						else{
-// 							htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
-// 							+ row.sendCFMCusDate
-// 							+ '" autocomplete="off" >';
-// 						} 
-// 						return  htmlEx
-// 			   	  }    
-// 				} ,        
-// 				{ targets : [ 40 ],    
-// 				  orderable: false,     
-// 			   	  render: function (data, type, row) {	     
-// 					var htmlEx = ''   
-// 			   		if(row.lotNo  == "รอจัด Lot"	 || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
-// 			   			|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"){ 
-// 						htmlEx = ''; 
-// 					}
-// 					else{   
-// 						htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
-// 					}
-// 					return  htmlEx           
-// 					}	          
-// 				},      
-// 				{ targets : [ 43 ],     
-// 			   	  render: function (data, type, row) {	 
-// 				   		var htmlEx = ''      
-// 			   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
-// 			   					row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""        || row.lotNo == "พ่วงแล้วรอสวม"	|| 
-// 			   					row.lotNo == "รอสวมเคยมี Lot" ){ 
-// 			   				htmlEx = row.causeOfDelay; 
-// 						}         
-// 						else if(     
-// 		   					( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  ||  
-// 		   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") || 
-// 		   						row.typePrdRemark == "SUB" || 
-// 		   						row.typePrdRemark == "" ||
-// 	   						  	row.typePrd == "OrderPuang"){ 
-// 		   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-// 		   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
-// 						}      
-// 						else{   
-// 							htmlEx = '<input data-search="' + row.causeOfDelay
-// 							+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-// 							+ row.causeOfDelay+ '" autocomplete="off" >'; 
-// 						}
-// // 						htmlEx = '<input class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' + row.CauseOfDelay+ '" autocomplete="off" >'; 
-// 						return  htmlEx      
-// 					}         
-// 				}  ,   
-// 				{ targets : [ 44 ],       
-// 			   	  render: function (data, type, row, meta) {	    
-// 			   		var htmlEx = ''         
-				   		 
-// 		   			if( row.lotNo  == "รอจัด Lot" || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก" ||
-// 		   					row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""        || row.lotNo == "พ่วงแล้วรอสวม"	|| 
-// 		   					row.lotNo == "รอสวมเคยมี Lot" ){  
-// 		   				htmlEx = row.delayedDepartment; 
-// 					}   
-// 		   			else if(    
-// 	   					( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || 
-// 	   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN"|| 
-//   							row.typePrdRemark == "SUB" || row.typePrdRemark == "") ||
-//   							row.typePrd == "OrderPuang"){ 
-// 						 htmlEx = '<select data-search="' + row.delayedDepartment+ 
-// 								 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
-// 								 getSelectOptions(data) + '</select>';    
-// 					} 
-		   			                    
-// 					else{   
-// 						htmlEx = '<select data-search="' + row.delayedDepartment+ 
-// 								 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
-// 								 getSelectOptions(data) + '</select>';     
-// 					}  
-// 			   		return  htmlEx      
-// 					}       
-// 				}  ,      
-// 				{ targets : [ 45 ],     
-// 				   	  render: function (data, type, row) {	     
-// 				   		var htmlEx = ''    
-// 						htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
-// 						return  htmlEx      
-// 						}       
-// 					}       
-// 				,         
-// 				{ targets : [ 46 ],     
-// 			   	  render: function (data, type, row) {	     
-// 			   		var htmlEx = '';
-// 			   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-// 						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-// 					}         
-// 			   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-// 			   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-// 					} 
-// 					else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
-// 						htmlEx = ''; 
-// 					}         
-// 					else{   
-// 						htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
-// 					}
-// 			   		return  htmlEx          
-// 					}       
-// 				} ,     
-// 				{ targets : [ 47 ],         
-// 			   	  	render: function (data, type, row) {	          
-// 					var htmlEx = ''           
-// 					if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-// 						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
-// 					}        
-// 					else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
-// 							||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
-// 							|| row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
-// 						htmlEx = ''; 
-// 					}     
-// 					else{   
-// 						htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
-// 					}
-// 					return  htmlEx      
-// 					}       
-// 				} ,    
-// 				{ targets : [ 48 ],     
-// 			   	  	render: function (data, type, row) {	     
-// 					var htmlEx = ''    
-// 					htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
-// 					return  htmlEx      
-// 					}                
-// 				} ,        
-// 				{ targets : [ 49 ],     
-// 			   	  	render: function (data, type, row) {	     
-// 						var htmlEx = ''       
-// 						htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
-// 						return  htmlEx      
-// 						}       
-// 					} ,          
+            columnDefs :  [	 
 			], 
-			createdRow : function(row, data, index) {
-    // 				$('td', row).eq(22).addClass('bg-color-azure');  
-	//   	        $('td', row).eq(27).addClass('bg-color-azure');        
-	//   	        $('td', row).eq(31).addClass('bg-color-azure'); 
-	     		
-// 				if (data["TypePrd"] == "OrderPuang" ) { $(row).addClass('bg-color-azure'); } 
-	// 			if (index == 16 || index == 21 || index == 22 ) { $(row).addClass('bg-color-azure'); } 
-	// 			else if (data["OperationStartDate"] != "") { $(row).addClass('bg-start-im'); }  
+			createdRow : function(row, data, index) { 
 				if(mapsDataHeader.size != 0){      
 					if (data["typePrd"] == "OrderPuang" ) { 	
 						$('td', row).eq(mapsDataHeader.get("saleOrder")).addClass('bg-orderpuang');
@@ -944,12 +575,12 @@ $(document) .ready( function() {
 					}
 					$('td', row).eq(mapsDataHeader.get("dyePlan")).addClass('bg-color-azure'); 
 				} 
-// 				if(mapsDataHeader.size != 0){ $('td', row).eq(mapsDataHeader.get("DyePlan")).addClass('bg-color-azure');      }
 			},     
-			drawCallback: function( settings ){  console.log('drawwwwwwwwww')},   
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
+			},   
 			initComplete: function () { console.log('initcom')}  
 	 	 });      	
- 	// Filter event handler  	
     $( MainTable.table().container() ).on( 'keyup', 'tfoot input', function () {
     	let searchVal = this.value;         
 		soLineTmp = '';            
@@ -961,47 +592,21 @@ $(document) .ready( function() {
 		else{     
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
-    } );
-	// SEARCH BY FILTER UNDER COLUMN NAME : BOAT         
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {                  
-// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
-		let searchVal = this.value;      
-		soLineTmp = '';            
-		soTmp = '';       
+    } );      
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+// 		MainTable.column($(this).data('index')).search(this.value).draw();
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
+		soLineTmp = '';
+		soTmp = '';
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
-		let colHeaderData = columnsHeader[indexAfterReCol].data;
-// 		console.log($(this).data('index'))                     
-// 		console.log(columnsHeader[indexAfterReCol].data)           
-// 		console.log( MainTable.column( indexAfterReCol) .header() )
-// 		console.log( MainTable.column( indexAfterReCol).title() )
+		let colHeaderData = columnsHeader[indexAfterReCol].data; 
 		let regrex = '';   
 		let splitText = searchVal.split('/');
 		let size = splitText.length;
-		if(searchVal  == ' '){                        
-// 			MainTable.column($(this).data('index')).search( '^$', true, false ).draw();
+		if(searchVal  == ' '){                         
 			MainTable.column(indexAfterReCol).search( '^$', true, false ).draw();
-		}      
-// 		else if(indexAfterReCol == 26 || indexAfterReCol == 27 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  } 
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'$';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'$';  } 
-// 			}    
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();   
-// 		}   
-// 		else if(indexAfterReCol == 4 ||  indexAfterReCol == 30 || indexAfterReCol == 31 || indexAfterReCol == 32 ||
-// 				indexAfterReCol == 34 || indexAfterReCol == 35 || indexAfterReCol == 41 ){
-// 			if(size == 1){ regrex = '^'+searchVal+'';  }
-// 			else if(size == 2){
-// 				if(splitText[0] == ''){ regrex = ''+searchVal+'';  }
-// 				else if(splitText[1] == ''){ regrex = '^'+searchVal+'';  }
-// 				else{ regrex = '^'+searchVal+'';  } 
-// 			}       
-// 			else{regrex = ''+searchVal+''; }
-// 			MainTable.column(indexAfterReCol).search( regrex, true, false ).draw();  
-// 		}
+		}       
 		else if(colHeaderData == 'dyePlan' || colHeaderData == 'dyeActual' ){
 			if(size == 1){ regrex = '^'+searchVal+'';  } 
 			else if(size == 2){
@@ -1032,11 +637,7 @@ $(document) .ready( function() {
 	SWMainTable = $('#SWMainTable').DataTable({  
     	scrollY: '100px',            
     	scrollX: true,           
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,        	
 		lengthChange: false,         	  
 		columns : 	
  	   		[   {"data" : "typePrd"  },               
@@ -1050,7 +651,7 @@ $(document) .ready( function() {
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if(row.typePrd == "MAIN"  ){  
-			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
 			   			}
 					else{   
 						 htmlEx = '';
@@ -1065,11 +666,7 @@ $(document) .ready( function() {
     InputDateTable = $('#InputDateTable').DataTable({  
     	scrollY:       '400px',        
     	scrollX: true,          
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,
 		lengthChange: false,         	  
 		columns : 
  	   		[   {"data" : "createDate"  },               
@@ -1081,7 +678,7 @@ $(document) .ready( function() {
 		],        	         
 		columnDefs :  [   
 			{ targets : [0,1, 3 ],                    
-// 			  	  className : 'dt-custom-td80',    
+// 			  	  className : 'dt-custom-td85',    
 			  	  type: 'date-euro'  
 				} ,                      
 			{ targets : [2,4 ],                       
@@ -1091,7 +688,6 @@ $(document) .ready( function() {
 		],        
 		ordering: false,
 		 createdRow : function(row, data, index) {     
-// 			 $(row).addClass("data-custom-padding0505");
 		 },   
  	 });  
     
@@ -1101,31 +697,27 @@ $(document) .ready( function() {
         } );          
     } ).draw();           
  
-// 	 var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;var sendTestQCTable;
-	$('#multi_userStatus').selectpicker();     
-	$('#multi_colVis').selectpicker();   
-	$('#multi_cusName').selectpicker();     
-	$('#multi_cusShortName').selectpicker();   
-	$('#multi_division').selectpicker();   
- 	colList = JSON.parse('${ColList}');  
-	cusNameList = JSON.parse('${CusNameList}');   	
-	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
-	userStatusList = JSON.parse('${UserStatusList}');       
-	columnsHeader = MainTable.settings().init().columns;  
- 	saleNumberList = JSON.parse('${SaleNumberList}');  
- 	divisionList = JSON.parse('${DivisionList}');       
- 	depList = JSON.parse('${DepList}');   
-//  	console.log(depList)  
-	selectOptionDepText = configDepSelectOption(depList) 
-// 	console.log(selectOptionDepText)
- 	addSelectOption(saleNumberList) ;   
-	addUserStatusOption(userStatusList );        
-	addCusNameOption(cusNameList );      
-	addCusShortNameOption(cusShortNameList );        
-	addColOption(columnsHeader ) ;        
-	addDivisionOption(divisionList );      
+	$('#multi_userStatus').selectpicker();
+	$('#multi_colVis').selectpicker();
+	$('#multi_cusName').selectpicker();
+	$('#multi_cusShortName').selectpicker();
+	$('#multi_division').selectpicker();
+ 	colList = JSON.parse('${ColList}');
+	userStatusList = JSON.parse('${UserStatusList}');
+	columnsHeader = MainTable.settings().init().columns;
+ 	saleNumberList = JSON.parse('${SaleNumberList}');
+ 	divisionList = JSON.parse('${DivisionList}');
+ 	depList = JSON.parse('${DepList}');
+ 	cusNameList = JSON.parse('${CusNameList}');
+ 	cusShortNameList  = JSON.parse('${CusShortNameList}');
+	selectOptionDepText = configDepSelectOption(depList); 
+ 	addSelectOption(saleNumberList);
+	addUserStatusOption(userStatusList);
+	addCusNameOption(cusNameList);
+	addCusShortNameOption(cusShortNameList);
+	addColOption(columnsHeader);
+	addDivisionOption(divisionList);
 	settingColumnOption(columnsHeader, colList);   
-// 	addLockColOption(columnsHeader);  
 	addLockColOption(mapsDataHeader,mapsTitleHeader);       
 	$('#multi_userStatus option').attr("selected","selected");
 	$('#multi_userStatus').selectpicker('refresh');
@@ -1136,17 +728,9 @@ $(document) .ready( function() {
 	$('#multi_lockCol').selectpicker('refresh');        
 	$('#multi_division option').attr("selected","selected");
 	$('#multi_division').selectpicker('refresh');    
-// 	$('#SL_userStatus').selectpicker();      
-// 	addUserStatusOption(userStatusList );     
-// 	$('#SL_userStatus').selectpicker('val', userStatusList); 
-	
-	    
 	$("#MainTable_filter").hide();    
 	$("#SWMainTable_filter").hide();      
-// 	$("#MainTable_info").hide();      
-	  
-	$("#InputDateTable_filter").hide();  
-// 	$("#InputDateTable_info").hide();      
+	$("#InputDateTable_filter").hide();   
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { 
     	MainTable.columns.adjust();  
     	InputDateTable.columns.adjust();  
@@ -1170,23 +754,19 @@ $(document) .ready( function() {
 	 	        leftColumns: 0,
 	 	        rightColumns: 0   
 	 	    } );   
-	    	swal({  
-				title: "Success",    
-			 	text: "Clear Lock Success" ,
+	    	Swal.fire({  
+				title: 'สำเร็จ',    
+			 	text: "ปลดล็อกสำเร็จ" ,
 				icon: "success",
-				button: "confirm",
 			});  
 	    }
-	    else{    
-// 	    	 MainTable.colReorder.move( 23, 0 ,true);           
+	    else{           
 			let colReArray = colReOrderBySelect(columnsHeader,selectedItem);
-			swal({  
-				title: "Success",    
-			 	text: "Lock all previous column of "+selectedItem ,
+			Swal.fire({  
+				title: 'สำเร็จ',    
+			 	text: "ล็อกคอลัมน์ก่อนหน้าทั้งหมดของ "+selectedItem ,
 				icon: "success",
-				button: "confirm",
 			});  
-			 
 //			 MainTable.colReorder.order(          
 //					 colReArray   
 //			    		,true); // true make it https://datatables.net/reference/api/colReorder.order() 
@@ -1196,10 +776,7 @@ $(document) .ready( function() {
 //		    		 20,21,22,24,25,26,27,28,29,         
 //		    		 30,31,32,33,34,35 ]   
 //		    		,true); // true make it https://datatables.net/reference/api/colReorder.order() 
-	    }      
-// 	      new $.fn.dataTable.FixedColumns( MainTable );
-// 		columnsHeader = MainTable.settings().init().columns;  
-//     	getVisibleColumnsTable(columnsHeader)        
+	    }       
 	} );   
   	$('#btn_saveDefault').on( 'click', function () {        
 	     saveDefault(); 
@@ -1225,10 +802,11 @@ $(document) .ready( function() {
  		addLockColOption(mapsDataHeader,mapsTitleHeader);           
  		     
  	} );     
-    $('#btn_search').on( 'click', function () {     
-    	$("#submit_button").click()  
-    	soLineTmp = '';            
-		soTmp = '';  
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
+    	$("#submit_button").click()
+    	soLineTmp = '';
+		soTmp = '';
     	searchByDetail();    
     	 var selectedItem = $('#multi_lockCol').val();    // get selected list  
  	    clearStickyInput();
@@ -1243,7 +821,6 @@ $(document) .ready( function() {
  	    }      
  	} );            
  	$('#btn_colSetting').on( 'click', function () {      
-//  		MainTable. colReorder.order( [ 5,1,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ] ); 
  		$('#modalColSetting').modal('show');    
  	} );          
     $('#btn_download').on( 'click', function () {           
@@ -1256,9 +833,7 @@ $(document) .ready( function() {
 		var rowData = MainTable.row($row).data();  
 		var oldValue = rowData.causeOfDelay.trim();  
 		var newValue = $(this).val().trim();            
-// 	    rowData.CauseOfDelay = $(this).val();     
 		handlerInputField("causeOfDelay" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-		//DelayedDep  
 	}) 
   $("#MainTable").on("change",".DelayedDepInput",function(){  
 		  var $row = $(this).parents("tr");
@@ -1266,9 +841,7 @@ $(document) .ready( function() {
 		var rowData = MainTable.row($row).data();  
 		var oldValue = rowData.delayedDepartment.trim();  
 		var newValue = $(this).val().trim();            
-// 	    rowData.DelayedDepartment = $(this).val();     
 		handlerInputField("delayedDep" ,oldValue,newValue,check1,rowData ,MainTable,idx)
-		//DelayedDep  
 	}) 
   $("#MainTable").on("keydown blur",".SwitchRemarkInput", function (e) { 
 		var $row = $(this).parents("tr");
@@ -1285,12 +858,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				swal({   
-		   		    title: 'Warning',      
-		   		    text: "ProductionOrder can't switch same productionOrder.",    
+				Swal.fire({   
+		   		    title: 'คำเตือน',      
+		   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 				})
 			  	rowData.switchRemark  = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -1304,12 +877,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				 swal({   
-			   		    title: 'Warning',      
-			   		    text: "ProductionOrder can't switch same productionOrder.",    
+				 Swal.fire({   
+			   		    title: 'คำเตือน',      
+			   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 			  	rowData.switchRemark = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -1328,15 +901,15 @@ $(document) .ready( function() {
 			oldValue: oldValue,      
 		    idx: idx,  
 	  };  
-		 swal({ 
-			  title: "Are you sure to change "+fieldName+" ?",
-			  text: "From : "+oldValue+" to "+newValue+" ",
+		 Swal.fire({ 
+			  title: "ยืนยันการเปลี่ยน "+fieldName+" ?",
+			  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 			  icon: "warning",
-			  buttons: true,      
-			  dangerMode: true,						   								   																																	  
+			  showCancelButton: true,      
+			  confirmButtonColor: '#d33',						   								   																																	  
 			})
-			.then((willDelete) => {  
-			  if (willDelete) {          
+			.then((result) => {  
+			  if (result.isConfirmed) {          
 			  	setValueWithFieldName(fieldName,rowData,newValue)
 				MainTable.row(idx).invalidate() ;  
 		 		var json = createInputDateJsonData(rowData,fieldName ); 
@@ -1414,12 +987,12 @@ $(document) .ready( function() {
 					else{ break;   } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			   		    title: 'Warning',
-			   		    text: 'After = only numbers are required.',    
+					Swal.fire({   
+			   		    title: 'คำเตือน',
+			   		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else{ handlerInputField("replacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
@@ -1442,9 +1015,9 @@ $(document) .ready( function() {
 					else{ break; } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			  		    title: 'Warning',
-			  		    text: 'After = only numbers are required..',    
+					Swal.fire({   
+			  		    title: 'คำเตือน',
+			  		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			  		    icon: 'warning',
 			  		    timer: 1000,
 			  		    buttons: false,
@@ -1465,12 +1038,12 @@ $(document) .ready( function() {
 			 e.preventDefault();    
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
+	        	Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 } 
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)  }
@@ -1480,12 +1053,12 @@ $(document) .ready( function() {
 			 e.preventDefault();      
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({   
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
+	        	Swal.fire({   
+		   		    title: 'คำเตือน',
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 }
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
@@ -1507,49 +1080,26 @@ $(document) .ready( function() {
 	           	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
-			else{
-// 				swal({ 
-// 					  title: "Are you sure to change date?",
-// 					  text: "From : "+oldValue+" to "+newValue+" ",
-// 					  icon: "warning",
-// 					  buttons: true,  
-// 					  dangerMode: true,						   																																								  
-// 					})
-// 					.then((willDelete) => {        
-// 					  if (willDelete) {     
-// 						  rowData.SendCFMCusDate  = newValue;
-// 						  MainTable.row(idx).invalidate() ;  
-// 						  var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
-// 						  var  obj = JSON.parse(json);    
-// 						  var arrayTmp = [];  
-// 						  arrayTmp.push(obj);       
-// // 						  saveInputDateToServer(arrayTmp);
-						  handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
-// 					  } else { 
-// 						  rowData.SendCFMCusDate  = oldValue;
-// 						  MainTable.row(idx).invalidate() ; 
-// //						  MainTable.row(idx).invalidate().draw(); 
-// 					  }
-// 				});    
-				
+			else{						  
+				handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) ;
 			}            
 			check1= 0;   
 		}                      
@@ -1561,52 +1111,28 @@ $(document) .ready( function() {
 			if(newValue == 'E0'){ 
 	           	rowData.sendCFMCusDate  = oldValue;
 	           	MainTable.row(idx).invalidate() ; 
-//    			MainTable.row(idx).invalidate().draw();  
            }
            else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
-           else{  
-// 	           	 swal({ 
-// 					  title: "Are you sure to change date?",
-// 					  text: "From : "+oldValue+" to "+newValue,
-// 					  icon: "warning",
-// 					  buttons: true,
-// 					  dangerMode: true,																																														  
-// 					})
-// 					.then((willDelete) => {
-// 					  if (willDelete) {  
-// 						  rowData.SendCFMCusDate  = newValue;   
-// 							MainTable.row(idx).invalidate() ;  
-// 	 				 		var json = createInputDateJsonData(rowData,'SendCFMCusDate'); 
-// 	 			 			var  obj = JSON.parse(json);    
-// 	 			 			var arrayTmp = [];  
-// 	 						arrayTmp.push(obj);       
-// // 	 						saveInputDateToServer(arrayTmp);        
-
-						  	handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
-// 					  } else {       
-// 						  rowData.SendCFMCusDate  = oldValue; 
-// 						  MainTable.row(idx).invalidate() ;  
-// //						  MainTable.row(idx).invalidate().draw(); 
-// 					  }
-// 				}); 
+           else{  						  	
+				handlerInputField("sendCFMCusDate" ,oldValue,newValue,check1,rowData ,MainTable,idx) 
 			}
            check1= 0;  
 		} 
@@ -1620,44 +1146,41 @@ $(document) .ready( function() {
 		 if (event.keyCode === 13) {         
 			e.stopImmediatePropagation();   
 			e.preventDefault();       
-			check1 = 1 ;     
-// 			console.log(' newValue ', newValue,' oldValue ',oldValue)     
+			check1 = 1 ;       
 			newValue  = checkDateFormatInput( newValue,oldValue)  
-// 			console.log(' newValue ', newValue,' oldValue ',oldValue)   
-// 			console.log('-----------------------------------' )   
 			if(newValue == 'E0'){ 
              	rowData.cfmPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
 			else{
-				swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
+				Swal.fire({ 
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
+					  showCancelButton: true,  
+					  confirmButtonColor: '#d33',						   																																								  
 					})
-					.then((willDelete) => {        
-					  if (willDelete) {     
+					.then((result) => {        
+					  if (result.isConfirmed) {     
 						  rowData.cfmPlanLabDate  = newValue;
 						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw();  
@@ -1669,7 +1192,6 @@ $(document) .ready( function() {
 					  } else { 
 						  rowData.cfmPlanLabDate  = oldValue;
 						  MainTable.row(idx).invalidate() ; 
-// 						  MainTable.row(idx).invalidate().draw(); 
 					  }
 				});    
 				
@@ -1684,39 +1206,37 @@ $(document) .ready( function() {
 			if(newValue == 'E0'){ 
              	rowData.cfmPlanLabDate  = oldValue;
              	MainTable.row(idx).invalidate() ; 
-//      			MainTable.row(idx).invalidate().draw();  
              }
              else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
              else{  
-	           	 swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue,
+	           	 Swal.fire({ 
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue,
 					  icon: "warning",
-					  buttons: true,
-					  dangerMode: true,																																														  
+					  showCancelButton: true,
+					  confirmButtonColor: '#d33',																																														  
 					})
-					.then((willDelete) => {
-					  if (willDelete) {  
+					.then((result) => {
+					  if (result.isConfirmed) {  
 						  rowData.cfmPlanLabDate  = newValue;
-// 						  MainTable.row(idx).invalidate().draw();  
 							MainTable.row(idx).invalidate() ;  
 	 				 		var json = createInputDateJsonData(rowData,'cfmPlanLabDate'); 
 	 			 			var  obj = JSON.parse(json);    
@@ -1726,7 +1246,6 @@ $(document) .ready( function() {
 					  } else {       
 						  rowData.cfmPlanLabDate  = oldValue; 
 						  MainTable.row(idx).invalidate() ;  
-// 						  MainTable.row(idx).invalidate().draw(); 
 					  }
 				}); 
 			}
@@ -1747,39 +1266,37 @@ $(document) .ready( function() {
 				if(newValue == 'E0'){ 
 	             	rowData.deliveryDate  = oldValue;
 	             	MainTable.row(idx).invalidate() ; 
-// 	     			MainTable.row(idx).invalidate().draw();  
 	             }else if(newValue == 'E1'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+						Swal.fire({
+				   		    title: 'คำเตือน',
+				   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}
 					else if(newValue == 'E2'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Date need greater than equal today.',
+						Swal.fire({
+				   		    title: 'คำเตือน',
+				   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}      
 					else if(newValue == 'E3'){ }
 				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+					Swal.fire({
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 					})     
-					.then((willDelete) => {
-						if (willDelete) {  
+					.then((result) => {
+						if (result.isConfirmed) {  
 							 rowData.deliveryDate  = newValue;
 							 MainTable.row(idx).invalidate() ; 
-// 							 MainTable.row(idx).invalidate().draw();  
 							 var json = createInputDateJsonData(rowData,'deliveryDate'); 
 		 			 			var  obj = JSON.parse(json);    
 		 			 			var arrayTmp = [];  
@@ -1788,7 +1305,6 @@ $(document) .ready( function() {
 						} else { 
 							 rowData.deliveryDate  = oldValue;
 							 MainTable.row(idx).invalidate() ; 
-// 							 MainTable.row(idx).invalidate().draw(); 
 						}
 					});    
 					
@@ -1803,41 +1319,39 @@ $(document) .ready( function() {
 				newValue  = checkDateFormatInput( newValue,oldValue)    
 				if(newValue == 'E0'){ 
 	             	rowData.deliveryDate  = oldValue;
-	             	MainTable.row(idx).invalidate() ; 
-// 	     			MainTable.row(idx).invalidate().draw();  
+	             	MainTable.row(idx).invalidate() ;
 	             }   
 				else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Please check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}      
 				else if(newValue == 'E3'){ }
 				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+					Swal.fire({
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 						})     
-						.then((willDelete) => {
-						  if (willDelete) {  
+						.then((result) => {
+						  if (result.isConfirmed) {  
 							  rowData.deliveryDate  = newValue;
-							  MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw();   
+							  MainTable.row(idx).invalidate() ;
 							  var json = createInputDateJsonData(rowData,'deliveryDate'); 
 		 			 		  var  obj = JSON.parse(json);    
 		 			 		  var arrayTmp = [];  
@@ -1846,29 +1360,12 @@ $(document) .ready( function() {
 						  } else { 
 							  rowData.deliveryDate  = oldValue;
 							  MainTable.row(idx).invalidate() ; 
-// 							  MainTable.row(idx).invalidate().draw(); 
 						  }
 						});    
-					
 				} 
 	             check3= 0; 
 			} 
-		});  
-	 
-// 	$('#MainTable').on('dblclick','td',function(e){
-// // 		scroll_to_contact_form_fn()  
-// 	    var row_object  = MainTable.row(this).data();    
-// 	    if(MainTable.cell(this).index() === undefined){
-	    	
-// 	    } 
-// 	    else{      
-// 	    	 var colIdx = MainTable.cell(this).index().column; 
-// 		    var arrTmp = [];
-// 			arrTmp.push(row_object);
-// 			getInputDate(arrTmp,colIdx);
-// 	    }
-	       
-// 	})      
+		}); 
 	$('#MainTable').on('dblclick','td',function(e){ 
 	    var row_object  = MainTable.row(this).data();             
 	    var $rowC =$(this).attr('class') 
@@ -1896,9 +1393,7 @@ function clearInput(){
 	document.getElementById("input_saleOrder").value = '';  
 	document.getElementById("input_article").value   = '';  
 	document.getElementById("input_prdOrder").value  = '';     
-// 	document.getElementById("input_saleOrderDate").value = '';  
 	document.getElementById("input_designNo").value  = '';  
-// 	document.getElementById("input_prdOrderDate").value  = '';  
 	document.getElementById("input_material").value  = '';         
 	document.getElementById("input_labNo").value     = '';  
 	document.getElementById("input_PO").value     = '';  
@@ -1918,8 +1413,6 @@ function clearInput(){
 	
 }
 function searchByDetail(){ 
-// 	var customer = document.getElementById("input_customer").value .trim();
-// 	var customerShort = document.getElementById("input_customerShortName").value .trim();
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();
@@ -1947,21 +1440,21 @@ function searchByDetail(){
 		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need select some field for search.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกอย่างน้อย 1 ช่องเพื่อค้นหา',
    		    icon: 'warning',   
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}  
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need to choose  distribute channel from check box.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
@@ -2043,15 +1536,6 @@ function createJsonData(){
 	 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
 	 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}
 	 var cusDiv = "";
-// 	 if(configCusList.length > 0 ){ 
-// 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
-// 	 	if(p_cusDiv!=''){ 
-// 	 		cusDiv = p_cusDiv;
-// 	 	} 
-// 	 }
-// 	 else{
-// 		 cusDiv = p_cusDiv; 
-// 	 }
 	var json = '{'+
 // 		'"CustomerName":'+JSON.stringify(customer)+ 
 // 	   ',"CustomerShortName":'+JSON.stringify(customerShort)+ 
@@ -2076,8 +1560,6 @@ function createJsonData(){
 	   ',"distChannel":'+JSON.stringify(distChannel) + 
 	   ',"dueDate":'+JSON.stringify(dueDate) + 
 	   '} ';     
-// 	   console.log(json)
-// 	   console.log(json) 
 	   return json; 
 }
 function exportCSV(data){ 
@@ -2221,29 +1703,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }  
 function saveInputDateToServer(arrayTmp) {   
@@ -2258,47 +1738,43 @@ function saveInputDateToServer(arrayTmp) {
 				var bean = data[0]; 
 				if(bean.iconStatus == 'I0'){    
 					if( bean.countPlanDate >= 35){
-						swal({  
-							title: "Warning",    
+						Swal.fire({  
+							title: 'คำเตือน',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "warning",
-							button: "confirm",
 	   					});  
 					} 
 					else {
-						swal({  
-							title: "Success",    
+						Swal.fire({  
+							title: 'สำเร็จ',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "success",
-							button: "confirm",
 	   					});  	
 					}
 					 
 				}
 				else if(bean.iconStatus == 'I1'){      
-					swal({  
-						title: "Success",    
+					Swal.fire({  
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "success",
-						button: "confirm",
    					});  	  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			} 
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	  
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }    
 function getSwitchProdOrderDetailByPrd( dataP) {      
@@ -2392,11 +1868,10 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			if(data.length > 0){   
 				var bean = data[0];       
 				if(bean.iconStatus == 'I'){ 
-					swal({
-						title: "Success",    
+					Swal.fire({
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",  
    					});  
 					 
 					if(objTmp.fieldName == 'switchRemark' ){ 
@@ -2407,20 +1882,19 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			   		}
 					else if(objTmp.fieldName == 'delayedDep' || objTmp.fieldName == 'causeOfDelay' ||  
 							objTmp.fieldName == 'sendCFMCusDate'){
-						setInputDetailToRowByPrd( arrayTmp ,objTmp ) ; //"DelayedDep"CauseOfDelay
+						setInputDetailToRowByPrd( arrayTmp ,objTmp ) ;
 					}
 					else if(objTmp.fieldName == 'stockLoad' ){
-						setUserStatusByStockLoad( arrayTmp ,objTmp,data ) ; //"DelayedDep"CauseOfDelay
+						setUserStatusByStockLoad( arrayTmp ,objTmp,data ) ;
 					} 
 				} 
 				else{       
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',     
 // 			   		    timer: 2000,
-// 			   		    buttons: false,
-			   		    button: "confirm",    
+// 			   		    showConfirmButton: false,
 			   		})    
 			   		if(objTmp.fieldName == 'switchRemark' || objTmp.fieldName == 'replacedRemark' ){ 
 			   			setValueWithFieldName(objTmp.fieldName,objTmp.rowData,objTmp.oldValue)
@@ -2430,19 +1904,18 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});     
 }    
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/searchByDetail",  
-		success: function(data) {    
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Detail/searchByDetail",
+		success: function(data) {
 			let lastSo = "";
 			let lastLine = "";
 			data.forEach(function(row, i) {
@@ -2454,18 +1927,17 @@ function searchByDetailToServer(arrayTmp) {
 			        lastLine = row.saleLine;
 			    }
 			});
-			
-			
-			MainTable.clear();      
-			MainTable.rows.add(data);      
-			MainTable.columns.adjust().draw();     
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.columns.adjust().draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }       
 </script>
 <script type="text/javascript">  
@@ -2564,27 +2036,11 @@ function settingColumnOption(columnsHeader ,colVisible){
 		$('#multi_colVis option').attr("selected","selected");
 		$('#multi_colVis').selectpicker('refresh');
 	}  
-	else{   
-// 		$('#multi_colVis').selectpicker();   
-// 		columns = MainTable.settings().init().columns; 
-// 		console.log(columns)
-// 		console.log(colVisible)   
-// 		var colVisible = ["Division","SaleOrder","PurchaseOrder"];	
-// 		addColOption(columns ) 
+	else{    
 		setColVisibleTable(columnsHeader,colVisible);    
 		$('#multi_colVis').selectpicker('val', colVisible);        
 	}       
-	getVisibleColumnsTable(columnsHeader)      
-// 	int index = row.MainTable.Columns["Division"].Ordinal;  
-// 	console.log(index)  
-// SELECTED ONLY   
-// 	$("#multi_colVis").each(function(){     
-// 	    console.log( $(this).val() )  
-// 	});       
-// SELECTED ALLOPTION
-// 	$("#multi_colVis option").each(function(){     
-// 		console.log( $(this).val() )  
-// 	});  
+	getVisibleColumnsTable(columnsHeader);
 }
 function addUserStatusOption(data ){ 
 	// The DOM way. 
@@ -2642,8 +2098,7 @@ function addCusNameOption(data ){
 	}  
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		   
-		 var resultData = data[i]; 	   
-// 		 console.log(resultData)
+		 var resultData = data[i];
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
 		 opt.text  = resultData.customerName;  
@@ -2660,7 +2115,7 @@ function addCusShortNameOption(data ){
 	}  
 	var size = data.length;
 	for (var i = 0; i < size; i++) {		
-		 var resultData = data[i]; 	   
+		 var resultData = data[i]; 	    
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
 		 opt.text  = resultData.customerShortName;
@@ -2796,13 +2251,6 @@ function colReOrderBySelect(mainCol,selectedItem) {
 	        leftColumns: countLock,    
 	        rightColumns: 0       
 	    } );
-	//1st param is insert index = 2 means insert at index 2
-	//2nd param is delete item count = 0 means delete 0 elements
-	//3rd param is new item that you want to insert  
-// 	if (index > -1) {  
-// 		arrayCol.splice(index, 1); // 2nd parameter means remove one item only 
-// 		arrayCol.splice(0, 0 , index);
-// 	}   
 	return arrayCol;  
 } 
 function clearStickyInput() {   
@@ -2833,27 +2281,15 @@ function addSelectOption(data){
 		 opt.value = resultData.saleNumber;   
 		 sel.appendChild(opt);          
 	}         
-} 
-// function sumParseFloat(val1,val2){ 
-// 	val1 = val1.replace("px", "");
-// 	val2 = val2.replace("px", "");
-// 	var result = parseFloat(val1) + parseFloat(val2);
-// 	result = result.toFixed(4) + 'px';
-// 	console.log(result)          
-// 	return result  ;​
-// }   
+}   
 function getInputDate(arrTmp,colIdx){      
 	var path ="";  
-// 	console.log(colIdx)    
-// 	if(colIdx == 23){
 	if(colIdx == 'cfmPlanLabDateParent'){	
 		path = ctx+"/Detail/getCFMPlanLabDateDetail";
 	}    
 	else if(colIdx == 'cfmPlanDateParent'){
-// 	else if(colIdx == 27){
 		path = ctx+"/Detail/getCFMPlanDateDetail";
 	}    
-// 	else if(colIdx == 32){
 	else if(colIdx == 'deliveryDateParent'){
 		path = ctx+"/Detail/getDeliveryPlanDateDetail"; 
 	}  
@@ -2868,12 +2304,12 @@ function getInputDate(arrTmp,colIdx){
 		    data : JSON.stringify(arrTmp),    
 		    success : function(data) {
 		    	if(data.length == 0){
-		    		swal({
-			   		    title: 'Warning',
-			   		    text: 'No Data found.',
+		    		Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'ไม่พบข้อมูล',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 		    	}
 		    	else{
@@ -2885,7 +2321,7 @@ function getInputDate(arrTmp,colIdx){
 		    },
 		    error : function(e) {
 		        console.log("ERROR: ", e);
-		        swal("Fail", "Please contact to IT", "error");
+		        Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		    },
 		    done : function(e) {
 		    	console.log(e);
@@ -2905,20 +2341,15 @@ function getVisibleColumnsTable(columnsHeader) {
 	var count = 0;
 	for (var i in columnsHeader) {        
 		check = (MainTable.column( i ).visible() === true ? 'visible' : 'not visible');
-		if((check == 'visible'      
-// 				&& all_columns[i].data == 'DueDate'
+		if((check == 'visible'
 				)){         
-// 			console.log(columnsHeader[i].data)
 			mapsColumnHeader.set(columnsHeader[i].data, columnsHeader[i].type); 
 			mapsTitleHeader.set(columnsHeader[i].title, count); 
 			mapsDataHeader.set(columnsHeader[i].data, count);
 			count = count + 1
-		}    
-		else{        
-// 			unvisible 
-		} 
+		}
 	}     
-}     
+}
 function saveDefault( ){  
 	var json = createJsonData();      
     var  obj = JSON.parse(json);    
@@ -2933,29 +2364,27 @@ function saveDefault( ){
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
@@ -2970,20 +2399,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
-				 	text: "No search default data."  , 
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 
@@ -3029,8 +2457,6 @@ function setSearchDefault(data){
 	else{//saleStatus == 'C'
 		document.getElementById("rad_closed").checked = true;
 	}   
-	 
-// 	console.log(innnerText.SaleNumber,innnerText.DeliveryStatus)
 	document.getElementById('SL_saleNumber').value=innnerText.saleNumber;
 	document.getElementById('SL_delivStatus').value=innnerText.deliveryStatus;
 	
@@ -3065,7 +2491,7 @@ function configDepSelectOption(data) {
 //     var select = $("<select><option value='Select'>Select</option><option value='WaitAnswer'>ส่งแล้วรอตอบ</option><option value='OK'>OK</option><option value='NoK'>NoK</option><option value='Cancel'>Cancel</option></select>");
     let htmlSelectOption = "";
     htmlSelectOption += "<select>";    
-    htmlSelectOption +=  "<option value='Select' selected>Select</option>";
+    htmlSelectOption +=  "<option value='s' selected>Select</option>";
     for(let i = 0 ; i < data.length; i++) {        
     	htmlSelectOption += "<option value='"+data[i].delayedDepartment+"'>"+(i+1)+":"+data[i].delayedDepartment+"</option>";
 	} 
@@ -3089,22 +2515,17 @@ function setValueWithFieldName(fieldName, rowData,value) {
 	  else if(fieldName == 'sendCFMCusDate'){rowData.sendCFMCusDate = value  ; }
 	} 
 function checkIfDigitOnly(_string) {
-	var check = true;   
-// 	const pattern = /^[0-9]+$/;     
-// console.log(_string)
-	const pattern = /^[1-9]\d*(\.\d+)?$/;         
-// console.log(pattern.test(_string))  
+	var check = true;
+	const pattern = /^[1-9]\d*(\.\d+)?$/;       
     if(pattern.test(_string)) {
-//         console.log("String contains only numbers")
-
     	check = true;    
     }
     else {
-//         console.log("String does not contain only numbers") 
     	check = false;
     } 
     return check;
-}function getSwitchProdOrderListByRowProd(arrayTmp) {    
+}
+function getSwitchProdOrderListByRowProd(arrayTmp) {    
 	$.ajax({   
 		type: "POST",  
 		contentType: "application/json",  
@@ -3115,13 +2536,10 @@ function checkIfDigitOnly(_string) {
 			if(data.length > 0){  
 				var bean = data[0];  
 				if(bean.iconStatus == 'E'){ 
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
-// 			   		    timer: 2000,  
-// 			   		    buttons: false,   
-			   		    button: "confirm",
 			   		})
 				}
 				else{       
@@ -3129,21 +2547,14 @@ function checkIfDigitOnly(_string) {
 					SWMainTable.rows.add(data);     
 					SWMainTable.columns.adjust().draw(false); 
 					$('#modalRemarkSW').modal('show');  
-// 					swal({
-// 						title: "Success",    
-// 					 	text: bean.systemStatus ,   
-// 						icon: "info",
-// 						button: "confirm",   
-//    					});  
 				}  
 				 
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});       
 }    
 </script>

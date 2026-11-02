@@ -1,114 +1,129 @@
-	<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ page isELIgnored="false"%> 
+<%@ page isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
-<head>   
-	<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>  
-	<title>PCMS - Summary</title>            	    
-	<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>       
-	<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">    
-	<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">       
-</head>      
-<body>       	         	
-	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>      
-	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>    
-    <jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>    
-		<div id="wrapper-center" class="row" style="margin: 0px 5px;">     
-			<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px;margin: 0px 0px;" >                
-				<div class="table-responsive ">        
-					<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%;   font-size: 12.5px;width:100%">
-				        <thead>          
-				            <tr>
-				                <th class="row-table" style="vertical-align: middle;">SO No. </th>
-				                <th class="row-table" style="vertical-align: middle;">SO Line</th> 
-				                <th class="row-table" style="vertical-align: middle;">PO</th>
-				                <th class="row-table" style="vertical-align: middle;">Article No</th>
-				                <th class="row-table" style="vertical-align: middle;">Design No </th>
-				                <th class="row-table" style="vertical-align: middle;">ATT<span class="c"style="display: block;"> Color</span> </th>  
-				                <th class="row-table" style="vertical-align: middle;">Cust.<span class="c"style="display: block;"> Color</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Order<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Shipped	<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Unit </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> No.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prod.<span class="c"style="display: block;"> Qty.</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Plan<span class="c"style="display: block;"> Greige Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Greige<span class="c"style="display: block;"> In</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">User<span class="c"style="display: block;"> Status</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Due<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Prepare	 </th>  
-				                <th class="row-table" style="vertical-align: middle;">Relax	 </th>  
-				                <th class="row-table" style="vertical-align: middle;">PS </th>      
-				                <th class="row-table" style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> [Actual]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dye <span class="c"style="display: block;"> Status</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">Dryer<span class="c"style="display: block;"> Date</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">FN  </th> 
-				                <th class="row-table" style="vertical-align: middle;">Inspect </th>  
-				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Plan]</span> </th> 
-				                <th class="row-table" style="vertical-align: middle;">CFM Date<span class="c"style="display: block;"> [Actual]</span> </th> 
-								<th class="row-table" style="vertical-align: middle;">CFM Detail   </th>  
-				                <th class="row-table" style="vertical-align: middle;">CFM Remark </th>  
-				                <th class="row-table" style="vertical-align: middle;">Delivery Date </th> 
-				                <th class="row-table" style="vertical-align: middle;">Shipping </th>   
-				        	</tr>      
-				        </thead>          	         
-<!-- 				        <tbody>     -->
-<!-- 				        </tbody>        --> 
-				    </table>            
-				</div>                
-			</div>   	
-		</div>               
-<!-- 		<div id="wrapper-bot" class="row">   -->
-		 
-<!-- 		</div>        -->   
-    <jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include> 
-	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include> 
-	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include> 
-</body>                  
-<script src="<c:url value="/resources/js/DatatableSort.js" />"></script>   
-<script src="<c:url value="/resources/js/General.js" />"></script>     
-<%-- <script src="<c:url value="/resources/js/Encrypt.js" />"></script>    --%>
-  <style>
-  .p-r-15 {padding-right: 15px !important; }
-  </style>
-<!-- <script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>    -->
+<head>
+<jsp:include page="/WEB-INF/pages/config/meta.jsp"></jsp:include>
+<title>PCMS - Summary</title>
+<jsp:include page="/WEB-INF/pages/config/css/baseCSS.jsp"></jsp:include>
+<link href="<c:url value="/resources/css/style_overide.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/pcms-style.css" />" rel="stylesheet" type="text/css">
+<link href="<c:url value="/resources/css/datatable.overide.css" />" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
+	<div id="wrapper-center">
+		<div class="content-panel">
+			<div class="table-responsive ">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font-size: 15px; width: 100%">
+					<thead>
+						<tr>
+							<th class="row-table" style="vertical-align: middle;">SO No.</th>
+							<th class="row-table" style="vertical-align: middle;">SO Line</th>
+							<th class="row-table" style="vertical-align: middle;">PO</th>
+							<th class="row-table" style="vertical-align: middle;">Article No</th>
+							<th class="row-table" style="vertical-align: middle;">Design No</th>
+							<th class="row-table" style="vertical-align: middle;">ATT<span class="c" style="display: block;"> Color</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Cust.<span class="c" style="display: block;"> Color</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Order<span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Shipped <span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Unit</th>
+							<th class="row-table" style="vertical-align: middle;">Prod.<span class="c" style="display: block;"> No.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Prod.<span class="c" style="display: block;"> Qty.</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Plan<span class="c" style="display: block;"> Greige Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Greige<span class="c" style="display: block;"> In</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">User<span class="c" style="display: block;"> Status</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Due<span class="c" style="display: block;"> Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Prepare</th>
+							<th class="row-table" style="vertical-align: middle;">Relax</th>
+							<th class="row-table" style="vertical-align: middle;">PS</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span style="display: block;"> [Plan]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span class="c" style="display: block;"> [Actual]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dye <span class="c" style="display: block;"> Status</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">Dryer<span class="c" style="display: block;"> Date</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">FN</th>
+							<th class="row-table" style="vertical-align: middle;">Inspect</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Date<span class="c" style="display: block;"> [Plan]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Date<span class="c" style="display: block;"> [Actual]</span>
+							</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Detail</th>
+							<th class="row-table" style="vertical-align: middle;">CFM Remark</th>
+							<th class="row-table" style="vertical-align: middle;">Delivery Date</th>
+							<th class="row-table" style="vertical-align: middle;">Shipping</th>
+						</tr>
+					</thead> 
+				</table>
+			</div>
+		</div>
+	</div> 
+	<jsp:include page="/WEB-INF/pages/config/footer.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/PCMSMainModal/modalMain.jsp"></jsp:include>
+	<jsp:include page="/WEB-INF/pages/config/PCMSDetailModal/ColumnSetting/ColumnSetting.jsp"></jsp:include>
+</body>
+<script src="<c:url value="/resources/js/DatatableSort.js" />"></script>
+<script src="<c:url value="/resources/js/General.js" />"></script>
+<script src="<c:url value="/resources/js/web-app.js" />"></script> 
+<style>
+.p-r-15 {
+	padding-right: 15px !important;
+}
+#MainTable td {
+	font-variant-numeric: tabular-nums;
+}
+</style>  
 <script>              	   
 var userId = '' ;   
-var isCustomer = false  ;
-<%-- JSON.stringify(<%= session.getAttribute("user")%> ) --%>
+var isCustomer = false  ; 
 var preloader = document.getElementById('loader');  
 var today = new Date();        //modalForm
 var dd = String('0' + today.getDate()).slice(-2); 
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy;      
-var MainTable ;  
-var poTable ;       
+var MainTable ;
+var poTable ;
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+}       
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
-var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable;
-// var sendTestQCTable;
+var presetTable ;var dyeingTable;var fnTable;var inspectTable;var packingTable; 
 var columnsHeader  = [];
 var colList ;
 var userStatusList ;  	
 var cusNameList ; 
-var divisionList ; 
-var configCusList;
-var cusShortNameList ;  
-var isCustomer = 0 ;  	
+var divisionList ;  
+var cusShortNameList ;
 var workInLabTable ;
-// var waitTestTable;
-var cfmTable;var saleTable;
-// var saleInputTable;
+var cfmTable;
+var saleTable; 
 var submitDateTable;
-var ncTable;
-// var receipeTable;
-var collapsedGroups = {};        
-// var domain = "http://"+window.location.hostname+":8080";
+var ncTable; 
+var collapsedGroups = {};         
 var domain ;
 var urlLBMS ;     
 var urlLBMSObj ; 
@@ -121,10 +136,7 @@ var urlQCMSObj ;
  
 var soTmpExcel ;   
 var soLineTmpExcel;
-var colMap = new Map();
-// console.log(window.location.host)
-// console.log(window.location.hostname)
-// console.log(window.location.origin)   
+var colMap = new Map(); 
 $(document).on('show.bs.modal', '.modal', function (event) {
     var zIndex = 1040 + (10 * $('.modal:visible').length);
     $(this).css('z-index', zIndex);
@@ -194,38 +206,8 @@ $(document) .ready( function() {
 
 	$(document).ajaxStart(function() {$( "#loading").css("display","block"); });   
 	$(document).ajaxStop(function() {$("#loading" ).css("display","none"); });
-<%-- 		var ctx2 = "<%=request.getContextPath()%>" --%>
-// 		var ctx = "${pageContext.request.contextPath}";   
-// 		console.log(ctx2)       ;               
-<%-- 	var saleNumberList = '<%=request.getAttribute("SaleNumberList")%>'; --%> 
-// 	var saleNumberList = JSON.parse('${SaleNumberList}');
-// 	userStatusList = JSON.parse('${UserStatusList}');  
-// 	$('#SL_userStatus').selectpicker();             
-// 	addUserStatusOption(userStatusList );        
-// 	$('#SL_userStatus').selectpicker('val', userStatusList);     
-//   	addSelectOption(saleNumberList)
-// 	$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-// 	      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-// 	  });               
-	
   	DataTable.render.datetime('DD/MM/YYYY HH:mm:ss', 'DD/MM/YYYY HH:mm:ss', 'en')
-  	DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en')
-	// ---------------------------------------- set---------------------------------------------
-	let os = JSON.parse('${OS}');   
-	let result = os.includes("win"); 
-	if(result === true){ domain = "http://"+window.location.hostname+":8080"; }
-	else{ domain = "https://"+window.location.hostname;  } 
-// 	domain = domain+window.location.hostname+:"8080";
-	urlLBMS = domain+"/LBMS/";     
-	urlLBMSObj = domain+"/LBMS/LabHistory"; 
-	urlSFC = domain+"/SFC/"; 
-	urlSFCObj = domain+"/SFC/HistoryWork"; 
-	urlInspect = domain+"/InspectSystem/search/home.html"; 	
-	urlInspectObj = domain+"/InspectSystem/search/home.html"; 
-	urlQCMS = domain+"/QCMS/first.html"; 
-	urlQCMSObj = domain+"/QCMS/request/search.html"; 
-	// ---------------------------------------- set---------------------------------------------
-	userId = JSON.parse('${UserID}' );        
+  	DataTable.render.datetime('DD/MM/YYYY', 'DD/MM/YYYY', 'en')  
 	isCustomer = JSON.parse('${IsCustomer}' );    
 	if(isCustomer  == true){  
 		isCustomer = 1
@@ -247,11 +229,12 @@ $(document) .ready( function() {
     $('#btn_loadDefault').on( 'click', function () {       
 	     loadDefault();
 	} );
-    $('#btn_search').on( 'click', function () {      
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
     	$("#submit_button").click()
-    	soLineTmp = '';            
-		soTmp = '';   
-    	searchByDetail();          
+    	soLineTmp = '';
+		soTmp = '';
+    	searchByDetail();
  	} );                             
     $('#btn_colSetting').on( 'click', function () {      
 // 		MainTable. colReorder.order( [ 5,24,25,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ,1  ] ); 
@@ -272,56 +255,26 @@ $(document) .ready( function() {
 		handlerIsCustomer();
 		getVisibleColumnsTable()
  	} ); 
-	//--------------------------------------- SEARCH ----------------------------------------------
-    $('#btn_lbms').on( 'click', function () {       
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก" || prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false, 
-		   		})
-			}      
-			else { 
-				  var arrayTmp = [];        
-					arrayTmp.push();      
-					getEncrypted('LBMS',tblData,userId,arrayTmp);   
-			}   
-		} 
- 	} ); 
     $('#btn_prdDetail').on( 'click', function () {    
     	var tblData = MainTable.rows( '.selected').data();    
 		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
+			Swal.fire({
+	   		    title: 'คำเตือน',   
+	   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 	   		    icon: 'warning',
 	   		    timer: 1000,
-	   		    buttons: false,
+	   		    showConfirmButton: false,
 	   		})
 		}         
 		else {
 			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
+				Swal.fire({
+		   		    title: 'คำเตือน',   
+		   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 		   		    icon: 'warning',
 		   		    timer: 1000, 
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}      
 			else {
@@ -334,104 +287,13 @@ $(document) .ready( function() {
 				 $('#modalForm').modal('show');  
 			}   
 		}  
- 	} ); 
-    $('#btn_inspect').on( 'click', function () {    
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else {
-					
-				var arrayTmp = [];        
-				arrayTmp.push();      
-				getEncrypted('INSPECT',tblData,userId,arrayTmp);     
-			}   
-		}  
- 	} ); 
-    $('#btn_sfc').on( 'click', function () {      
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else { 
-				var arrayTmp = [];        
-				arrayTmp.push();      
-				getEncrypted('SFC',tblData,userId,arrayTmp);       
-					
-			}   
-		}
-			 
- 	} ); 
-    $('#btn_qcms').on( 'click', function () {      
-    	var tblData = MainTable.rows( '.selected').data(); 
-		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
-	   		    icon: 'warning',
-	   		    timer: 1000,
-	   		    buttons: false,
-	   		})
-		}         
-		else {
-			var prdOrder = tblData[0].productionOrder 
-			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"	||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
-		   		    icon: 'warning',
-		   		    timer: 1000,
-		   		    buttons: false,
-		   		})
-			}      
-			else {
-				 
-				 var arrayTmp = [];        
-					arrayTmp.push();     
-					getEncrypted('QCMS',tblData,userId,arrayTmp);     
-			}   
-		} 
  	} );  
 //     var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
 // 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
-	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
-		var title = $(this).text();         
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
+	$('#MainTable thead tr:eq(1) th') .each( function(i) {
+		var title = $(this).text();
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" placeholder="" aria-label="กรอง ' + title + '"/>');
 	});     
 	 MainTable = $('#MainTable').DataTable({    
 //	     	stateSave: true ,    
@@ -455,23 +317,25 @@ $(document) .ready( function() {
 //	 		colReorder: {      
 //	             realtime: true       
 //	         },                     
-			deferRender: true, // run again in column     
-	 		colReorder: true,  
-			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
-	 	   	columns :    
-	 	   		[      
+			deferRender: true, // run again in column
+	 		/* iFixedColumnsLeft: 2 ปักหมุด SO No. + SO Line (2 คอลัมน์แรก อยู่ริมซ้ายอยู่แล้ว ไม่ต้องย้าย)
+	 		   ให้ลากสลับไม่ได้และ fix ซ้ายไว้เสมอ — คอลัมน์อื่นยังลากสลับได้อิสระเหมือนเดิม */
+	 		colReorder: { realtime: true, iFixedColumnsLeft: 2 },
+			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],
+	 	   	columns :
+	 	   		[
 			    {"data" : "saleOrder",  "title": 'SO No.'} ,         //0
 			    {"data" : "saleLine",  "title": 'SO Line'},              //1
-			    {"data" : "purchaseOrder",  "title": 'PO'}, 
-			    {"data" : "articleFG",  "title": 'Article No'}, 
-			    {"data" : "designFG",  "title": 'Design No'}, 
+			    {"data" : "purchaseOrder",  "title": 'PO'},
+			    {"data" : "articleFG",  "title": 'Article No'},
+			    {"data" : "designFG",  "title": 'Design No'},
 			    {"data" : "color",  "title": 'ATT Color'},               //5
 			    {"data" : "colorCustomer",  "title": 'Cust.Color'},      //6
 			    {"data" : "saleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
 			    {"data" : "billQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
 			    {"data" : "saleUnit",  "title": 'Unit'},                              //9
 			    {"data" : "productionOrder",  "title": 'Prod.No.'},                   //10
-			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
+			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11
 			    {"data" : "planGreigeDate",  "title": 'Plan Greige Date' ,'type': 'date-euro'},            //12
 			    {"data" : "greigeInDate",  "title": 'Greige In' ,'type': 'date-euro'},                     //13
 			    {"data" : "userStatus",  "title": 'User Status'},                     //14
@@ -493,13 +357,13 @@ $(document) .ready( function() {
 			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //30    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
-			columnDefs :  [	        
-				{ targets:[10]  ,           
-					render: function (data, type, row) {	   
-						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
-						return  html; 
-				   	  }    
-				},     
+			columnDefs :  [
+				{ targets:[10]  ,
+					render: function (data, type, row) {
+						let html = '<div name="n_'+row.productionOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.productionOrder+'</div>'
+						return  html;
+				   	  }
+				},
 				{ targets : [ 25],     
 			   	  render: function (data, type, row) {	 
 				   		var htmlEx = dateDDMMYYYToDDMM(row.cfmPlanDate);     
@@ -509,46 +373,17 @@ $(document) .ready( function() {
 				   		return  htmlEx      
 					}         
 				}  ,             
-			 	{  			    
-// 					targets : [13,14,17,18,19,20,21,23,24,25,26,27,28,29],   
+			 	{  			     
 				  targets : [12,13,16,17,18,19,20,22,23,24,26,29,30],             
-				  render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM', 'en')  
-// 				  render: function (data, type, row) {	 
-// 				   		var htmlEx = data;                                      
-// 	   					htmlEx = ''      
-// 	   					+ '<div data-search="' + data + '" '         
-// // 	   					+ ' class="form-control DateInput" '    
-// 	   					+ ' name="DateInput" type="text" '
-// 	   					+ ' value = "' + data   + "' "                 
-// 	   					+ ' autocomplete="off" >'   
-// 	   					+ dateDDMMYYYToDDMM(data) 
-// 	   					+ '</div>';       
-// 				   		return  htmlEx     ;         
-// 					}                          
+				  render: DataTable.render.datetime('DD/MM/YYYY', 'DD/MM', 'en')                      
 				} ,          
 						
-			], 
-//	 		 order: [[2, 'asc'], [1, 'asc']],  
-//	 		rowsGroup: [ 0 ,1,2,3,4,5,6,7,8  ],   
+			],  
 		 	select : {              
 				style: 'os',         
 			 	selector: 'td:not(.status)'  // .status is class        
 	  		},    
-	  		createdRow : function(row, data, index) {
-//	 			$('td', row).eq(16).addClass('bg-color-azure');
-//	   	        $('td', row).eq(21).addClass('bg-color-azure');    
-//	   	        $('td', row).eq(23).addClass('bg-color-azure');   
-//	   			console.log(data.DueDate, index )                   
-// 	  			if(mapsDataHeader.size != 0){     
-// //	   				$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue') ;      
-// 	  				if(data["DueDate"] != "") {      
-// 		 	    		var datearray = data["DueDate"].split("/");
-// 			  	    	var dueDate = new Date(datearray[1] + '/' + datearray[0] + '/' + datearray[2]) ;    
-// 				  	    if (sevenDayAgo >= dueDate   ){             
-// 				  	    	$('td', row).eq(mapsDataHeader.get("DueDate")).addClass('dt-custom-overdue');        
-// 				        }
-// 	  	    		}        
-// 	  			}   
+	  		createdRow : function(row, data, index) { 
 	  			if(mapsDataHeader.size != 0){       
 					if (data["typePrd"] == "OrderPuang" ) { 	         	 
 						$('td', row).eq(mapsDataHeader.get("productionOrder")).addClass('bg-orderpuang'); 
@@ -571,37 +406,38 @@ $(document) .ready( function() {
 					$('td', row).eq(mapsDataHeader.get("deliveryDate")).addClass('bg-color-azure');  
 				} 
 			},      
-			drawCallback: function( settings ) { 
-//	 			console.log(settings) 
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
 			},   
-			initComplete: function () {  
-				if ( isCustomer == 1 ) {      
+			initComplete: function () {
+				if ( isCustomer == 1 ) {
 			        // Hide Office column
-// 			        api.column(27).visible( false );    
-// 			        api.column(28).visible( false );    
+// 			        api.column(27).visible( false );
+// 			        api.column(28).visible( false );
 
 // 			        api.column(mapsDataHeader.get("cfmDetailAll")).visible( false );
 // 			        api.column(mapsDataHeader.get("rollNoRemarkAll")).visible( false );
-			                
-			      }       
-			}      
-	 	 });        
+
+			      }
+			}
+	 	 });
+	 	// ปักหมุด SO No. + SO Line (คอลัมน์ 0-1) ไว้ซ้ายสุดเสมอ แม้เลื่อนตารางแนวนอน
+	 	// ต้องเรียกหลัง MainTable ถูก assign แล้วเท่านั้น — ห้ามเรียกใน initComplete
+	 	// เพราะตอนนั้นตัวแปร MainTable ยังเป็น undefined อยู่ (assignment ยังไม่เสร็จ)
+	 	new $.fn.dataTable.FixedColumns( MainTable, {
+	 		leftColumns: 2,
+	 		rightColumns: 0
+	 	} );
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
     var startdate = moment();
     var subDate = startdate.add(7, "days");
     subDate = startdate.format("MM/DD/YYYY");      
-    var sevenDayAgo = new Date(subDate) ;   
- 
- 
+    var sevenDayAgo = new Date(subDate) ;  
     poTable = $('#poTable').DataTable({  
     	scrollY: '400px',        
     	scrollX: true,      
-    	paging: false,      
-//  	    select : true,               
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false,     	
+    	paging: false,           	
 		lengthChange: false,         	  
  	   	columns : 
  		[      
@@ -733,38 +569,10 @@ $(document) .ready( function() {
 				} ,                         
 		],  order: [[ 0, "desc" ]]     
  	 });   
-//     sendTestQCTable = $('#sendTestQCTable').DataTable({   
-//     	scrollY:        '190px',    
-//     	scrollX: true,      
-//     	paging: false,     
-// //  	 	scrollCollapse: true,                  
-// //  	   	orderCellsTop : true,
-// // 		orderClasses : false, 
-// 		lengthChange: false,         	  
-//  	   	columns : 
-//  		[           
-// 		    {"data" : "sendDate"} ,         //0
-// 		    {"data" : "rollNo"},  
-// 		    {"data" : "status"},  
-// 		    {"data" : "checkColorDate"},  
-// 		    {"data" : "deltaE"},  
-// 		    {"data" : "color"},  
-// 		    {"data" : "remark"},            //6
-// 		],  	          
-// 		columnDefs :  [	   	
-// 			{ targets : [ 0,1,2,3,4,5,6 ],                
-// 			  	  className : 'data-custom-padding0505',    
-// // 		  	 	  type: 'string'      
-// 				} ,           
-// 		],     order: [[ 0, "desc" ]]        
-//  	 });  
     workInLabTable = $('#workInLabTable').DataTable({   
     	scrollY:       '175px',    
     	scrollX: true,               
     	paging: false,
-//  	 	scrollCollapse: true,            
-//  	   	orderCellsTop : true,
-// 		orderClasses : false, 
 		lengthChange: false,         	  
 	   	columns :      
 				[                   
@@ -889,29 +697,10 @@ $(document) .ready( function() {
 //	 		  	 	  type: 'string'      
 					} ,           
 			],     order: [[ 0, "desc" ]]        
-	 	 });    
-// 	    receipeTable = $('#receipeTable').DataTable({   
-// 	    	scrollY:        '175px',         
-// 	    	scrollX: true,      
-// 	    	paging: false,      
-// //	 		orderClasses : false,         
-// 			lengthChange: false,         	  
-// 	 	   	columns :   
-// 	 		[               
-// 			    {"data" : "no"} ,         //0
-// 			    {"data" : "lotNo"},     
-// 			    {"data" : "postingDate"},  
-// 			    {"data" : "receipe"},   
-// 			],  	          
-// 			columnDefs :  [	   	
-// 				{ targets : [ 0,1,2,3 ],                
-// 				  	  className : 'data-custom-padding0505',    
-// //	 		  	 	  type: 'string'      
-// 					} ,               
-// 			],     order: [[ 0, "desc" ]]        
-// 	 	 });      
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
-		let searchVal = this.value;      
+	 	 });        
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
 // 		console.log($(this),$(this).data('index'),indexAfterReCol)
 // 		11 , 14-25 date
@@ -986,12 +775,11 @@ $(document) .ready( function() {
 	$('#multi_division').selectpicker();   
 	colList = JSON.parse('${ColList}');  
 	columnsHeader = MainTable.settings().init().columns;   
-	cusNameList = JSON.parse('${CusNameList}');   	
-	cusShortNameList = JSON.parse('${CusShortNameList}'); ;   
+	cusNameList = JSON.parse('${CusNameList}');   	 
+ 	cusShortNameList  = JSON.parse('${CusShortNameList}');
 	userStatusList = JSON.parse('${UserStatusList}');       
 	divisionList = JSON.parse('${DivisionList}');        
-	var saleNumberList = JSON.parse('${SaleNumberList}');
-	configCusList = JSON.parse('${ConfigCusList}');      
+	var saleNumberList = JSON.parse('${SaleNumberList}'); 
 	handlerIsCustomer(); 
   	addSelectOption(saleNumberList)
 	addUserStatusOption(userStatusList );      
@@ -1065,27 +853,26 @@ function searchByDetail(){
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need select some field for search.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกอย่างน้อย 1 ช่องเพื่อค้นหา',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	} 
 
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need to choose distribute channel from check box.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
-		var json = createJsonData();        
-// 		console.log(json)
+		var json = createJsonData();         
 	    var  obj = JSON.parse(json);    
 		var arrayTmp = [];   
 		arrayTmp.push(obj);      
@@ -1114,15 +901,11 @@ function createJsonData(){
 	var division = $('#multi_division').val(); 
 	 var saleStatus = document.querySelector('input[name="saleStatusRadio"]:checked').value;
 	 
-	 var cusDiv = "";  
-	 if(configCusList.length > 0 ){ 
-// 	 	let p_cusDiv = configCusList[0].customerDivision	 ;
-// 	 	if(p_cusDiv!=''){  cusDiv = p_cusDiv; } 
-	 }     
-		var distChannel = "";  
-		 if( dmCheck ){ distChannel = "DM";}
-		 if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
-		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
+	 var cusDiv = "";   
+	var distChannel = "";  
+	if( dmCheck ){ distChannel = "DM";}
+	if( exCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "EX";}       
+	if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 	var json = '{'+    
 	    '"saleOrder":'+JSON.stringify(saleOrder)+      
 	   ',"articleFG":'+JSON.stringify(article)+  
@@ -1200,10 +983,7 @@ function exportCSV(data){
 					if (colType === undefined){   
 						if(isCustomer == true && data == 'cfmPlanDate'   ){   
 							val = value.sendCFMCusDate;    
-						} 
-						else{   
-// 							innerRowData[indexArray] = val;             
-						}   
+						}    
 						innerRowData[indexArray] = val;   
 					}
 					else if (colType == 'num'){   
@@ -1286,10 +1066,9 @@ function getPrdDetailByRow(arrayTmp) {
 			setModalDetail(data);   
 		},     
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});      
 }     
 function clearInput(){
@@ -1314,33 +1093,29 @@ function clearInput(){
 	$('#multi_cusShortName').selectpicker('refresh'); 
 	$('#multi_division').selectpicker('refresh');       
 }
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",   
-		data: JSON.stringify(arrayTmp),      
-// 	       data :{   
-// //	     	   data:encodeURI(value)
-// 	    	   data:JSON.stringify( arrayTmp 	)
-// 	       },       
-		url: ctx+"/Main/searchByDetail", 
-		success: function(data) {   
-			MainTable.clear();        
-			MainTable.rows.add(data);           
-			MainTable.draw();      
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Main/searchByDetail",
+		success: function(data) {
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }      
 function setModalDetail(data){
     
    	var innnerText = data[0];             
    	poTable.clear();    
-//    	console.log(innnerText)
 	if(innnerText.poDetailList.length == 0){       }     
 	else{ 
 		poTable.rows.add(innnerText.poDetailList);
@@ -1438,133 +1213,8 @@ function setModalDetail(data){
 	document.getElementById("input_remarkCM").value = innnerText.remarkOne+" "+innnerText.remarkTwo+" "+innnerText.remarkThree;   
 	document.getElementById("input_remarkAfterCloseCM").value = innnerText.remAfterCloseOne+" "+innnerText.remAfterCloseTwo+" "+innnerText.remAfterCloseThree;    
 }    
-function goToLBMS(tblData,pUserId,data){     
-// 	let obj = createEncryptObj(pUserId);      
-	var prdOrder = tblData[0].productionOrder
-	var article = tblData[0].articleFG 
-	var color = tblData[0].color 
-	$.ajax({   
-  	    url: urlLBMS,
-  	    type : 'GET',   
-  	    data : { 
-  	    	"comeFrom": data.encrypted  ,   
-  	        "isCustomer": isCustomer
-	    	},   
-  	    success : function(data) {   
-//   	    	var url = "http:/pcms.a-tech.co.th:8080/LBMS/LabHistory"; 
-  	  		var url = urlLBMSObj; 
-  	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {    
-				tab.document.getElementById('input_article').value = article;     
-			 	tab.document.getElementById('input_color').value = color  ;  //'S2A001'  
-				tab.searchHistory();     
-				tab.document.getElementById('nav-prd-tab').click();  
-// 				setTimeout(function(){
-// 					tab.document.getElementById('input_prdMS0').value = "ddddddddd"  ;    
-// 					}, 2000);   
-				setTimeout(function(){     
-// 					tab.document.getElementById('prodOrderTable_filter').value = prdOrder  ;
-// 					tab.$("#prodOrderTable_filter input").value(prdOrder);     
-					tab.$('#prodOrderTable').DataTable().search(prdOrder).draw();
-					},500);                      
-// 				console.log( tab.$('#prodOrderTable').DataTable()  )  
-   	    	};     
-	   		tab.addEventListener('load', (event) => { 
 
-   	    	});        
-   	    } ,	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   
-   	}); 
-}    
-function goToSFC(tblData,pUserId,data){          
-	var prdOrder = tblData[0].productionOrder  
-	$.ajax({    
-	    url: urlSFC,
-	    type : 'GET',      
-	    data : {     
-			"comeFrom": data.encrypted  ,   
-  	        "isCustomer": isCustomer
-// 		    "comeFrom":"PCMS"
-	    },               
-	    success : function(data) {     
-  	    	var url = urlSFCObj; 
-  	    	var tab = window.open(url );  //var tab = window.open(url, '_blank').focus();
-  	    	tab.onload = function() {                
-					tab.document.getElementById('input_searchProductionOrder').value = prdOrder;       
-					tab.searchByPrdOrder(prdOrder);                
-   	    	};        
-	    },	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   	
-	});       
-} 
-function goToInspect(tblData,pUserId,data){  
-	var prdOrder = tblData[0].productionOrder 
-	$.ajax({ 
-	    url: urlInspect,
-	    type : 'GET',      
-// 	    async : false,
-	    data : {
-	    	"comeFrom": data.encrypted  ,
-  	        "isCustomer": isCustomer      	
-// 	    	"comeFrom": "PCMS"
-	    },    
-	    success : function(data) {  
-	    	var url = urlInspectObj; 
-	    	var tab = window.open(url );
-	    	tab.onload = function() {    
-	    	      tab.document.getElementById('prdNumber').value = prdOrder  ;  //'S2A001'
-	    	      tab.document.getElementById('btnSearch').click();     
-    	    };      
-	    },	
-	    error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-			console.log(e)
-		},
-		done: function(e) {       
-		}   
-	});      
-// 	test3T(); 
-}  
-function goToQCMS(tblData,pUserId,data){  
-		var article = tblData[0].articleFG
-		var lotNo = tblData[0].lotNo
-		var color = tblData[0].color 
-		$.ajax({ 
-		    url: urlQCMSObj,
-		    type : 'GET',      
-//	 	    async : false,
-		    data : {    
-		    	"comeFrom": data.encrypted  ,   
-	  	        "isCustomer": isCustomer 
-		    },    
-		    success : function(data) {   
-		    	var url = urlQCMSObj; 
-		    	var tab = window.open(url );
-		    	tab.onload = function() {    
-		    	      tab.document.getElementById('article').value = article  ;  //'S2A001'
-		    	      tab.document.getElementById('lotNumber').value = lotNo  ;  //'S2A001'
-		    	      tab.document.getElementById('color').value = color  ;  //'S2A001' 
-		    	      if(isCustomer != 1){
-			    	      setTimeout(function(){      
-			    	      	 tab.document.getElementById('btnSearchRequest').click();  
-						 }, 500);         
-		    	      }   
-	    	    };          
-		    }    
-		});      
-//	 	test3T(); 
-	} 
-</script>      
+</script>
 <script type="text/javascript">  
 function formatDate(date) {
     var d = new Date(date),
@@ -1684,29 +1334,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }     
 function addUserStatusOption(data ){ 
@@ -1786,9 +1434,9 @@ function addCusNameOption(data ){
 // 		 console.log(resultData)
 		 var opt = document.createElement('option');
 	     opt.appendChild(document.createTextNode(i));
-		 opt.text  = resultData.customerName;  
+		 opt.text  = resultData.customerName ;  
 		 opt.value = resultData.customerName;
-		 sel.appendChild(opt);          
+		 sel.appendChild(opt);           
 	}             
 	$("#multi_cusName").selectpicker("refresh");
 } 
@@ -1862,36 +1510,33 @@ function saveDefault( ){
 			if(response.length > 0){
 				var bean = response[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  //E
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
 	$.ajax({     
 		type: "POST",  
-		contentType: "application/json",  
-// 		data: JSON.stringify(arrayTmp),      
+		contentType: "application/json",     
 		url: ctx+"/Main/loadDefault", 
 		success: function(data) {   
 			if(data.length > 0){
@@ -1899,20 +1544,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
-				 	text: "No search default data."  , 
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 
@@ -1983,29 +1627,6 @@ function setSearchDefault(data){
 	$('#multi_userStatus').selectpicker('refresh');      
 	$('#multi_division').selectpicker('refresh');  
 }       
-function getEncrypted(webApp,tblData,userId,arrayTmp){
-	$.ajax({
-	   type: "POST",     
-		contentType: "application/json",         
-		url: ctx+"/Main/getEncrypted/"+userId,        
-	    data : JSON.stringify(arrayTmp),             
-	    success : function(data) {   
-	    	if(webApp == 'LBMS'){
-	    		goToLBMS(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'SFC'){
-	    		goToSFC(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'INSPECT'){
-	    		goToInspect(tblData,userId,data);
-	    	}
-	    	else if(webApp == 'QCMS'){
-	    		goToQCMS(tblData,userId,data);
-	    	}
-	    	
-	    }   	
-	});    
-}
 function handlerIsCustomer(){
 
 	if(isCustomer == 1 ){ 

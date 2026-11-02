@@ -1,0 +1,13 @@
+{
+  "name": "single_saleorder_switch_target",
+  "description": "PATTAYA KABINBURI + SaleOrder 1109009155 (PT/KB) — ปลายทาง switch จริงของ DEV: SwitchProdOrder P2K069 -> P2I265 โดยมี sale แค่ฝั่ง P2I265 (ฝั่ง P2K069 ไม่มี sale) ทดสอบ #tempProdWorkDate/#tempSumGR filtered ครอบ PO คู่ switch (fix f317d48/33860c6) ค่าจริงจาก DEV 2026-11-01 (PRD มีคู่ switch ที่มี sale แค่ 2 จาก 30 — ไม่ได้ดูข้อมูลระดับแถวของ PRD)",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["PATTAYA KABINBURI CO.,LTD."],
+    "customerShortNameList": ["PT/KB"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "saleOrder": "1109009155"
+  }
+}

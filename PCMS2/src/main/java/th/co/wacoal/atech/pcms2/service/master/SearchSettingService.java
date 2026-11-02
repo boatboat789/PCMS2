@@ -24,17 +24,17 @@ public class SearchSettingService   {
 		return list;
 	}
 
-	public ArrayList<PCMSTableDetail> insertSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage)
+	public ArrayList<PCMSTableDetail> insertSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.insertSearchSettingDetail(poList, forPage);
+		ArrayList<PCMSTableDetail> list = this.dao.insertSearchSettingDetail(user,poList, forPage);
 		return list;
 	}
 
-	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(ArrayList<PCMSTableDetail> poList, String forPage)
+	public ArrayList<PCMSTableDetail> updateSearchSettingDetail(String user, ArrayList<PCMSTableDetail> poList, String forPage)
 	{
 		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.updateSearchSettingDetail(poList, forPage);
+		ArrayList<PCMSTableDetail> list = this.dao.updateSearchSettingDetail(user,poList, forPage);
 		return list;
 	}
 

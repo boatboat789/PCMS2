@@ -1,0 +1,34 @@
+@charset "UTF-8";
+CSS/* Hover effect ที่นุ่มนวลขึ้น + ขยายนิด ๆ */
+.btn {
+  transition: all 0.18s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* ทำให้ข้อความไม่ตัดบรรทัด */
+.btn {
+  white-space: nowrap;
+}
+
+/* มือถือ: เรียงแนวตั้ง + ปุ่มกว้างเต็มจอ */
+@media (max-width: 576px) {
+  .btn-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-group {
+    width: 100%;
+  }
+  .btn {
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .ms-md-auto {
+    margin-left: 0 !important;
+    margin-top: 0.75rem;
+  }
+}

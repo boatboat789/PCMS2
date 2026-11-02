@@ -19,12 +19,12 @@
     <div class="login-box " style="text-align: -webkit-center;">
         <div class="logo" >
             <h1>  
-                <small style="color: #000000 !important;">
+                <small style="color: var(--pcms-text-ink, #000) !important;">
                  	<b class="btitle">PCMS v.2</b>
              	</small>
          	</h1>
          <h4 >
-             <small style="color: #000000 !important;"><b class="bsubtitle">Production Control Monitoring System</b></small>
+             <small style="color: var(--pcms-text-ink, #000) !important;"><b class="bsubtitle">Production Control Monitoring System</b></small>
          </h4>
      </div>
      <div class="card"> 
@@ -34,7 +34,7 @@
 			<form name="login" action="login/loginAuth" method="post">
                  <div class="input-group">
                      <span class="input-group-addon"> 
-                         <i class="fa fa-user" aria-hidden="true"></i>
+                         <i class="fas fa-user" aria-hidden="true"></i>
                      </span> 
                      <div class="form-line">
                          <input class="form-control" id="id_userId" name="userId" type="text" aria-describedby="userHelp" 
@@ -43,13 +43,13 @@
                  </div>  
                  <div class="input-group">
                      <span class="input-group-addon"> 
-						<i class="fa fa-unlock" aria-hidden="true"></i>
+						<i class="fas fa-unlock" aria-hidden="true"></i>
                      </span>
                      <div class="form-line">
                          <input class="form-control password-field"  id="userPassword" name="userPassword" type="password" placeholder="Password">
                      </div>
                      <span class="input-group-addon"> 
-                        <span class="toggle-password fa fa-fw fa-eye fa-eye-slash"></span>
+                        <span class="toggle-password fas fa-fw fa-eye fa-eye-slash"></span>
                      </span>
                  </div>  
 <%--                  <div class="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div> --%>
@@ -88,11 +88,10 @@
 //           console.log(alert)
 //           console.log(alertType)
           if(alert) {
-              swal({
-                  title: 'Warning',
+              Swal.fire({
+                  title: 'คำเตือน',
                   text: alert,
                   icon: alertType ,
-//                   type: '${alerttyp}'
               }).then( function() {
                   $('#username').focus();
               });

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,13 +19,16 @@ import com.google.gson.Gson;
 
 import th.co.wacoal.atech.pcms2.entities.ColumnHiddenDetail;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
+import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PermitDetail;
+import th.co.wacoal.atech.pcms2.logic.PCMSDetailProcess;
 import th.co.wacoal.atech.pcms2.service.PCMSDetailService;
 import th.co.wacoal.atech.pcms2.service.master.ColumnSettingService;
 import th.co.wacoal.atech.pcms2.service.master.ConfigCustomerUserService;
 import th.co.wacoal.atech.pcms2.service.master.ConfigDepartmentService;
+import th.co.wacoal.atech.pcms2.service.master.CustomerService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainSaleService;
 import th.co.wacoal.atech.pcms2.service.master.PermitsService;
 import th.co.wacoal.atech.pcms2.service.master.PlanCFMDateService;
@@ -37,60 +39,50 @@ import th.co.wacoal.atech.pcms2.service.master.PPMM.UserStatusDetailService;
 @Controller
 @RequestMapping(value = { "/Detail" })
 public class PCMSDetailController {
-	@SuppressWarnings("unused")
+	private final PCMSDetailService pcmsDetailService;
+	private final PCMSDetailProcess pCMSDetailProcess;
+	private final UserStatusDetailService usdService;
+	private final ColumnSettingService csService;
+	private final FromSapMainSaleService fromSapMainSaleService;
+	private final ConfigDepartmentService cdmService;
+	private final ConfigCustomerUserService ccuService;
+	private final PermitsService permitsService;
+
+	private final PlanCFMDateService planCFMDateService;
+	private final PlanCFMLabDateService planCFMLabDateService;
+	private final PlanSendCFMCusDateService planSendCFMCusDateService;
+	private final ColumnSettingService columnSettingService;
+	private final CustomerService customerService ;  
+
 	@Autowired
-	private ServletContext context;
-	@SuppressWarnings("unused")
-	private String LOCAL_DIRECTORY;
-	@SuppressWarnings("unused")
-	private String FTP_DIRECTORY;
-	private PCMSDetailService pcmsDetailService;
-	private UserStatusDetailService usdService;
-	private ColumnSettingService csService;
-	private FromSapMainSaleService fsmsService;
-	private ConfigDepartmentService cdmService;
-	private ConfigCustomerUserService ccuService;
-	private PermitsService permitsService;
+	public PCMSDetailController(PCMSDetailService pcmsDetailService, UserStatusDetailService usdService
 
-	private PlanCFMDateService planCFMDateService;
-	private PlanCFMLabDateService planCFMLabDateService ;
-	private PlanSendCFMCusDateService planSendCFMCusDateService;
-	private ColumnSettingService columnSettingService ;
-	@Autowired
-	public PCMSDetailController(PCMSDetailService pcmsDetailService
-			,UserStatusDetailService usdService
-			
-			,PlanCFMDateService planCFMDateService
-			,PlanCFMLabDateService planCFMLabDateService
-			,PlanSendCFMCusDateService planSendCFMCusDateService
-			,ColumnSettingService columnSettingService
+			, PlanCFMDateService planCFMDateService, PlanCFMLabDateService planCFMLabDateService,
+			PlanSendCFMCusDateService planSendCFMCusDateService, ColumnSettingService columnSettingService
 
-			,ColumnSettingService csService
-			,FromSapMainSaleService fsmsService
-			,ConfigDepartmentService cdmService
-			,ConfigCustomerUserService ccuService 
-			,PermitsService permitsService ) {
+			, ColumnSettingService csService, FromSapMainSaleService fromSapMainSaleService, ConfigDepartmentService cdmService,
+			ConfigCustomerUserService ccuService, PermitsService permitsService, PCMSDetailProcess pCMSDetailProcess, CustomerService customerService) {
 
-		this.planCFMDateService = planCFMDateService; 
-		this.planCFMLabDateService = planCFMLabDateService; 
-		this.planSendCFMCusDateService = planSendCFMCusDateService; 
-		this.columnSettingService = columnSettingService; 
-		
-		
+		this.pCMSDetailProcess = pCMSDetailProcess;
+		this.planCFMDateService = planCFMDateService;
+		this.planCFMLabDateService = planCFMLabDateService;
+		this.planSendCFMCusDateService = planSendCFMCusDateService;
+		this.columnSettingService = columnSettingService;
+
 		this.pcmsDetailService = pcmsDetailService;
 		this.usdService = usdService;
 		this.csService = csService;
-		this.fsmsService = fsmsService;
+		this.fromSapMainSaleService = fromSapMainSaleService;
 		this.cdmService = cdmService;
 		this.ccuService = ccuService;
-		this.permitsService = permitsService; 
+		this.permitsService = permitsService;
+		this.customerService = customerService;
 	}
-	
 
 	@RequestMapping(method = { RequestMethod.GET })
 	public ModelAndView getModelAndView(HttpSession session)
 	{
-		ModelAndView mv = new ModelAndView(); 
+		ModelAndView mv = new ModelAndView();
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		if (user != null) {
@@ -100,6 +92,8 @@ public class PCMSDetailController {
 				mv.addObject("errorMsg", "Contact IT for set permission first.");
 			} else {
 				if (permit.isPCMSMain()) {
+					ArrayList<PCMSAllDetail> cusNameList = null ;
+					ArrayList<PCMSAllDetail> cusShortNameList = null ;
 					ArrayList<ColumnHiddenDetail> list = csService.getColumnVisibleDetail(user);
 					String[] arrayCol = null;
 					if (list.size() == 0) {
@@ -114,22 +108,21 @@ public class PCMSDetailController {
 						ConfigCustomerUserDetail ccuDetail = new ConfigCustomerUserDetail();
 						ccuDetail.setUserId(user);
 						listConfigCus.add(ccuDetail);
-					}
-
+					}  
+					cusNameList = this.fromSapMainSaleService.getCustomerNameDetail(); 
+					cusShortNameList = this.fromSapMainSaleService.getCustomerShortNameDetail(); 
 					mv.setViewName("PCMSDetail/PCMSDetail");
 					mv.addObject("PermitIdList", g.toJson(permitsService.getPermitsDetail()));
 					mv.addObject("OS", g.toJson(OS));
 					mv.addObject("UserID", g.toJson(user));
 					mv.addObject("OS", g.toJson(OS));
-					mv.addObject("ColList", g.toJson(arrayCol));
-					mv.addObject("ConfigCusListTest", listConfigCus);
-					mv.addObject("ConfigCusList", g.toJson(listConfigCus));
+					mv.addObject("ColList", g.toJson(arrayCol));  
 					mv.addObject("DepList", g.toJson(cdmService.getDelayedDepartmentList()));
-					mv.addObject("DivisionList", g.toJson(fsmsService.getDivisionDetail()));
-					mv.addObject("SaleNumberList", g.toJson(fsmsService.getSaleNumberDetail()));
+					mv.addObject("DivisionList", g.toJson(fromSapMainSaleService.getDivisionDetail()));
+					mv.addObject("SaleNumberList", g.toJson(fromSapMainSaleService.getSaleNumberDetail()));
 					mv.addObject("UserStatusList", g.toJson(usdService.getUserStatusDetail()));
-					mv.addObject("CusNameList", g.toJson(fsmsService.getCustomerNameDetail()));
-					mv.addObject("CusShortNameList", g.toJson(fsmsService.getCustomerShortNameDetail()));
+					mv.addObject("CusNameList", g.toJson(cusNameList)); 
+					mv.addObject("CusShortNameList", g.toJson(cusShortNameList)); 
 				} else {
 					mv.setViewName("error/AccessDenied"); // Redirect to an access-denied view
 					mv.addObject("errorMsg", "You do not have permission to access this page.");
@@ -147,17 +140,16 @@ public class PCMSDetailController {
 	public void doGetSearchByDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSTableDetail> poList) throws IOException
 	{
-		
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(pcmsDetailService.searchByDetail(poList)));
+		out.println(g.toJson(pcmsDetailService.searchByDetail(poList))); 
 	}
 
 	@RequestMapping(value = "/saveInputDate", method = RequestMethod.POST)
 	public void doGetSaveInputDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
-	{ 
+	{
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		for (PCMSSecondTableDetail bean : poList) {
@@ -172,7 +164,6 @@ public class PCMSDetailController {
 	public void doGetSaveInputDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		for (PCMSSecondTableDetail bean : poList) {
@@ -180,14 +171,13 @@ public class PCMSDetailController {
 		}
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(pcmsDetailService.saveInputDetail(poList)));
+		out.println(g.toJson(pCMSDetailProcess.saveInputDetail(poList)));
 	}
 
 	@RequestMapping(value = "/getCFMPlanDateDetail", method = RequestMethod.POST)
 	public void doGetCFMPlanDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -198,8 +188,6 @@ public class PCMSDetailController {
 	public void doGetCFMPlanLabDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -210,8 +198,6 @@ public class PCMSDetailController {
 	public void doGetDeliveryDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -222,7 +208,6 @@ public class PCMSDetailController {
 	public void doGetSendCFMCusDateDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -245,51 +230,41 @@ public class PCMSDetailController {
 				colVisible += ",";
 			}
 		}
-		ColumnHiddenDetail pd = new ColumnHiddenDetail();
-		pd.setUserId(user);
+		ColumnHiddenDetail pd = new ColumnHiddenDetail(); 
 		pd.setColVisibleDetail(colVisible);
 		poList.add(pd);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(columnSettingService.upsertColumnSettingDetail(pd)));
+		out.println(g.toJson(columnSettingService.upsertColumnSettingDetail(user,pd)));
 	}
 
 	@RequestMapping(value = "/saveDefault", method = RequestMethod.POST)
 	public void doGetSaveDefault(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSTableDetail> poList) throws IOException
 	{
-		
+
 		Gson g = new Gson();
-		String user = (String) session.getAttribute("user");
-		for (PCMSTableDetail bean : poList) {
-			bean.setUserId(user);
-		}
+		String user = (String) session.getAttribute("user"); 
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(pcmsDetailService.saveDefault(poList)));
+		out.println(g.toJson(pCMSDetailProcess.saveDefault(user,poList)));
 	}
 
 	@RequestMapping(value = "/loadDefault", method = RequestMethod.POST)
 	public void doGetLoadDefault(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
-		
+
 		Gson g = new Gson();
-		ArrayList<PCMSTableDetail> poList = new ArrayList<>();
 		String user = (String) session.getAttribute("user");
-		PCMSTableDetail pd = new PCMSTableDetail();
-		pd.setUserId(user);
-		poList.add(pd);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(pcmsDetailService.loadDefault(poList)));
+		out.println(g.toJson(pCMSDetailProcess.loadDefault(user)));
 	}
 
 	@RequestMapping(value = "/getSwitchProdOrderListByPrd", method = RequestMethod.POST)
 	public void doGetSwitchProdOrderListByPrd(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -300,11 +275,9 @@ public class PCMSDetailController {
 	public void doGetSwitchProdOrderListByRowProd(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
-		
-		@SuppressWarnings("unused") String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println(g.toJson(pcmsDetailService.getSwitchProdOrderListByRowProd(poList)));
+		out.println(g.toJson(pCMSDetailProcess.getSwitchProdOrderListByRowProd(poList)));
 	}
 }

@@ -1,0 +1,74 @@
+@charset "UTF-8";
+
+/* =============================================================
+   PCMS2 Design Tokens
+   แก้สีที่นี่ที่เดียว — ใช้ทั่วทั้งระบบ
+   ============================================================= */
+
+:root {
+
+  /* --- Status row colors (row highlighting based on production state) --- */
+  --pcms-status-alert:       salmon;
+  --pcms-status-planning:    sandybrown;
+  --pcms-status-finish:      lightgreen;
+  --pcms-status-start:       #72e1ff;
+  --pcms-status-warning:     #ffff009c;
+  --pcms-status-idle:        #6c757d52;
+  --pcms-status-cfm-pending: papayawhip;
+  --pcms-status-cfm-ok:      lightsteelblue;
+
+  /* row highlight: paired/switch/replaced order */
+  --pcms-row-puang:    #b3d8ff;
+  --pcms-row-switch:   #d0ffcd;
+  --pcms-row-replaced: #fffea7;
+
+  /* --- DataTable colors --- */
+  --pcms-dt-header-bg:       #c0eaf9;
+  --pcms-dt-odd-bg:          #e9ecf0;
+  --pcms-dt-scroll-bg:       whitesmoke;
+  --pcms-dt-selected-bg:     #b0bed9;
+  --pcms-dt-selected-cell-bg:#b0c4de;
+  --pcms-dt-unavailable-bg:  #c0c0c0;
+  --pcms-dt-highlight-bg:    #bbb;
+  --pcms-dt-overdue-bg:      darksalmon;
+  --pcms-dt-lotno-color:     darkcyan;
+
+  /* --- Column group row colors (PCMSDetail groupStdG*) --- */
+  --pcms-row-g1: #f0f0f0;
+  --pcms-row-g2: #dee2e6;
+  --pcms-row-g3: #abd9aa;
+  --pcms-row-g4: #63c16196;
+  --pcms-row-g5: #ffc6077d;
+  --pcms-row-g6: #ff8d07a8;
+  --pcms-row-g7: #ec07ff54;
+  --pcms-row-g8: beige;
+
+  /* --- Error page --- */
+  --pcms-error-bg:     #f8d7da;
+  --pcms-error-text:   #721c24;
+  --pcms-error-border: #f5c6cb;
+
+  /* --- Feedback modals (alert.css) --- */
+  --pcms-feedback-success: green;
+  --pcms-feedback-fail:    salmon;
+
+  /* --- Tooltip --- */
+  --pcms-tooltip-bg: #334155;
+
+  /* --- Borders --- */
+  --pcms-border-strong:  #333333;
+  --pcms-border-medium:  #5B5B5B;
+  --pcms-border-success: #28a745;
+  --pcms-border-muted:   gainsboro;
+
+  /* --- Surfaces / backgrounds --- */
+  --pcms-surface-overlay:    #fff;
+  --pcms-surface-mould:      gainsboro;
+  --pcms-surface-light:      snow;
+  --pcms-surface-tab-active: honeydew;
+  --pcms-surface-wrapper-label: beige;
+  --pcms-surface-search-bar: azure;
+
+  /* --- Text / ink --- */
+  --pcms-text-ink: #000000;
+}

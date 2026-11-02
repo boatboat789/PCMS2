@@ -8,8 +8,6 @@ public interface LogInDao {
 	UserDetail getUserDetail(String userId);
 
 	UserDetail getUserDetail(String userId,String passWord);
-
-	String descryptedText(String ciphertext);
  
 
 }

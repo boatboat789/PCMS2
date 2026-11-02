@@ -2,7 +2,7 @@ package th.co.wacoal.atech.pcms2.service.master.erp.atech;
 
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import th.co.wacoal.atech.pcms2.dao.master.erp.atech.ERPAtechDao;
@@ -22,13 +22,13 @@ import th.co.wacoal.atech.pcms2.entities.erp.atech.FromErpSubmitDateDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
 @Service
-public class ERPAtechService  {  
-	private ERPAtechDao dao;  
+public class ERPAtechService {
+	private ERPAtechDao dao;
 
 	@Autowired
-	public ERPAtechService(ERPAtechDao dao) { 
-			this.dao = dao; 
-	} 
+	public ERPAtechService(ERPAtechDao dao) {
+		this.dao = dao;
+	}
 
 	public ArrayList<CustomerDetail> getCustomerDetail()
 	{
@@ -139,5 +139,13 @@ public class ERPAtechService  {
 		ArrayList<SaleOrderLogDetail> list =
 				this.dao.getFromErpMainSaleDetailWithRangeOfChangeDate(changeDateStart, changeDateEnd, saleOrder);
 		return list;
+	}
+
+	public void setRepairDateFrom(String fromDate) {
+		this.dao.setTimeFocusForCurrentThread(fromDate);
+	}
+
+	public void clearRepairDate() {
+		this.dao.clearTimeFocusForCurrentThread();
 	}
 }

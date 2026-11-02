@@ -1,0 +1,12 @@
+{
+  "name": "userstatus_lotno",
+  "description": "G TECH + userStatus กลุ่ม LotNo: รอจัด Lot — เส้นทาง #tempLotNoList; ค่าจริงจาก categorizeUserStatus",
+  "enabled": true,
+  "bean": {
+    "userStatusList": ["รอจัด Lot"],
+    "customerNameList": ["G TECH MATERIAL CO.,LTD."],
+    "customerShortNameList": ["G TECH"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

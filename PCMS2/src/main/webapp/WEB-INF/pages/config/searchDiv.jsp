@@ -1,13 +1,12 @@
-<%-- <%@ page language="java" contentType="text/html; charset=UTF-8" --%>
-<%--     pageEncoding="UTF-8"%> --%> 
- <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@ page isELIgnored="false"%>              	               
 <iframe id="remember" name= "fakeSubmit" style="    display: none;" ></iframe>      
 <form target="fakeSubmit" method="post" action="Main/fakeSubmit" >    
-	<div id="wrapper-top" class="row" style="  margin: 2px 5px; background-color: azure;     zoom: 85%; " >   
-		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >            
+	<div id="wrapper-top" class="search-panel" style="margin: 2px 5px;">
+		<div class="row">
+		<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 "  >
 			<div class="row">                   
 				<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-group lab-print" >  
 						<label class=" label-input  margin-0" style=" min-width: 100px; " for="multi_cusName">Customer</label>                
@@ -145,20 +144,19 @@
 		<div class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2  "  >      
 			<div class="row">                           
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12 " style="  display: inline-flex;  text-align: -webkit-right;    margin-bottom: 5px;" >  
-	              	<div class="btn-group d-flex" style="    width: inherit; ">         
-	<!-- w-100 -->         
+	              	<div class="btn-group d-flex" style="    width: inherit; ">     
 		              	<button id="btn_search" class="btn btn-primary w-100"  type="button" 
 		              		style=" width: -webkit-fill-available;
 				              		white-space: nowrap;
 								    overflow: hidden;              
 								    text-overflow: ellipsis; 
 							        padding: 1% 0;" > 
-		                    <i class="fa fa-search"></i>   
+		                    <i class="fas fa-search"></i>   
 		                    Search    
 		              	</button>    
 	              		<button id="btn_clear" class="btn btn-secondary w-100" type="button" 
 		              		style="     padding: 1% 0;width: -webkit-fill-available;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" >   
-	                    <i class="fa fa-eraser"></i> 
+	                    <i class="fas fa-eraser"></i> 
 	                    Clear Search
 	              		</button>          
 	              	</div>    
@@ -166,14 +164,15 @@
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
 	              	<button id="btn_download" class="btn btn-primary" type="button" 
 	              		style="padding: 1% 0; width: -webkit-fill-available; " >
-	                    <i class="fa fa-download"></i>     
+	                    <i class="fas fa-download"></i>     
 	                    Download Excel     
 	              	</button>      
 				</div>               
 				<div class="col-12  col-sm-4 col-md-4 col-lg-12 col-xl-12  " style="    text-align: -webkit-right;    margin-bottom: 5px;" >  
-	              	<button id="btn_colSetting" class="btn btn-primary" type="button" 
-	              			style=" padding: 1% 0;width: -webkit-fill-available; " >
-	                    <i class="fa fa-cogs"></i> 
+	              	<button id="btn_colSetting" class="btn btn-primary" type="button"
+	              			style=" padding: 1% 0;width: -webkit-fill-available; "
+	              			title="เลือกคอลัมน์ที่ต้องการแสดง/ซ่อน" >
+	                    <i class="fas fa-cogs"></i> 
 	                    Column Setting  
 	              	</button>        
 				</div>    
@@ -181,11 +180,11 @@
 	              	<div class="btn-group d-flex" style="    width: inherit; ">
 		              	<button id="btn_saveDefault" class="btn btn-success w-100" type="button" 
 		              		style=" padding: 1% 0;width: -webkit-fill-available; " >
-		                    <i class="fa fa-save"></i> 
+		                    <i class="fas fa-save"></i> 
 		                    Save Default   
 		              	</button>  
 		              	<button id="btn_loadDefault" class="btn btn-info  w-100" type="button" style="padding: 1% 0; width: -webkit-fill-available; " >
-		                    <i class="fa fa-wrench"></i> 
+		                    <i class="fas fa-wrench"></i> 
 		                    Load Default 
 	              		</button>       
 	              	</div>   
@@ -233,44 +232,57 @@
 					</div> 
 				</div>     
 				<div class="col-12 col-sm-12 col-md-4 col-lg-6 col-xl-6  form-group lab-print" id="div_toOtherPath" style="justify-content: right;" >   
-					<div class="row">          
-						<div class="col-12  col-sm-12 col-md-12 col-lg-12 col-xl-12  "  > 
-<%-- 						<p>${permit.isPCMSMainToProd()  == true}${permit.isPCMSMainToProd()}</p>      --%>
-							<c:if test="${permit.isPCMSMainToProd()  == true}">      
-				              	<button id="btn_prdDetail" class="btn btn-primary" type="button"  >
-				                    Production Detail 
-				              	</button>     
-			              	</c:if>       	
-			              	<c:if test="${permit.isPCMSMainToLBMS()  == true}">  
-				              	<button id="btn_lbms" class="btn btn-primary" type="button"  >
-				                   LBMS Detail            
-				              	</button>                    
-			              	</c:if>     
-							<c:if test="${permit.isPCMSMainToQCMS()  == true}">  
-				              	<button id="btn_qcms" class="btn btn-primary" type="button"  >
-				                    QCMS Result                
-<%-- 				                    ${permit.getIsQCMSPathBtn()}    --%>
-				              	</button>         
-			              	</c:if>     
-			              	<c:if test="${permit.isPCMSMainToInspect()  == true}">  
-				              	<button id="btn_inspect" class="btn btn-primary" type="button"  >
-				                    Inspect Result     
-				              	</button>             
-			              	</c:if>    
-			              	<c:if test="${permit.isPCMSMainToSFC()  == true}">    
-<%-- 							<c:if test="${userObject.isCustomer  == false }">   --%>
-				              	<button id="btn_sfc" class="btn btn-primary" type="button"  >         
-				                    SFC Detail
-				              	</button>          
-			              	</c:if>   
-			              	<button	 id="btn_lockColumn" class="btn btn-primary" type="button"  >
-			                    Lock Column
-			              	</button>      
-						</div>       
-					</div>    
+					<div class="row mb-3">
+					  <div class="col-12">
+					    <div class="btn-toolbar gap-2 gap-md-3 flex-wrap" role="toolbar" aria-label="PCMS Action Buttons">
+					
+					      <!-- กลุ่มปุ่มระบบหลัก -->
+					      <div class="btn-group flex-wrap" role="group">
+					        <c:if test="${permit.isPCMSMainToProd() == true}">
+					          <button id="btn_prdDetail" class="btn btn-primary" type="button">
+					            <i class="bi bi-gear-wide-connected me-1"></i> Production Detail
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToLBMS() == true}">
+					          <button id="btn_lbms" class="btn btn-success" type="button">
+					            <i class="bi bi-box-seam me-1"></i> LBMS Detail
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToQCMS() == true}">
+					          <button id="btn_qcms" class="btn btn-info" type="button">
+					            <i class="bi bi-check-circle me-1"></i> QCMS Result
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToInspect() == true}">
+					          <button id="btn_inspect" class="btn btn-secondary" type="button">
+					            <i class="bi bi-search me-1"></i> Inspect Result
+					          </button>
+					        </c:if>
+					
+					        <c:if test="${permit.isPCMSMainToSFC() == true}">
+					          <button id="btn_sfc" class="btn btn-dark" type="button">
+					            <i class="bi bi-diagram-3 me-1"></i> SFC Detail
+					          </button>
+					        </c:if>
+					      </div>
+					
+					      <!-- ปุ่ม Lock Column แยกออกมา (อยู่ขวาสุดบนจอใหญ่) -->
+					      <div class="btn-group ms-md-auto" role="group">
+					        <button id="btn_lockColumn" class="btn btn-outline-secondary" type="button">
+					          <i class="bi bi-lock me-1"></i> Lock Column
+					        </button>
+					      </div>
+					
+					    </div>
+					  </div>
+					</div>
 				</div>      
 			</div>    
 		</div>                  
-	</div>   
+		</div>
+	</div>
 	<button id="submit_button"type="submit" style="    display: none;"></button>
 </form>

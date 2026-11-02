@@ -9,13 +9,14 @@ import th.co.wacoal.atech.pcms2.dao.master.ConfigCustomerUserDao;
 import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 
 @Service
-public class ConfigCustomerUserService { 
-	private ConfigCustomerUserDao dao; 
+public class ConfigCustomerUserService {
+	private ConfigCustomerUserDao dao;
 
 	@Autowired
 	public ConfigCustomerUserService(ConfigCustomerUserDao dao) {
-		this.dao = dao; 
-	} 
+		this.dao = dao;
+	}
+
 	public ArrayList<ConfigCustomerUserDetail> getConfigCustomerUserDetail(String userId)
 	{
 		// TODO Auto-generated method stub

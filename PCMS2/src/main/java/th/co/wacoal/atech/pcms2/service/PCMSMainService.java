@@ -17,40 +17,16 @@ public class PCMSMainService {
 	public PCMSMainService(PCMSMainDao dao) { 
 			this.dao = dao; 
 	} 
-
-	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList, boolean isCustomer)
-	{
-		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.searchByDetail(poList, isCustomer);
-		return list;
-	}
+ 
 
 	public ArrayList<PCMSAllDetail> getPrdDetailByRow(ArrayList<PCMSTableDetail> poList)
-	{
-		// TODO Auto-generated method stub
+	{ 
 		ArrayList<PCMSAllDetail> list = this.dao.getPrdDetailByRow(poList);
 		return list;
-	}
-
-	public ArrayList<PCMSAllDetail> getUserStatusList()
-	{
-		// TODO Auto-generated method stub
-		ArrayList<PCMSAllDetail> list = this.dao.getUserStatusList();
-		return list;
-	}
-
-	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList)
-	{
-		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.saveDefault(poList);
-		return list;
-	}
-
-	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList)
-	{
-		// TODO Auto-generated method stub
-		ArrayList<PCMSTableDetail> list = this.dao.loadDefault(poList);
-		return list;
+	} 
+	public ArrayList<PCMSTableDetail> getPCMSSumaryDetail(ArrayList<PCMSTableDetail> poList)
+	{ 
+		return this.dao.getPCMSSumaryDetail(poList);
 	}
 
 }

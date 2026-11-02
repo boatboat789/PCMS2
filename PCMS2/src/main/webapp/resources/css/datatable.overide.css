@@ -5,17 +5,17 @@ table.dataTable, table.dataTable th, table.dataTable td {
 .dt-custom-unavailable {
 	color: white;
 	font-weight: normal;
-	background-color: #c0c0c0 !important;
+	background-color: var(--pcms-dt-unavailable-bg) !important;
 }
 
 .dt-custom-highlight {
 	color: #555;
 	font-weight: normal;
-	background-color: #bbb !important;
+	background-color: var(--pcms-dt-highlight-bg) !important;
 }
 
 .table thead {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 
 td.dt-custom-tvd {
@@ -116,10 +116,10 @@ th.dt-custom-thdate {
 	overflow-wrap: break-word;
 }
 
-td.dt-custom-td80 {
-	width: 80px !important;
-	min-width: 80px !important;
-	max-width: 80px !important;
+td.dt-custom-td85 {
+	width: 85px !important;
+	min-width: 85px !important;
+	max-width: 85px !important;
 	overflow-wrap: break-word;
 	/*vertical-align: middle !important;*/
 }
@@ -152,18 +152,8 @@ th.data-custom-main {
 }
 
 td.data-custom-main {
-	padding: 7px 3px 7px 3px !important;
-	/* 	 width: 230px !important; */
-	/* 	min-width: 230px !important; */
-	/* 	max-width: 230px !important; */
-	/* 	word-wrap: break-word;              */
+	padding: 7px 3px 7px 3px !important; 
 }
-/* .data-custom-padding0505 td { */
-/*     padding: 5px !important;      */
-/* }              */
-/* td .data-custom-padding0505 { */
-/*     padding: 5px !important;           */
-/* }    */
 .table-bordered tbody tr td, .table-bordered tbody tr th {
 	text-align: center;
 	vertical-align: middle;
@@ -178,15 +168,15 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
 }
 
 .dataTables_scrollBody {
-	background-color: whitesmoke;
+	background-color: var(--pcms-dt-scroll-bg);
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable thead th, table.dataTable thead td {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 /* fix column color case  */
 tr.even td {
@@ -194,17 +184,17 @@ tr.even td {
 }
 
 tr.odd td {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable tbody tr.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 table.dataTable tbody tr.odd.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 .fixed-column {
@@ -214,8 +204,7 @@ table.dataTable tbody tr.odd.selected {
 }
 
 table.dataTable tbody tr.selected td {
-	/*    background-color: #B0BED9 !important;*/
-	background-color: #b0c4de !important;
+	background-color: var(--pcms-dt-selected-cell-bg) !important;
 	color: white;
 }
 

@@ -1,0 +1,12 @@
+{
+  "name": "customer_list_TODO",
+  "description": "TODO: ใส่ customerNameList/customerShortNameList จริงที่มีอยู่ใน PRD แล้วเปิด enabled=true",
+  "enabled": false,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["__TODO_CUSTOMER_NAME__"],
+    "customerShortNameList": ["__TODO_CUSTOMER_SHORT_NAME__"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

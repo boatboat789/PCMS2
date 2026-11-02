@@ -1,8 +1,6 @@
 package th.co.wacoal.atech.pcms2.dao.implement;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,19 +9,18 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.ConnectionCallback;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.PCMSDetailDao;
 import th.co.wacoal.atech.pcms2.entities.InputDateDetail;
-import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
-import th.co.wacoal.atech.pcms2.entities.ReplacedProdOrderDetail;
-import th.co.wacoal.atech.pcms2.entities.SwitchProdOrderDetail;
-import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
 import th.co.wacoal.atech.pcms2.service.BackGroundJobService;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.service.PCMSSearchService;
+import th.co.wacoal.atech.pcms2.service.PCMSSelectColumns;
 import th.co.wacoal.atech.pcms2.service.PCMSSqlService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
 import th.co.wacoal.atech.pcms2.service.master.PlanCFMDateService;
@@ -34,7 +31,6 @@ import th.co.wacoal.atech.pcms2.service.master.SearchSettingService;
 import th.co.wacoal.atech.pcms2.service.master.SwitchProdOrderService;
 import th.co.wacoal.atech.pcms2.service.master.TEMP_UserStatusAutoService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class PCMSDetailDaoImpl implements PCMSDetailDao {
@@ -45,11 +41,10 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
 	private String C_PRODORDER = "ProductionOrder";
 	private String C_PRODORDERRP = "ProductionOrderRP";
-	private String CLOSE_STATUS = "X";
-	private BeanCreateService bcModel = new BeanCreateService();  
+	private BeanCreateService bcModel = new BeanCreateService();
 	private String selectWaitLot = ""
 			+ "   a.SaleOrder \r\n"
-			  + "	, a.[SaleLine] \r\n"  
+			+ "	, a.[SaleLine] \r\n"
 			+ "   , a.Division\r\n"
 			+ "   , a.CustomerShortName\r\n"
 			+ "   , a.SaleCreateDate\r\n"
@@ -91,18 +86,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , b.RemarkOne \r\n"
 			+ "   , b.RemarkTwo \r\n"
 			+ "   , b.RemarkThree \r\n"
-			+ "   , k.ReplacedRemark \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark \r\n"
 			+ "   , b.StockRemark\r\n"
 			+ "   , b.GRSumKG \r\n"
 			+ "   , b.GRSumYD \r\n"
 			+ "   , b.GRSumMR \r\n"
 			+ "   , b.DyePlan \r\n"
 			+ "   , b.DyeActual \r\n"
-			+ "   , p.PCRemark\r\n"
-			+ "   , InputDD.[DelayedDep] \r\n"
-			+ "   , InputCOD.[CauseOfDelay] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS PCRemark\r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay] \r\n"
 			+ "   , b.[SwitchRemark]\r\n"
-			+ "   , SL.[StockLoad] \r\n"
+			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad] \r\n"
 			+ "   , b.[PrdCreateDate]\r\n"
 			+ "   , b.LotShipping \r\n"
 			+ "   , b.Volumn \r\n"
@@ -113,7 +108,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , a.[CustomerMaterialBase]\r\n";
 	private String selectOPV2 = ""
 			+ "   a.SaleOrder ,\r\n"
-		    + "   a.[SaleLine], \r\n"  
+			+ "   a.[SaleLine], \r\n"
 			+ "   a.Division,\r\n"
 			+ "   a.CustomerName,--ADD\r\n"
 			+ "   a.SaleStatus,--ADD\r\n"
@@ -141,11 +136,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   a.CFMActualLabDate,\r\n"
 			+ "   a.CFMCusAnsLabDate,\r\n"
 			+ "   a.UserStatusCal as UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n" 
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   a.CFMPlanDate AS CFMPlanDate ,  \r\n"
 			+ "   a.SendCFMCusDate, \r\n"
 			+ "   CASE \r\n"
@@ -161,150 +156,25 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark ,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   a.GRSumKG,\r\n"
 			+ "   a.GRSumYD,\r\n"
 			+ "   a.GRSumMR,\r\n"
 			+ "   a.DyePlan, \r\n"
 			+ "   a.DyeActual, \r\n"
-			+ "   P.PCRemark, \r\n"
-			+ "   InputDD.[DelayedDep], \r\n"
-			+ "   InputCOD.[CauseOfDelay], \r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark, \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay], \r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad], \r\n"
 			+ "   b.[PrdCreateDate],\r\n"
 			+ "   a.LotShipping \r\n";
-	private String selectSW = ""
-			+ "   a.SaleOrder, \r\n"
-			+ "	  a.[SaleLine], \r\n"  
-			+ "   a.Division,\r\n"
-			+ "   a.CustomerShortName,	\r\n"
-			+ "   a.SaleCreateDate,\r\n"
-			+ "   a.PurchaseOrder,\r\n"
-			+ "   a.MaterialNo,\r\n"
-			+ "   a.CustomerMaterial,\r\n"
-			+ "   a.Price,\r\n"
-			+ "   a.SaleUnit,\r\n"
-			+ "   a.OrderAmount,\r\n"
-			+ "   a.SaleQuantity,\r\n"
-			+ "   a.RemainQuantity,\r\n"
-			+ "   a.RemainAmount,\r\n"
-			+ "   b.TotalQuantity,\r\n"
-			+ "   m.Grade,\r\n"
-			+ "   FSMBB.BillSendWeightQuantity,\r\n"
-			+ "   case\r\n"
-			+ "		 WHEN a.SaleUnit  = 'KG' THEN FSMBB.BillSendWeightQuantity   \r\n"
-			+ "		 WHEN a.SaleUnit  = 'YD' THEN FSMBB.BillSendYDQuantity  \r\n"
-			+ "		 ELSE FSMBB.BillSendMRQuantity\r\n"
-			+ "	  end AS BillSendQuantity ,\r\n"
-			+ "   FSMBB.BillSendMRQuantity,\r\n"
-			+ "   FSMBB.BillSendYDQuantity,\r\n"
-			+ "   a.CustomerDue,\r\n"
-			+ "   a.DueDate,\r\n"
-			+ "   b.ProductionOrder,\r\n"
-			+ "   b.LotNo,\r\n"
-			+ "   b.LabNo,\r\n"
-			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
-			+ "   g.CFMActualLabDate,\r\n"
-			+ "   g.CFMCusAnsLabDate,\r\n"
-			+ "   UCAL.UserStatusCal as UserStatus,\r\n"
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n" 
-			+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n"
-			+ "   coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate, \r\n" 
-			+ "   CASE \r\n"
-			+ "		WHEN h.[ProductionOrder] is not null \r\n"
-			+ "		THEN H.DeliveryDate ELSE b.CFTYPE \r\n"
-			+ "		END AS DeliveryDate , \r\n"
-			+ "   CFMDateActual,\r\n"
-			+ "   g.CFMDetailAll, \r\n"
-			+ "   g.CFMNumberAll,  \r\n"
-			+ "   g.CFMRemarkAll, \r\n"
-			+ "   g.RollNoRemarkAll , \r\n"
-			+ "   a.ShipDate,\r\n"
-			+ "   b.RemarkOne,\r\n"
-			+ "   b.RemarkTwo,\r\n"
-			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
-			+ "   m.GRSumKG,\r\n"
-			+ "   m.GRSumYD,\r\n"
-			+ "   m.GRSumMR,\r\n"
-			+ "   g.DyePlan , \r\n"
-			+ "   g.DyeActual, \r\n"
-			+ "   PCRemark, \r\n"
-			+ "   InputDD.[DelayedDep], \r\n"
-			+ "   InputCOD.[CauseOfDelay], \r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad], \r\n"
-			+ "   b.[PrdCreateDate],\r\n"
-			+ "   g.LotShipping,\r\n"
-			+ "   g.PlanGreigeDate\r\n ";
-	private String selectMainV2 = ""
-			+ "   b.SaleOrder, \r\n"
-		    + "   b.[SaleLine], \r\n"  
-			+ "   b.Division,\r\n"
-			+ "   b.CustomerShortName,\r\n"
-			+ "   b.SaleCreateDate,\r\n"
-			+ "   b.PurchaseOrder,\r\n"
-			+ "   b.MaterialNo,\r\n"
-			+ "   b.CustomerMaterial,\r\n"
-			+ "   b.Price,\r\n"
-			+ "   b.SaleUnit,\r\n"
-			+ "   b.OrderAmount,\r\n"
-			+ "   b.SaleQuantity,\r\n"
-			+ "   b.RemainQuantity,\r\n"
-			+ "   b.RemainAmount,\r\n"
-			+ "   b.TotalQuantity,\r\n"
-			+ "   b.Grade,\r\n"
-			+ "   b.BillSendWeightQuantity,\r\n"
-			+ "   b.BillSendQuantity,\r\n"
-			+ "   b.BillSendMRQuantity,\r\n"
-			+ "   b.BillSendYDQuantity,\r\n"
-			+ "   b.CustomerDue,\r\n"
-			+ "   b.DueDate,\r\n"
-			+ "   b.ProductionOrder,\r\n"
-			+ "   b.LotNo,\r\n"
-			+ "   b.LabNo,\r\n"
-			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
-			+ "   b.CFMActualLabDate,\r\n"
-			+ "   b.CFMCusAnsLabDate,\r\n"
-			+ "   b.UserStatus,\r\n" 
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n" 
-			+ "   b.CFMPlanDate AS CFMPlanDate ,  \r\n"
-			+ "   b.SendCFMCusDate,\r\n"
-			+ "   CASE \r\n"
-			+ "		WHEN b.[ProductionOrder] is not null THEN b.DeliveryDate \r\n"
-			+ "		ELSE b.CFTYPE \r\n"
-			+ "		END AS DeliveryDate , \r\n"
-			+ "   b.CFMDateActual,\r\n"
-			+ "   b.CFMDetailAll,\r\n"
-			+ "   b.CFMNumberAll,\r\n"
-			+ "   b.CFMRemarkAll,\r\n"
-			+ "   b.RollNoRemarkAll , \r\n"
-			+ "   b.ShipDate,\r\n"
-			+ "   b.RemarkOne,\r\n"
-			+ "   b.RemarkTwo,\r\n"
-			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
-			+ "   b.GRSumKG,\r\n"
-			+ "   b.GRSumYD,\r\n"
-			+ "   b.GRSumMR,\r\n"
-			+ "   b.DyePlan , \r\n"
-			+ "   b.DyeActual, \r\n"
-			+ "   p.PCRemark,\r\n"
-			+ "   InputDD.[DelayedDep],\r\n"
-			+ "   InputCOD.[CauseOfDelay],\r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad],\r\n"
-			+ "   b.[PrdCreateDate], \r\n"
-			+ "   b.LotShipping\r\n";
+	private String selectSW = PCMSSelectColumns.DETAIL_GRID_SELECT_SW;
+	private String selectMainV2 = PCMSSelectColumns.DETAIL_GRID_SELECT_MAIN_V2;
 	private String selectRPV2 = ""
 			+ "   a.SaleOrder,\r\n"
-		    + "	  a.[SaleLine], \r\n"  
+			+ "	  a.[SaleLine], \r\n"
 			+ "   a.Division,\r\n"
 			+ "   a.CustomerName,--ADD\r\n"
 			+ "   a.SaleStatus,--ADD\r\n"
@@ -336,13 +206,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.LotNo,\r\n"
 			+ "   b.LabNo,\r\n"
 			+ "   b.LabStatus,\r\n"
-			+ "   e.CFMPlanLabDate,\r\n"
+			+ "   CAST(NULL AS date) AS CFMPlanLabDate,\r\n"
 			+ "   g.CFMActualLabDate,\r\n"
 			+ "   g.CFMCusAnsLabDate,\r\n"
-			+ "   UCALRP.UserStatusCalRP as UserStatus,\r\n" 
-			+ "   coalesce ( TAPP.SORCFMDate ,j.CFMDate ) AS TKCFM, \r\n" 
+			+ "   UCALRP.UserStatusCalRP as UserStatus,\r\n"
+			+ "   CAST(NULL AS date) AS TKCFM, \r\n"
 			+ "   g.CFMPlanDate AS CFMPlanDate ,  \r\n"
-			+ "   coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate, \r\n"  
+			+ "   coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate, \r\n"
 			+ "   CASE \r\n"
 			+ "		WHEN h.[ProductionOrder] is not null THEN H.DeliveryDate \r\n"
 			+ "		ELSE b.CFTYPE \r\n"
@@ -356,185 +226,23 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   b.RemarkOne,\r\n"
 			+ "   b.RemarkTwo,\r\n"
 			+ "   b.RemarkThree ,\r\n"
-			+ "   k.ReplacedRemark ,\r\n"
-			+ "   l.StockRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS StockRemark,\r\n"
 			+ "   m.GRSumKG,\r\n"
 			+ "   m.GRSumYD,\r\n"
 			+ "   m.GRSumMR,\r\n"
 			+ "   g.DyePlan , \r\n"
 			+ "   g.DyeActual, \r\n"
-			+ "   PCRemark,\r\n"
-			+ "   InputDD.[DelayedDep],\r\n"
-			+ "   InputCOD.[CauseOfDelay],\r\n"
-			+ "   q.[SwitchRemark],\r\n"
-			+ "   SL.[StockLoad],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS PCRemark,\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [SwitchRemark],\r\n"
+			+ "   CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad],\r\n"
 			+ "   b.[PrdCreateDate],\r\n"
 			+ "   g.LotShipping, \r\n"
 			+ "   g.PlanGreigeDate\r\n";
-	private String selectAll = ""
-			+ "   a.SaleOrder,\r\n"
-			+ "   a.[SaleLine] ,\r\n"
-			+ "   a.Division,\r\n"
-			+ "   a.CustomerShortName,	 \r\n"
-			+ "   a.SaleCreateDate,\r\n"
-			+ "   a.PurchaseOrder,\r\n"
-			+ "   a.MaterialNo,\r\n"
-			+ "   a.CustomerMaterial,\r\n"
-			+ "   a.Price,\r\n"
-			+ "   a.SaleUnit,\r\n"
-			+ "   a.OrderAmount,\r\n"
-			+ "   a.SaleQuantity,\r\n"
-			+ "   a.RemainQuantity,\r\n"
-			+ "   a.RemainAmount,\r\n"
-			+ "   a.TotalQuantity,\r\n"
-			+ "   a.Grade,\r\n"
-			+ "   a.BillSendWeightQuantity, \r\n"
-			+ "   a.BillSendQuantity, \r\n"
-			+ "   a.BillSendMRQuantity,\r\n"
-			+ "   a.BillSendYDQuantity, \r\n"
-			+ "   a.CustomerDue,\r\n"
-			+ "   a.DueDate,\r\n"
-			+ "   a.ProductionOrder,\r\n"
-			+ "   a.LotNo,\r\n"
-			+ "   a.LabNo,\r\n"
-			+ "   a.LabStatus,\r\n"
-			+ "   a.CFMPlanLabDate,\r\n"
-			+ "   a.CFMActualLabDate,\r\n"
-			+ "   a.CFMCusAnsLabDate,\r\n"
-			+ "   a.UserStatus,\r\n"
-			+ "   a.TKCFM,\r\n"
-			+ "   a.CFMPlanDate ,  \r\n"
-			+ "   a.SendCFMCusDate,\r\n"
-			+ "   a.DeliveryDate , \r\n"
-			+ "   a.CFMDateActual,\r\n"
-			+ "   a.CFMDetailAll, \r\n"
-			+ "   a.CFMNumberAll,  \r\n"
-			+ "   a.CFMRemarkAll, \r\n"
-			+ "   a.RollNoRemarkAll , \r\n"
-			+ "   a.ShipDate,\r\n"
-			+ "   a.RemarkOne,\r\n"
-			+ "   a.RemarkTwo,\r\n"
-			+ "   a.RemarkThree ,\r\n"
-			+ "   a.ReplacedRemark ,\r\n"
-			+ "   a.StockRemark,\r\n"
-			+ "   a.GRSumKG,\r\n"
-			+ "   a.GRSumYD,\r\n"
-			+ "   a.GRSumMR,\r\n"
-			+ "   a.DyePlan, \r\n"
-			+ "   a.DyeActual, \r\n"
-			+ "   a.PCRemark,\r\n"
-			+ "   a.[DelayedDep],\r\n"
-			+ "   a.[CauseOfDelay],\r\n"
-			+ "   a.[SwitchRemark],\r\n"
-			+ "   a.[StockLoad],\r\n"
-			+ "   a.[PrdCreateDate]\r\n"
-			+ "   , a.LotShipping\r\n"
-			+ "   , a.Volumn  \r\n"
-			+ "   , a.VolumnFGAmount \r\n"
-			+ "   , a.TypePrd \r\n"
-			+ "   , a.TypePrdRemark \r\n" 
-			+ "   , a.[DyeStatus]\r\n"
-			+ "   , a.[CustomerMaterialBase]\r\n";
-
-
-	private String leftJoinBSelect = ""
-			+ "                 a.[SaleOrder]\r\n"
-			+ "                ,a.[Saleline]\r\n"
-			+ "                ,a.[TotalQuantity]\r\n"
-			+ "                ,a.[Unit]\r\n"
-			+ "                ,a.[RemAfterCloseOne]\r\n"
-			+ "                ,a.[RemAfterCloseTwo]\r\n"
-			+ "                ,a.[RemAfterCloseThree]\r\n"
-			+ "                ,a.[LabStatus]\r\n"
-			+ "                ,a.[DesignFG]\r\n"
-			+ "                ,a.[ArticleFG]\r\n"
-			+ "                ,a.[BookNo]\r\n"
-			+ "                ,a.[Center]\r\n"
-			+ "                ,a.[Batch]\r\n"
-			+ "                ,a.[LabNo]\r\n"
-			+ "                ,a.[RemarkOne]\r\n"
-			+ "                ,a.[RemarkTwo]\r\n"
-			+ "                ,a.[RemarkThree]\r\n"
-			+ "                ,a.[BCAware]\r\n"
-			+ "                ,a.[OrderPuang]\r\n"
-			+ "                ,a.[RefPrd]\r\n"
-			+ "                ,a.[GreigeInDate]\r\n"
-			+ "                ,a.[BCDate]\r\n"
-			+ "                ,a.[Volumn]\r\n"
-			+ "                ,a.[CFdate]\r\n"
-			+ "                ,a.[CFType]\r\n"
-			+ "                ,a.[Shade]\r\n"
-			+ "                ,g.[LotShipping]\r\n"
-			+ "                ,m.[Grade]\r\n"
-			+ "                ,a.[PrdCreateDate]\r\n"
-			+ "                ,a.[GreigeArticle]\r\n"
-			+ "                ,a.[GreigeDesign]\r\n"
-			+ "                ,a.[GreigeMR]\r\n"
-			+ "                ,a.[GreigeKG]\r\n"
-			+ "                ,a.[ProductionOrder]\r\n"
-			+ "                ,a.[LotNo]\r\n\r\n"
-			+ "			       , volCalc.adjVol AS SumVol\r\n"
-			+ "				   , a.Price * volCalc.adjVol AS SumVolFGAmount" 
-			+ "                ,s.SumVolRP\r\n"
-			+ "                ,t.SumVolOP\r\n"
-			+ "                ,a.Volumn as RealVolumn\r\n"
-			+ "                ,g.[DyePlan]\r\n"
-			+ "                ,g.[DyeActual]\r\n"
-			+ "                ,g.[Dryer]\r\n"
-			+ "                ,g.[Finishing]\r\n"
-			+ "                ,g.[Inspectation]\r\n"
-			+ "                ,g.[Prepare]\r\n"
-			+ "                ,g.[Preset]\r\n"
-			+ "                ,g.[Relax]\r\n"
-			+ "                ,g.[CFMDateActual]\r\n"
-			+ "                ,g.[CFMPlanDate]\r\n"
-			+ "                ,g.[DyeStatus]\r\n"
-			+ "                ,h.DeliveryDate\r\n"
-			+ "                ,UCAL.UserStatusCal as UserStatus\r\n"
-			+ "  			   ,coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate \r\n"   
-			+ "                ,GRSumKG\r\n"
-			+ "                ,GRSumYD\r\n"
-			+ "                ,GRSumMR\r\n"
-			+ "                ,g.CFMDetailAll\r\n"
-			+ "                ,g.CFMNumberAll\r\n"
-			+ "                ,g.CFMRemarkAll\r\n"
-			+ "                ,g.RollNoRemarkAll\r\n"
-			+ "                ,g.CFMActualLabDate\r\n"
-			+ "                ,g.CFMCusAnsLabDate\r\n"
-			+ "                ,FSMBB.BillSendWeightQuantity\r\n"
-			+ "                ,case\r\n"
-			+ "                   WHEN a.SaleUnit = 'KG' THEN FSMBB.BillSendWeightQuantity\r\n"
-			+ "                   WHEN a.SaleUnit = 'YD' THEN FSMBB.BillSendYDQuantity\r\n"
-			+ "                   ELSE FSMBB.BillSendMRQuantity\r\n"
-			+ "                 end                AS BillSendQuantity\r\n"
-			+ "                ,FSMBB.BillSendMRQuantity\r\n"
-			+ "                ,FSMBB.BillSendYDQuantity\r\n"
-			+ "                ,g.PlanGreigeDate\r\n"
-			+ "                ,a.Division\r\n"
-			+ "                ,a.CustomerShortName\r\n"
-			+ "                ,a.SaleCreateDate\r\n"
-			+ "                ,a.PurchaseOrder\r\n"
-			+ "                ,a.MaterialNo\r\n"
-			+ "                ,a.CustomerMaterial\r\n"
-			+ "                ,a.CustomerMaterialBase\r\n"
-			+ "                ,a.Price\r\n"
-			+ "                ,a.SaleUnit\r\n"
-			+ "                ,a.OrderAmount\r\n"
-			+ "                ,a.SaleQuantity\r\n"
-			+ "                ,a.RemainQuantity\r\n"
-			+ "                ,a.RemainAmount\r\n"
-			+ "                ,a.CustomerDue\r\n"
-			+ "                ,a.DueDate\r\n"
-			+ "                ,a.ShipDate\r\n"
-			+ "                ,a.[SaleNumber]\r\n"
-			+ "                ,a.[SaleFullName]\r\n"
-			+ "                ,a.DistChannel\r\n"
-			+ "                ,a.Color\r\n"
-			+ "                ,a.ColorCustomer\r\n"
-			+ "                ,a.CustomerName\r\n"
-			+ "                ,a.DeliveryStatus\r\n"
-			+ "                ,a.SaleStatus\r\n"
-			+ ""; 
+	private String selectAll = PCMSSelectColumns.DETAIL_GRID_SELECT_ALL;
+	private String leftJoinBSelect = PCMSSelectColumns.DETAIL_GRID_LEFT_JOIN_BSELECT;
 	private String createTempMainFirst = ""
 			+ " SELECT \r\n"
 			+ this.selectMainV2
@@ -551,41 +259,16 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , b.[DyeStatus]\r\n"
 			+ "   , b.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempMain  \r\n";
-	private String createTempMainSecond = "" 
-			+ this.pss.getLeftJoinPlanCFMLabDate("b", "b") 
-			+ this.pss.getLeftJoinFromSORCFM("b") 
-			+ this.pss.getLeftJoinTAPP("b") 
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "b")
-			+ this.pss.getLeftJoinInputStockRemark("b", "b","b") 
-			+ this.pss.getLeftJoinInputPCRemark("b", "b") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "b") 
-			+ this.pss.getLeftJoinSwitchProdOrder("b") 
-			+ this.pss.getLeftJoinCRP("b") 
-			+ this.pss.buildLeftJoinViewUSM_SPE("b",0) 
-			+ " where \r\n"
-			+ "		( \r\n"
-			+ "        b.SumVol Is not null or\r\n" // 20230911 FIX HERE
-			+ "		   ( \r\n"
-			+ "           ( \r\n"
-			+ "             b.LotNo in ( 'รอจัด Lot','ขาย stock','รับจ้างถัก','Lot ขายแล้ว','พ่วงแล้วรอสวม','รอสวมเคยมี Lot' )  \r\n"
-			+ "           )  and \r\n"
-			+ "          b.SumVol = 0 and \r\n"
-			+ "		     ( CRP.SaleOrder is null )  \r\n"	
-			+ "        ) or\r\n"
-			+ "        RealVolumn = 0 or\r\n"
-			+ "     	 ( viewUSM_SPE.[Special] = 0 ) \r\n"
-			+ "     )\r\n"
-			+ "    AND SPO.ProductionOrderSW IS NULL " 
-;
+	private String createTempMainSecond = ""
+			+ this.pss.getLeftJoinSwitchProdOrder("b")
+			+ " where b.PassFilter = 1\r\n"
+			+ "    AND SPO.ProductionOrderSW IS NULL ";
 	private String createTempPrdOPA = ""
 			+ " If(OBJECT_ID('tempdb..#tempPrdOPA') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempPrdOPA\r\n"
 			+ "	end ;\r\n"
-			+ " SELECT DISTINCT \r\n"
+			+ " SELECT   \r\n"
 			+ "				a.SaleOrder\r\n"
 			+ "                ,a.[SaleLine]\r\n"
 			+ "                ,a.DistChannel\r\n"
@@ -628,7 +311,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,g.CFMActualLabDate\r\n"
 			+ "                ,g.CFMCusAnsLabDate\r\n"
 			+ "                ,g.CFMPlanDate AS CFMPlanDate\r\n"
-			+ "   			   ,coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate  \r\n"   
+			+ "   			   ,coalesce ( SCC.SendCFMCusDate ,g.SendCFMCusDate ) AS SendCFMCusDate  \r\n"
 			+ "                ,g.CFMDateActual\r\n"
 			+ "                ,g.CFMDetailAll\r\n"
 			+ "                ,g.CFMNumberAll\r\n"
@@ -644,7 +327,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                   ELSE FSMBB.BillSendMRQuantity\r\n"
 			+ "                 end AS BillSendQuantity\r\n"
 			+ "                ,FSMBB.BillSendMRQuantity\r\n"
-			+ "                ,FSMBB.BillSendYDQuantity\r\n" 
+			+ "                ,FSMBB.BillSendYDQuantity\r\n"
 			+ "                ,g.PlanGreigeDate\r\n"
 			+ "                ,g.[DyeStatus]\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
@@ -652,20 +335,22 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "		 	from #tempMainSale as a  \r\n"
 			+ "		 	inner join [PCMS].[dbo].[FromSapMainProdSale] as b on a.SaleOrder = b.SaleOrder  and \r\n"
 			+ "                                                               a.SaleLine = b.SaleLine and \r\n"
-			+ "                                                               b.[DataStatus] = 'O' \n" 
-			+ this.pss.buildLeftJoinTempProdWorkDate("b") 
-			+ this.pss.buildLeftJoinTempSumGR("b")  
-			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")  
-			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")   
+			+ "                                                               b.[DataStatus] = 'O' \n"
+			+ this.pss.buildLeftJoinTempProdWorkDate("b")
+			+ this.pss.buildLeftJoinTempSumGR("b")
+			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
+			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")
 			+ this.pss.buildLeftJoinSCC("b")
-			+ "		 	WHERE b.DataStatus = 'O' \r\n";
+			+ this.pss.buildInnerJoinTempUSMSpecial1("UCAL", "UserStatusCal")
+			+ this.pss.getLeftJoinSwitchProdOrder("b")
+			+ "		 	WHERE 1 = 1 AND SPO.ProductionOrderSW IS NULL\r\n";
 	private String createTempOP = ""
 			+ " If(OBJECT_ID('tempdb..#tempPrdOP') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempPrdOP\r\n"
 			+ "	end ; \r\n "
-			+ " SELECT DISTINCT \r\n"
-			+ this.selectOPV2   
+			+ " SELECT   \r\n"
+			+ this.selectOPV2
 			+ "   , CASE\r\n"
 			+ "			WHEN a.Grade = 'A' OR a.Grade is null THEN  a.Volumn\r\n"
 			+ "			ELSE  NULL\r\n"
@@ -680,25 +365,15 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " into #tempPrdOP\r\n"
 			+ " FROM #tempPrdOPA as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"  
-			+ this.pss.getLeftJoinPlanCFMLabDate("a", "b") 
-			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")  
-			+ this.pss.getLeftJoinFromSORCFM("a") 
-			+ this.pss.getLeftJoinTAPP("b")
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a") 
-			+ this.pss.getLeftJoinInputStockRemark("b", "a","b") 
-			+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a");
+			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a");
 
 	private String createTempOPSWFirst = ""
 			+ " If(OBJECT_ID('tempdb..#tempPrdOPSW') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempPrdOPSW\r\n"
 			+ "	end ; \r\n"
-			+ " SELECT DISTINCT  \r\n"
+			+ " SELECT   \r\n"
 			+ this.selectSW
 			+ "	  , CASE  \r\n"
 			+ "			WHEN m.Grade = 'A' OR m.Grade is null THEN  a.Volumn\r\n"
@@ -713,7 +388,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , g.[DyeStatus]\r\n"
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempPrdOPSW  \r\n"
-			+ " FROM (  SELECT DISTINCT  \r\n"
+			+ " FROM (  SELECT   \r\n"
 			+ "			    a.SaleOrder\r\n"
 			+ "                ,a.[SaleLine]\r\n"
 			+ "                ,a.DistChannel\r\n"
@@ -746,60 +421,28 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "                ,CASE\r\n"
 			+ "                   WHEN b.Volumn <> 0 THEN b.Volumn\r\n"
 			+ "                   ELSE 0\r\n"
-			+ "                 END   AS Volumn\r\n" 
+			+ "                 END   AS Volumn\r\n"
 			+ "                ,a.[CustomerMaterialBase]\r\n"
 			+ "		 	from #tempMainSale as a  \r\n"
-			+ "		 	inner join ( \r\n"
-			+ "            	SELECT \r\n"
-			+ " 				CASE \r\n"
-			+ "			          WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-			+ "			          ELSE C.ProductionOrder\r\n"
-			+ "			          END AS [ProductionOrder],\r\n"
-			+ "		           [SaleOrder] ,[SaleLine] ,[Volumn]  ,[DataStatus]\r\n"
-			+ "		        FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-			+ "		        LEFT JOIN (\r\n"
-			+ "					SELECT [ProductionOrder] ,[ProductionOrderSW] \r\n"
-			+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-			+ "					       WHERE ProductionOrder <> ProductionOrderSW AND \r\n"
-			+ "                              DataStatus = 'O'	\r\n"
-			+ "				) AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-			+ "		        LEFT JOIN (\r\n"
-			+ "					SELECT  [ProductionOrder] \r\n"
-			+ "						 	 ,[ProductionOrderSW] \r\n"
-			+ "					       FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-			+ "					       WHERE ProductionOrder <> ProductionOrderSW AND\r\n"
-			+ "                              DataStatus = 'O'	\r\n"
-			+ "				) AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-			+ "				WHERE ( B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL and a.DataStatus = 'O') \r\n"
-			+ "       	) as b on a.SaleOrder = b.SaleOrder and \r\n"
-			+ "                   a.SaleLine = b.SaleLine \r\n"
-			+ "			where b.DataStatus = 'O' and b.SaleLine <> ''\r\n";
+			+ "		 	inner join #tempSPOSale as b on a.SaleOrder = b.SaleOrder and \r\n"
+			+ "                                         a.SaleLine = b.SaleLine \r\n"
+			+ "			where b.SaleLine <> ''\r\n";
 	private String createTempOPSWSecond = ""
 			+ "	) as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"  
-			+ this.pss.getLeftJoinPlanCFMLabDate("a", "b")
+			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
 			+ this.pss.buildLeftJoinTempProdWorkDate("b")
 			+ this.pss.buildLeftJoinSCC("b")
-			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")  
-			+ this.pss.getLeftJoinFromSORCFM("a") 
-			+ this.pss.getLeftJoinTAPP("b") 
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-			+ this.pss.getLeftJoinInputStockRemark("b", "a","b") 
-			+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a")
-			+ this.pss.buildLeftJoinTempSumGR("b") 
+			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
+			+ this.pss.buildLeftJoinTempSumGR("b")
 			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
-			+ this.pss.getLeftJoinTempSumBill("b", "a", "M") ;
+			+ this.pss.getLeftJoinTempSumBill("b", "a", "M");
 
 	private String createTempPrdSWFirst = ""
 			+ " If(OBJECT_ID('tempdb..#tempPrdSW') Is Not Null)\r\n"
 			+ "	begin\r\n"
 			+ "		Drop Table #tempPrdSW\r\n"
 			+ "	end ;\r\n "
-			+ " SELECT DISTINCT  \r\n"
+			+ " SELECT   \r\n"
 			+ this.selectSW
 			+ "   , CASE  \r\n"
 			+ "			WHEN m.Grade = 'A' OR m.Grade is null THEN  ( b.Volumn - a.SumVol )\r\n"
@@ -815,7 +458,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " INTO #tempPrdSW  \r\n"
 			+ " FROM (\r\n"
-			+ "       SELECT DISTINCT\r\n"
+			+ "       SELECT  \r\n"
 			+ "             a.SaleOrder\r\n"
 			+ "                ,a.[SaleLine]\r\n"
 			+ "                ,a.DistChannel\r\n"
@@ -854,57 +497,22 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "		 	inner join [PCMS].[dbo].[SwitchProdOrder]  as b on a.SaleOrder = b.SaleOrderSW and \r\n"
 			+ "                                                            a.SaleLine = b.SaleLineSW  \r\n \r\n"
 			+ "		 	LEFT JOIN ( \r\n"
-			+ "				SELECT PRDORDERSW ,sum([Volumn]) as SumVol\r\n"
-			+ "				FROM (  \r\n"
-			+ "                 SELECT \r\n"
-			+ "                    a.[ProductionOrder] \r\n"
-			+ "					 , CASE \r\n"
-			+ "					       WHEN B.ProductionOrderSW IS NOT NULL THEN B.ProductionOrderSW\r\n"
-			+ "						   ELSE C.ProductionOrder\r\n"
-			+ "					   END AS PRDORDERSW\r\n"
-			+ "					 , a.[SaleOrder] ,a.[SaleLine] ,a.[Volumn] ,a.[DataStatus]\r\n"
-			+ "				    FROM [PCMS].[dbo].[FromSapMainProdSale] AS A\r\n"
-			+ "				    LEFT JOIN (	\r\n"
-			+ "                    SELECT  [ProductionOrder] \r\n"
-			+ "							  ,[ProductionOrderSW] \r\n"
-			+ "					   FROM [PCMS].[dbo].[SwitchProdOrder] AS A\r\n"
-			+ "					   WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'\r\n"
-			+ "                 ) AS B ON A.[ProductionOrder] = B.ProductionOrder \r\n"
-			+ "				  	LEFT JOIN (\r\n"
-			+ "                     SELECT  [ProductionOrder] \r\n"
-			+ "							   ,[ProductionOrderSW] \r\n"
-			+ "					    FROM [PCMS].[dbo].[SwitchProdOrder] AS A	\r\n"
-			+ "						WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O'\r\n"
-			+ "                 ) AS C ON A.[ProductionOrder] = C.[ProductionOrderSW] \r\n"
-			+ "					WHERE (B.ProductionOrder IS NOT NULL OR  C.ProductionOrder IS NOT NULL) AND"
-			+ "						  A.[DataStatus] = 'O' \r\n"
-			+ "				 ) AS A\r\n"
-			+ "				 group by PRDORDERSW\r\n"
+			+ "				SELECT ProductionOrder AS PRDORDERSW, SUM(Volumn) AS SumVol\r\n"
+			+ "				FROM #tempSPOSale\r\n"
+			+ "				GROUP BY ProductionOrder\r\n"
 			+ "		    ) AS C ON B.ProductionOrderSW = C.PRDORDERSW \r\n"
 			+ "		    where b.DataStatus = 'O' \r\n";
 
-	private String createTempPrdSWSecond = ""
-			+ " ) as a  \r\n "
-			+ " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n" 
-//			+ this.leftJoinE
-+ this.pss.getLeftJoinPlanCFMLabDate("a", "b")
-			+ this.pss.buildLeftJoinTempProdWorkDate("b")
-			+ this.pss.buildLeftJoinSCC("b") 
-			+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")  
-			+ this.pss.getLeftJoinFromSORCFM("a") 
-			+ this.pss.getLeftJoinTAPP("b") 
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-			+ this.pss.getLeftJoinInputStockRemark("b", "a","b") 
-			+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a")
-			+ this.pss.buildLeftJoinTempSumGR("b") 
-			+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
-			+ this.pss.getLeftJoinTempSumBill("b", "a", "M") ;
+	private String createTempPrdSWSecond =
+			"" + " ) as a  \r\n " + " left join [PCMS].[dbo].[FromSapMainProd] as b on a.ProductionOrder = b.ProductionOrder \r\n"
+					+ this.pss.buildLeftJoinTempProdWorkDate("b")
+					+ this.pss.buildLeftJoinSCC("b")
+					+ this.pss.getLeftJoinTempPlandeliveryDate("a", "a")
+					+ this.pss.buildLeftJoinTempSumGR("b")
+					+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "b", "m")
+					+ this.pss.getLeftJoinTempSumBill("b", "a", "M");
 
-	private String createTempPrdReplacedFirst = "" 
+	private String createTempPrdReplacedFirst = ""
 			+ " SELECT    \r\n"
 			+ this.selectRPV2
 			+ "    , CASE \r\n"
@@ -914,11 +522,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , CASE \r\n"
 			+ "			WHEN m.Grade = 'A' OR m.Grade is null and b.Volume <> 0  THEN a.Price * b.Volume  \r\n"
 			+ "			ELSE NULL\r\n"
-			+ "			END AS VolumnFGAmount \r\n" 
+			+ "			END AS VolumnFGAmount \r\n"
 			+ "   ,'Replaced' as TypePrd \r\n"
-			+ "   ,'SUB' as TypePrdRemark  \r\n" 
+			+ "   ,'SUB' as TypePrdRemark  \r\n"
 			+ "   , g.[DyeStatus]\r\n"
-			+ "   , a.[CustomerMaterialBase]\r\n" 
+			+ "   , a.[CustomerMaterialBase]\r\n"
 			+ " from #tempMainSale as a  \r\n"
 			+ " inner join ( \r\n"
 			+ "		select \r\n"
@@ -926,7 +534,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			a.SaleLine, \r\n"
 			+ "			CASE WHEN a.Volume = 0 THEN b.Volumn ELSE a.Volume END as [Volume] ,\r\n"
 			+ "			a.[ProductionOrderRP] AS ProductionOrder , \r\n"
-			+ "			b.TotalQuantity,\r\n" 
+			+ "			b.TotalQuantity,\r\n"
 			+ "			b.LotNo,\r\n"
 			+ "			b.LabNo,\r\n"
 			+ "			b.LabStatus,\r\n"
@@ -936,269 +544,320 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "			b.RemarkThree ,\r\n"
 			+ "			b.[PrdCreateDate]\r\n"
 			+ "		from [PCMS].[dbo].[ReplacedProdOrder]  as a\r\n"
-			+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder","a","ProductionOrderRP") 
-			+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
-			+ "		WHERE a.[DataStatus] = 'O'  \r\n" 
-			;
+			+ this.pss.buildInnerJoinFromSapMainProd("b", "ProductionOrder", "a", "ProductionOrderRP")
+			+ this.pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
+			+ "		WHERE a.[DataStatus] = 'O'  \r\n";
 	private String createTempPrdReplacedSecond = ""
 			+ " )  as b on a.SaleOrder = b.SaleOrder \n"
-			+ "         and a.SaleLine = b.SaleLine \r\n"  
-			+ this.pss.getLeftJoinPlanCFMLabDate("b", "b")
+			+ "         and a.SaleLine = b.SaleLine \r\n"
 			+ this.pss.buildLeftJoinTempProdWorkDate("b")
-			+ this.pss.buildLeftJoinSCC("b") 
-			+ this.pss.getLeftJoinTempPlandeliveryDate("b","a")    
-			+ this.pss.getLeftJoinFromSORCFM("a")
-			+ this.pss.getLeftJoinTAPP("b") 
-			+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-			+ this.pss.buildLeftJoinTempSumGR("b") 
-			+ this.pss.getLeftJoinInputStockRemark("b", "a","m")
-			+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-			+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-			+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder")  
+			+ this.pss.buildLeftJoinSCC("b")
+			+ this.pss.getLeftJoinTempPlandeliveryDate("b", "a")
+			+ this.pss.buildLeftJoinTempSumGR("b")
 			+ this.pss.buildLeftJoinUserStatusAuto("UCALRP", "b", "m")
-			+ this.pss.getLeftJoinSimpleTable("b", "InputSwitchRemark", "q", "ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
-			+ this.pss.getLeftJoinInputStockLoad("b", "a") 
-			+ this.pss.getLeftJoinTempSumBill("b", "a", "M") 
+			+ this.pss.getLeftJoinTempSumBill("b", "a", "M")
 			+ " where 1 = 1 \r\n";
-	private final Database database;
-    
-    private final BackGroundJobService bgjService;
-    private final PCMSSearchService psService;
-    
-    // Services จากส่วน new ... ที่คุณส่งมา (หลังลบตัวซ้ำ)
-    private final FromSapMainProdService fromSapMainProdService;
-    private final SearchSettingService searchSettingService;
-    private final SwitchProdOrderService switchProdOrderService;
-    private final ReplacedProdOrderService replacedProdOrderService;
-    private final PlanCFMDateService planCFMDateService;
-    private final PlanDeliveryDateService planDeliveryDateService;
-    private final PlanCFMLabDateService planCFMLabDateService;
+	private final JdbcTemplate jdbc;
 
-    private final TEMP_UserStatusAutoService tusaService ;
-    private String message;
+	private final PCMSSearchService psService;
 
-    @Autowired
-    public PCMSDetailDaoImpl(
-            @Qualifier("pcmsDatabase") Database database,
-            BackGroundJobService bgjService,
-            PCMSSearchService psService,
-            
-            // Services เพิ่มเติมที่เคย new ไว้
-            FromSapMainProdService fromSapMainProdService,
-            SearchSettingService searchSettingService,
-            SwitchProdOrderService switchProdOrderService,
-            ReplacedProdOrderService replacedProdOrderService,
-            PlanCFMDateService planCFMDateService,
-            PlanDeliveryDateService planDeliveryDateService,
-            PlanCFMLabDateService planCFMLabDateService,
-            TEMP_UserStatusAutoService tusaService) {
+	private final PlanCFMDateService planCFMDateService;
+	private final PlanDeliveryDateService planDeliveryDateService;
+	private final PlanCFMLabDateService planCFMLabDateService;
 
-        this.database = database;
-        this.bgjService = bgjService;
-        this.psService = psService;
-        this.tusaService = tusaService;
-        this.fromSapMainProdService = fromSapMainProdService;
-        this.searchSettingService = searchSettingService;
-        this.switchProdOrderService = switchProdOrderService;
-        this.replacedProdOrderService = replacedProdOrderService;
-        this.planCFMDateService = planCFMDateService;
-        this.planDeliveryDateService = planDeliveryDateService;
-        this.planCFMLabDateService = planCFMLabDateService;
+	@Autowired
+	public PCMSDetailDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc, BackGroundJobService bgjService,
+			PCMSSearchService psService,
 
-        this.message = "";
-    }
+			// Services เพิ่มเติมที่เคย new ไว้
+			FromSapMainProdService fromSapMainProdService, SearchSettingService searchSettingService,
+			SwitchProdOrderService switchProdOrderService, ReplacedProdOrderService replacedProdOrderService,
+			PlanCFMDateService planCFMDateService, PlanDeliveryDateService planDeliveryDateService,
+			PlanCFMLabDateService planCFMLabDateService, TEMP_UserStatusAutoService tusaService) {
 
-	public String getMessage()
-	{
-		return this.message;
+		this.jdbc = jdbc;
+		this.psService = psService;
+		this.planCFMDateService = planCFMDateService;
+		this.planDeliveryDateService = planDeliveryDateService;
+		this.planCFMLabDateService = planCFMLabDateService;
 	}
 
 	@Override
 	public ArrayList<PCMSSecondTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList)
 	{
- 
 		ArrayList<PCMSSecondTableDetail> list = null;
 		PCMSTableDetail bean = poList.get(0);
-		Map<String, String> results = pss.buildWhereClauses(bean);
-		String whereCaseTry = results.get("whereCaseTry");
-		String whereCaseTryRP = results.get("whereCaseTryRP");
-		String tmpWhereNoLotUCAL = results.get("tmpWhereNoLotUCAL");
-		String where = results.get("where");
-		String whereBMainUserStatus = results.get("whereBMainUserStatus");
-		String whereSale = results.get("whereSale");
-		String whereWaitLot = results.get("whereWaitLot");
-		where = where.replace("b.", "a."); 
-		String createCusListSearch = ""
-			+ psService.handlerTempTableCustomerSearchList(bean.getCustomerNameList(), bean.getCustomerShortNameList());
-		String createTempMainSale = ""
-			+ createCusListSearch
-			+ this.pss.createTempMainSaleWithJoinCustomer 
-			+ whereSale 
-//			+ this.pss.createClusteredIndexTempMainSale
-			;; 
-		String sqlWaitLot = " "
-				+ " SELECT DISTINCT  \r\n"
-				+ this.selectWaitLot
-				+ " INTO #tempWaitLot  \r\n"
-				+ " FROM #tempMainSale as a \r\n "
-				+ this.pss.innerJoinWaitLotB 
-				+ this.pss.getLeftJoinFromSORCFM("a")
-				+ this.pss.getLeftJoinTAPP("b") 
-				+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-				+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-				+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-				+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
-				+ this.pss.getLeftJoinInputStockLoad("b", "a")
-				+ whereWaitLot
-				+ " and ( SumVol = 'B' OR countProdRP > 0 ) \r\n";
-		String fromMainB = ""
-				+ " from (\r\n"
-				+ "      SELECT distinct \r\n"
-				+ this.leftJoinBSelect     
-				+ this.pss.fromProdA
-				+ this.pss.leftJoinBPartOneT_A
-				+ this.pss.leftJoinBPartOneS_A 
-				+ this.pss.getLeftJoinTempPlandeliveryDate("A","a")    
-				+ this.pss.buildLeftJoinTempProdWorkDate("a")
-				+ this.pss.buildLeftJoinSCC("a")
-				+ this.pss.buildLeftJoinTempSumGR("a") 
-				+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "a", "m")
-				+ this.pss.getLeftJoinTempSumBill("a", "a", "M")  
-				+ this.pss.crossApplyVolCalc
-				+ where
-				+ " ) as b \r\n";
-		String sqlMain = "" 
-	  		    + this.pss.withProdData
-				+ this.createTempMainFirst 
-				+ fromMainB  
-				+ this.createTempMainSecond 
-		;
 
-		String createTempOPFromA = "" 
-				+ this.createTempPrdOPA 
-				+ "         " + tmpWhereNoLotUCAL 
-				+ this.createTempOP;
-		String sqlOP = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempOP  \r\n"
-				+ " from #tempPrdOP as a \r\n"
-				+ this.pss.getLeftJoinSwitchProdOrder("A") 
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				+ " where 1 = 1 "
-				+ "    AND SPO.ProductionOrderSW IS NULL " 
-				+ whereCaseTry;
-		String sqlOPSW = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempOPSW  \r\n"
-				+ " from #tempPrdOPSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-		String sqlSW = ""
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempSW  \r\n"
-				+ " from #tempPrdSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				+ " where 1 = 1 "
-				+ whereCaseTry; 
-//////				// สวม
-		String createTempRP = "" 
-				+ "; WITH PRD_REPLACED as ( \n "
-				+ this.createTempPrdReplacedFirst 
-				+ this.createTempPrdReplacedSecond 
-				+ whereCaseTryRP
-				+ " ) \r\n" 
-				+ " select \r\n"
-				+ this.selectAll
-				+ " INTO #tempRP  \r\n"
-				+ " from PRD_REPLACED as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				+ " where 1 = 1 "
-				+ whereCaseTry;
-		String sql = ""
-				+ " SET NOCOUNT ON; ;\r\n"
-				+ " If(OBJECT_ID('tempdb..#tempWaitLot') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempWaitLot\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempMain') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempMain\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOP\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempOPSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempOPSW\r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempSW') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempSW \r\n"
-				+ "	end ; \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempRP') Is Not Null)\r\n"
-				+ "	begin\r\n"
-				+ "		Drop Table #tempRP \r\n"
-				+ "	end ; \r\n"
-				+ createTempMainSale
-				+ this.pss.createTempPlanDeliveryDate
-				+ this.pss.createTempSumGR
-				+ this.pss.createTempSumBill
-				+ createTempOPFromA
-				+ createTempRP
-				+ " If(OBJECT_ID('tempdb..#tempPrdOPA') Is Not Null) begin Drop Table #tempPrdOPA end ;   \r\n"
-				+ this.createTempOPSWFirst
-				+ this.createTempOPSWSecond
-				+ this.createTempPrdSWFirst
-				+ this.createTempPrdSWSecond    
-				+ sqlWaitLot  
-				+ sqlMain
-				+ " If(OBJECT_ID('tempdb..#tempSumBill') Is Not Null) begin Drop Table #tempSumBill end ;   \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempSumGR') Is Not Null) begin Drop Table #tempSumGR end ;   \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempPlandeliveryDate') Is Not Null) begin Drop Table #tempPlandeliveryDate end ;   \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempSumGR') Is Not Null) begin Drop Table #tempSumGR end ;   \r\n"
-				+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null) begin Drop Table #tempMainSale end ;   "
-				+ sqlOP
-				+ "  If(OBJECT_ID('tempdb..#tempPrdOP') Is Not Null) begin Drop Table #tempPrdOP end ;  \r\n"
-				+ sqlOPSW
-				+ "  If(OBJECT_ID('tempdb..#tempPrdOPSW') Is Not Null) begin Drop Table #tempPrdOPSW end ;  \r\n"
-				+ sqlSW
-				+ "  If(OBJECT_ID('tempdb..#tempPrdSW') Is Not Null) begin Drop Table #tempPrdSW end ;  \r\n" 
-				+ "  If(OBJECT_ID('tempdb..#tempPrdReplaced') Is Not Null) begin Drop Table #tempPrdReplaced end ;\r\n"
-				+ " SELECT a.* FROM #tempWaitLot as a\r\n"
-				+ " left join  #tempMain as b on a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine\r\n"
-				+ " where b.SaleOrder is null \r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempMain as a\r\n"
-				+ " where 1 = 1 "
-				+ whereBMainUserStatus
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOP\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempOPSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempSW\r\n"
-				+ " union ALL  \r\n"
-				+ " SELECT * FROM #tempRP\r\n"
-				+ " Order by CustomerShortName, DueDate, [SaleOrder], [SaleLine],TypePrdRemark, [ProductionOrder] "; 
+		// ---- Build WHERE clauses from search criteria ----
+		Map<String, String> whereMap      = pss.buildWhereClauses(bean);
+		String whereCaseTry               = whereMap.get("whereCaseTry");
+		String whereCaseTryRP             = whereMap.get("whereCaseTryRP");
+		String tmpWhereNoLotUCAL          = whereMap.get("tmpWhereNoLotUCAL");
+		String whereSale                  = whereMap.get("whereSale");
+		String whereWaitLot               = whereMap.get("whereWaitLot");
+		String whereBase                  = whereMap.get("whereBase").replace("b.", "a.");
 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		String sql = "SET NOCOUNT ON;\r\n"
+				+ buildSqlGuardDrops()
+				+ buildSqlCommonTables(bean, whereSale)
+				+ buildSqlTypedTables(tmpWhereNoLotUCAL, whereCaseTry, whereCaseTryRP)
+				+ buildSqlMainAndWaitLot(whereWaitLot, whereBase)
+				+ buildSqlCleanup()
+				+ buildSqlPrepareFinalResult()   // materialize UNION ALL + CREATE INDEX ตาม ORDER BY
+				+ buildSqlFinalSelect();
+
+//		System.out.println(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
-		} 
+		}
 		return list;
-	} 
+	}
+
+	// =========================================================================
+	// SQL batch builders — searchByDetail
+	// =========================================================================
+
+	/** Drop output temp tables ก่อนเริ่ม batch เพื่อป้องกัน error จาก session เก่า */
+	private String buildSqlGuardDrops() {
+		return pss.buildIfTempTableDrop("#tempFinalResult")
+				+ pss.buildIfTempTableDrop("#tempWaitLot")
+				+ pss.buildIfTempTableDrop("#tempMain")
+				+ pss.buildIfTempTableDrop("#tempOP")
+				+ pss.buildIfTempTableDrop("#tempOPSW")
+				+ pss.buildIfTempTableDrop("#tempSW")
+				+ pss.buildIfTempTableDrop("#tempRP")
+				+ pss.buildIfTempTableDrop("#tempSPOSale")
+				+ pss.buildIfTempTableDrop("#tempProdData")
+				+ pss.buildIfTempTableDrop("#tempProdMain")
+				+ pss.buildIfTempTableDrop("#tempUCAL")
+				+ pss.buildIfTempTableDrop("#tempUCALBest")
+				+ pss.buildIfTempTableDrop("#tempUSMSPE")
+				+ pss.buildIfTempTableDrop("#tempUSMSpecial1")
+				+ pss.buildIfTempTableDrop("#tempSumGRMain");
+	}
+
+	/** Lookup tables ที่ใช้ร่วมกันทุก type (#tempMainSale, #tempSumGR, #tempSPO, Input tables ฯลฯ) */
+	private String buildSqlCommonTables(PCMSTableDetail bean, String whereSale) {
+		String createUserStatus  = psService.handlerTempTableUserStatusList(bean.getUserStatusList());
+		String createCusList     = psService.handlerTempTableCustomerSearchList(
+				bean.getCustomerNameList(), bean.getCustomerShortNameList());
+		return pss.buildCommonLookupTables(createUserStatus, createCusList, whereSale,
+					pss.createTempSumGRFiltered)   // perf: กรอง SumGRCache เหลือ PO ในขอบเขต (คง output — harness gate)
+				+ pss.createTempFromSORCFM
+				+ pss.createTempPlanCFMLabDate
+				+ pss.createTempSPO
+				+ pss.createTempSPOSale
+				+ pss.createTempTAPP
+				+ pss.createTempInputRR
+				+ pss.createTempInputPCR
+				+ pss.createTempInputCOD
+				+ pss.createTempInputDD
+				+ pss.createTempInputSR
+				+ pss.createTempInputSL
+				+ pss.createTempInputStockRemark
+				+ pss.createTempUSMSpecial1;           // pre-materialize viewUserStatusMappingPCMS WHERE Special=1
+	}
+
+	/** สร้าง temp table ตาม type: OrderPuang (OP), Replaced (RP), Switch (OPSW, SW) */
+	private String buildSqlTypedTables(String tmpWhereNoLotUCAL, String whereCaseTry, String whereCaseTryRP) {
+		return buildSqlOPTables(tmpWhereNoLotUCAL, whereCaseTry)
+				+ buildSqlRPTable(whereCaseTryRP, whereCaseTry)
+				+ buildSqlOPSWTable(whereCaseTry)
+				+ buildSqlSWTable(whereCaseTry);
+	}
+
+	/** OrderPuang: #tempPrdOPA → #tempPrdOP → #tempOP */
+	private String buildSqlOPTables(String tmpWhereNoLotUCAL, String whereCaseTry) {
+		String createOPA = this.createTempPrdOPA
+				+ "         " + tmpWhereNoLotUCAL
+				+ " AND SPO.ProductionOrderSW IS NULL"
+				+ this.createTempOP;
+		String insertOP = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempOP\r\n"
+				+ " FROM #tempPrdOP as a\r\n"
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return createOPA
+				+ insertOP
+				+ pss.buildIfTempTableDrop("#tempPrdOP");
+	}
+
+	/** Replaced: PRD_REPLACED CTE → #tempRP  (ใช้แล้ว drop #tempPrdOPA) */
+	private String buildSqlRPTable(String whereCaseTryRP, String whereCaseTry) {
+		String insertRP = "; WITH PRD_REPLACED AS (\r\n"
+				+ this.createTempPrdReplacedFirst
+				+ this.createTempPrdReplacedSecond
+				+ whereCaseTryRP
+				+ " )\r\n"
+				+ " SELECT\r\n" + this.selectAll
+				+ " INTO #tempRP\r\n"
+				+ " FROM PRD_REPLACED as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return insertRP
+				+ pss.buildIfTempTableDrop("#tempPrdOPA");
+	}
+
+	/** OrderPuang+Switch: #tempPrdOPSW → #tempOPSW */
+	private String buildSqlOPSWTable(String whereCaseTry) {
+		String insertOPSW = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempOPSW\r\n"
+				+ " FROM #tempPrdOPSW as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return this.createTempOPSWFirst
+				+ this.createTempOPSWSecond
+				+ insertOPSW
+				+ pss.buildIfTempTableDrop("#tempPrdOPSW");
+	}
+
+	/** Switch: #tempPrdSW → #tempSW */
+	private String buildSqlSWTable(String whereCaseTry) {
+		String insertSW = " SELECT\r\n" + this.selectAll
+				+ " INTO #tempSW\r\n"
+				+ " FROM #tempPrdSW as a\r\n"
+				+ pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " WHERE 1 = 1 " + whereCaseTry;
+		return this.createTempPrdSWFirst
+				+ this.createTempPrdSWSecond
+				+ insertSW
+				+ pss.buildIfTempTableDrop("#tempPrdSW");
+	}
+
+	/**
+	 * Main + WaitLot:
+	 *   aggregate filter → #tempWaitLot
+	 *   #tempProdData → #tempUCAL, #tempUSMSPE → #tempProdMain → #tempMain
+	 */
+	private String buildSqlMainAndWaitLot(String whereWaitLot, String whereBase) {
+		String insertWaitLot = pss.createTempPrepWaitLot
+				+ " SELECT\r\n" + this.selectWaitLot
+				+ " INTO #tempWaitLot\r\n"
+				+ " FROM #tempMainSale as a\r\n"
+				+ pss.innerJoinWaitLotB
+				+ whereWaitLot
+				+ " AND ( SumVol = 'B' OR countProdRP > 0 )\r\n";
+
+		String insertProdMain = pss.buildIfTempTableDrop("#tempProdMain")
+				+ " SELECT\r\n" + this.leftJoinBSelect
+				+ " INTO #tempProdMain\r\n"
+				+ " FROM #tempProdData as a\r\n"
+				+ pss.getLeftJoinTempPlandeliveryDate("A", "a")
+				+ pss.buildLeftJoinTempProdWorkDate("a")
+				+ pss.buildLeftJoinSCC("a")
+				+ pss.buildLeftJoinTempSumGR("a")
+				+ pss.getLeftJoinTempUCALBest("a", "m")   // pre-computed — แทน OUTER APPLY TOP 1
+				+ pss.getLeftJoinTempUSMSPE()              // ยังคงต้องใช้สำหรับ PassFilter (viewUSM_SPE.Special)
+				+ pss.getLeftJoinCRP("a")
+				+ pss.getLeftJoinTempSumBill("a", "a", "M")
+				+ pss.getLeftJoinSwitchProdOrder("a")      // ย้าย SPO anti-join มาที่นี่ — #tempProdMain จะไม่มี switch-target rows
+				+ whereBase
+				+ " AND SPO.ProductionOrderSW IS NULL\r\n" // กรองออกก่อน — ลดจำนวน row ใน #tempProdMain
+				+ ";\r\n"
+				+ "CREATE CLUSTERED INDEX IX_tempProdMain_PO ON #tempProdMain(ProductionOrder);\r\n";
+
+		// #tempProdMain ไม่มี SPO switch-target rows แล้ว → insertMain ไม่ต้อง JOIN #tempSPO อีก
+		String insertMain = this.createTempMainFirst
+				+ " FROM #tempProdMain as b\r\n"
+				+ " WHERE b.PassFilter = 1\r\n";
+
+		return pss.createTempForMainAndWaitLotFiltered
+				+ insertWaitLot
+				+ pss.createTempProdData
+				+ pss.createTempUCAL
+				+ pss.createTempUSMSPE
+				+ pss.createTempUCALBest                   // ต้องรันหลัง UCAL + USMSE + SumGR พร้อมแล้ว
+				+ insertProdMain
+				+ insertMain
+				+ pss.buildIfTempTableDrop("#tempProdMain")
+				+ pss.buildIfTempTableDrop("#tempUCALBest")
+				+ pss.buildIfTempTableDrop("#tempUCAL")
+				+ pss.buildIfTempTableDrop("#tempUSMSPE")
+				+ pss.createDropTempForMainAndWaitLot
+				+ pss.buildIfTempTableDrop("#tempProdData");
+	}
+
+	/** Drop lookup tables ที่ไม่ต้องใช้แล้วก่อน final SELECT */
+	private String buildSqlCleanup() {
+		return pss.buildIfTempTableDrop("#tempSumBill")
+				+ pss.buildIfTempTableDrop("#tempSumGR")
+				+ pss.buildIfTempTableDrop("#tempPlandeliveryDate")
+				+ pss.buildIfTempTableDrop("#tempUSMSpecial1")
+				+ pss.buildIfTempTableDrop("#tempMainSale");
+	}
+
+	/**
+	 * Materialize UNION ALL 6 tables → #tempFinalResult + clustered index ตาม ORDER BY
+	 *
+	 * แยกขั้นตอนนี้ออกจาก finalSelect เพื่อให้:
+	 * 1. SQL Server รู้ row count จริงของ #tempFinalResult ก่อน compile 10 LEFT JOINs
+	 * 2. Clustered index ตาม ORDER BY → ไม่มี sort operator ใน finalSelect
+	 * 3. Optimizer เลือก Nested Loop seek เข้า lookup tables ได้ถูกต้อง
+	 */
+	private String buildSqlPrepareFinalResult() {
+		return pss.buildIfTempTableDrop("#tempFinalResult")
+				+ " SELECT a.*\r\n"
+				+ " INTO #tempFinalResult\r\n"
+				+ " FROM #tempWaitLot AS a\r\n"
+				+ " LEFT JOIN #tempMain AS b ON a.SaleOrder = b.SaleOrder AND a.SaleLine = b.SaleLine\r\n"
+				+ " WHERE b.SaleOrder IS NULL\r\n"
+				+ " UNION ALL SELECT * FROM #tempMain\r\n"
+				+ " UNION ALL SELECT * FROM #tempOP\r\n"
+				+ " UNION ALL SELECT * FROM #tempOPSW\r\n"
+				+ " UNION ALL SELECT * FROM #tempSW\r\n"
+				+ " UNION ALL SELECT * FROM #tempRP;\r\n"
+				// Clustered index ตาม ORDER BY → eliminates sort operator ใน final SELECT
+				+ "CREATE CLUSTERED INDEX IX_tempFinalResult\r\n"
+				+ "    ON #tempFinalResult(CustomerShortName, DueDate, SaleOrder, SaleLine, TypePrdRemark, ProductionOrder);\r\n";
+	}
+
+	/** Final SELECT: FROM #tempFinalResult + 10 lookup JOINs (compiled หลัง materialize — รู้ row count จริง) */
+	private String buildSqlFinalSelect() {
+		return " SELECT\r\n"
+				+ "   u.SaleOrder, u.[SaleLine], u.Division, u.CustomerShortName, u.SaleCreateDate,\r\n"
+				+ "   u.PurchaseOrder, u.MaterialNo, u.CustomerMaterial, u.Price, u.SaleUnit,\r\n"
+				+ "   u.OrderAmount, u.SaleQuantity, u.RemainQuantity, u.RemainAmount, u.TotalQuantity,\r\n"
+				+ "   u.Grade, u.BillSendWeightQuantity, u.BillSendQuantity, u.BillSendMRQuantity,\r\n"
+				+ "   u.BillSendYDQuantity, u.CustomerDue, u.DueDate, u.ProductionOrder, u.LotNo,\r\n"
+				+ "   u.LabNo, u.LabStatus,\r\n"
+				+ "   e.CFMPlanLabDate,\r\n"
+				+ "   u.CFMActualLabDate, u.CFMCusAnsLabDate, u.UserStatus,\r\n"
+				+ "   COALESCE(TAPP.SORCFMDate, J.CFMDate) AS TKCFM,\r\n"
+				+ "   u.CFMPlanDate, u.SendCFMCusDate, u.DeliveryDate, u.CFMDateActual,\r\n"
+				+ "   u.CFMDetailAll, u.CFMNumberAll, u.CFMRemarkAll, u.RollNoRemarkAll, u.ShipDate,\r\n"
+				+ "   u.RemarkOne, u.RemarkTwo, u.RemarkThree,\r\n"
+				+ "   K.ReplacedRemark,\r\n"
+				+ "   l.StockRemark,\r\n"
+				+ "   u.GRSumKG, u.GRSumYD, u.GRSumMR, u.DyePlan, u.DyeActual,\r\n"
+				+ "   P.PCRemark,\r\n"
+				+ "   InputDD.[DelayedDep],\r\n"
+				+ "   InputCOD.[CauseOfDelay],\r\n"
+				+ "   q.[SwitchRemark],\r\n"
+				+ "   SL.[StockLoad],\r\n"
+				+ "   u.[PrdCreateDate], u.LotShipping, u.Volumn, u.VolumnFGAmount, u.TypePrd,\r\n"
+				+ "   u.TypePrdRemark, u.[DyeStatus], u.[CustomerMaterialBase]\r\n"
+				+ " FROM #tempFinalResult AS u\r\n"   // ← materialized แล้ว ไม่ใช่ inline UNION ALL
+				+ pss.getLeftJoinPlanCFMLabDate("u", "u")
+				+ pss.getLeftJoinFromSORCFM("u")
+				+ pss.getLeftJoinTAPP("u")
+				+ pss.getLeftJoinInputReplacedRemark("u", "u")
+				+ pss.getLeftJoinInputStockRemark("u", "u", "u")
+				+ pss.getLeftJoinInputPCRemark("u", "u")
+				+ pss.getLeftJoinSimpleTable("u", "InputCauseOfDelay", "InputCOD",
+						"ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinSimpleTable("u", "InputDelayedDep", "InputDD",
+						"ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinSimpleTable("u", "InputSwitchRemark", "q",
+						"ProductionOrder, SwitchRemark", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinInputStockLoad("u", "u")
+				+ " ORDER BY u.CustomerShortName, u.DueDate, u.[SaleOrder], u.[SaleLine], u.TypePrdRemark, u.[ProductionOrder]";
+	}
+
 	@Override
 	public ArrayList<InputDateDetail> saveInputDate(ArrayList<PCMSSecondTableDetail> poList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		ArrayList<InputDateDetail> list = new ArrayList<>();
 		ArrayList<InputDateDetail> listCount = new ArrayList<>();
 		String fromTable = "";
@@ -1238,42 +897,45 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			beanInput.setIconStatus("I");
 			beanInput.setSystemStatus("Date : " + planDate + " already confirm.Try to refresh again.");
 		} else {
+			String sql = " insert into "
+					+ fromTable
+					+ " ( "
+					+ "		[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[PlanDate]  ,[CreateBy]  , " // 5
+					+ "		[CreateDate] ,[LotNo] "
+					+ "     ) "// 24
+					+ " 	values(? , ? , ? , ? , ?"// 1
+					+ "			  ,? , ? "
+					+ " ) ;";
+
+
 			try {
-				String sql = "";
-				sql = " insert into "
-						+ fromTable
-						+ " ( "
-						+ "		[ProductionOrder] ,[SaleOrder] ,[SaleLine] ,[PlanDate]  ,[CreateBy]  , " // 5
-						+ "		[CreateDate] ,[LotNo] "
-						+ "     ) "// 24
-						+ " 	values(? , ? , ? , ? , ?"// 1
-						+ "			  ,? , ? "
-						+ " ) ;";
-				prepared = connection.prepareStatement(sql);
-				int index = 1;
-				prepared.setString(index ++ , bean.getProductionOrder());
-				prepared.setString(index ++ , bean.getSaleOrder());
-				prepared.setString(index ++ , saleLine);
-				prepared = this.sshUtl.setSqlDate(prepared, planDate, index ++ );
-				prepared.setString(index ++ , bean.getUserId());
-				prepared.setTimestamp(index ++ , new Timestamp(time));
-				prepared.setString(index ++ , bean.getLotNo());
-				prepared.executeUpdate();
-				prepared.close();
+				final String finalPlanDate = planDate;
+				this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+					try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+						int index = 1;
+						prepared.setString(index++, bean.getProductionOrder());
+						prepared.setString(index++, bean.getSaleOrder());
+						prepared.setString(index++, saleLine);
+						this.sshUtl.setSqlDate(prepared, finalPlanDate, index++);
+						prepared.setString(index++, bean.getUserId());
+						prepared.setTimestamp(index++, new Timestamp(time));
+						prepared.setString(index++, bean.getLotNo());
+						prepared.executeUpdate();
+					}
+					return null;
+				});
 				if (caseSave.equals("CFMPlanDate")) {
 					beanInput.setIconStatus("I0");
 				} else {
 					beanInput.setIconStatus("I1");
 				}
-				beanInput.setSystemStatus("Update Success.");
+				beanInput.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 				if (listCount.size() > 0) {
 					beanInput.setCountPlanDate(listCount.get(0).getCountPlanDate()+1);
 				} else {
 					beanInput.setCountPlanDate(1);
 				}
-//				}
-			} catch (SQLException e) {
-//				System.err.println(e.getMessage());
+			} catch (Exception e) {
 				e.printStackTrace();
 				beanInput.setIconStatus("E");
 				beanInput.setSystemStatus("Something happen, Please contact IT.");
@@ -1284,246 +946,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	}
 
 	@Override
-	public ArrayList<PCMSSecondTableDetail> saveInputDetail(ArrayList<PCMSSecondTableDetail> poList)
-	{
-		PCMSSecondTableDetail bean = poList.get(0); 
-		String caseSave = bean.getCaseSave();
-		String valueChange = "";
-		String tableName = "";
-		if (caseSave.equals("stockRemark")) {
-			valueChange = bean.getStockRemark();
-			tableName = "[InputStockRemark]";
-			bean = this.updateLogRemarkWithGrade(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseWithGrade(tableName, valueChange, bean);
-			poList.clear();
-			poList.add(bean);
-		} else if (caseSave.equals("pcRemark")) {
-			valueChange = bean.getPcRemark();
-			tableName = "[InputPCRemark]";
-			bean = this.updateLogRemarkCaseOne(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseOne(tableName, valueChange, bean);
-			poList.clear();
-			poList.add(bean);
-		} else if (caseSave.equals("stockLoad")) {
-			valueChange = bean.getStockLoad();
-			tableName = "[InputStockLoad]";
-			bean = this.updateLogRemarkCaseOne(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseOne(tableName, valueChange, bean);
-			bgjService.execUpsertToTEMPUserStatusOnWebWithProdOrder(bean.getProductionOrder());
-			ArrayList<TempUserStatusAutoDetail> list = tusaService.getTempUserStatusAutoDetail(poList);
-			if (list.size() > 0) {
-				TempUserStatusAutoDetail beanTmp = list.get(0);
-				if (beanTmp.getProductionOrderRPM().equals("")) {
-					bean.setUserStatus(beanTmp.getUserStatusCal());
-				} else if ( ! beanTmp.getProductionOrderRPM().equals("")) {
-					bean.setUserStatus(beanTmp.getUserStatusCalRP());
-				} else {
-					bean.setUserStatus("");
-				}
-			} else {
-				bean.setUserStatus("");
-			}
-			poList.clear();
-			poList.add(bean);
-		} else if (caseSave.equals("replacedRemark")) {
-			valueChange = bean.getReplacedRemark();
-			tableName = "[InputReplacedRemark]";
-			bean = this.updateLogRemarkCaseOne(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseOne(tableName, valueChange, bean);
-			poList = this.handlerReplacedProdOrder(bean);
-
-		} else if (caseSave.equals("switchRemark")) {
-			valueChange = bean.getSwitchRemark();
-			tableName = "[InputSwitchRemark]";
-			bean = this.updateLogRemarkCaseTwo(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseTwo(tableName, valueChange, bean);
-			poList = this.handlerSwitchProdOrder(bean);
-		} else if (caseSave.equals("delayedDep")) {
-			valueChange = bean.getDelayedDepartment();
-			tableName = "[InputDelayedDep]";
-			bean = this.updateLogRemarkCaseTwo(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseTwo(tableName, valueChange, bean);
-			poList.clear();
-			poList.add(bean);
-		} else if (caseSave.equals("causeOfDelay")) {
-			valueChange = bean.getCauseOfDelay();
-			tableName = "[InputCauseOfDelay]";
-			bean = this.updateLogRemarkCaseTwo(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseTwo(tableName, valueChange, bean);
-			poList.clear();
-			poList.add(bean);
-		} else if (caseSave.equals("sendCFMCusDate")) {
-			valueChange = bean.getSendCFMCusDate();
-			tableName = "[PlanSendCFMCusDate] ";
-			bean = this.updateLogRemarkCaseThree(tableName, bean, this.CLOSE_STATUS);
-			bean = this.upSertRemarkCaseThree(tableName, valueChange, bean);
-			poList.clear();
-			poList.add(bean);
-		}
-		return poList;
-	}
-
-	private ArrayList<PCMSSecondTableDetail> handlerReplacedProdOrder(PCMSSecondTableDetail bean)
-	{
-		ArrayList<PCMSSecondTableDetail> list = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListOld = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListOldNormal = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> listRP = new ArrayList<>();
-		String repRemark = bean.getReplacedRemark().trim();
-		String volume = "";
-		String prdOrder = bean.getProductionOrder().trim();
-		String prdOrderRP = "";
-		String saleOrder = bean.getSaleOrder().trim();
-		String saleLine = bean.getSaleLine().trim();
-		String userId = bean.getUserId().trim();
-		ArrayList<SwitchProdOrderDetail> listSWMainOne = switchProdOrderService.getSwitchProdOrderDetailByPrd(prdOrder);
-		ArrayList<SwitchProdOrderDetail> listSWMainTwo = switchProdOrderService.getSwitchProdOrderDetailByPrdSW(prdOrder);
-		String tableName = "[InputReplacedRemark]";
-		boolean numeric = true;
-		boolean errCheck = true;
-		String[] newRPSplit = repRemark.split(",");
-		listRP.clear();
-		if ( ! errCheck) {
-		} else if (repRemark.equals("")) {
-//			-----------------------------------------------------
-			list.add(bean);
-			listRP = this.getReplacedCaseByProdOrder(this.C_PRODORDER, list);
-			bean = replacedProdOrderService.updateReplacedProdOrder(bean, "X");
-			if (listRP.size() > 0) {
-				for (int i = 0; i < listRP.size(); i ++ ) {
-					PCMSSecondTableDetail beanTmp = new PCMSSecondTableDetail();
-					beanTmp.setProductionOrder(listRP.get(i).getProductionOrder());
-					poListOld.add(beanTmp);
-				}
-				// get normal case from main prod order RP Remark
-				poList = this.getNormalCaseByProdOrder(this.C_PRODORDER, poListOld);
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-			} else {
-//				bean = this.updateReplacedPrd(bean, "X");
-				poList.clear();
-				bean.setReplacedRemark("");
-				bean = this.updateLogRemarkCaseFix(tableName, "", bean);
-				bean.setIconStatus("E");
-				bean.setSystemStatus("Something happen.Please contact IT.");
-				poList.add(bean);
-			}
-			poList = this.setBeanIconStatus(poList, bean);
-		} else if (listSWMainOne.size() > 0) {
-			String prodOrderCheck = "";
-			if (listSWMainOne.size() > 0) {
-				prodOrderCheck = listSWMainOne.get(0).getProductionOrder();
-			}
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Prod.Order already switch between " + prdOrder + " and " + prodOrderCheck + ".");
-			poList.add(bean);
-		} else if (listSWMainTwo.size() > 0) {
-			String prodOrderCheck = "";
-			if (listSWMainTwo.size() > 0) {
-				prodOrderCheck = listSWMainTwo.get(0).getProductionOrder();
-			}
-			bean.setIconStatus("E");
-			bean.setSystemStatus("Prod.Order already switch between " + prdOrder + " and " + prodOrderCheck + ".");
-			poList.add(bean);
-		} else if (newRPSplit.length > 0) {
-			prdOrder = bean.getProductionOrder().trim();
-			ArrayList<ReplacedProdOrderDetail> listRPOld =
-					replacedProdOrderService.getReplacedProdOrderDetailByPrdMainAndSO(prdOrder, saleOrder, saleLine);
-			bean = replacedProdOrderService.updateReplacedProdOrder(bean, "X");
-			ArrayList<PCMSSecondTableDetail> checkList = null;
-			for (String element : newRPSplit) {
-				String[] subSplit = element.split("=");
-				ReplacedProdOrderDetail beanRP = new ReplacedProdOrderDetail();
-				numeric = true;
-				prdOrderRP = "";
-				if (subSplit.length == 1) {
-					prdOrderRP = element.trim();
-					volume = "0";
-				} else {
-					prdOrderRP = subSplit[0].trim();
-					try {
-						volume = subSplit[1].trim();
-						Double.parseDouble(volume);
-					} catch (NumberFormatException e) {
-						numeric = false;
-					}
-					if (numeric) {
-					} else {
-						volume = "0";
-					}
-				}
-				if ( ! prdOrderRP.equals("")) {
-					checkList = fromSapMainProdService.getFromSapMainProdDetail(prdOrderRP);
-					if (checkList.size() == 0) {
-						errCheck = false;
-						bean.setIconStatus("E");
-						bean.setSystemStatus(prdOrderRP + " is not in the Database or wrong data entry. ");
-						poList.add(bean);
-						break;
-					} else {
-						PCMSSecondTableDetail beanCheckRP = checkList.get(0);
-						listRP.add(beanCheckRP);
-
-						beanRP.setProductionOrder(prdOrder);
-						beanRP.setSaleOrder(saleOrder);
-						beanRP.setSaleLine(saleLine);
-						beanRP.setProductionOrderRP(prdOrderRP);
-						beanRP.setChangeBy(userId);
-						beanRP.setVolume(volume);
-						ReplacedProdOrderDetail beanX = replacedProdOrderService.upsertReplacedProdOrder(beanRP, "O");
-						if (beanX.getIconStatus().equals("E")) {
-							errCheck = false;
-							bean.setIconStatus(beanX.getIconStatus());
-							bean.setSystemStatus(beanX.getSystemStatus());
-						}
-						PCMSSecondTableDetail beanTMP = new PCMSSecondTableDetail();
-						beanTMP.setProductionOrder(prdOrder);
-						beanTMP.setProductionOrderRP(prdOrderRP);
-						poList.add(beanTMP);
-					}
-				}
-			}
-			if (errCheck) {
-				listRP = this.getWaitLotCaseBySaleOrder(listRP);
-				poListOld = this.getNormalCaseByProdOrder(this.C_PRODORDERRP, poList);
-				poList = this.getReplacedCaseByProdOrder(this.C_PRODORDERRP, poList);
-				int i = 0;
-				ArrayList<String> listCompareOne = new ArrayList<>();
-				ArrayList<String> listCompareTwo = new ArrayList<>();
-				for (i = 0; i < poList.size(); i ++ ) {
-					listCompareOne.add(poList.get(i).getProductionOrder());
-				}
-				for (i = 0; i < listRPOld.size(); i ++ ) {
-					listCompareTwo.add(listRPOld.get(i).getProductionOrderRP());
-				}
-				listCompareTwo.removeAll(listCompareOne);
-				for (i = 0; i < listCompareTwo.size(); i ++ ) {
-					PCMSSecondTableDetail beanTMP = new PCMSSecondTableDetail();
-					beanTMP.setProductionOrder(listCompareTwo.get(i));
-					poListOldNormal.add(beanTMP);
-				}
-				if (poListOldNormal.size() > 0) {
-					poListOldNormal = this.getNormalCaseByProdOrder(this.C_PRODORDER, poListOldNormal);
-				}
-				for (i = 0; i < poListOld.size(); i ++ ) {
-					poList.add(poListOld.get(i));
-				}
-				for (i = 0; i < poListOldNormal.size(); i ++ ) {
-					poList.add(poListOldNormal.get(i));
-				}
-				for (i = 0; i < listRP.size(); i ++ ) {
-					poList.add(listRP.get(i));
-				}
-				poList = this.setBeanIconStatus(poList, bean);
-			} else {
-				poList = this.setBeanIconStatus(poList, bean);
-			}
-		}
-		return poList;
-	}
-
-	private ArrayList<PCMSSecondTableDetail> getWaitLotCaseBySaleOrder(ArrayList<PCMSSecondTableDetail> listRP)
+	public ArrayList<PCMSSecondTableDetail> getWaitLotCaseBySaleOrder(ArrayList<PCMSSecondTableDetail> listRP)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String where = " where  1 = 1 \r\n";
@@ -1536,7 +959,9 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				PCMSSecondTableDetail bean = listRP.get(i);
 				saleOrder = bean.getSaleOrder();
 				saleLine = bean.getSaleLine();
-				where = where + " ( a.SaleOrder = '" + saleOrder + "' and a.SaleLine = '" + saleLine + "' ) ";
+				String saleOrderSafe = (saleOrder == null ? "" : saleOrder.replace("'", "''"));
+				String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
+				where = where + " ( a.SaleOrder = '" + saleOrderSafe + "' and a.SaleLine = '" + saleLineSafe + "' ) ";
 				if (i != sizeList-1) {
 					where += " or ";
 				}
@@ -1546,199 +971,33 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 
 		String sql = ""
 //				+ this.declareTempApproved
+
+				+ this.pss.createTempForMainAndWaitLot
+				+ this.pss.createTempPrepWaitLot
 				+ this.pss.createTempMainSale
+				+ this.pss.createTempFromSORCFM
 				+ where
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
 				+ " FROM #tempMainSale as a \r\n "
-				+ this.pss.innerJoinWaitLotB 
+				+ this.pss.innerJoinWaitLotB
 				+ this.pss.getLeftJoinFromSORCFM("a")
-				+ this.pss.getLeftJoinTAPP("b")  
+				+ this.pss.getLeftJoinTAPP("b")
 				+ this.pss.getLeftJoinInputReplacedRemark("b", "a")
-				+ this.pss.getLeftJoinInputPCRemark("b", "a") 
-				+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")  
-				+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder") 
+				+ this.pss.getLeftJoinInputPCRemark("b", "a")
+				+ this.pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay",
+						"ProductionOrder", "ProductionOrder")
+				+ this.pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep",
+						"ProductionOrder", "ProductionOrder")
 				+ this.pss.getLeftJoinInputStockLoad("b", "a")
 				+ where
 				+ " and ( SumVol = 'B' OR countProdRP > 0 ) ";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
 		}
 		return list;
-	}
-
-	private ArrayList<PCMSSecondTableDetail> handlerSwitchProdOrder(PCMSSecondTableDetail bean)
-	{
-		ArrayList<PCMSSecondTableDetail> list = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poList = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListTMP = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListOld = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListOP = new ArrayList<>();
-		ArrayList<PCMSSecondTableDetail> poListOPSW = new ArrayList<>();
-		String prdOrderSW = bean.getSwitchRemark().trim();
-		String prdOrder = bean.getProductionOrder().trim();
-		if (prdOrderSW.equals("")) {
-			list.add(bean);
-			poList = this.getSwitchProdOrderListByPrd(list);
-			bean = switchProdOrderService.updateSwitchProdOrderDetail(bean, "X");
-			if (poList.size() > 0) {
-				poListOP = this.getOrderPuangListByPrd(poList);
-				poList = this.getNormalCaseByProdOrder(this.C_PRODORDER, poList);
-				int i = 0;
-				for (i = 0; i < poListOP.size(); i ++ ) {
-					poList.add(poListOP.get(i));
-				}
-				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
-			} else {
-				poList.clear();
-				bean.setIconStatus("E");
-				bean.setSystemStatus("Something happen.Please contact IT.");
-				poList.add(bean);
-			}
-			poList = this.setBeanIconStatus(poList, bean);
-		} else {
-
-			list = switchProdOrderService.getSwitchProdOrderDetailByProdOrderForHandlerSwitchProd(prdOrderSW);
-			if (list.size() > 0) {
-				PCMSSecondTableDetail beanL = list.get(0);
-				ArrayList<ReplacedProdOrderDetail> listRPSubOne = replacedProdOrderService.getReplacedProdOrderDetailByPrdRP(prdOrder);
-				ArrayList<ReplacedProdOrderDetail> listRPSubTwo = replacedProdOrderService.getReplacedProdOrderDetailByPrdRP(prdOrderSW);
-				ArrayList<ReplacedProdOrderDetail> listRPMainOne = replacedProdOrderService.getReplacedProdOrderDetailByPrd(prdOrder);
-				ArrayList<ReplacedProdOrderDetail> listRPMainTwo = replacedProdOrderService.getReplacedProdOrderDetailByPrd(prdOrderSW);
-				int countPrdSW = beanL.getCountInSW();
-				int countCaseMOne = listRPMainOne.size();
-				int countCaseMTwo = listRPMainTwo.size();
-				int countCaseSOne = listRPSubOne.size();
-				int countCaseSTwo = listRPSubTwo.size();
-				if (countCaseMOne > 0) {
-					ReplacedProdOrderDetail beanRP = listRPMainOne.get(0);
-					bean.setIconStatus("E");
-					bean.setSystemStatus("Prod.Order already replaced sale from "
-							+ beanRP.getProductionOrder()
-							+ " by "
-							+ beanRP.getProductionOrderRP()
-							+ ".");
-					poList.add(bean);
-				} else if (countCaseMTwo > 0) {
-					ReplacedProdOrderDetail beanRP = listRPMainTwo.get(0);
-					bean.setIconStatus("E");
-					bean.setSystemStatus("Prod.Order already replaced sale from "
-							+ beanRP.getProductionOrder()
-							+ " by "
-							+ beanRP.getProductionOrderRP()
-							+ ".");
-					poList.add(bean);
-				} else if (countCaseSOne > 0) {
-					ReplacedProdOrderDetail beanRP = listRPSubOne.get(0);
-					bean.setIconStatus("E");
-					bean.setSystemStatus("Prod.Order already replaced sale by " + beanRP.getProductionOrder() + ".");
-					poList.add(bean);
-				} else if (countCaseSTwo > 0) {
-					ReplacedProdOrderDetail beanRP = listRPSubTwo.get(0);
-					bean.setIconStatus("E");
-					bean.setSystemStatus("Prod.Order already replaced sale by " + beanRP.getProductionOrder() + ".");
-					poList.add(bean);
-				} else if (countPrdSW > 0) {
-					ArrayList<SwitchProdOrderDetail> listCheck = switchProdOrderService.getSwitchProdOrderDetailByPrdSW(prdOrderSW);
-					String prodOrderCheck = "";
-					if (listCheck.size() > 0) {
-						prodOrderCheck = listCheck.get(0).getProductionOrder();
-					}
-					if (prdOrder.equals(prodOrderCheck)) {
-						bean.setIconStatus("W");
-						bean.setSystemStatus("Data already upadted.");
-					} else {
-						bean.setIconStatus("E");
-						bean.setSystemStatus("Prod.Order already switch between " + prdOrder + " and " + prodOrderCheck + ".");
-						poList.add(bean);
-					}
-				} else {
-					ArrayList<SwitchProdOrderDetail> listSW = switchProdOrderService.getSwitchProdOrderDetailByPrd(prdOrder);
-					bean = switchProdOrderService.updateSwitchProdOrderDetail(bean, "X");
-					if (listSW.size() > 0) {
-						String oldProdOrderSW = listSW.get(0).getProductionOrderSW();
-						PCMSSecondTableDetail beanTmp = new PCMSSecondTableDetail();
-						beanTmp.setProductionOrder(oldProdOrderSW);
-						poListOld.add(beanTmp);
-						poListOP = this.getOrderPuangListByPrd(poListOld);
-						poListOld = this.getNormalCaseByProdOrder(this.C_PRODORDER, poListOld);
-						int i = 0;
-						for (i = 0; i < poListOP.size(); i ++ ) {
-							poListTMP.add(poListOP.get(i));
-						}
-						for (i = 0; i < poListOPSW.size(); i ++ ) {
-							poListTMP.add(poListOPSW.get(i));
-						}
-					}
-					PCMSSecondTableDetail beanD = new PCMSSecondTableDetail();
-					// CORE SALE LINE PRD PRDSW SALESW LINEDW
-					// 1 1 A B
-					// 2 1 B
-					// ------------ TABLE --------------
-					// X1 1 1 A B 1 1
-					// X2 1 1 A A 2 1
-					// ---------------------------------
-					// X1
-					beanD.setUserId(bean.getUserId());
-					beanD.setSaleOrder(bean.getSaleOrder()); // 1
-					beanD.setSaleLine(bean.getSaleLine()); // 1
-					beanD.setProductionOrder(prdOrder); // A
-					beanD.setProductionOrderSW(prdOrderSW); // B
-					beanD.setSaleOrderSW(bean.getSaleOrder()); // 1
-					beanD.setSaleLineSW(bean.getSaleLine()); // 1
-					beanD = switchProdOrderService.upsertSwitchProdOrder(beanD, "O");
-					// X2
-//					beanD.setSaleOrder(bean.getSaleOrder());              //1
-//					beanD.setSaleLine(bean.getSaleLine());                //1
-//					beanD.setProductionOrder(bean.getProductionOrder());  //A
-					bean.setProductionOrderSW(prdOrder); // A
-					bean.setSaleOrderSW(beanL.getSaleOrder()); // 2
-					bean.setSaleLineSW(beanL.getSaleLine()); // 1
-					bean = switchProdOrderService.upsertSwitchProdOrder(bean, "O");
-//					bean.setIconStatus("I");
-//					bean.setSystemStatus("Update Success.");
-					poList.add(bean);
-					poList = this.getSwitchProdOrderListByPrd(poList);
-					poListOP = this.getOrderPuangListByPrd(poList);
-					poListOPSW = this.getOrderPuangSWListByPrd(poList);
-					if (poListOld.size() > 0) {
-						poList.add(poListOld.get(0));
-					}
-					int i = 0;
-					for (i = 0; i < poListOP.size(); i ++ ) {
-						poList.add(poListOP.get(i));
-					}
-					for (i = 0; i < poListOPSW.size(); i ++ ) {
-						poList.add(poListOPSW.get(i));
-					}
-					for (i = 0; i < poListTMP.size(); i ++ ) {
-						poList.add(poListTMP.get(i));
-					}
-					poList = this.setBeanIconStatus(poList, bean);
-				}
-			} else {
-				bean = switchProdOrderService.updateSwitchProdOrderDetail(bean, "X");
-				bean.setIconStatus("E");
-				bean.setSystemStatus("ProductionOrder is not in the Database or wrong data entry. ");
-				poList.add(bean);
-			}
-		}
-		return poList;
-	}
-
-	private ArrayList<PCMSSecondTableDetail> setBeanIconStatus(ArrayList<PCMSSecondTableDetail> poList,
-			PCMSSecondTableDetail bean)
-	{
-		int i = 0;
-		for (i = 0; i < poList.size(); i ++ ) {
-			PCMSSecondTableDetail beanL = poList.get(i);
-			beanL.setIconStatus(bean.getIconStatus());
-			beanL.setSystemStatus(bean.getSystemStatus());
-		}
-		return poList;
 	}
 
 	@Override
@@ -1774,14 +1033,11 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ "      ,'' AS LotNo \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] as a\r\n"
 				+ " where a.[ProductionOrder] = ? "
-				+ " and CFType is not null  \r\n"  
+				+ " and CFType is not null  \r\n"
 				+ " ORDER BY InputFrom ,CreateDate desc ";
 
-		List<Map<String, Object>> datas = this.database.queryList(sql
-				,bean.getProductionOrder()
-				,bean.getSaleOrder()
-				,bean.getSaleLine()
-				,bean.getProductionOrder());
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql, bean.getProductionOrder(), bean.getSaleOrder(),
+				bean.getSaleLine(), bean.getProductionOrder());
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genInputDateDetail(map));
@@ -1789,108 +1045,46 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return list;
 	}
 
-	@Override
-	public ArrayList<PCMSAllDetail> getUserStatusList()
+	/**
+	 * 7.2b: materialize target production orders → #tempTargetPO (distinct) เพื่อกรอง big temp
+	 * ต้นbatch (ดู createTemp*TargetFiltered ใน PCMSSqlService). safePOs = ค่าที่ escape single-quote
+	 * แล้ว (ชุดเดียวกับ IN-list). CREATE TABLE + INSERT chunk 1000 แถว (เพดาน INSERT..VALUES ของ MSSQL).
+	 */
+	private String buildTempTargetPO(java.util.Collection<String> safePOs)
 	{
-		ArrayList<PCMSAllDetail> list = fromSapMainProdService.getUserStatusDetail();
-//		PCMSAllDetail bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอ COA ลูกค้า ok สี");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("ขายแล้วบางส่วน");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอตอบ CFM ตัวแทน");
-//		list.add(bean);
-//		bean = new PCMSAllDetail();
-//		bean.setUserStatus("รอเปิดบิล");
-//		list.add(bean);
-		return list;
-	}
-
-	private String forPage = "Detail";
-
-	@Override
-	public ArrayList<PCMSTableDetail> saveDefault(ArrayList<PCMSTableDetail> poList)
-	{
-		ArrayList<PCMSTableDetail> list = null;
-		String customerShortName = "",userStatus = "",customerName = "",userId = "",divisionName = "";
-		PCMSTableDetail bean = poList.get(0);
-		userId = bean.getUserId();
-		List<String> userStatusList = bean.getUserStatusList();
-		List<String> cusNameList = bean.getCustomerNameList();
-		List<String> cusShortNameList = bean.getCustomerShortNameList();
-		List<String> divisionList = bean.getDivisionList();
-		if (cusNameList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < cusNameList.size(); i ++ ) {
-				text = cusNameList.get(i);
-				customerName += text;
-				if (i != cusNameList.size()-1) {
-					customerName += "|";
+		StringBuilder sb = new StringBuilder();
+		sb.append("IF OBJECT_ID('tempdb..#tempTargetPO') IS NOT NULL DROP TABLE #tempTargetPO;\r\n");
+		sb.append("CREATE TABLE #tempTargetPO (ProductionOrder NVARCHAR(100));\r\n");
+		int i = 0;
+		for (String po : safePOs) {
+			if (i % 1000 == 0) {
+				if (i > 0) {
+					sb.append(";\r\n");
 				}
+				sb.append("INSERT INTO #tempTargetPO (ProductionOrder) VALUES ");
+			} else {
+				sb.append(",");
 			}
+			sb.append("('").append(po).append("')");
+			i ++ ;
 		}
-		if (divisionList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < divisionList.size(); i ++ ) {
-				text = divisionList.get(i);
-				divisionName += text;
-				if (i != divisionList.size()-1) {
-					divisionName += "|";
-				}
-			}
+		if (i > 0) {
+			sb.append(";\r\n");
 		}
-		if (cusShortNameList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < cusShortNameList.size(); i ++ ) {
-				text = cusShortNameList.get(i);
-				customerShortName += text;
-				if (i != cusShortNameList.size()-1) {
-					customerShortName += "|";
-				}
-			}
-		}
-		if (userStatusList.size() > 0) {
-			String text = "";
-			for (int i = 0; i < userStatusList.size(); i ++ ) {
-				text = userStatusList.get(i);
-				userStatus += text;
-				if (i != userStatusList.size()-1) {
-					userStatus += "|";
-				}
-			}
-		}
-
-		poList.get(0).setDivision(divisionName);
-		poList.get(0).setUserStatus(userStatus);
-		poList.get(0).setCustomerName(customerName);
-		poList.get(0).setCustomerShortName(customerShortName);
-		ArrayList<PCMSTableDetail> beanCheck = searchSettingService.getSearchSettingDetail(userId, this.forPage);
-		if (beanCheck.size() == 0) {
-			list = searchSettingService.insertSearchSettingDetail(poList, this.forPage);
-		} else {
-			list = searchSettingService.updateSearchSettingDetail(poList, this.forPage);
-		}
-		return list;
+		sb.append("CREATE CLUSTERED INDEX IX_tempTargetPO ON #tempTargetPO(ProductionOrder);\r\n");
+		return sb.toString();
 	}
 
 	@Override
-	public ArrayList<PCMSTableDetail> loadDefault(ArrayList<PCMSTableDetail> poList)
-	{
-		// TODO Auto-generated method stub
-		String userId = poList.get(0).getUserId();
-		ArrayList<PCMSTableDetail> bean = searchSettingService.getSearchSettingDetail(userId, this.forPage);
-		return bean;
-	}
-
-	private ArrayList<PCMSSecondTableDetail> getNormalCaseByProdOrder(String prdOrderType,
-			ArrayList<PCMSSecondTableDetail> poList)
+	public ArrayList<PCMSSecondTableDetail> getNormalCaseByProdOrder(String prdOrderType, ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
 		String where = " where 1 = 1 ";
 		String orderBy = " Order by  CustomerShortName,  DueDate, [SaleOrder], [SaleLine], [ProductionOrder]";
-		if (poList.size() > 0) {
+		// 7.2b: materialize target PO ชุดเดียวกับ IN-list ท้าย query → กรอง big temp ต้นbatch
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
+		if (filterByTarget) {
 			where += " and a.ProductionOrder in ( \r\n";
 			String prodOrder = "";
 			for (int i = 0; i < poList.size(); i ++ ) {
@@ -1899,43 +1093,57 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 					prodOrder = poList.get(i).getProductionOrderRP();
 				}
-				where = where + "'" + prodOrder + "' ";
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				where = where + "'" + prodOrderSafe + "' ";
 				if (i != poList.size()-1) {
 					where += " , ";
 				}
+				targetPOSet.add(prodOrderSafe);
 			}
 			where += " ) \r\n";
 		}
+		// เมื่อกรองด้วย target PO ได้ (poList ไม่ว่าง) ใช้ fragment กรอง; ไม่งั้นคงพฤติกรรมเดิม (full table)
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFiltered     : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered        : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered : this.pss.createTempProdWorkDate;
 
 		String fromMainB = ""
 				+ " from (  "
 				+ " SELECT distinct \r\n"
-				+ this.leftJoinBSelect 
+				+ this.leftJoinBSelect
 				+ this.pss.fromProdA
-				+ this.pss.leftJoinBPartOneT_A
-				+ this.pss.leftJoinBPartOneS_A 
-				+ this.pss.getLeftJoinTempPlandeliveryDate("A","a")    
+				+ this.pss.getLeftJoinTempPlandeliveryDate("A", "a")
 				+ this.pss.buildLeftJoinTempProdWorkDate("a")
 				+ this.pss.buildLeftJoinSCC("a")
 				+ this.pss.buildLeftJoinTempSumGR("a")
 				+ this.pss.buildLeftJoinUserStatusAuto("UCAL", "a", "m")
-				+ this.pss.getLeftJoinTempSumBill("a", "a", "M")  
-				+ this.pss.crossApplyVolCalc
+				+ this.pss.buildLeftJoinViewUserStatusMappingPCMS("UCAL", "UserStatusCal", 0)
+				+ this.pss.getLeftJoinTempSumBill("a", "a", "M")
+				+ this.pss.getLeftJoinCRP("a")
 				+ where
 				+ " ) as b \r\n";
 		String sqlMain = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
-	  		    + this.pss.withProdData
+				+ fragSumGR
+				+ this.pss.createTempSCC
+				+ fragProdWorkDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempBillBatchFlag
+				+ this.pss.createTempSumVolOP
+				+ this.pss.createTempSumVolRP
+				+ this.pss.createTempCRP
+				+ this.pss.withProdData
 				+ this.createTempMainFirst
-				+ fromMainB 
-				+ this.createTempMainSecond 
+				+ fromMainB
+				+ this.createTempMainSecond
 				+ " SELECT * \r\n"
 				+ "	FROM #tempMain\r\n"
-				+ orderBy; 
-		List<Map<String, Object>> datas = this.database.queryList(sqlMain);
+				+ orderBy;
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlMain);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -1943,7 +1151,8 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return list;
 	}
 
-	private ArrayList<PCMSSecondTableDetail> getReplacedCaseByProdOrder(String prdOrderType,
+	@Override
+	public ArrayList<PCMSSecondTableDetail> getReplacedCaseByProdOrder(String prdOrderType,
 			ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
@@ -1953,44 +1162,70 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			if (prdOrderType.equals(this.C_PRODORDER)) {
 				prodOrder = poList.get(i).getProductionOrder();
 				String saleLine = poList.get(i).getSaleLine();
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				String saleOrderSafe = (poList.get(i).getSaleOrder() == null ? "" : poList.get(i).getSaleOrder().replace("'", "''"));
+				String saleLineSafe = (saleLine == null ? "" : saleLine.replace("'", "''"));
 				where = where
 						+ " ( a."
-						+ prdOrderType
+						+ this.C_PRODORDER
 						+ " = '"
-						+ prodOrder
+						+ prodOrderSafe
 						+ "' and\r\n"
 						+ "    a.[SaleOrder] = '"
-						+ poList.get(i).getSaleOrder()
+						+ saleOrderSafe
 						+ "' and\r\n"
 						+ "    a.[SaleLine] = '"
-						+ saleLine
+						+ saleLineSafe
 						+ "' \r\n"
-						+ " ) \r\n"; 
+						+ " ) \r\n";
 			} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 				prodOrder = poList.get(i).getProductionOrderRP();
-				where = where + " " + prdOrderType + " = '" + prodOrder + "' ";
+				String prodOrderSafe = (prodOrder == null ? "" : prodOrder.replace("'", "''"));
+				where = where + " " + this.C_PRODORDERRP + " = '" + prodOrderSafe + "' ";
 			}
 			if (i != poList.size()-1) {
 				where += " or ";
 			}
 		}
-		where += " ) \r\n";  
-		
+		where += " ) \r\n";
+
+		// 7.2b: child (SumGR/PWD join) = ProductionOrderRP. materialize ReplacedProdOrder rows ที่ match
+		// filter เดียวกัน (where เดิม) → #tempRPMatch แล้ว derive #tempMainSale (sale line) + #tempRelatedPO
+		// (ProductionOrderRP) จากมัน (superset ปลอดภัย). #tempRPMatch ไม่ต้องพึ่ง #tempTargetPO เพราะ
+		// where ฝังค่า inline อยู่แล้ว
+		boolean filterByTarget = poList.size() > 0;
+		String createRPMatch = filterByTarget
+				? ("IF OBJECT_ID('tempdb..#tempRPMatch') IS NOT NULL DROP TABLE #tempRPMatch;\r\n"
+						+ "SELECT a.SaleOrder, a.SaleLine, a.ProductionOrderRP\r\n"
+						+ "INTO #tempRPMatch\r\n"
+						+ "FROM [PCMS].[dbo].[ReplacedProdOrder] a\r\n"
+						+ "WHERE a.DataStatus = 'O' " + where + ";\r\n"
+						+ "CREATE CLUSTERED INDEX IX_tempRPMatch ON #tempRPMatch(SaleOrder, SaleLine);\r\n")
+				: "";
+		String createRelatedPO  = filterByTarget ? this.pss.createTempRelatedPOFromRPMatch            : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaRPMatch : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRRelatedFiltered             : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateRelatedFiltered      : this.pss.createTempProdWorkDate;
+
 		String sqlRP = ""
-				+ this.pss.createTempMainSale
+				+ createRPMatch
+				+ createRelatedPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
+				+ this.pss.createTempSCC
+				+ fragProdWorkDate
+				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdReplacedFirst อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
 				+ " ; WITH PRD_REPLACED as ( \n "
-				+ this.createTempPrdReplacedFirst 
-				+ where 
-				+ this.createTempPrdReplacedSecond 
-				+ " ) \r\n" 
+				+ this.createTempPrdReplacedFirst
+				+ where
+				+ this.createTempPrdReplacedSecond
+				+ " ) \r\n"
 				+ " select \r\n"
 				+ this.selectAll
-				+ " from PRD_REPLACED as a \r\n"  
-		; 
-		List<Map<String, Object>> datas = this.database.queryList(sqlRP);
+				+ " from PRD_REPLACED as a \r\n";
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlRP);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -2002,104 +1237,50 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: target = ProductionOrder ต้นทาง (b=SwitchProdOrder); child ที่ SumGR/PWD join = ProductionOrderSW
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
+			String ProductionOrderSafe = (ProductionOrder == null ? "" : ProductionOrder.replace("'", "''"));
+			where = where + " '" + ProductionOrderSafe + "' ";
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
+			targetPOSet.add(ProductionOrderSafe);
 		}
 		where += " ) " + " ) \r\n";
+		// #tempMainSale กรองผ่าน SwitchProdOrder (SaleOrderSW/SaleLineSW); SumGR/PWD กรองด้วย
+		// #tempRelatedPO = ProductionOrderSW ของ target (child) — reuse RelatedFiltered ได้
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String createRelatedPO  = filterByTarget ? this.pss.createTempRelatedPOFromSwitchChild            : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaSwitchSW   : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRRelatedFiltered                : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateRelatedFiltered         : this.pss.createTempProdWorkDate;
 		String createTempSWFromA = ""
 
 				+ this.createTempPrdSWFirst
 				+ where
 				+ this.createTempPrdSWSecond;
 		String sqlSW = ""
-				+ this.pss.createTempMainSale
+				+ createTargetPO
+				+ createRelatedPO
+				+ fragMainSale
 				+ this.pss.createTempPlanDeliveryDate
 				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
+				+ fragSumGR
+				+ this.pss.createTempSCC
+				+ fragProdWorkDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempSPOSale   // FIX(regression PERF_SEARCH): createTempPrdSWFirst อ้าง #tempSPOSale แต่ preamble ไม่ได้สร้าง → Invalid object name
+				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
 				+ createTempSWFromA
 				+ " select distinct\r\n"
 				+ this.selectAll
 				+ " from #tempPrdSW as a \r\n"
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				;
-		List<Map<String, Object>> datas = this.database.queryList(sqlSW);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genPCMSSecondTableDetail(map));
-		}
-		return list;
-	}
-
-	public ArrayList<PCMSSecondTableDetail> getOrderPuangListByPrd(ArrayList<PCMSSecondTableDetail> poList)
-	{
-		ArrayList<PCMSSecondTableDetail> list = null;
-		String where = " and  ( b.ProductionOrder in ( \r\n";
-		for (int i = 0; i < poList.size(); i ++ ) {
-			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
-			if (i != poList.size()-1) {
-				where += " , ";
-			}
-		}
-		where += " ) " + " ) \r\n";
-		String createTempOPFromA = "" 
-				+ this.createTempPrdOPA 
-				+ "         " + where 
-				+ this.createTempOP; 
-		String sqlOP = "" 
-				+ this.pss.createTempMainSale
-				+ this.pss.createTempPlanDeliveryDate
-				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
-				+ createTempOPFromA 
-				+ " select distinct \r\n"
-				+ this.selectAll
-				+ " from #tempPrdOP as a \r\n"
-				+ this.pss.getLeftJoinSwitchProdOrder("A") 
-				+ this.pss.buildInnerJoinViewUSM_SPE("a",1)
-				+ " where 1 = 1 "
-				+ "    AND SPO.ProductionOrderSW IS NULL " 
-				;
-		List<Map<String, Object>> datas = this.database.queryList(sqlOP);
-		list = new ArrayList<>();
-		for (Map<String, Object> map : datas) {
-			list.add(this.bcModel._genPCMSSecondTableDetail(map));
-		}
-		return list;
-	}
-
-	public ArrayList<PCMSSecondTableDetail> getOrderPuangSWListByPrd(ArrayList<PCMSSecondTableDetail> poList)
-	{
-		ArrayList<PCMSSecondTableDetail> list = null;
-		String where = " ";
-		if ( ! poList.isEmpty()) {
-			where = " and b.ProductionOrder IN (";
-			List<String> productionOrders = new ArrayList<>();
-
-			for (PCMSSecondTableDetail detail : poList) {
-				productionOrders.add("'" + detail.getProductionOrder() + "'");
-			}
-
-			where += String.join(", ", productionOrders) + ") \r\n";
-		}
-		String sql = ""
-				+ this.pss.createTempMainSale
-				+ this.pss.createTempPlanDeliveryDate
-				+ this.pss.createTempSumBill
-				+ this.pss.createTempSumGR
-				+ this.createTempOPSWFirst 
-				+ where
-				+ " \r\n" 
-				+ this.createTempOPSWSecond
-				+ this.pss.buildInnerJoinViewUSM_SPE("b",1)
-				+ " SELECT * \r\n"
-				+ "	FROM #tempPrdOPSW \r\n";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+				+ this.pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus");
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlSW);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
@@ -2108,110 +1289,194 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 	}
 
 	@Override
-	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderListByRowProd(ArrayList<PCMSSecondTableDetail> poList)
+	public ArrayList<PCMSSecondTableDetail> getOrderPuangListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
-		String prodOrder = poList.get(0).getProductionOrder();
-		ArrayList<SwitchProdOrderDetail> list = switchProdOrderService.getSWProdOrderDetailByPrd(prodOrder);
-		if (list.size() > 0) {
-			prodOrder = list.get(0).getProductionOrder();
+		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: materialize target PO (b.ProductionOrder = puang child) ชุดเดียวกับ IN-list
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = poList.size() > 0;
+		String where = " and  ( b.ProductionOrder in ( \r\n";
+		for (int i = 0; i < poList.size(); i ++ ) {
+			String ProductionOrder = poList.get(i).getProductionOrder();
+			String ProductionOrderSafe = (ProductionOrder == null ? "" : ProductionOrder.replace("'", "''"));
+			where = where + " '" + ProductionOrderSafe + "' ";
+			if (i != poList.size()-1) {
+				where += " , ";
+			}
+			targetPOSet.add(ProductionOrderSafe);
 		}
-		ArrayList<PCMSSecondTableDetail> listPST = new ArrayList<>();
-		if (prodOrder.equals("")) {
-			PCMSSecondTableDetail bean = new PCMSSecondTableDetail();
-			bean.setIconStatus("E");
-			bean.setSystemStatus("This Prod.Order already remove switch prod.order from other user.");
-			listPST.add(bean);
-		} else {
-			listPST = switchProdOrderService.getSwitchProdOrderDetailByProdOrder(prodOrder);
+		where += " ) " + " ) \r\n";
+		// OP: #tempMainSale กรองผ่าน FromSapMainProdSale; SumGR/ProdWorkDate กรอง target PO ตรง
+		// (surviving row มี b.ProductionOrder ∈ targetPOs) — reuse fragment เดียวกับ Normal ได้
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaProdSale : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered               : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered        : this.pss.createTempProdWorkDate;
+		String createTempOPFromA = "" + this.createTempPrdOPA + "         " + where + this.createTempOP;
+		String sqlOP = ""
+				+ createTargetPO
+				+ fragMainSale
+				+ this.pss.createTempPlanDeliveryDate
+				+ this.pss.createTempSumBill
+				+ fragSumGR
+				+ this.pss.createTempSCC
+				+ fragProdWorkDate
+				+ this.pss.createTempSPO
+				+ this.pss.createTempUSMSpecial1   // FIX(regression PERF_SEARCH): createTempPrdOPA อ้าง #tempUSMSpecial1 แต่ preamble ไม่ได้สร้าง → Invalid object name
+				+ createTempOPFromA
+				+ " select distinct \r\n"
+				+ this.selectAll
+				+ " from #tempPrdOP as a \r\n"
+				+ this.pss.getLeftJoinSwitchProdOrder("A")
+				+ this.pss.buildInnerJoinTempUSMSpecial1("a", "UserStatus")
+				+ " where 1 = 1 "
+				+ "    AND SPO.ProductionOrderSW IS NULL ";
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sqlOP);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSSecondTableDetail(map));
 		}
-		return listPST;
+		return list;
 	}
 
-	private PCMSSecondTableDetail upSertRemarkCaseThree(String tableName, String planDate, PCMSSecondTableDetail bean)
+	@Override
+	public ArrayList<PCMSSecondTableDetail> getOrderPuangSWListByPrd(ArrayList<PCMSSecondTableDetail> poList)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+		ArrayList<PCMSSecondTableDetail> list = null;
+		// 7.2b: target = b.ProductionOrder (#tempSPOSale mapped PO) = output PO → SumGR/PWD กรอง target ตรง
+		java.util.LinkedHashSet<String> targetPOSet = new java.util.LinkedHashSet<>();
+		boolean filterByTarget = ! poList.isEmpty();
+		String where = " ";
+		if (filterByTarget) {
+			where = " and b.ProductionOrder IN (";
+			List<String> productionOrders = new ArrayList<>();
+
+			for (PCMSSecondTableDetail detail : poList) {
+				String productionOrderSafe = (detail.getProductionOrder() == null ? "" : detail.getProductionOrder().replace("'", "''"));
+				productionOrders.add("'" + productionOrderSafe + "'");
+				targetPOSet.add(productionOrderSafe);
+			}
+
+			where += String.join(", ", productionOrders) + ") \r\n";
+		}
+		// #tempMainSale กรองผ่าน #tempSPOSale → ต้องสร้าง #tempSPO+#tempSPOSale ก่อน MainSale (ย้ายขึ้น)
+		String createTargetPO = filterByTarget ? this.buildTempTargetPO(targetPOSet) : "";
+		String fragMainSale     = filterByTarget ? this.pss.createTempMainSaleTargetFilteredViaSPOSale : this.pss.createTempMainSale;
+		String fragSumGR        = filterByTarget ? this.pss.createTempSumGRTargetFiltered              : this.pss.createTempSumGR;
+		String fragProdWorkDate = filterByTarget ? this.pss.createTempProdWorkDateTargetFiltered       : this.pss.createTempProdWorkDate;
+		String sql = ""
+				+ createTargetPO
+				+ this.pss.createTempSPO
+				+ this.pss.createTempSPOSale   // ย้ายขึ้นก่อน MainSale: fragMainSale (ViaSPOSale) อ้าง #tempSPOSale
+				+ fragMainSale
+				+ this.pss.createTempPlanDeliveryDate
+				+ this.pss.createTempSumBill
+				+ fragSumGR
+				+ this.pss.createTempSCC
+				+ fragProdWorkDate
+				+ this.pss.createTempUSMSpecial1   // pre-materialize viewUserStatusMappingPCMS WHERE Special=1 (แทน view inline ด้านล่าง)
+				+ this.createTempOPSWFirst
+				+ where
+				+ " \r\n"
+				+ this.createTempOPSWSecond
+				+ this.pss.buildInnerJoinTempUSMSpecial1("b", "UserStatus")
+				+ " SELECT * \r\n"
+				+ "	FROM #tempPrdOPSW \r\n";
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.jdbc, PCMSSqlService.dropAllTemp, sql);
+		list = new ArrayList<>();
+		for (Map<String, Object> map : datas) {
+			list.add(this.bcModel._genPCMSSecondTableDetail(map));
+		}
+		return list;
+	}
+
+	@Override
+	public PCMSSecondTableDetail upSertRemarkCaseThree(String tableName, String planDate, PCMSSecondTableDetail bean)
+	{
+
 		String prdOrder = bean.getProductionOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 		String caseSave = bean.getCaseSave();
+		String sql = " INSERT INTO [PCMS].[dbo]."
+				+ tableName
+				+ " \r\n"
+				+ " ([ProductionOrder] ,"
+				+ caseSave
+				+ ",[ChangeBy] ,[ChangeDate],[LotNo])"// 55
+				+ " values(? , ? , ? , ? , ?   )  "
+				+ ";";
+		int index = 1;
+
 		try {
-			String sql = " INSERT INTO [PCMS].[dbo]."
-					+ tableName
-					+ " \r\n"
-					+ " ([ProductionOrder] ,"
-					+ caseSave
-					+ ",[ChangeBy] ,[ChangeDate],[LotNo])"// 55
-					+ " values(? , ? , ? , ? , ?   )  "
-					+ ";";
-			int index = 1;
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(index ++ , prdOrder);
-			prepared = this.sshUtl.setSqlDate(prepared, planDate, index ++ );
-			prepared.setString(index ++ , bean.getUserId());
-			prepared.setTimestamp(index ++ , new Timestamp(time));
-			prepared.setString(index ++ , bean.getLotNo());
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(index, prdOrder);
+					this.sshUtl.setSqlDate(prepared, planDate, index + 1);
+					prepared.setString(index + 2, bean.getUserId());
+					prepared.setTimestamp(index + 3, new Timestamp(time));
+					prepared.setString(index + 4, bean.getLotNo());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("upSertRemarkCaseThree" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail updateLogRemarkCaseOne(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
+	@Override
+	public PCMSSecondTableDetail updateLogRemarkCaseOne(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
 		long time = currentTime.getTime();
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
+
+		String sql = " UPDATE [PCMS].[dbo]."
+				+ tableName
+				+ " 	SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ? "
+				+ "		and [SaleOrder] = ?  "
+				+ "		and [SaleLine] = ? "
+				+ "		and DataStatus = 'O'; ";
+
 		try {
-			String sql = " UPDATE [PCMS].[dbo]."
-					+ tableName
-					+ " 	SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? "
-					+ "		and [SaleOrder] = ?  "
-					+ "		and [SaleLine] = ? "
-					+ "		and DataStatus = 'O'; ";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6,  bean.getSaleLine() );
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail updateLogRemarkCaseFix(String tableName, String valueChange, PCMSSecondTableDetail bean)
+	@Override
+	public PCMSSecondTableDetail updateLogRemarkCaseFix(String tableName, String valueChange, PCMSSecondTableDetail bean)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
@@ -2219,40 +1484,41 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		long time = currentTime.getTime();
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
+
+		String sql = "UPDATE [PCMS].[dbo]."
+				+ tableName
+				+ " SET "
+				+ caseSave
+				+ " = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' ";
+
 		try {
-			String sql = "UPDATE [PCMS].[dbo]."
-					+ tableName
-					+ " SET "
-					+ caseSave
-					+ " = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and DataStatus = 'O' ";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, valueChange);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6, bean.getSaleLine());
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, valueChange);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail updateLogRemarkWithGrade(String tableName, PCMSSecondTableDetail bean, String Status)
+	@Override
+	public PCMSSecondTableDetail updateLogRemarkWithGrade(String tableName, PCMSSecondTableDetail bean, String Status)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
@@ -2261,72 +1527,74 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 //		String caseSave = bean.getCaseSave();
 		String grade = bean.getGrade();
+
+		String sql = "UPDATE [PCMS].[dbo]."
+				+ tableName
+				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' ";
+
 		try {
-			String sql = "UPDATE [PCMS].[dbo]."
-					+ tableName
-					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ? and [SaleOrder] = ?  and [SaleLine] = ? and [Grade] = ? and DataStatus = 'O' ";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, Status);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.setString(5, saleOrder);
-			prepared.setString(6, bean.getSaleLine());
-			prepared.setString(7, grade);
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, Status);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.setString(5, saleOrder);
+					prepared.setString(6, bean.getSaleLine());
+					prepared.setString(7, grade);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkWithGrade" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail updateLogRemarkCaseThree(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
+	@Override
+	public PCMSSecondTableDetail updateLogRemarkCaseThree(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 //		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		currentTime.getTime(); 
+		currentTime.getTime();
+
+		String sql = "UPDATE [PCMS].[dbo]."
+				+ tableName
+				+ " SET DataStatus = ?  "
+				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
+
 		try {
-			String sql = "UPDATE [PCMS].[dbo]."
-					+ tableName
-					+ " SET DataStatus = ?  "
-					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, prdOrder);
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, prdOrder);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail upSertRemarkCaseOne(String tableName, String valueChange, PCMSSecondTableDetail bean)
+	@Override
+	public PCMSSecondTableDetail upSertRemarkCaseOne(String tableName, String valueChange, PCMSSecondTableDetail bean)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
@@ -2334,117 +1602,120 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		long time = currentTime.getTime();
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
+
+		String sql = " INSERT INTO [PCMS].[dbo]."
+				+ tableName
+				+ " ([ProductionOrder],[SaleOrder] ,[SaleLine],"
+				+ caseSave
+				+ ",[ChangeBy] ,[ChangeDate])"// 55
+				+ " values \r\n"
+				+ "	(? , ? , ? , ? , ? "
+				+ ", ? )  "
+				+ ";";
+
 		try {
-			String sql = " INSERT INTO [PCMS].[dbo]."
-					+ tableName
-					+ " ([ProductionOrder],[SaleOrder] ,[SaleLine],"
-					+ caseSave
-					+ ",[ChangeBy] ,[ChangeDate])"// 55
-					+ " values \r\n"
-					+ "	(? , ? , ? , ? , ? "
-					+ ", ? )  "
-					+ ";";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, saleOrder);
-			prepared.setString(3, bean.getSaleLine());
-			prepared.setString(4, valueChange);
-			prepared.setString(5, bean.getUserId());
-			prepared.setTimestamp(6, new Timestamp(time));
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, saleOrder);
+					prepared.setString(3, bean.getSaleLine());
+					prepared.setString(4, valueChange);
+					prepared.setString(5, bean.getUserId());
+					prepared.setTimestamp(6, new Timestamp(time));
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
-//			System.err.println("upSertRemarkCaseOne" + e.getMessage());
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail updateLogRemarkCaseTwo(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
+	@Override
+	public PCMSSecondTableDetail updateLogRemarkCaseTwo(String tableName, PCMSSecondTableDetail bean, String close_STATUS)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 //		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime(); 
+		long time = currentTime.getTime();
+
+		String sql = " UPDATE [PCMS].[dbo]."
+				+ tableName
+				+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
+				+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
+
 		try {
-			String sql = " UPDATE [PCMS].[dbo]."
-					+ tableName
-					+ " SET DataStatus = ? ,[ChangeBy]  = ?,[ChangeDate]  = ? "
-					+ " WHERE [ProductionOrder]  = ?  and DataStatus = 'O' ; ";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, close_STATUS);
-			prepared.setString(2, bean.getUserId());
-			prepared.setTimestamp(3, new Timestamp(time));
-			prepared.setString(4, prdOrder);
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, close_STATUS);
+					prepared.setString(2, bean.getUserId());
+					prepared.setTimestamp(3, new Timestamp(time));
+					prepared.setString(4, prdOrder);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("updateLogRemarkCaseOne" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail upSertRemarkCaseTwo(String tableName, String valueChange, PCMSSecondTableDetail bean)
+	@Override
+	public PCMSSecondTableDetail upSertRemarkCaseTwo(String tableName, String valueChange, PCMSSecondTableDetail bean)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
-		String prdOrder = bean.getProductionOrder(); 
+
+		String prdOrder = bean.getProductionOrder();
 		Calendar calendar = Calendar.getInstance();
 		java.util.Date currentTime = calendar.getTime();
-		long time = currentTime.getTime(); 
+		long time = currentTime.getTime();
 		String caseSave = bean.getCaseSave();
+
+		String sql = " INSERT INTO [PCMS].[dbo]."
+				+ tableName
+				+ " \r\n"
+				+ " ([ProductionOrder] ,"
+				+ caseSave
+				+ ",[ChangeBy] ,[ChangeDate])"// 55
+				+ " values(? , ? , ? , ?   )  "
+				+ ";";
+
 		try {
-			String sql = " INSERT INTO [PCMS].[dbo]."
-					+ tableName
-					+ " \r\n"
-					+ " ([ProductionOrder] ,"
-					+ caseSave
-					+ ",[ChangeBy] ,[ChangeDate])"// 55
-					+ " values(? , ? , ? , ?   )  "
-					+ ";";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, valueChange);
-			prepared.setString(3, bean.getUserId());
-			prepared.setTimestamp(4, new Timestamp(time));
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, valueChange);
+					prepared.setString(3, bean.getUserId());
+					prepared.setTimestamp(4, new Timestamp(time));
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("upSertRemarkCaseTwo" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}
 
-	private PCMSSecondTableDetail upSertRemarkCaseWithGrade(String tableName, String valueChange, PCMSSecondTableDetail bean)
+	@Override
+	public PCMSSecondTableDetail upSertRemarkCaseWithGrade(String tableName, String valueChange, PCMSSecondTableDetail bean)
 	{
-		PreparedStatement prepared = null;
-		Connection connection;
-		connection = this.database.getConnection();
+
 		String prdOrder = bean.getProductionOrder();
 		String saleOrder = bean.getSaleOrder();
 		Calendar calendar = Calendar.getInstance();
@@ -2453,35 +1724,37 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String caseSave = bean.getCaseSave();
 		String grade = bean.getGrade();
+
+		String sql = " INSERT INTO [PCMS].[dbo]."
+				+ tableName
+				+ " 	([ProductionOrder],[SaleOrder] ,[SaleLine],"
+				+ caseSave
+				+ ",[ChangeBy] "
+				+ " 	,[ChangeDate],[Grade])"// 55
+				+ " values \r\n"
+				+ "		(? , ? , ? , ? , ? "
+				+ "    , ? , ? )  ;";
+
 		try {
-			String sql = " INSERT INTO [PCMS].[dbo]."
-					+ tableName
-					+ " 	([ProductionOrder],[SaleOrder] ,[SaleLine],"
-					+ caseSave
-					+ ",[ChangeBy] "
-					+ " 	,[ChangeDate],[Grade])"// 55
-					+ " values \r\n"
-					+ "		(? , ? , ? , ? , ? "
-					+ "    , ? , ? )  ;";
-			prepared = connection.prepareStatement(sql);
-			prepared.setString(1, prdOrder);
-			prepared.setString(2, saleOrder);
-			prepared.setString(3, bean.getSaleLine());
-			prepared.setString(4, valueChange);
-			prepared.setString(5, bean.getUserId());
-			prepared.setTimestamp(6, new Timestamp(time));
-			prepared.setString(7, grade);
-			prepared.executeUpdate();
-			prepared.close();
+			this.jdbc.execute((ConnectionCallback<Void>) conn -> {
+				try (PreparedStatement prepared = conn.prepareStatement(sql)) {
+					prepared.setString(1, prdOrder);
+					prepared.setString(2, saleOrder);
+					prepared.setString(3, bean.getSaleLine());
+					prepared.setString(4, valueChange);
+					prepared.setString(5, bean.getUserId());
+					prepared.setTimestamp(6, new Timestamp(time));
+					prepared.setString(7, grade);
+					prepared.executeUpdate();
+				}
+				return null;
+			});
 			bean.setIconStatus("I");
-			bean.setSystemStatus("Update Success.");
-		} catch (SQLException e) {
-//			System.err.println("upSertRemarkCaseWithGrade" + e.getMessage());
+			bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
+		} catch (Exception e) {
 			e.printStackTrace();
 			bean.setIconStatus("E");
 			bean.setSystemStatus("Something happen.Please contact IT.");
-		} finally {
-			//// this.database.close();
 		}
 		return bean;
 	}

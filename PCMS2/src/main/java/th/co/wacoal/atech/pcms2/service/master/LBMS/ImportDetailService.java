@@ -16,16 +16,6 @@ public class ImportDetailService {
 	public ImportDetailService(ImportDetailDao dao) { 
 			this.dao = dao; 
 	}
-
-	public static String stringColumn()
-	{
-		return "[]";
-	}
-
-	public static String[] arrayColumn()
-	{
-		return "".replaceAll("'", "").split(",");
-	} 
 	public ArrayList<ImportDetail> getImportDetailByProductionOrder(String prodOrder)
 	{
 		// TODO Auto-generated method stub

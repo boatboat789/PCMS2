@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!--
+		Context สำหรับ PCMSRegressionHarness เท่านั้น — ห้ามใช้ deploy จริงหรืออ้างจาก web.xml
+
+		ตั้งใจ "ไม่" scan th.co.wacoal.atech.pcms2.controller/model/listener (ไม่ต้องการ MVC /
+		ServletContext ตอนรันนอก container) และ exclude SchedulerConfig + TaskService เพื่อไม่ให้
+		@EnableScheduling ทำงาน — มิฉะนั้น ERP sync cron job (0 11,41 * * * *) จะ fire และเขียนข้อมูล
+		จริงใน PRD ระหว่างรัน harness ซึ่งขัดกับเงื่อนไข "harness ต้อง read-only"
+	-->
+	<ctx:annotation-config />
+	<ctx:component-scan base-package="
+		th.co.wacoal.atech.pcms2.config,
+		th.co.wacoal.atech.pcms2.service,
+		th.co.wacoal.atech.pcms2.dao">
+		<ctx:exclude-filter type="assignable" expression="th.co.wacoal.atech.pcms2.config.SchedulerConfig" />
+		<ctx:exclude-filter type="assignable" expression="th.co.wacoal.atech.pcms2.service.TaskService" />
+	</ctx:component-scan>
+
+</beans>

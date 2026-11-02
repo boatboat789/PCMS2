@@ -10,12 +10,14 @@ import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.TempUserStatusAutoDetail;
 
 @Service
-public class TEMP_UserStatusAutoService { 
-	private TEMP_UserStatusAutoDao dao; 
+public class TEMP_UserStatusAutoService {
+	private TEMP_UserStatusAutoDao dao;
+
 	@Autowired
 	public TEMP_UserStatusAutoService(TEMP_UserStatusAutoDao dao) {
-		this.dao = dao; 
-	} 
+		this.dao = dao;
+	}
+
 	public ArrayList<TempUserStatusAutoDetail> getTempUserStatusAutoDetail(ArrayList<PCMSSecondTableDetail> poList)
 	{
 		// TODO Auto-generated method stub

@@ -3,21 +3,20 @@ package th.co.wacoal.atech.pcms2.service.master;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import th.co.wacoal.atech.pcms2.dao.master.SwitchProdOrderDao;
 import th.co.wacoal.atech.pcms2.entities.PCMSSecondTableDetail;
 import th.co.wacoal.atech.pcms2.entities.SwitchProdOrderDetail;
 
-@Component
-public class SwitchProdOrderService  { 
-	private SwitchProdOrderDao dao; 
+@Service
+public class SwitchProdOrderService {
+	private SwitchProdOrderDao dao;
 
 	@Autowired
 	public SwitchProdOrderService(SwitchProdOrderDao dao) {
-		this.dao = dao; 
+		this.dao = dao;
 	}
- 
 
 	public ArrayList<PCMSSecondTableDetail> getSwitchProdOrderDetailByProdOrder(String prdOrder)
 	{

@@ -15,10 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod; 
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+
 import th.co.wacoal.atech.pcms2.entities.ApiResponse;
 import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
@@ -26,8 +27,7 @@ import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService;
  
     
 @Controller
-@RequestMapping(value = { "/Log/ProductionOrderLog"  })
-//@RequestMapping(value = { "/Log/ATT/ProdOperationLog" })
+@RequestMapping(value = { "/Log/ProductionOrderLog"  }) 
 public class ProductionOrderLogController {
 	@SuppressWarnings("unused") 
 	private ServletContext context;
@@ -103,30 +103,6 @@ public class ProductionOrderLogController {
 	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
 	    return ResponseEntity.ok(apiResponse);
 	}
-	
-//	//POST LIST
-//	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
-//	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
-//			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
-//			, @RequestBody List<SearchCriteria> list 
-//			,@PathVariable("dataType") String dataType) throws IOException { 
-//		Gson g = new Gson(); 
-//		// Define the Type for ArrayList of OrgatexDyeLotDetail
-////		Type listType = new TypeToken<ArrayList<ProductionOrderLogDetail>>(){}.getType(); 
-////		// Deserialize JSON directly to ArrayList
-////		ArrayList<ProductionOrderLogDetail> poList = g.fromJson(data, listType); 
-//	    for (SearchCriteria sc : list) {
-//	        System.out.println(sc.getProductionOrder());
-//	    }
-//
-////	    boolean isSuccess = result.stream().allMatch(bean -> "I".equals(bean.getIconStatus()));
-//	    boolean isSuccess = true;
-//	    String status = isSuccess ? "success" : "error";
-//	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
-//
-//	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, result);
-//	    return ResponseEntity.ok(apiResponse);
-//	}
 	public class SearchCriteria   {
 		private String productionOrder ;
 	    private String changeDateStart;
