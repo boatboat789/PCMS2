@@ -4,6 +4,13 @@
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
+### 🔥 2026-11-02 (สาย) — WaitLot: A/B บน PRD เทียบ main เดิม (b150c87) เจอ regression เพิ่ม → แก้แล้ว (MR !6)
+- **ต้นเหตุจริง:** `selectWaitLot` ใน `PCMSDetailDaoImpl` ถูกเปลี่ยนเป็น NULL ตั้งแต่ `c6e6109` (2026-06-15 "backup") — คอลัมน์ `ReplacedRemark/PCRemark/DelayedDep/CauseOfDelay/StockLoad` ของแถว WaitLot (`ProductionOrder='รอจัด Lot'`) หายเป็นว่างทั้งเส้นทางค้นหา (`buildSqlMainAndWaitLot`) และหลังบันทึก (`getWaitLotCaseBySaleOrder`) ทั้งที่ main เดิมมีค่า · หน้า Detail มีช่องกรอก Replaced Remark ให้แถว WaitLot จึงเป็นค่าที่ผู้ใช้กรอกแล้วหาย · harness เดิมมองไม่เห็นเพราะเคส WaitLot ถูก SKIP
+- **แก้:** คืนคอลัมน์ทั้ง 5 ใน `selectWaitLot` + เพิ่ม left join `#tempInputRR/PCR/COD/DD/SL` ใน `buildSqlMainAndWaitLot` · harness เพิ่ม `discoverWaitLotSale` (หา SO/Line จริงจาก DB)
+- **ผลทดสอบ PRD (อ่านอย่างเดียว):** `PCMSWaitLotAbCheck` (ไฟล์เดียวรันได้ทั้ง b150c87 และโค้ดใหม่ ผ่าน reflection เพราะเมธอด private ใน main เดิม) — 8 SO/Line, 9 กลุ่มผล: **ก่อนแก้ replacedRemark ต่างทุกแถว · หลังแก้ ไม่ตรงกัน 0** · worktree ของ b150c87 อยู่ที่ `C:/temp/pcms2_orig` (ลบได้: `git worktree remove --force C:/temp/pcms2_orig`)
+- 🔲 **A/B เต็ม `run-harness-ab.ps1 -Target PRD -Rounds 3` (เริ่ม 10:50) ผลยังไม่ได้อ่านตอน commit** → ดู `C:	emp\pcms2_ab_prd2.out.txt` · เส้นทางค้นหา WaitLot (ไม่ใช่เมธอดหลังบันทึก) ยังไม่ได้เทียบกับ main เดิม
+- ทดสอบ DEV แล้ว: Download Excel ของ Detail (52 คอลัมน์ ตรงกับแถวในตาราง) และ Report CFM (xlsx ถูกต้อง 39 คอลัมน์) · ข้อสังเกต: วันที่ผิดรูปแบบ (ต้อง `MMM d, yyyy`) ที่ `/Report/CFM/createExcelReportDetail` ตอบ 405 ทับ error จริง
+
 ### ✅ 2026-11-02 (สาย) — UX ต่อ: ลำดับปุ่ม Swal · หน้าล้น 1024px · ความสูงช่องในตาราง (ทดสอบ DEV ผ่าน · MR !6)
 - Swal ไม่เคยตั้ง `reverseButtons` (ยืนยันซ้าย/ยกเลิกขวา) → ตั้งที่เดียวใน `config/css/baseCSS.jsp` (`Swal = Swal.mixin({reverseButtons:true})`) · วัดจริง: cancel ซ้าย / confirm ขวา
 - หน้าล้นแนวนอนที่ 1024px: สาเหตุคือปุ่ม Save/Load Default ใน `searchDiv.jsp` (nowrap กว้างกว่าคอลัมน์ lg=2) — แก้ด้วย CSS ใน theme-claude.css · วัด: 1024/1366 = 0px ทั้ง Detail และ Main · ช่อง/select ในตาราง Detail สูง 32px (เฉพาะ `#MainTable td`, ไม่แตะ `.form-control` ทั้งระบบ)

@@ -221,10 +221,12 @@ public class PCMSRegressionHarness {
 			skip(failures, "getOrderPuangSWListByPrd", "ไม่มีแถว OrderPuang จาก static case ให้ discover");
 		}
 
-		if (waitLot != null && waitLot.saleOrder != null) {
+		String[] waitLotSale = (waitLot != null && waitLot.saleOrder != null)
+				? new String[] { waitLot.saleOrder, waitLot.saleLine } : discoverWaitLotSale(jdbc);
+		if (waitLotSale != null) {
 			PCMSSecondTableDetail probe = new PCMSSecondTableDetail();
-			probe.setSaleOrder(waitLot.saleOrder);
-			probe.setSaleLine(waitLot.saleLine);
+			probe.setSaleOrder(waitLotSale[0]);
+			probe.setSaleLine(waitLotSale[1]);
 			ArrayList<PCMSSecondTableDetail> listRP = new ArrayList<>();
 			listRP.add(probe);
 			callAndVerify(mode, "getWaitLotCaseBySaleOrder", failures,
@@ -288,6 +290,24 @@ public class PCMSRegressionHarness {
 	 * ต้นทางคือ ProductionOrderSW (ดู createTempSPOSale: CASE WHEN B.ProductionOrderSW IS NOT NULL)
 	 * — replicate เงื่อนไข FromSapMainProdSale (DataStatus='O', SaleLine<>'') + join MainSale
 	 */
+	/**
+	 * หา SO/Line ที่เป็น WaitLot จริง (เส้นทาง countProdRP>0: ReplacedProdOrder 'รอจัด Lot' ที่ ProductionOrderRP เป็น status Special)
+	 * — DEV มักไม่มีข้อมูลนี้ → null → เคสถูก SKIP · PRD มี (ตรวจ 2026-11-02: 8+ คู่) · ORDER BY ตายตัวให้ผลซ้ำได้
+	 */
+	private static String[] discoverWaitLotSale(JdbcTemplate jdbc) {
+		List<Map<String, Object>> rows = jdbc.queryForList(""
+				+ "SELECT TOP 1 a.SaleOrder, a.SaleLine FROM [PCMS].[dbo].[ReplacedProdOrder] a\r\n"
+				+ "INNER JOIN [PCMS].[dbo].[FromSapMainProd] b ON a.ProductionOrderRP = b.ProductionOrder\r\n"
+				+ "INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] v ON b.[UserStatus] = v.UserStatus AND v.Special = 1\r\n"
+				+ "WHERE a.DataStatus = 'O' AND a.ProductionOrder = N'รอจัด Lot' AND a.SaleLine <> ''\r\n"
+				+ "GROUP BY a.SaleOrder, a.SaleLine ORDER BY a.SaleOrder, a.SaleLine");
+		if (rows.isEmpty()) {
+			return null;
+		}
+		System.out.println("[harness] discovery: WaitLot SO = " + rows.get(0).get("SaleOrder") + "/" + rows.get(0).get("SaleLine"));
+		return new String[] { String.valueOf(rows.get(0).get("SaleOrder")), String.valueOf(rows.get(0).get("SaleLine")) };
+	}
+
 	private static String discoverOrderPuangSWPO(JdbcTemplate jdbc) {
 		// #tempSPOSale.ProductionOrder มี 2 กรณี (CASE ใน createTempSPOSale):
 		//   B: FromSapMainProdSale.PO = switch source  → ค่าออก = ProductionOrderSW

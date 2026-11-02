@@ -86,18 +86,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			+ "   , b.RemarkOne \r\n"
 			+ "   , b.RemarkTwo \r\n"
 			+ "   , b.RemarkThree \r\n"
-			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS ReplacedRemark \r\n"
+			+ "   , k.ReplacedRemark \r\n"
 			+ "   , b.StockRemark\r\n"
 			+ "   , b.GRSumKG \r\n"
 			+ "   , b.GRSumYD \r\n"
 			+ "   , b.GRSumMR \r\n"
 			+ "   , b.DyePlan \r\n"
 			+ "   , b.DyeActual \r\n"
-			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS PCRemark\r\n"
-			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [DelayedDep] \r\n"
-			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [CauseOfDelay] \r\n"
+			+ "   , p.PCRemark\r\n"
+			+ "   , InputDD.[DelayedDep] \r\n"
+			+ "   , InputCOD.[CauseOfDelay] \r\n"
 			+ "   , b.[SwitchRemark]\r\n"
-			+ "   , CAST(NULL AS NVARCHAR(MAX)) AS [StockLoad] \r\n"
+			+ "   , SL.[StockLoad] \r\n"
 			+ "   , b.[PrdCreateDate]\r\n"
 			+ "   , b.LotShipping \r\n"
 			+ "   , b.Volumn \r\n"
@@ -736,6 +736,13 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				+ " INTO #tempWaitLot\r\n"
 				+ " FROM #tempMainSale as a\r\n"
 				+ pss.innerJoinWaitLotB
+				// selectWaitLot ดึง Replaced/PC Remark, CauseOfDelay, DelayedDep, StockLoad ของแถว WaitLot (ProductionOrder = 'รอจัด Lot')
+				// เหมือน main เดิม (b150c87) — ต้อง join #tempInput* (สร้างใน buildSqlCommonTables) ไม่งั้นค่าที่ผู้ใช้กรอกไว้หายเป็นว่าง
+				+ pss.getLeftJoinInputReplacedRemark("b", "a")
+				+ pss.getLeftJoinInputPCRemark("b", "a")
+				+ pss.getLeftJoinSimpleTable("b", "InputCauseOfDelay", "InputCOD", "ProductionOrder, CauseOfDelay", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinSimpleTable("b", "InputDelayedDep", "InputDD", "ProductionOrder, DelayedDep", "ProductionOrder", "ProductionOrder")
+				+ pss.getLeftJoinInputStockLoad("b", "a")
 				+ whereWaitLot
 				+ " AND ( SumVol = 'B' OR countProdRP > 0 )\r\n";
 
