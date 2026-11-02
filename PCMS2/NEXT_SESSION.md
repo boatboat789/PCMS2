@@ -2,6 +2,49 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
+
+**สถานะ ณ 2026-11-02:** PERF_SEARCH (3 fix + navbar + เครื่องมือทดสอบ) merge เข้า `main` แล้ว · ทดสอบ DEV + PRD (อ่านอย่างเดียว) ผ่าน: ค่าเดิมเปลี่ยน 0, ความเร็ว 1.01× · **เหลือบั๊ก 1 ตัวใน main**
+
+ลำดับงาน:
+1. 🔴 **แก้ `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder`** (syntax error `near 'where'` บน PRD) — รายละเอียด/สาเหตุ/ทางแก้ที่น่าจะถูกอยู่ในหัวข้อ 🔴 ด้านล่าง · ย้าย `createTempFromSORCFM` ไปก่อน `createTempMainSale` แล้วตรวจว่า `createTempPrepWaitLot` พึ่ง `#tempMainSale` ไหม · เทียบลำดับกับ `PCMSMainDaoImpl.buildCommonLookupTables` · อ่านโค้ด `main` เดิม `b150c87` เป็นตัวอ้างอิงโครงสร้างที่ถูก
+2. เพิ่มเคส harness ให้ WaitLot ถูก discover บน PRD (ตอนนี้ DEV ไม่มีข้อมูล WaitLot เคสถูก SKIP จึงมองไม่เห็นบั๊กนี้)
+3. รัน `powershell -ExecutionPolicy Bypass -File tools\run-harness-ab.ps1 -Target PRD -Rounds 3 -Out C:\temp\pcms2_ab_prd -Yes` (เริ่มตอน :20/:50, ปิด Eclipse/Tomcat ก่อน) — เคส WaitLot ต้องผ่านเฉพาะโค้ดใหม่ · คู่มือเต็ม `docs/prd-verification-perf-search.md`
+4. push **ทั้ง 2 remote** (`origin` + `gitlab_master`) แล้วเปิด MR: `git push gitlab_master <branch> -o merge_request.create -o merge_request.target=main -o "merge_request.title=..."` (ต้องมี commit ใหม่ใน push ถึงจะสร้าง MR · ไม่มี glab/gh)
+5. ยังไม่ได้ทดสอบ: ปุ่มบันทึก Replaced PO บนหน้า Detail จริง (ต้องทำบน DEV เท่านั้น ห้ามบน PRD — เขียนข้อมูล) · Download Excel (Detail/Report CFM) · Report CFM กับข้อมูลจริง (ตาราง DEV ว่าง) · เมนู Report ชื่อซ้ำ ATT/ERP365 (รอ user เลือกคำ)
+
+**ข้อควรระวัง:**
+- อย่ารัน `mvn test`/harness พร้อม Tomcat หรือ Eclipse ที่ใช้ `target/classes` · `mvn clean` ลบ `target/` → Eclipse ต้อง Maven > Update Project
+- `PCMS/` ในโฟลเดอร์ repo root เป็น **git repo ซ้อน** ห้าม `git add` · `target/m2e-wtp/.../MANIFEST.MF` ที่ถูกลบ = ผลจาก `mvn clean` ไม่ต้อง commit
+- สิทธิ์ PRD: user อนุญาตให้ Claude ทดสอบเฉพาะที่ **ไม่ update/delete** (SELECT, harness) เท่านั้น
+- scheduler ของ PCMS2 รัน 01:00 และ :14/:44 ทุกชั่วโมง — อย่าสตาร์ต Tomcat ทดสอบ (`tools/dev-web-local`) ใกล้เวลานั้น
+
+## 🔴 2026-11-02 — ทดสอบบน PRD (อ่านอย่างเดียว) เสร็จ: ผลเทียบผ่าน · ความเร็วเท่าเดิม · **เจอบั๊กใหม่ที่ DEV มองไม่เห็น**
+
+⚠️ **MR !4 ถูก merge เข้า `gitlab_master/main` แล้ว** (`18b621f`) ก่อนทดสอบ PRD — โค้ดด้านล่างที่ "พัง" จึงอยู่ใน main แล้ว (commit ของรอบนี้ยังไม่อยู่ใน main)
+
+วิธี: `tools/run-harness-ab.ps1 -Target PRD -Rounds 3` (โค้ดเก่า `8371211` vs ใหม่ สลับกัน 3 รอบ, 08:54–09:07, ก่อน sync :14) · ผู้ทดสอบ = Claude ตามที่ user อนุญาต "ทดสอบสิ่งที่ไม่ update/delete บน PRD" · ผลดิบ `C:\temp\pcms2_ab_prd` · query บน PRD เป็น `SELECT` ล้วน · harness สร้างแค่ `#temp` ใน tempdb
+
+| ผล | ค่า |
+|---|---|
+| CONTROL (เก่า r1 vs เก่า r2) | 0/0/0/0/0 — ข้อมูลนิ่งตลอดรอบ ผลเชื่อได้ |
+| ค่าไม่ว่างถูกเปลี่ยน / แถวเพิ่ม | **0 / 0** |
+| เซลล์ว่างที่มีค่า | 3,565 (วันที่ย้อม/CFM/GR/ฯลฯ) |
+| แถวหาย | 16 ครั้ง = **7 แถวไม่ซ้ำ** (Main): SO 1000000909 W5J019 · 1000001214 W5J080/2R · 1107011020 S2F167 · 1107011676 S2K244 · 1111002704 W2B083 · 1111003105 W3B033/1R และ W3B034 — **ตรวจกับ `SwitchProdOrder` บน PRD แล้ว ทุก PO มีแถว self-switch (DataStatus='O')** ตรงกติกา `main` เดิม |
+| ความเร็ว (median 3 รอบ, 33 เคส) | รวม **1.01×** (เก่า 104.0s / ใหม่ 105.3s) · มีธงเดียว `getPCMSSumaryDetail__single_saleorder_switch_target` 1156→1621ms (+465ms, 1.40×; ฝั่ง Detail ของ SO เดียวกัน 1.08×) → **ข้อกังวล "ช้าลง ~11%" จาก DEV ตกไป** (DEV รอบเดียวแกว่งเกินจริง) |
+| คู่ switch จริงบน PRD ที่มี sale | 2 คู่: SO 1109009155 (เคส 16 = Summary 6 / Detail 6 แถวบน PRD; DEV 6/10) และ **SO 1000003047 TW/2URM (เคส 17 ใหม่ — 15 แถวบน PRD)** — ทั้งคู่ไม่มีค่าเดิมเปลี่ยน |
+
+### 🔴 บั๊ก: `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder` พังบน PRD — `Incorrect syntax near the keyword 'where'`
+- เกิดทั้ง 6 รอบ ทั้งโค้ดเก่า (`8371211`) และใหม่ (HEAD = ที่อยู่ใน main ตอนนี้) · **DEV มองไม่เห็นเพราะไม่มีแถว WaitLot → harness SKIP เคสนี้**
+- เมธอดนี้ในโค้ด `main` เดิม (`b150c87`) ไม่มีปัญหาโครงสร้างนี้ · ใน PERF_SEARCH มีการแทรก `createTempForMainAndWaitLot`, `createTempPrepWaitLot`, `createTempFromSORCFM` เข้าไปในสตริง SQL
+- สาเหตุที่เห็นจากโค้ด (ยังไม่ได้แก้/ยังไม่ได้ทดสอบแก้): `pss.createTempMainSale` ลงท้าย **เปิดค้าง** (`... left join ConfigCustomerEX ... on ...` ไม่มี `where`) เพื่อให้ `where` ที่ตามมาเป็นตัวกรองของมัน แต่ HEAD วาง `createTempFromSORCFM` (ลงท้าย `CREATE CLUSTERED INDEX ...;`) **คั่นกลาง** → `where` ลอยหลังคำสั่งที่จบแล้ว = syntax error · (และถ้า parse ผ่าน `#tempMainSale` จะไม่ถูกกรองด้วย where) — ทางแก้ที่น่าจะถูก: ย้าย fragment ที่ลงท้ายครบคำสั่ง (`createTempFromSORCFM`, อาจรวม `createTempPrepWaitLot` — ต้องตรวจว่าพึ่ง `#tempMainSale` ไหม) ไปไว้ **ก่อน** `createTempMainSale` · เทียบกับลำดับใน `PCMSMainDaoImpl.buildCommonLookupTables`
+- ผู้ใช้เจอเมื่อไหร่: `PCMSDetailProcess` (บรรทัด ~252) เรียกเมธอดนี้ **หลัง `upsertReplacedProdOrder` สำเร็จ** = ตอนผู้ใช้บันทึก Replaced PO บนหน้า Detail → ข้อมูลถูกเขียนแล้วแต่ขั้นอ่านต่อ error · ยังไม่ได้ลองกดจริงบนหน้าเว็บ (ห้ามกดบน PRD เพราะเขียนข้อมูล)
+- 🔲 **ครั้งหน้า:** แก้ลำดับ fragment → เพิ่มเคส harness ที่ให้ WaitLot discover ได้บน PRD → รัน `run-harness-ab.ps1` ซ้ำ (เคสนี้ต้องผ่านเฉพาะโค้ดใหม่) → push ทั้ง 2 remote + เปิด MR (วิธีเปิด MR ดู memory) · **ถ้ามี deploy จาก main ขึ้น PRD แล้ว ถือเป็นเรื่องเร่งด่วน**
+
+### บทเรียนเครื่องมือ (กันเสียเวลาซ้ำ)
+- `run-harness-ab.ps1` รุ่นแรก **"รัน PRD" แต่ต่อ DEV จริง**: `Copy-Item` คงวันที่แก้ไขเดิม (ไฟล์ PRD เก่า 2026-07-06) → maven-resources-plugin ข้ามการคัดลอกเข้า `target/test-classes` → harness อ่านไฟล์ DEV เดิม · จับได้เพราะตัวเลข PRD เหมือน DEV ทุกตัว และเคส 17 ได้ 0 แถว · แก้แล้ว: คัดลอกตรงเข้า `target/test-classes` + touch + ตรวจ URL ก่อนรันทุกรอบ + คืน DEV ทั้ง `src` และ `target` ตอนจบ
+- เพิ่ม `-AllowFail <ชื่อเคส>` ให้เดินต่อเมื่อมีเคสที่รู้ว่าพัง (เคสอื่นที่พังยังหยุด)
+
 ## 📌 2026-11-01 — สรุปสถานะ PERF_SEARCH (หยุดเพิ่มงานใหม่ — อ่านอันนี้ก่อนเริ่ม session ถัดไป)
 
 ทดสอบทั้งหมดบน **DEV** เท่านั้น (Tomcat ทดสอบ `tools/dev-web-local` พอร์ต 8082 · harness) · **ยังไม่มีอะไรทดสอบบน PRD**
@@ -9,7 +52,7 @@
 ### ✅ แก้แล้ว + ทดสอบแล้ว
 | งาน | commit | หลักฐาน |
 |---|---|---|
-| anti-join self-switch ใช้ `#tempSPOAnti` | `336eb0f` | A/B harness: แถว Main self-switch 6 แถว (SO 1107011300/1107011676/1111002704/1107011020) หายตามโค้ด `main` เดิม · หน้า Summary SO 1107011323 = 4 แถวตรง baseline |
+| anti-join self-switch ใช้ `#tempSPOAnti` | `336eb0f` | A/B harness: แถว Main self-switch 4 แถวไม่ซ้ำ (SO 1107011300/1107011676/1111002704/1107011020) หายตามโค้ด `main` เดิม · หน้า Summary SO 1107011323 = 4 แถวตรง baseline |
 | `#tempProdWorkDate` filtered ครอบ PO ของ OP/SW/OPSW | `f317d48` | A/B 22 เคส: ค่าไม่ว่างเปลี่ยน **0** · แถวเพิ่ม **0** · เซลล์ว่างมีค่า 2,205 · หน้า Detail/Summary แถว S2K032H มีวันที่ย้อม · เคส 16 (คู่ switch จริง) แถว SUB ได้วันที่ |
 | `#tempSumGR` filtered ครอบ PO คู่ switch | `33860c6` | เคส 16: P2K069 ได้ GR 124.20 KG / 331.00 MR (เดิมว่าง) |
 | เคส harness 10/10b/10c/12/13/14/14b/15/16 + `PCMSServiceGsonCheck` | `9d1c840` `5c0d39a` `ebb83af` | harness verify ผ่านทุกเคส (exit 0) |
@@ -23,7 +66,7 @@
 เรียงตามความเสี่ยง:
 1. **PRD ยังไม่ได้ทดสอบเลย** (ทั้ง 3 fix) · DEV ล้าหลัง PRD · ถ้าจะตรวจต้องตกลงสิทธิ์อ่าน PRD ก่อน (รอบนี้ระบบบล็อกการอ่านข้อมูลระดับแถวของ PRD)
 2. **ข้อมูลทดสอบ switch น้อย:** DEV มี switch ไม่ใช่ self 17 คู่ มี sale แค่ 1 คู่ · ไม่มีคู่ที่ sale ต่างใบทั้งสองฝั่ง (เส้นทาง "PO คู่ OPSW ที่ sale ปลายทางอยู่นอก scope" ทดสอบกับข้อมูลจริงได้แค่ 1 เคส)
-3. **แถวที่หาย 6 แถว** ยืนยันจากการอ่านโค้ด `gitlab_master/main` ไม่ได้รัน `main` จริง
+3. **แถวที่หาย 4 แถวไม่ซ้ำ** ยืนยันจากการอ่านโค้ด `gitlab_master/main` ไม่ได้รัน `main` จริง
 4. **ความเร็ว:** ช้าลง ~11% บน DEV วัดครั้งเดียว ยังไม่วัดซ้ำ/บน PRD
 5. เคส harness ที่ SKIP (หาข้อมูลตัวอย่างไม่เจอ): `...ProductionOrderRP` ×2, `getWaitLotCaseBySaleOrder`
 6. **ยังไม่ได้ทดสอบ:** Download Excel ของ Detail · Download Excel ของ Report CFM · Report CFM กับข้อมูลจริง (ตาราง DEV ว่าง) · ปุ่ม Search ของ Report ไม่ยิง request เมื่อไม่กรอกตัวกรอง (ยังไม่ไล่ว่า validation ตั้งใจ)
@@ -31,7 +74,7 @@
 8. ล้นแนวนอน ~75px ที่จอ ≤800px หน้า Summary (ช่องกรอง bootstrap-select) — แก้เมื่อต้องรองรับแท็บเล็ต
 9. TaskService ลำดับ sync (ข้อ 4 จาก code-review) ยังไม่ได้ตรวจ — น่าจะตั้งใจ
 10. job ERP sync ช่วง 21:14 (รอบแรก) อาจรันกับ DEV ยืนยันไม่ได้ (log เป็น NOP)
-11. ✅ **push แล้วทั้ง 2 remote (2026-11-02)** ถึง `cbe855a`: `origin/PERF_SEARCH` + `gitlab_master/PERF_SEARCH` (MR เข้า `main`: https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/4 · สถานะ **Draft** — ห้าม merge จนกว่าจะทดสอบ/วัดความเร็วบน PRD · ขนาด: 41 commit, 2,379 ไฟล์ รวมลบ SAP JCo `sapjco3.dll/jar` + JSP เก่า 5 ไฟล์ + `FilterLogin20250526.java` · `main` ไม่มี commit ใหม่ → fast-forward ได้) · ไฟล์ที่ **จงใจไม่ commit**: `PCMS/` เป็น git repo ซ้อน (มี `.git` ของตัวเอง 85MB) ไม่ใช่ของ repo นี้ · `target/m2e-wtp/.../MANIFEST.MF` ถูกลบจาก `mvn clean` (ไฟล์ generated ที่ถูก track) · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
+11. ✅ **(อัปเดต 2026-11-02 ดึก) MR !4 ถูก MERGE เข้า `gitlab_master/main` แล้ว** (`18b621f`, https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/4) ทั้งที่เปิดเป็น Draft และยังไม่ทดสอบ PRD · ขนาด: 41 commit, 2,379 ไฟล์ รวมลบ SAP JCo `sapjco3.dll/jar` + JSP เก่า 5 ไฟล์ + `FilterLogin20250526.java` · ต่อมาทดสอบ PRD แล้ว (ดูหัวข้อ 🔴 ด้านบน) · งานรอบถัดมา (docs/tools/เคส 17/ผลทดสอบ PRD — **ไม่แก้โค้ด production**) เปิดเป็น **MR !5**: https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/5 (เปิด 2026-11-02, ยังไม่ merge) · MR ถัดไปที่แก้บั๊ก WaitLot ให้แยกเป็นอีกใบ · ไฟล์ที่ **จงใจไม่ commit**: `PCMS/` เป็น git repo ซ้อน (มี `.git` ของตัวเอง 85MB) ไม่ใช่ของ repo นี้ · `target/m2e-wtp/.../MANIFEST.MF` ถูกลบจาก `mvn clean` (ไฟล์ generated ที่ถูก track) · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
 12. เก่าจาก 07-17: guard schedule toggle ของ Orgatex ยังเขียนว่ารอ deploy+ทดสอบ — ไม่ทราบสถานะปัจจุบัน
 
 ## ✅ 2026-11-01 — ตรวจงาน PERF_SEARCH + navbar บนหน้าจอจริง (เครื่องมือ tools/dev-web-local ใหม่)
@@ -92,7 +135,7 @@
 | ค่าไม่ว่างถูกเปลี่ยนเป็นค่าอื่น | **0** |
 | แถวเพิ่ม | **0** |
 | เซลล์ว่างที่มีค่า (วันที่ย้อม/CFM/GR/ฯลฯ) | 2,205 |
-| แถวหาย | 12 (ซ้ำกัน Summary/Detail = 6 แถวไม่ซ้ำ: Main self-switch `S2K032H` SO 1107011300, `S2K244` 1107011676, `W2B083/2` 1111002704, `S2F167` 1107011020) |
+| แถวหาย | 12 ครั้งรวมทุกเคส (Summary+Detail หลายเคสซ้ำกัน) = **4 แถวไม่ซ้ำ** (แก้จากที่เคยบันทึกผิดว่า 6): Main self-switch `S2K032H` SO 1107011300, `S2K244` 1107011676, `W2B083/2` 1111002704, `S2F167` 1107011020) |
 
 - แถวที่หาย = Main ที่ PO อยู่ใน SwitchProdOrder (รวม self-switch) ซึ่งโค้ด `main` เดิมก็ตัดออก (`getLeftJoinSwitchProdOrder` + `SPO.ProductionOrderSW IS NULL`) แต่ c6e6109 ทำให้หลุดกลับมา — ตรวจจาก **อ่านโค้ด `gitlab_master/main`** ไม่ได้รัน `main` จริง (ไม่มี harness)
 - เคส 16: แถว SUB ได้วันที่ย้อม/สถานะย้อม และ P2K069 (ปลายทาง switch) ได้ GR Qty 124.20 KG / 331.00 MR (เดิมว่าง) = fix `f317d48`+`33860c6` ทำงานกับข้อมูลจริง

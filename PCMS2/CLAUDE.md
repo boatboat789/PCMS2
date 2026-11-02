@@ -66,6 +66,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `docs/database.md` | qualifier, tables, SQL patch rules, temp table |
 | `docs/api.md` | Gson response, endpoint patterns |
 | `docs/deployment.md` | build, deploy, troubleshoot |
+| `docs/prd-verification-perf-search.md` | ขั้นตอนทดสอบ PERF_SEARCH บน PRD (A/B harness เก่า/ใหม่ + ความเร็ว + เกณฑ์ผ่าน) · สคริปต์ `tools/run-harness-ab.ps1` + `tools/harness-ab-diff.py` |
 
 ### Design Decisions
 | ไฟล์ | สรุป |

@@ -1,0 +1,13 @@
+{
+  "name": "single_saleorder_switch_target_twurm",
+  "description": "THAI WACOAL + SaleOrder 1000003047 (TW/2URM) — คู่ switch จริงบน PRD: S6G047 -> S6E105 มี sale ฝั่ง S6E105 (พบจาก query อ่านอย่างเดียวบน PRD 2026-11-02)",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["THAI WACOAL PUBLIC CO.,LTD."],
+    "customerShortNameList": ["TW/2URM"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "saleOrder": "1000003047"
+  }
+}
