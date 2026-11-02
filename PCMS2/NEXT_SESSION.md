@@ -4,6 +4,11 @@
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
+### ✅ 2026-11-02 (สาย) — UX ต่อ: ลำดับปุ่ม Swal · หน้าล้น 1024px · ความสูงช่องในตาราง (ทดสอบ DEV ผ่าน · MR !6)
+- Swal ไม่เคยตั้ง `reverseButtons` (ยืนยันซ้าย/ยกเลิกขวา) → ตั้งที่เดียวใน `config/css/baseCSS.jsp` (`Swal = Swal.mixin({reverseButtons:true})`) · วัดจริง: cancel ซ้าย / confirm ขวา
+- หน้าล้นแนวนอนที่ 1024px: สาเหตุคือปุ่ม Save/Load Default ใน `searchDiv.jsp` (nowrap กว้างกว่าคอลัมน์ lg=2) — แก้ด้วย CSS ใน theme-claude.css · วัด: 1024/1366 = 0px ทั้ง Detail และ Main · ช่อง/select ในตาราง Detail สูง 32px (เฉพาะ `#MainTable td`, ไม่แตะ `.form-control` ทั้งระบบ)
+- 🔲 ค้าง: ที่ 800px ยังล้น ~80px (แท็บเล็ตแนวตั้ง — ระบบนี้ใช้เดสก์ท็อป ยังไม่แก้) · `.form-control{height:30px}` ของช่องนอกตารางยังเดิม · ตัวกัน `check1` ยังไม่ได้กดทดสอบ
+
 ### ✅ 2026-11-02 (สาย) — UX ช่องกรอกในตารางหน้า Detail (ทดสอบ DEV ผ่าน)
 - ที่มา: ช่องหมายเหตุต่อสตริง HTML ตรงๆ (โค้ดปี 2022) ไม่ escape → ค่าที่มี `"` ถูกตัดและเด้ง Swal ยืนยันเองตอน blur · แก้: `escAttr()` ใน `General.js` ครอบ `value=`/`data-search=` 20 จุดใน `PCMSDetail.jsp` · Switch Remark `name` จาก StockRemark → SwitchRemark · `aria-label` ทุกช่อง · `cursor:text` (theme-claude.css) · ชื่อฟิลด์ใน Swal เป็นภาษาคน
 - ตรวจแล้วไม่ต้องแก้: `maxlength=200` ตรงกับ varchar(200) ของ DEV · focus ring มีอยู่แล้ว (ที่เคยวัดว่าไม่มีเกิดจาก pane ไม่ได้โฟกัส)

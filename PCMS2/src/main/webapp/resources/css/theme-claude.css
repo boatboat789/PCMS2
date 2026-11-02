@@ -541,3 +541,9 @@ table.dataTable thead.thead-dark th {
 #MainTable td input.StockRemarkInput,
 #MainTable td input.StockLoadInput,
 #MainTable td input.CauseOfDelayInput { cursor: text !important; }
+
+/* ปุ่ม Save/Load Default ในแผงค้นหา: คอลัมน์แคบ (lg=2/12) ที่ ≤1100px ปุ่ม nowrap กว้างกว่ากลุ่มจนหน้าล้นแนวนอน ~30px — ให้ข้อความตัดบรรทัดได้ */
+#btn_saveDefault, #btn_loadDefault { min-width: 0; white-space: normal; line-height: 1.25; padding-left: 2px; padding-right: 2px; }
+
+/* ช่อง/ดรอปดาวน์ในตารางหน้า Detail สูง ≥32px (ux-ui-guideline.md) — เฉพาะในตาราง ไม่แตะ .form-control ทั้งระบบ */
+#MainTable td input.form-control, #MainTable td select.form-control { height: 32px; }
