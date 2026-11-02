@@ -351,9 +351,9 @@ $(document) .ready( function() {
 						  render: function (data, type, row) {	 
 						   		var htmlEx = data;                                      
 			   					htmlEx = ''          
-			   					+ '<div data-search="' + data + '" '          
+			   					+ '<div data-search="' + escAttr(data) + '" '          
 			   					+ ' name="DateInput" type="text" '
-			   					+ ' value = "' + data   + "' "                 
+			   					+ ' value = "' + escAttr(data)   + "' "                 
 			   					+ ' autocomplete="off" >'       
 			   					+ dateDDMMYYYToDDMM(data) 
 			   					+ '</div>';       
@@ -373,7 +373,7 @@ $(document) .ready( function() {
 									htmlEx = '';     
 								}
 							else{
-								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="CFMPlanLabDate" aria-label="CFM Plan Lab Date" type="text"  value = "' + escAttr(row.cfmPlanLabDate)+ '" autocomplete="off" >';
 							}
 							return  htmlEx;
 					   	  }             
@@ -395,8 +395,8 @@ $(document) .ready( function() {
 									htmlEx = row.sendCFMCusDate ; 
 								}
 								else{
-									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
-									+ row.sendCFMCusDate
+									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" aria-label="Send CFM Cus Date" type="text"  value = "' 
+									+ escAttr(row.sendCFMCusDate)
 									+ '" autocomplete="off" >';
 								} 
 								return  htmlEx
@@ -424,7 +424,7 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}
 							else{   
-								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="DeliveryDate" aria-label="Delivery Date" type="text"  value = "' + escAttr(row.deliveryDate)+ '" autocomplete="off" >';
 							}
 							return  htmlEx           
 							}	},       //40
@@ -450,13 +450,13 @@ $(document) .ready( function() {
 				   						row.typePrdRemark == "SUB" || 
 				   						row.typePrdRemark == "" ||
 			   						  	row.typePrd == "OrderPuang"){ 
-				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-				   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
+				   					htmlEx = '<input data-search="' + escAttr(row.causeOfDelay)+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" aria-label="Cause of Delay" type="text"  value = "' 
+				   					+ escAttr(row.causeOfDelay)+ '" autocomplete="off" >'; 
 								}      
 								else{   
-									htmlEx = '<input data-search="' + row.causeOfDelay
-									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-									+ row.causeOfDelay+ '" autocomplete="off" >'; 
+									htmlEx = '<input data-search="' + escAttr(row.causeOfDelay)
+									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" aria-label="Cause of Delay" type="text"  value = "' 
+									+ escAttr(row.causeOfDelay)+ '" autocomplete="off" >'; 
 								}
 								return  htmlEx      
 							}         
@@ -477,13 +477,13 @@ $(document) .ready( function() {
 				   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN"|| 
 			  							row.typePrdRemark == "SUB" || row.typePrdRemark == "") ||
 			  							row.typePrd == "OrderPuang"){ 
-									 htmlEx = '<select data-search="' + row.delayedDepartment+ 
+									 htmlEx = '<select data-search="' + escAttr(row.delayedDepartment)+ 
 											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
 											 getSelectOptions(data) + '</select>';    
 								} 
 					   			                    
 								else{   
-									htmlEx = '<select data-search="' + row.delayedDepartment+ 
+									htmlEx = '<select data-search="' + escAttr(row.delayedDepartment)+ 
 											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
 											 getSelectOptions(data) + '</select>';     
 								}  
@@ -495,7 +495,7 @@ $(document) .ready( function() {
 				  	  	type: 'string'  ,     
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = ''    
-								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="PCRemark" aria-label="PC Remark" type="text"  value = "' + escAttr(row.pcRemark)+ '" autocomplete="off" >'; 
 								return  htmlEx      
 								}    },                                         //45
 				    {"data" : "replacedRemark","title":"ReplacedRemark",                       
@@ -504,16 +504,16 @@ $(document) .ready( function() {
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = '';
 						   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								}         
 						   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								} 
 								else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
 									htmlEx = ''; 
 								}         
 								else{   
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								}
 						   		return  htmlEx            
 								}    
@@ -523,7 +523,7 @@ $(document) .ready( function() {
 				   	  	render: function (data, type, row) {	          
 							var htmlEx = ''           
 							if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 							}        
 							else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
 									||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
@@ -531,7 +531,7 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}     
 							else{   
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 							}
 							return  htmlEx      
 							}    },                                 //47
@@ -540,7 +540,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,       
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''    
-							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" aria-label="Stock Remark" type="text"  value = "' + escAttr(row.stockRemark)+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}      },                                   //48
 				    {"data" : "stockLoad","title":"StockLoad",                       
@@ -548,7 +548,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,     
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''       
-							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockLoadInput" aria-label="Stock Load" type="text"  value = "' + escAttr(row.stockLoad)+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}       
 						} ,                                                  //49
@@ -651,7 +651,7 @@ $(document) .ready( function() {
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if(row.typePrd == "MAIN"  ){  
-			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 			   			}
 					else{   
 						 htmlEx = '';
@@ -902,7 +902,7 @@ $(document) .ready( function() {
 		    idx: idx,  
 	  };  
 		 Swal.fire({ 
-			  title: "ยืนยันการเปลี่ยน "+fieldName+" ?",
+			  title: "ยืนยันการเปลี่ยน "+(({pcRemark:"PC Remark",stockLoad:"Stock Load",stockRemark:"Stock Remark",switchRemark:"Switch Remark",replacedRemark:"Replaced Remark",causeOfDelay:"Cause of Delay",delayedDep:"Delayed Dept."})[fieldName]||fieldName)+" ?",
 			  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 			  icon: "warning",
 			  showCancelButton: true,      
