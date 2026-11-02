@@ -4,6 +4,10 @@
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
+### ✅ 2026-11-02 (สาย) — แก้บั๊ก WaitLot แล้ว (code-complete · ทดสอบ DEV แบบ syntax-only · **ยังไม่ทดสอบ PRD**)
+- `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder` มี **2 บั๊กซ้อน**: (1) `createTempMainSale` เปิดค้างแต่มี fragment คั่นก่อน `where` → ปิดด้วย `where` + `;` ก่อนต่อ fragment อื่น (2) join helper อ่าน `#tempTAPP/#tempInputRR/PCR/COD/DD/SL` ที่เมธอดไม่ได้สร้าง (`Invalid object name '#tempTAPP'`) → เพิ่ม `createTemp*` ที่ขาด
+- เทสต์ใหม่ `PCMSWaitLotSyntaxCheck` (SO ปลอม ได้ 0 แถว ไม่ error) ผ่านบน DEV · **ยังไม่ได้เทียบผลกับ main เดิม** → 🔲 รัน `run-harness-ab.ps1 -Target PRD` (เริ่ม :20/:50) ให้เคส WaitLot ถูก discover ก่อน merge/deploy
+
 **สถานะ ณ 2026-11-02:** PERF_SEARCH (3 fix + navbar + เครื่องมือทดสอบ) merge เข้า `main` แล้ว · ทดสอบ DEV + PRD (อ่านอย่างเดียว) ผ่าน: ค่าเดิมเปลี่ยน 0, ความเร็ว 1.01× · **เหลือบั๊ก 1 ตัวใน main**
 
 ลำดับงาน:

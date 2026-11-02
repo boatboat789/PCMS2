@@ -972,11 +972,21 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String sql = ""
 //				+ this.declareTempApproved
 
-				+ this.pss.createTempForMainAndWaitLot
-				+ this.pss.createTempPrepWaitLot
+				// createTempMainSale ลงท้ายเปิดค้าง (left join ... on ...) ให้ where ตามมาเป็นตัวกรองของมัน
+				// จึงต้องปิดด้วย ";" ก่อนต่อ fragment อื่น (createTempPrepWaitLot ใช้ #tempMainSale ที่กรองแล้ว)
 				+ this.pss.createTempMainSale
-				+ this.pss.createTempFromSORCFM
 				+ where
+				+ ";\r\n"
+				+ this.pss.createTempForMainAndWaitLot
+				+ this.pss.createTempFromSORCFM
+				+ this.pss.createTempPrepWaitLot
+				// join helper ด้านล่างอ่านจาก #temp เหล่านี้ (ใน main เดิมเป็นตารางจริง)
+				+ this.pss.createTempTAPP
+				+ this.pss.createTempInputRR
+				+ this.pss.createTempInputPCR
+				+ this.pss.createTempInputCOD
+				+ this.pss.createTempInputDD
+				+ this.pss.createTempInputSL
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectWaitLot
 				+ " FROM #tempMainSale as a \r\n "
