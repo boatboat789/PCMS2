@@ -2,6 +2,32 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🔴 2026-11-02 — ทดสอบบน PRD (อ่านอย่างเดียว) เสร็จ: ผลเทียบผ่าน · ความเร็วเท่าเดิม · **เจอบั๊กใหม่ที่ DEV มองไม่เห็น**
+
+⚠️ **MR !4 ถูก merge เข้า `gitlab_master/main` แล้ว** (`18b621f`) ก่อนทดสอบ PRD — โค้ดด้านล่างที่ "พัง" จึงอยู่ใน main แล้ว (commit ของรอบนี้ยังไม่อยู่ใน main)
+
+วิธี: `tools/run-harness-ab.ps1 -Target PRD -Rounds 3` (โค้ดเก่า `8371211` vs ใหม่ สลับกัน 3 รอบ, 08:54–09:07, ก่อน sync :14) · ผู้ทดสอบ = Claude ตามที่ user อนุญาต "ทดสอบสิ่งที่ไม่ update/delete บน PRD" · ผลดิบ `C:\temp\pcms2_ab_prd` · query บน PRD เป็น `SELECT` ล้วน · harness สร้างแค่ `#temp` ใน tempdb
+
+| ผล | ค่า |
+|---|---|
+| CONTROL (เก่า r1 vs เก่า r2) | 0/0/0/0/0 — ข้อมูลนิ่งตลอดรอบ ผลเชื่อได้ |
+| ค่าไม่ว่างถูกเปลี่ยน / แถวเพิ่ม | **0 / 0** |
+| เซลล์ว่างที่มีค่า | 3,565 (วันที่ย้อม/CFM/GR/ฯลฯ) |
+| แถวหาย | 16 ครั้ง = **7 แถวไม่ซ้ำ** (Main): SO 1000000909 W5J019 · 1000001214 W5J080/2R · 1107011020 S2F167 · 1107011676 S2K244 · 1111002704 W2B083 · 1111003105 W3B033/1R และ W3B034 — **ตรวจกับ `SwitchProdOrder` บน PRD แล้ว ทุก PO มีแถว self-switch (DataStatus='O')** ตรงกติกา `main` เดิม |
+| ความเร็ว (median 3 รอบ, 33 เคส) | รวม **1.01×** (เก่า 104.0s / ใหม่ 105.3s) · มีธงเดียว `getPCMSSumaryDetail__single_saleorder_switch_target` 1156→1621ms (+465ms, 1.40×; ฝั่ง Detail ของ SO เดียวกัน 1.08×) → **ข้อกังวล "ช้าลง ~11%" จาก DEV ตกไป** (DEV รอบเดียวแกว่งเกินจริง) |
+| คู่ switch จริงบน PRD ที่มี sale | 2 คู่: SO 1109009155 (เคส 16 = Summary 6 / Detail 6 แถวบน PRD; DEV 6/10) และ **SO 1000003047 TW/2URM (เคส 17 ใหม่ — 15 แถวบน PRD)** — ทั้งคู่ไม่มีค่าเดิมเปลี่ยน |
+
+### 🔴 บั๊ก: `PCMSDetailDaoImpl.getWaitLotCaseBySaleOrder` พังบน PRD — `Incorrect syntax near the keyword 'where'`
+- เกิดทั้ง 6 รอบ ทั้งโค้ดเก่า (`8371211`) และใหม่ (HEAD = ที่อยู่ใน main ตอนนี้) · **DEV มองไม่เห็นเพราะไม่มีแถว WaitLot → harness SKIP เคสนี้**
+- เมธอดนี้ในโค้ด `main` เดิม (`b150c87`) ไม่มีปัญหาโครงสร้างนี้ · ใน PERF_SEARCH มีการแทรก `createTempForMainAndWaitLot`, `createTempPrepWaitLot`, `createTempFromSORCFM` เข้าไปในสตริง SQL
+- สาเหตุที่เห็นจากโค้ด (ยังไม่ได้แก้/ยังไม่ได้ทดสอบแก้): `pss.createTempMainSale` ลงท้าย **เปิดค้าง** (`... left join ConfigCustomerEX ... on ...` ไม่มี `where`) เพื่อให้ `where` ที่ตามมาเป็นตัวกรองของมัน แต่ HEAD วาง `createTempFromSORCFM` (ลงท้าย `CREATE CLUSTERED INDEX ...;`) **คั่นกลาง** → `where` ลอยหลังคำสั่งที่จบแล้ว = syntax error · (และถ้า parse ผ่าน `#tempMainSale` จะไม่ถูกกรองด้วย where) — ทางแก้ที่น่าจะถูก: ย้าย fragment ที่ลงท้ายครบคำสั่ง (`createTempFromSORCFM`, อาจรวม `createTempPrepWaitLot` — ต้องตรวจว่าพึ่ง `#tempMainSale` ไหม) ไปไว้ **ก่อน** `createTempMainSale` · เทียบกับลำดับใน `PCMSMainDaoImpl.buildCommonLookupTables`
+- ผู้ใช้เจอเมื่อไหร่: `PCMSDetailProcess` (บรรทัด ~252) เรียกเมธอดนี้ **หลัง `upsertReplacedProdOrder` สำเร็จ** = ตอนผู้ใช้บันทึก Replaced PO บนหน้า Detail → ข้อมูลถูกเขียนแล้วแต่ขั้นอ่านต่อ error · ยังไม่ได้ลองกดจริงบนหน้าเว็บ (ห้ามกดบน PRD เพราะเขียนข้อมูล)
+- 🔲 **ครั้งหน้า:** แก้ลำดับ fragment → เพิ่มเคส harness ที่ให้ WaitLot discover ได้บน PRD → รัน `run-harness-ab.ps1` ซ้ำ (เคสนี้ต้องผ่านเฉพาะโค้ดใหม่) → push ทั้ง 2 remote + เปิด MR (วิธีเปิด MR ดู memory) · **ถ้ามี deploy จาก main ขึ้น PRD แล้ว ถือเป็นเรื่องเร่งด่วน**
+
+### บทเรียนเครื่องมือ (กันเสียเวลาซ้ำ)
+- `run-harness-ab.ps1` รุ่นแรก **"รัน PRD" แต่ต่อ DEV จริง**: `Copy-Item` คงวันที่แก้ไขเดิม (ไฟล์ PRD เก่า 2026-07-06) → maven-resources-plugin ข้ามการคัดลอกเข้า `target/test-classes` → harness อ่านไฟล์ DEV เดิม · จับได้เพราะตัวเลข PRD เหมือน DEV ทุกตัว และเคส 17 ได้ 0 แถว · แก้แล้ว: คัดลอกตรงเข้า `target/test-classes` + touch + ตรวจ URL ก่อนรันทุกรอบ + คืน DEV ทั้ง `src` และ `target` ตอนจบ
+- เพิ่ม `-AllowFail <ชื่อเคส>` ให้เดินต่อเมื่อมีเคสที่รู้ว่าพัง (เคสอื่นที่พังยังหยุด)
+
 ## 📌 2026-11-01 — สรุปสถานะ PERF_SEARCH (หยุดเพิ่มงานใหม่ — อ่านอันนี้ก่อนเริ่ม session ถัดไป)
 
 ทดสอบทั้งหมดบน **DEV** เท่านั้น (Tomcat ทดสอบ `tools/dev-web-local` พอร์ต 8082 · harness) · **ยังไม่มีอะไรทดสอบบน PRD**

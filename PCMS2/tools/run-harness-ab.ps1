@@ -11,6 +11,7 @@ param(
     [string]$OldWorktree = 'C:\temp\pcms2_old',
     [string]$Out = 'C:\temp\pcms2_ab',
     [int]$Rounds = 3,
+    [string[]]$AllowFail = @(),   # harness case names whose DAO exception is a KNOWN finding; the run continues (all other failures still stop it)
     [switch]$Yes
 )
 $ErrorActionPreference = 'Stop'
@@ -60,6 +61,22 @@ New-Item -ItemType Directory -Force $Out | Out-Null
 $baselineKeep = Join-Path $Out 'new_project_baseline_before'
 if (Test-Path $baselineDirNew) { Copy-Item $baselineDirNew $baselineKeep -Recurse -Force }
 
+# Put a properties file where the harness really reads it. Copy-Item keeps the OLD LastWriteTime, and
+# maven-resources-plugin only copies when src is newer than target/test-classes -> it silently kept the previous
+# (DEV) file and the "PRD" run actually hit DEV (found 2026-11-02). So: touch the source AND copy straight into
+# target/test-classes, then verify the host that will really be used.
+function Set-Props($srcFile, $proj, $expectDev) {
+    $dst = Join-Path $proj 'src\test\resources\database.properties'
+    Copy-Item $srcFile $dst -Force
+    (Get-Item $dst).LastWriteTime = Get-Date
+    $tc = Join-Path $proj 'target\test-classes'
+    $tcFile = Join-Path $tc 'database.properties'
+    if (Test-Path $tc) { Copy-Item $srcFile $tcFile -Force; (Get-Item $tcFile).LastWriteTime = Get-Date }
+    $check = if (Test-Path $tcFile) { $tcFile } else { $dst }
+    $u = (Select-String -Path $check -Pattern '^pcms\.db\.url=(.*)$').Matches[0].Groups[1].Value
+    if (($u -match 'PCMSDEV') -ne $expectDev) { throw "Properties check failed for $proj : url is not the expected environment ($check)" }
+}
+
 function Invoke-Harness($proj, $log) {
     Push-Location $proj
     try {
@@ -70,17 +87,21 @@ function Invoke-Harness($proj, $log) {
 }
 
 try {
-    Copy-Item $srcProps $propsFile -Force
-    Copy-Item $srcProps (Join-Path $oldRes 'database.properties') -Force
-
     for ($i = 1; $i -le $Rounds; $i++) {
         foreach ($side in @('old', 'new')) {
             if ($side -eq 'old') { $proj = $oldProj; $bdir = $baselineDirOld } else { $proj = $newProj; $bdir = $baselineDirNew }
+            Set-Props $srcProps $proj $isDevUrl   # every run: make sure THIS project really uses the target DB
             $log = Join-Path $Out ("{0}_r{1}.log" -f $side, $i)
             $t0 = Get-Date
             $code = Invoke-Harness $proj $log
             Write-Host ("[{0:HH:mm:ss}] {1} round {2}: mvn exit={3} ({4:N0}s) -> {5}" -f (Get-Date), $side, $i, $code, ((Get-Date) - $t0).TotalSeconds, $log)
-            if ($code -ne 0) { throw "harness failed ($side round $i). See $log" }
+            if ($code -ne 0) {
+                # failing case names look like "<name> ... DAO call throw exception: ..." (Thai text between is code-page garbled)
+                $failed = @(Select-String -Path $log -Pattern '^(\S+)\s.*DAO call throw exception' | ForEach-Object { $_.Matches[0].Groups[1].Value })
+                $unknown = @($failed | Where-Object { $AllowFail -notcontains $_ })
+                if ($failed.Count -eq 0 -or $unknown.Count -gt 0) { throw "harness failed ($side round $i). See $log" }
+                Write-Host ("  WARNING: known failing case(s) ignored: {0}" -f ($failed -join ', ')) -ForegroundColor Yellow
+            }
             $dest = Join-Path $Out ("{0}_r{1}" -f $side, $i)
             if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
             Copy-Item $bdir $dest -Recurse
@@ -88,8 +109,9 @@ try {
     }
 }
 finally {
-    Copy-Item $devBak $propsFile -Force                                   # always put the DEV properties back
-    Copy-Item $devBak (Join-Path $oldRes 'database.properties') -Force
+    # always put the DEV properties back (also into target/test-classes, so nothing keeps reading PRD)
+    Set-Props $devBak $newProj $true
+    Set-Props $devBak $oldProj $true
     if (Test-Path $baselineKeep) {                                        # restore the project baseline
         Remove-Item $baselineDirNew -Recurse -Force -ErrorAction SilentlyContinue
         Copy-Item $baselineKeep $baselineDirNew -Recurse -Force
