@@ -31,7 +31,7 @@
 8. ล้นแนวนอน ~75px ที่จอ ≤800px หน้า Summary (ช่องกรอง bootstrap-select) — แก้เมื่อต้องรองรับแท็บเล็ต
 9. TaskService ลำดับ sync (ข้อ 4 จาก code-review) ยังไม่ได้ตรวจ — น่าจะตั้งใจ
 10. job ERP sync ช่วง 21:14 (รอบแรก) อาจรันกับ DEV ยืนยันไม่ได้ (log เป็น NOP)
-11. **ยังไม่ได้ push ทั้ง 2 remote** (ตรวจ 2026-11-01 ดึก): `origin` ค้าง 7 commit · `gitlab_master` ค้าง 16 commit (ต้องต่อ VPN ถึงจะ push ได้) — ตามกฎ dual-remote ต้อง push ครบทั้งคู่ · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
+11. ✅ **push แล้วทั้ง 2 remote (2026-11-02)** ถึง `cbe855a`: `origin/PERF_SEARCH` + `gitlab_master/PERF_SEARCH` (ยังไม่ได้เปิด merge request เข้า `main` — gitlab แสดงลิงก์สร้าง MR ให้) · ไฟล์ที่ **จงใจไม่ commit**: `PCMS/` เป็น git repo ซ้อน (มี `.git` ของตัวเอง 85MB) ไม่ใช่ของ repo นี้ · `target/m2e-wtp/.../MANIFEST.MF` ถูกลบจาก `mvn clean` (ไฟล์ generated ที่ถูก track) · ไฟล์ค้างใน working tree: โฟลเดอร์ `PCMS/` (untracked ไม่รู้ที่มา), `target/m2e-wtp/.../MANIFEST.MF` ถูกลบ (ผลจาก `mvn clean`)
 12. เก่าจาก 07-17: guard schedule toggle ของ Orgatex ยังเขียนว่ารอ deploy+ทดสอบ — ไม่ทราบสถานะปัจจุบัน
 
 ## ✅ 2026-11-01 — ตรวจงาน PERF_SEARCH + navbar บนหน้าจอจริง (เครื่องมือ tools/dev-web-local ใหม่)
