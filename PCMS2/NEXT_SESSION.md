@@ -9,7 +9,7 @@
 ### ✅ แก้แล้ว + ทดสอบแล้ว
 | งาน | commit | หลักฐาน |
 |---|---|---|
-| anti-join self-switch ใช้ `#tempSPOAnti` | `336eb0f` | A/B harness: แถว Main self-switch 6 แถว (SO 1107011300/1107011676/1111002704/1107011020) หายตามโค้ด `main` เดิม · หน้า Summary SO 1107011323 = 4 แถวตรง baseline |
+| anti-join self-switch ใช้ `#tempSPOAnti` | `336eb0f` | A/B harness: แถว Main self-switch 4 แถวไม่ซ้ำ (SO 1107011300/1107011676/1111002704/1107011020) หายตามโค้ด `main` เดิม · หน้า Summary SO 1107011323 = 4 แถวตรง baseline |
 | `#tempProdWorkDate` filtered ครอบ PO ของ OP/SW/OPSW | `f317d48` | A/B 22 เคส: ค่าไม่ว่างเปลี่ยน **0** · แถวเพิ่ม **0** · เซลล์ว่างมีค่า 2,205 · หน้า Detail/Summary แถว S2K032H มีวันที่ย้อม · เคส 16 (คู่ switch จริง) แถว SUB ได้วันที่ |
 | `#tempSumGR` filtered ครอบ PO คู่ switch | `33860c6` | เคส 16: P2K069 ได้ GR 124.20 KG / 331.00 MR (เดิมว่าง) |
 | เคส harness 10/10b/10c/12/13/14/14b/15/16 + `PCMSServiceGsonCheck` | `9d1c840` `5c0d39a` `ebb83af` | harness verify ผ่านทุกเคส (exit 0) |
@@ -23,7 +23,7 @@
 เรียงตามความเสี่ยง:
 1. **PRD ยังไม่ได้ทดสอบเลย** (ทั้ง 3 fix) · DEV ล้าหลัง PRD · ถ้าจะตรวจต้องตกลงสิทธิ์อ่าน PRD ก่อน (รอบนี้ระบบบล็อกการอ่านข้อมูลระดับแถวของ PRD)
 2. **ข้อมูลทดสอบ switch น้อย:** DEV มี switch ไม่ใช่ self 17 คู่ มี sale แค่ 1 คู่ · ไม่มีคู่ที่ sale ต่างใบทั้งสองฝั่ง (เส้นทาง "PO คู่ OPSW ที่ sale ปลายทางอยู่นอก scope" ทดสอบกับข้อมูลจริงได้แค่ 1 เคส)
-3. **แถวที่หาย 6 แถว** ยืนยันจากการอ่านโค้ด `gitlab_master/main` ไม่ได้รัน `main` จริง
+3. **แถวที่หาย 4 แถวไม่ซ้ำ** ยืนยันจากการอ่านโค้ด `gitlab_master/main` ไม่ได้รัน `main` จริง
 4. **ความเร็ว:** ช้าลง ~11% บน DEV วัดครั้งเดียว ยังไม่วัดซ้ำ/บน PRD
 5. เคส harness ที่ SKIP (หาข้อมูลตัวอย่างไม่เจอ): `...ProductionOrderRP` ×2, `getWaitLotCaseBySaleOrder`
 6. **ยังไม่ได้ทดสอบ:** Download Excel ของ Detail · Download Excel ของ Report CFM · Report CFM กับข้อมูลจริง (ตาราง DEV ว่าง) · ปุ่ม Search ของ Report ไม่ยิง request เมื่อไม่กรอกตัวกรอง (ยังไม่ไล่ว่า validation ตั้งใจ)
@@ -92,7 +92,7 @@
 | ค่าไม่ว่างถูกเปลี่ยนเป็นค่าอื่น | **0** |
 | แถวเพิ่ม | **0** |
 | เซลล์ว่างที่มีค่า (วันที่ย้อม/CFM/GR/ฯลฯ) | 2,205 |
-| แถวหาย | 12 (ซ้ำกัน Summary/Detail = 6 แถวไม่ซ้ำ: Main self-switch `S2K032H` SO 1107011300, `S2K244` 1107011676, `W2B083/2` 1111002704, `S2F167` 1107011020) |
+| แถวหาย | 12 ครั้งรวมทุกเคส (Summary+Detail หลายเคสซ้ำกัน) = **4 แถวไม่ซ้ำ** (แก้จากที่เคยบันทึกผิดว่า 6): Main self-switch `S2K032H` SO 1107011300, `S2K244` 1107011676, `W2B083/2` 1111002704, `S2F167` 1107011020) |
 
 - แถวที่หาย = Main ที่ PO อยู่ใน SwitchProdOrder (รวม self-switch) ซึ่งโค้ด `main` เดิมก็ตัดออก (`getLeftJoinSwitchProdOrder` + `SPO.ProductionOrderSW IS NULL`) แต่ c6e6109 ทำให้หลุดกลับมา — ตรวจจาก **อ่านโค้ด `gitlab_master/main`** ไม่ได้รัน `main` จริง (ไม่มี harness)
 - เคส 16: แถว SUB ได้วันที่ย้อม/สถานะย้อม และ P2K069 (ปลายทาง switch) ได้ GR Qty 124.20 KG / 331.00 MR (เดิมว่าง) = fix `f317d48`+`33860c6` ทำงานกับข้อมูลจริง
