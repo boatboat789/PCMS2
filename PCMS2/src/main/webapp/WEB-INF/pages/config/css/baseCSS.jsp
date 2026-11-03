@@ -5,6 +5,8 @@
 	<jsp:include page="/WEB-INF/pages/config/css/bootstrap.jsp"></jsp:include>       
 	<script src="<c:url value="/resources/vendor/moment/moment.js"/>"></script>    
 	<script src="<c:url value="/resources/vendor/sweetalert2-11.1.7/package/dist/sweetalert2.all.min.js"/>"></script>
+	<%-- ลำดับปุ่มทั้งระบบ: ยกเลิก = ซ้าย · ยืนยัน = ขวา (.claude/rules/modal-button-order.md) ตั้งที่เดียว ไม่ใส่ reverseButtons ทีละจุด --%>
+	<script>Swal = Swal.mixin({ reverseButtons: true });</script>
 	<script src="<c:url value="/resources/vendor/dateRangePicker/daterangepicker.js"/>"></script>     
      
 	<jsp:include page="/WEB-INF/pages/config/css/DataTable.jsp"></jsp:include>            

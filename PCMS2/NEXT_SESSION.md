@@ -2,6 +2,13 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 📬 2026-11-03 — นำ commit ของ PERF_SEARCH ที่ยังไม่อยู่ใน main เข้า main (MR นี้)
+
+- `790d62e` **WaitLot คืนค่า Replaced/PC Remark, Cause of Delay, Delayed Dep, Stock Load** (เดิมถูกแทนเป็น NULL — ผู้ใช้กรอกที่แถว "รอจัด Lot" แล้วไม่เห็นค่า) · A/B บน PRD แล้ว (บันทึกในข้อความ commit)
+- `5d452b1` UX: Swal ยกเลิกซ้าย/ยืนยันขวาทั้งระบบ · แก้หน้าล้นที่ 1024px (ปุ่ม Save/Load Default) · ช่องในตารางหน้า Detail สูง ≥32px
+- `ef8ed10`, `265105e` บันทึกผล A/B บน PRD (เอกสาร)
+- ตรวจ: merge จำลองเข้า main สะอาด (ไม่มี conflict) · compile ผ่าน · ที่ main ปัจจุบันยังขาด 2 อย่างแรก (วัดบน DEV: ล้น 32px ที่ 1024px)
+
 ## 🔴 2026-11-03 — ทำความเข้าใจ logic หน้า Detail ก่อนแก้ (อ่านก่อน!) — เอกสาร 3 ฉบับใน `docs/`
 
 - `detail-row-taxonomy-2026-11-03.md` — **จัดประเภทครบ**: แถว 6 ชุด (Main/OP/OPSW/SW/RP/WaitLot), Main ไม่มี PO 4 แบบ, Switch 3 แบบ, WaitLot 3 ป้าย, สูตร Prod. Qty 5 สูตร, ช่องกรอก 10 ช่อง + ขนาดข้อมูล DEV/PRD + คำถามให้เจ้าของงาน 6 ข้อ
@@ -15,6 +22,19 @@ MR เอกสาร/เครื่องมือชุดนี้ (ไม�
 🔲 ครั้งหน้า: ให้เจ้าของงานตอบคำถามท้าย taxonomy (ข้อ 1 สำคัญสุด) → แก้ `#tmpSumVolOP/RP` ให้กรองด้วย PO แล้วรัน `OrigVsCurrentDetailCheck` ด้วยชุดตัวกรองหลายแบบ (ค่าแถวเดียวกันต้องเท่ากันทุกตัวกรอง) → ตรวจ `#tempInput*` (กรองด้วย SO/line), แถว SUB ที่หายบน DEV, แถวซ้ำบน PRD, WaitLot บน PRD
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
+
+### 🔥 2026-11-02 (สาย) — WaitLot: A/B บน PRD เทียบ main เดิม (b150c87) เจอ regression เพิ่ม → แก้แล้ว (MR !6)
+- **ต้นเหตุจริง:** `selectWaitLot` ใน `PCMSDetailDaoImpl` ถูกเปลี่ยนเป็น NULL ตั้งแต่ `c6e6109` (2026-06-15 "backup") — คอลัมน์ `ReplacedRemark/PCRemark/DelayedDep/CauseOfDelay/StockLoad` ของแถว WaitLot (`ProductionOrder='รอจัด Lot'`) หายเป็นว่างทั้งเส้นทางค้นหา (`buildSqlMainAndWaitLot`) และหลังบันทึก (`getWaitLotCaseBySaleOrder`) ทั้งที่ main เดิมมีค่า · หน้า Detail มีช่องกรอก Replaced Remark ให้แถว WaitLot จึงเป็นค่าที่ผู้ใช้กรอกแล้วหาย · harness เดิมมองไม่เห็นเพราะเคส WaitLot ถูก SKIP
+- **แก้:** คืนคอลัมน์ทั้ง 5 ใน `selectWaitLot` + เพิ่ม left join `#tempInputRR/PCR/COD/DD/SL` ใน `buildSqlMainAndWaitLot` · harness เพิ่ม `discoverWaitLotSale` (หา SO/Line จริงจาก DB)
+- **ผลทดสอบ PRD (อ่านอย่างเดียว):** `PCMSWaitLotAbCheck` (ไฟล์เดียวรันได้ทั้ง b150c87 และโค้ดใหม่ ผ่าน reflection เพราะเมธอด private ใน main เดิม) — 8 SO/Line, 9 กลุ่มผล: **ก่อนแก้ replacedRemark ต่างทุกแถว · หลังแก้ ไม่ตรงกัน 0** · worktree ของ b150c87 อยู่ที่ `C:/temp/pcms2_orig` (ลบได้: `git worktree remove --force C:/temp/pcms2_orig`)
+- **A/B เต็ม `run-harness-ab.ps1 -Target PRD -Rounds 3` (10:50–11:03, หลังแก้ WaitLot):** CONTROL 0/0/0/0/0 (ข้อมูลนิ่ง) · RESULT: ค่าเดิมเปลี่ยน **0** / แถวเพิ่ม **0** / เซลล์ว่างที่มีค่า 3,565 / แถวหาย 7 แถวไม่ซ้ำ (ชุดเดียวกับรอบก่อน = Main ที่ PO อยู่ใน SwitchProdOrder) · TIMING รวม **1.03×** (103.7s→106.3s) · ธงเดียว `searchByDetail__userstatus_lotno` 2723→4693ms (1.72×): เก่านิ่ง 2.7/2.7/2.8s แต่ใหม่ 4.7/2.8/5.7s (2 จาก 3 รอบช้า) → **ยังไม่รู้ว่าเป็น noise หรือเพราะ left join `#tempInput*` ที่เพิ่มใน `buildSqlMainAndWaitLot`** · ✅ **รันซ้ำ 4 รอบ (11:20–11:37): ไม่มีเคสช้าลงเกินเกณฑ์ รวม 1.01× (105.5s→106.8s)** · เคสนี้ใหม่ 3.2/2.8/4.3/2.7s vs เก่า 2.8/3.0/3.0/2.8s → รอบก่อนเป็น noise (มี outlier สลับรอบ) · ค่าเดิมเปลี่ยน 0 / แถวเพิ่ม 0 · ไม่ต้องย้าย join
+- เคส harness `getWaitLotCaseBySaleOrder` ถูก discover บน PRD แล้ว (rows=1, 1.7s) · ฝั่งเก่า 8371211 พังตามคาด (`-AllowFail`)
+- ทดสอบ DEV แล้ว: Download Excel ของ Detail (52 คอลัมน์ ตรงกับแถวในตาราง) และ Report CFM (xlsx ถูกต้อง 39 คอลัมน์) · ข้อสังเกต: วันที่ผิดรูปแบบ (ต้อง `MMM d, yyyy`) ที่ `/Report/CFM/createExcelReportDetail` ตอบ 405 ทับ error จริง
+
+### ✅ 2026-11-02 (สาย) — UX ต่อ: ลำดับปุ่ม Swal · หน้าล้น 1024px · ความสูงช่องในตาราง (ทดสอบ DEV ผ่าน · MR !6)
+- Swal ไม่เคยตั้ง `reverseButtons` (ยืนยันซ้าย/ยกเลิกขวา) → ตั้งที่เดียวใน `config/css/baseCSS.jsp` (`Swal = Swal.mixin({reverseButtons:true})`) · วัดจริง: cancel ซ้าย / confirm ขวา
+- หน้าล้นแนวนอนที่ 1024px: สาเหตุคือปุ่ม Save/Load Default ใน `searchDiv.jsp` (nowrap กว้างกว่าคอลัมน์ lg=2) — แก้ด้วย CSS ใน theme-claude.css · วัด: 1024/1366 = 0px ทั้ง Detail และ Main · ช่อง/select ในตาราง Detail สูง 32px (เฉพาะ `#MainTable td`, ไม่แตะ `.form-control` ทั้งระบบ)
+- 🔲 ค้าง: ที่ 800px ยังล้น ~80px (แท็บเล็ตแนวตั้ง — ระบบนี้ใช้เดสก์ท็อป ยังไม่แก้) · `.form-control{height:30px}` ของช่องนอกตารางยังเดิม · ตัวกัน `check1` ยังไม่ได้กดทดสอบ
 
 ### ✅ 2026-11-02 (สาย) — UX ช่องกรอกในตารางหน้า Detail (ทดสอบ DEV ผ่าน)
 - ที่มา: ช่องหมายเหตุต่อสตริง HTML ตรงๆ (โค้ดปี 2022) ไม่ escape → ค่าที่มี `"` ถูกตัดและเด้ง Swal ยืนยันเองตอน blur · แก้: `escAttr()` ใน `General.js` ครอบ `value=`/`data-search=` 20 จุดใน `PCMSDetail.jsp` · Switch Remark `name` จาก StockRemark → SwitchRemark · `aria-label` ทุกช่อง · `cursor:text` (theme-claude.css) · ชื่อฟิลด์ใน Swal เป็นภาษาคน
