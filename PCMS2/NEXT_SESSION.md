@@ -2,6 +2,13 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 📬 2026-11-03 — นำ commit ของ PERF_SEARCH ที่ยังไม่อยู่ใน main เข้า main (MR นี้)
+
+- `790d62e` **WaitLot คืนค่า Replaced/PC Remark, Cause of Delay, Delayed Dep, Stock Load** (เดิมถูกแทนเป็น NULL — ผู้ใช้กรอกที่แถว "รอจัด Lot" แล้วไม่เห็นค่า) · A/B บน PRD แล้ว (บันทึกในข้อความ commit)
+- `5d452b1` UX: Swal ยกเลิกซ้าย/ยืนยันขวาทั้งระบบ · แก้หน้าล้นที่ 1024px (ปุ่ม Save/Load Default) · ช่องในตารางหน้า Detail สูง ≥32px
+- `ef8ed10`, `265105e` บันทึกผล A/B บน PRD (เอกสาร)
+- ตรวจ: merge จำลองเข้า main สะอาด (ไม่มี conflict) · compile ผ่าน · ที่ main ปัจจุบันยังขาด 2 อย่างแรก (วัดบน DEV: ล้น 32px ที่ 1024px)
+
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
 ### 🔥 2026-11-02 (สาย) — WaitLot: A/B บน PRD เทียบ main เดิม (b150c87) เจอ regression เพิ่ม → แก้แล้ว (MR !6)
