@@ -2,6 +2,31 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-03 (เย็น) — ตรวจความพร้อมขึ้น PRD ของ `main` (e9e5324) — พร้อม · รอ user สั่ง deploy
+
+ตรวจบน worktree แยก `C:/temp/pcms2_release` (ไม่แตะ `target/` ของ Eclipse) · ทุกอย่างบน PRD เป็น SELECT ล้วน (ไฟล์ `prd_readiness_check_20261103.sql` นับคำสั่งเขียน = 0, รัน 16:50 ช่วงปลอดภัย)
+
+| ตรวจ | ผล |
+|---|---|
+| branch ทั้งหมดเข้า `main` แล้ว | ✅ ทุก branch ahead=0 ยกเว้น `docs/readme-pcms2` (เอกสารล้วน) · !19 (revert SumBill) merge แล้ว |
+| build JDK 1.8 `mvn -o clean package -DskipTests` | ✅ `target/PCMS2.war` 47.7MB |
+| `database.properties` ใน checkout หลัก | ✅ ชี้ PRD ทั้ง 4 ตัว (PCMS/PPMM `10.11.44.101` · SOR_PRODUCTION · ERP_PROD) |
+| Permits ADMIN/ITSUPP (`sql/2026-06-23_...`) ที่หน้า Job/Permit Management ใช้ | ✅ มีบน PRD แล้ว + คอลัมน์ `Is*` ครบ 9 ตัว → ไม่ต้องรัน |
+| ตาราง/view/proc ที่โค้ดเพิ่มอ้างหลัง `b150c87` (57 ตัว) | ✅ มีบน PRD ครบ ยกเว้น `spd_HandlerCustomerDetail` — **ไม่ใช่ปัญหา** `execHandlerCustomerDetail()` ไม่มีผู้เรียก (ใน `b150c87` ก็ comment ไว้) |
+| SQL patch ที่ต้องรันบน PRD ก่อน deploy | **ไม่มี** (`2026-11-01_01_..._dev.sql` = DEV เท่านั้น) |
+| บันทึก Replaced PO บน DEV (ค้างมานาน) | ✅ POST `/Detail/saveInputDetail` caseSave=replacedRemark: W5D002/1000000043/00010 → `W4H010` ได้ "อัพเดตข้อมูลสำเร็จ" ผ่าน `getWaitLotCaseBySaleOrder` ไม่มี SQL error · ล้างกลับด้วยค่าว่าง: ReplacedProdOrder=X, InputReplacedRemark ล่าสุด ''/O (ทิ้ง history ของ ZZTEST บน DEV) |
+
+### ข้อสังเกต (ไม่บล็อก deploy · ยังไม่แก้)
+- ล้าง Replaced Remark (ค่าว่าง) แล้ว endpoint ตอบ `[]` → หน้าเว็บไม่ขึ้น Swal แจ้งผล (ข้อมูลใน DB ถูก) · ยังไม่ได้เทียบว่า `b150c87` เป็นแบบเดียวกันไหม
+- ช่องค้นหาหน้า Detail บน DEV (Tomcat 8082) ค้น SO `1000000043`/`1107009273` ได้ 0 แถว (HTTP 200 ไม่มี error) ทั้งที่มีแถวใน `FromSapMainProdSale` — ยังไม่ได้ไล่สาเหตุ (DEV ข้อมูลไม่ครบหรือ filter) · ควรลองค้นบน PRD หลัง deploy
+- ไม่รู้ว่า PRD ตอนนี้รันโค้ดเวอร์ชันไหน (เอกสารเรียก `b150c87` ว่า "main เดิม") — diff จาก `b150c87` = 123 ไฟล์ java · admin ควรเก็บ WAR เดิมไว้ย้อนกลับ
+- `docs/deployment.md` เขียนใหม่ด้วยข้อมูลจริง + checklist ก่อนขึ้น PRD (เดิมเป็น placeholder ของ template)
+
+### 🔲 ครั้งหน้า
+- [ ] user สั่ง deploy → build จาก `gitlab_master/main` ตาม checklist ใน `docs/deployment.md` (deploy ช่วง :19–:38 หรือ :49–:08)
+- [ ] หลัง deploy: ค้น SO บน Main/Detail · Download Excel · ดู log Tomcat
+- [ ] สำรอง WAR เดิมบน PRD ก่อนวางทับ
+
 ## 📌 สรุปงาน 2026-11-03 (จบวัน) — อ่านบล็อกนี้ก่อน
 
 ### สถานะ MR

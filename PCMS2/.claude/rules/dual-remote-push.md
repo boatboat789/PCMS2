@@ -24,6 +24,11 @@
 | SFC | `gitlabmaster` (ไม่มี underscore) | `git push gitlabmaster <branch>` |
 | BGJOB | `gitlab` (สั้นสุด) | `git push gitlab <branch>` |
 
+## ⚠️ ข้อยกเว้น: commit ที่แตะ `database.properties` ขึ้นได้เฉพาะ gitlab remote (เพิ่ม 2026-11-02)
+
+user สั่ง: ไฟล์ `database.properties` ลง twcgit เท่านั้น **ห้ามขึ้น `origin` (GitHub ส่วนตัว)** — ใช้กับ PPMM2/PCMS2/LBMS/InspectSystem/QCMS
+ก่อน push `origin` ตรวจ `git log origin/<branch>..HEAD -- '*database.properties'` ต้องว่าง · รายละเอียด: `.claude/rules/database-properties-company-remote-only.md`
+
 ## ลำดับที่แนะนำ
 
 1. `git push origin <branch>` (personal backup)

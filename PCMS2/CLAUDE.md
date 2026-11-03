@@ -31,6 +31,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | `.claude/rules/inspect-related-before-editing.md` | 🔴 ตรวจสิ่งที่เกี่ยวข้องก่อนแก้ทุกครั้ง — หาว่าระบบทำเรื่องเดียวกันที่อื่นแล้วหรือยัง ใช้กติกาเดียวกัน ห้ามเดากติกาธุรกิจ/คำเฉพาะของ user |
 | `.claude/rules/code-quality-metrics.md` | ตัวเลขอ้างอิง (ฟังก์ชัน≤30บรรทัด/ไฟล์≤300/nesting≤3/param≤4) — สัญญาณเตือนตอนแก้โค้ดที่แตะอยู่แล้ว ห้ามอ้างเป็นเหตุ refactor นอกขอบเขต |
 | `.claude/rules/dual-remote-push.md` | ต้อง push 2 remote (`origin` personal + gitlab company — ชื่อ remote ไม่เหมือนกันทุก repo เช็คตารางก่อน push) |
+| `.claude/rules/database-properties-company-remote-only.md` | `database.properties` ขึ้นได้เฉพาะ twcgit (`gitlab_master`) ห้ามขึ้น `origin` GitHub ส่วนตัว — ผ่อนกฎ "ห้าม commit" + ข้อยกเว้นของ dual-remote-push · PCMS2 ไม่ได้ติดตามไฟล์นี้ (`.gitignore`) |
 | `.claude/rules/verify-in-browser-not-only-tests.md` | 🔴 เทสเขียวไม่ใช่หลักฐาน — ต้องยิงของจริง (เบราว์เซอร์/HTTP/ไฟล์ดาวน์โหลด) ก่อนบอกว่าเสร็จเสมอ |
 | `.claude/rules/ux-confusing-but-correct-review.md` | ถูก business rule แต่ user งง — roleplay naive user + เทียบ UX heuristics ก่อนบอกว่า UI เสร็จ |
 | `.claude/rules/user-manual-design.md` | คู่มือ/เอกสาร user-facing ใช้ visual component (chip diagram/step-card/card grid) แทนข้อความล้วน |

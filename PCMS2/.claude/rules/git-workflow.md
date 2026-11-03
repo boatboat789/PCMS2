@@ -71,6 +71,8 @@ sql/
 
 ## ไฟล์ที่ห้าม commit
 
+> ⚠️ ข้อยกเว้น (user สั่ง 2026-11-02): `database.properties` commit ได้เมื่อ user สั่งเท่านั้น และ **push เฉพาะ twcgit (gitlab) — ห้ามขึ้น origin GitHub ส่วนตัว** · ดู `.claude/rules/database-properties-company-remote-only.md`
+
 ```
 src/main/resources/database.properties   # credentials
 *.log
