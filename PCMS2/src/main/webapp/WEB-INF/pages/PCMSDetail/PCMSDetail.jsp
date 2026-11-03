@@ -578,6 +578,7 @@ $(document) .ready( function() {
 			},     
 			drawCallback: function( settings ) {
 				$('[data-toggle="tooltip"]').tooltip();
+				if (typeof decorateDetailInputCells === 'function') { decorateDetailInputCells(); }
 			},   
 			initComplete: function () { console.log('initcom')}  
 	 	 });      	
