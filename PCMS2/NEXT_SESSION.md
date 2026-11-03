@@ -8,6 +8,17 @@
 - `5d452b1` UX: Swal ยกเลิกซ้าย/ยืนยันขวาทั้งระบบ · แก้หน้าล้นที่ 1024px (ปุ่ม Save/Load Default) · ช่องในตารางหน้า Detail สูง ≥32px
 - `ef8ed10`, `265105e` บันทึกผล A/B บน PRD (เอกสาร)
 - ตรวจ: merge จำลองเข้า main สะอาด (ไม่มี conflict) · compile ผ่าน · ที่ main ปัจจุบันยังขาด 2 อย่างแรก (วัดบน DEV: ล้น 32px ที่ 1024px)
+## 🔴 2026-11-03 — ทำความเข้าใจ logic หน้า Detail ก่อนแก้ (อ่านก่อน!) — เอกสาร 3 ฉบับใน `docs/`
+
+- `detail-row-taxonomy-2026-11-03.md` — **จัดประเภทครบ**: แถว 6 ชุด (Main/OP/OPSW/SW/RP/WaitLot), Main ไม่มี PO 4 แบบ, Switch 3 แบบ, WaitLot 3 ป้าย, สูตร Prod. Qty 5 สูตร, ช่องกรอก 10 ช่อง + ขนาดข้อมูล DEV/PRD + คำถามให้เจ้าของงาน 6 ข้อ
+- `logic-map-detail-2026-11-03.md` — ข้อค้นพบ: **Prod. Qty ของแถว Main เปลี่ยนตามตัวกรองลูกค้า** (SO 1107010287/200 PO S1K190: G TECH อย่างเดียว=300, +TW/PLC=200) สาเหตุ `createTempForMainAndWaitLotFiltered` กรอง `#tmpSumVolOP/RP` ด้วย SO ปลายทาง (`c6e6109`) · PRD กระทบ 151 แถว · ทางแก้ที่น่าจะถูก = กรองด้วย PO (ยังไม่ได้แก้)
+- `orig-vs-main-compare-2026-11-03.md` + `tools/orig-vs-main-compare/` — เทียบกับ main เดิม `b150c87` (⚠️ user สั่ง 2026-07-03 ว่า main เดิมไม่ใช่ reference — ใช้ดูอาการ ไม่ใช่ตัดสินถูกผิด)
+
+ข้อเท็จจริงที่ไม่ขึ้นกับว่าใครถูก: (1) `SumBillCache` บน PRD ค้าง 2,154 กลุ่มของใบส่ง 'X' → 377 ชุดโชว์ยอดจากใบยกเลิก (2) **DEV ไม่มีข้อมูลสวม (ReplacedProdOrder 0 แถว) PRD มี 7,846** → ชุด RP/WaitLot ทดสอบบน DEV ไม่ได้ (3) A/B "ค่าเดิมเปลี่ยน 0" ก่อนหน้านี้เทียบกับ `8371211` ที่ refactor แล้ว
+
+MR เอกสาร/เครื่องมือชุดนี้ (ไม่แก้โค้ด production): เปิดเมื่อ 2026-11-03 จาก branch `docs/orig-vs-main-compare` → main = https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/8 (ยังไม่ merge)
+
+🔲 ครั้งหน้า: ให้เจ้าของงานตอบคำถามท้าย taxonomy (ข้อ 1 สำคัญสุด) → แก้ `#tmpSumVolOP/RP` ให้กรองด้วย PO แล้วรัน `OrigVsCurrentDetailCheck` ด้วยชุดตัวกรองหลายแบบ (ค่าแถวเดียวกันต้องเท่ากันทุกตัวกรอง) → ตรวจ `#tempInput*` (กรองด้วย SO/line), แถว SUB ที่หายบน DEV, แถวซ้ำบน PRD, WaitLot บน PRD
 
 ## ➡️ ส่งต่อ session ถัดไป (สรุปบรรทัดเดียว: **แก้บั๊ก WaitLot ก่อนอย่างอื่น**)
 
