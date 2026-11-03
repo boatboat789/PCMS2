@@ -10,7 +10,7 @@
 
 ข้อเท็จจริงที่ไม่ขึ้นกับว่าใครถูก: (1) `SumBillCache` บน PRD ค้าง 2,154 กลุ่มของใบส่ง 'X' → 377 ชุดโชว์ยอดจากใบยกเลิก (2) **DEV ไม่มีข้อมูลสวม (ReplacedProdOrder 0 แถว) PRD มี 7,846** → ชุด RP/WaitLot ทดสอบบน DEV ไม่ได้ (3) A/B "ค่าเดิมเปลี่ยน 0" ก่อนหน้านี้เทียบกับ `8371211` ที่ refactor แล้ว
 
-MR เอกสาร/เครื่องมือชุดนี้ (ไม่แก้โค้ด production): เปิดเมื่อ 2026-11-03 จาก branch `docs/orig-vs-main-compare` → main (ลิงก์ดูหัวข้อด้านล่างเมื่อได้เลข)
+MR เอกสาร/เครื่องมือชุดนี้ (ไม่แก้โค้ด production): เปิดเมื่อ 2026-11-03 จาก branch `docs/orig-vs-main-compare` → main = https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/8 (ยังไม่ merge)
 
 🔲 ครั้งหน้า: ให้เจ้าของงานตอบคำถามท้าย taxonomy (ข้อ 1 สำคัญสุด) → แก้ `#tmpSumVolOP/RP` ให้กรองด้วย PO แล้วรัน `OrigVsCurrentDetailCheck` ด้วยชุดตัวกรองหลายแบบ (ค่าแถวเดียวกันต้องเท่ากันทุกตัวกรอง) → ตรวจ `#tempInput*` (กรองด้วย SO/line), แถว SUB ที่หายบน DEV, แถวซ้ำบน PRD, WaitLot บน PRD
 
