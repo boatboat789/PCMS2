@@ -4,6 +4,8 @@
 
 ## ✅ 2026-11-03 (เย็น) — ตรวจความพร้อมขึ้น PRD ของ `main` (e9e5324) — พร้อม · รอ user สั่ง deploy
 
+> user สั่ง commit/push/merge (2026-11-03) → branch `release/prd-readiness-2026-11-03` merge เข้า `main` ผ่าน MR (เอกสารล้วน ไม่มีโค้ด) · **deploy ยังไม่ได้ทำ**
+
 ตรวจบน worktree แยก `C:/temp/pcms2_release` (ไม่แตะ `target/` ของ Eclipse) · ทุกอย่างบน PRD เป็น SELECT ล้วน (ไฟล์ `prd_readiness_check_20261103.sql` นับคำสั่งเขียน = 0, รัน 16:50 ช่วงปลอดภัย)
 
 | ตรวจ | ผล |
