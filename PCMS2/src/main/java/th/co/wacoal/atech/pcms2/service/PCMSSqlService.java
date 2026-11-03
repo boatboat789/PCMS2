@@ -1184,19 +1184,10 @@ public class PCMSSqlService {
 			+ "	begin\r\n"
 			+ "		Drop Table #tempSumBill\r\n"
 			+ "	end ;\r\n"
-			// อ่านสดจาก FromSapMainBillBatch (DataStatus='O') เฉพาะ sale line ที่ค้น แทนอ่าน SumBillCache:
-			// SumBillCache ไม่ลบกลุ่มที่ใบส่งถูกยกเลิก (PRD ค้าง 2,166 กลุ่ม) → ยอดส่งจากใบยกเลิกโผล่บนหน้าจอ
-			// ตรวจบน PRD แล้ว: แถวที่มีอยู่จริงค่าเท่ากับแคชทุกแถว (ต่าง 0) หายไปเฉพาะแถวค้าง · ดู docs/cache-fix-plan-2026-11-03.md
-			// ชื่อคอลัมน์ผลลัพธ์คงเดิม (BillSendWeight/YD/MRQuantity) · ขอบเขตกรองด้วย SO/line ของแถวที่ค้น (ถูกต้องสำหรับยอดส่ง เพราะคีย์มี SO/line ของตัวเอง)
-			+ " SELECT b.ProductionOrder, b.SaleOrder, b.SaleLine, b.Grade,\r\n"
-			+ "        SUM(b.QuantityKG) AS BillSendWeightQuantity,\r\n"
-			+ "        SUM(b.QuantityYD) AS BillSendYDQuantity,\r\n"
-			+ "        SUM(b.QuantityMR) AS BillSendMRQuantity\r\n"
+			+ " SELECT b.*\r\n"
 			+ " INTO #tempSumBill\r\n"
-			+ " FROM [PCMS].[dbo].[FromSapMainBillBatch] b WITH (NOLOCK)\r\n"
-			+ " JOIN #tempMainSale ms ON ms.SaleOrder = b.SaleOrder AND ms.SaleLine = b.SaleLine\r\n"
-			+ " WHERE b.DataStatus = 'O'\r\n"
-			+ " GROUP BY b.ProductionOrder, b.SaleOrder, b.SaleLine, b.Grade;\r\n"
+			+ " FROM [PCMS].dbo.SumBillCache b\r\n"
+			+ " JOIN #tempMainSale ms ON ms.SaleOrder = b.SaleOrder AND ms.SaleLine = b.SaleLine;\r\n"
 	+ "CREATE CLUSTERED INDEX IX_tempSumBill ON #tempSumBill(ProductionOrder, SaleOrder, SaleLine, Grade);\r\n";
 	public String createTempMainSale = ""
 			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
