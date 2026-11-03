@@ -2,6 +2,24 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🟡 2026-11-03 (เย็น) — แก้ยอดส่งค้างจาก SumBillCache Phase 1 (branch `fix/sumbill-live-read`, commit 0cac80f, รอ review/ยืนยัน)
+
+**ทำอะไร:** `PCMSSqlService.createTempSumBill` อ่านยอดส่งสดจาก `FromSapMainBillBatch` (DataStatus='O') เฉพาะ sale line ที่ค้น แทนอ่าน `SumBillCache` (ซึ่งไม่เคยลบกลุ่มของใบที่ยกเลิก 'X') — แก้จุดเดียว ไม่แตะ proc/ตาราง/แคช
+
+**หลักฐาน (PRD อ่านอย่างเดียว):**
+- SQL: แถวใหม่ 40,440 ตรงแคชทุกแถว (ต่าง 0) · หายเฉพาะกลุ่มค้าง 2,166
+- A/B 34 เคส x 3 รอบ (main b708715 vs patch): แถวเพิ่ม/หาย 0 · ช่องอื่นนอก billSend เปลี่ยน 0 · ค่าเปลี่ยนเป็นค่าอื่น 0 · เปลี่ยนเฉพาะ billSendWeight/billSendQuantity 565+565 ช่อง (มีค่า -> ว่าง) · CONTROL (เก่า vs เก่า) 0
+- 383 (PO,SO,line) ที่ยอดหาย: มีใบ O จริงในต้นทาง = 0
+- เวลารวม median 1.03x · 5 เคสถูกธง >20% แต่ก็มีเคสเร็วขึ้นสวนกัน (0.63x) น่าจะแกว่ง **ยังไม่พิสูจน์** — ถ้าห่วงให้รัน A/B ซ้ำ
+- DEV: Detail/Summary ค้น SO 1107009273 ได้ 5 แถว ยอดส่งของกลุ่มค้างว่าง ไม่มี SQL error จากโค้ดใหม่ (NPE `buildLikeClause` 2 ครั้งมาจาก body ที่ประกอบมือไม่มี list ไม่เกี่ยวกับแพตช์)
+- ยังไม่ได้: กดหน้าจอแบบผู้ใช้จริง, ทดสอบ Excel export บน DEV
+
+**🔲 ค้าง (ต้องให้ user/DBA ตัดสิน):**
+- ยืนยันว่า "ยอดส่งจากใบที่ยกเลิกไม่ควรแสดง" ก่อน merge · ยังไม่ deploy
+- Phase 2: แก้ `spd_SumBillAndGoodReceive` + backup แล้วลบ 2,166 แถวค้างใน SumBillCache + dedupe `TEMP_UserStatusAuto` (12 key ซ้ำ) + unique index — ต้อง DBA + อนุมัติ ยังไม่เริ่ม
+- ค้างเดิม: Prod. Qty (กรอง #tmpSumVolOP/RP ด้วย PO) · กติกา WaitLot · หน้า Detail Input · Summary Due Date
+- รัน A/B/ทดสอบ DEV ต้องเลี่ยงนาที :12–18 / :42–48 และ 01:00–01:20 (cron sync) · DEV Tomcat ต้องตั้ง `JRE_HOME`=jdk-1.8 ไม่งั้น TLS ต่อ DB DEV ไม่ได้
+
 ## 🟢 2026-11-03 (บ่าย) — สถานะล่าสุด + งานค้าง (อ่านบล็อกนี้ก่อน บล็อกเก่าด้านล่างบางส่วนล้าสมัย)
 
 **merge เข้า `main` แล้ว:** !9 (เอกสารผลตรวจ PRD) · !10 Due Date หน้า Detail (เลย N วัน/วันนี้/อีก N วัน) · !11 ช่องกรอกในตาราง Detail (34px, placeholder, ✎ หัวคอลัมน์) · !12 **WaitLot คืนค่าหมายเหตุที่ผู้ใช้กรอก + Swal ซ้าย/ขวา + หน้าล้น 1024px** · !13 แผงค้นหาไม่ล้นที่ <992px
