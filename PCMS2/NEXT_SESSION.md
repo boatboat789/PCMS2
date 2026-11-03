@@ -16,9 +16,22 @@
 | SQL patch ที่ต้องรันบน PRD ก่อน deploy | **ไม่มี** (`2026-11-01_01_..._dev.sql` = DEV เท่านั้น) |
 | บันทึก Replaced PO บน DEV (ค้างมานาน) | ✅ POST `/Detail/saveInputDetail` caseSave=replacedRemark: W5D002/1000000043/00010 → `W4H010` ได้ "อัพเดตข้อมูลสำเร็จ" ผ่าน `getWaitLotCaseBySaleOrder` ไม่มี SQL error · ล้างกลับด้วยค่าว่าง: ReplacedProdOrder=X, InputReplacedRemark ล่าสุด ''/O (ทิ้ง history ของ ZZTEST บน DEV) |
 
+### ตรวจ feature ที่เข้า main ช่วง 10-30 → 11-03 ทีละตัว (DEV Tomcat 8082, build e9e5324)
+| commit | feature | ผล |
+|---|---|---|
+| `336eb0f` `f317d48` `33860c6` | anti-join self-switch · `#tempProdWorkDate`/`#tempSumGR` filtered | ✅ ตรวจไว้แล้วด้วย A/B บน PRD (ค่าเดิมเปลี่ยน 0) — ไม่ได้รันซ้ำรอบนี้ |
+| `01a64b3` `790d62e` | WaitLot syntax + คืนค่าหมายเหตุ | ✅ A/B PRD (เดิม) + รอบนี้บันทึก Replaced PO ผ่าน `getWaitLotCaseBySaleOrder` ไม่มี error |
+| `f35756b` | navbar แบบ SFC | ✅ `aria-current` = หน้าปัจจุบัน |
+| `6e6d553` `92b8e93` | ช่องกรอกในตาราง Detail | ✅ 200 ช่องสูง 34px ทุกช่อง · aria-label ขาด 0 · placeholder `dd/MM/yyyy`/`พิมพ์ที่นี่` · ✎ 10 หัวคอลัมน์ · พื้นอ่อน |
+| `0547839` | Due Date แสดงสถานะ | ✅ "12/03/2021 เลย 2062 วัน" (คิดมือถึง 2026-11-03 = 2062 ตรง) · Excel ช่อง Due Date เป็นวันที่ล้วน ไม่มี HTML ปน |
+| `5d452b1` `58f2590` | Swal ซ้าย/ขวา · หน้าล้น | ✅ ปุ่ม cancel ก่อน confirm ทั้ง Main/Detail · ล้นแนวนอน 0 ที่ 800/992/1024/1366 (Main, Detail, Report CFM) · ตัวอักษร <12px = 0 |
+| `95fcb0b` | เตือนค้นหาไม่ได้ | ✅ ล้าง UserStatus แล้วกดค้นหา: Swal บอก "UserStatus" ยังค้างหลัง 3.5 วิ · ไม่ยิงคำขอค้นหา (Main+Detail) |
+| `0cac80f` → `09c1911` | SumBill อ่านสด → revert | ✅ โค้ดเท่า `b708715` (ตรวจไว้ในบล็อกด้านล่าง) |
+| — | ค้นหา/ส่งออก ภาพรวม | ✅ Detail 4,525 แถว · Summary 3,684 แถว · Excel 4,525 แถว 52 คอลัมน์ · log Tomcat: SQL error/NPE = 0 |
+
 ### ข้อสังเกต (ไม่บล็อก deploy · ยังไม่แก้)
 - ล้าง Replaced Remark (ค่าว่าง) แล้ว endpoint ตอบ `[]` → หน้าเว็บไม่ขึ้น Swal แจ้งผล (ข้อมูลใน DB ถูก) · ยังไม่ได้เทียบว่า `b150c87` เป็นแบบเดียวกันไหม
-- ช่องค้นหาหน้า Detail บน DEV (Tomcat 8082) ค้น SO `1000000043`/`1107009273` ได้ 0 แถว (HTTP 200 ไม่มี error) ทั้งที่มีแถวใน `FromSapMainProdSale` — ยังไม่ได้ไล่สาเหตุ (DEV ข้อมูลไม่ครบหรือ filter) · ควรลองค้นบน PRD หลัง deploy
+- ~~ช่องค้นหาหน้า Detail บน DEV ค้นได้ 0 แถว~~ **ไม่ใช่บั๊ก** — SO ที่ลองไม่มีอยู่ในกริดของ DEV · ค้นค่าเริ่มต้นได้ 4,525 แถว และค้น SO ที่มีจริง (1107009548) ได้ตรง 1/1
 - ไม่รู้ว่า PRD ตอนนี้รันโค้ดเวอร์ชันไหน (เอกสารเรียก `b150c87` ว่า "main เดิม") — diff จาก `b150c87` = 123 ไฟล์ java · admin ควรเก็บ WAR เดิมไว้ย้อนกลับ
 - `docs/deployment.md` เขียนใหม่ด้วยข้อมูลจริง + checklist ก่อนขึ้น PRD (เดิมเป็น placeholder ของ template)
 
