@@ -504,3 +504,9 @@ body {
 #navbar .nav-link:focus {
 	color: #ffffff !important;
 }
+
+/* แผงค้นหา (Summary/Detail): ที่จอ < 992px คอลัมน์แคบ (~256px) แต่ ป้าย 100px + ช่องเลือก 220px ต่อแถวเดียวกัน
+   → ล้นแนวนอน (วัดจริง 800px ล้น 80px) · ให้ป้ายตัดบรรทัดลงบนช่องเลือกแทน (ไม่กระทบจอ >= 992px) */
+@media (max-width: 991.98px) {
+	#wrapper-top.search-panel .form-group.lab-print { flex-wrap: wrap; }
+}
