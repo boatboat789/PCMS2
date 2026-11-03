@@ -4,6 +4,29 @@ function escAttr(v) {
     return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// แสดงวันครบกำหนด (dd/MM/yyyy) พร้อมสถานะ "เลยกำหนด N วัน / วันนี้ / อีก N วัน" — ใช้เป็น render ของคอลัมน์ Due Date
+// คืนค่าเดิมสำหรับ sort/search/export (type !== 'display') จึงไม่กระทบการเรียงและตัวกรอง
+// ไม่เตือนเมื่อ sale line ปิด/ยกเลิกแล้ว (saleStatus C/X) · ข้อความกำกับสถานะเสมอ ไม่พึ่งสีอย่างเดียว
+function renderDueDate(data, type, row) {
+	if (type !== 'display') { return data; }
+	var s = (data === null || data === undefined) ? '' : String(data).trim();
+	if (s === '') { return '<span class="due-empty" title="ยังไม่มีวันครบกำหนด">-</span>'; }
+	var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+	if (!m) { return escAttr(s); }
+	var d = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+	if (d.getDate() !== Number(m[1]) || d.getMonth() !== Number(m[2]) - 1) { return escAttr(s); }
+	var closed = row && (row.saleStatus === 'C' || row.saleStatus === 'X');
+	if (closed) { return '<span class="due-plain">' + escAttr(s) + '</span>'; }
+	var today = new Date(); today.setHours(0, 0, 0, 0);
+	var diff = Math.round((d.getTime() - today.getTime()) / 86400000);
+	var cls = '', note = '';
+	if (diff < 0) { cls = 'due-over'; note = 'เลย ' + (-diff) + ' วัน'; }
+	else if (diff === 0) { cls = 'due-today'; note = 'วันนี้'; }
+	else if (diff <= 7) { cls = 'due-soon'; note = 'อีก ' + diff + ' วัน'; }
+	if (cls === '') { return '<span class="due-plain">' + escAttr(s) + '</span>'; }
+	return '<span class="due-pill ' + cls + '" title="ครบกำหนด ' + escAttr(s) + ' (' + note + ')"><b>' + escAttr(s) + '</b><small>' + note + '</small></span>';
+}
+
 function preLoaderHandler(x) {
 	x.style.display = 'none';
 }

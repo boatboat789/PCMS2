@@ -335,7 +335,8 @@ $(document) .ready( function() {
 					  	  type: 'date-euro'  },              //21
 				    {"data" : "dueDate" ,         "title":"Due Date",            
 					  	  className : 'dt-custom-td85',    	        
-					  	  type: 'date-euro'  },              //22  
+					  	  type: 'date-euro',
+					  	  render: renderDueDate  },          //22  
 				    {"data" : "labNo",			  "title":"Lab No",                        
 						  	  className : 'dt-custom-td100', type: 'string'      },                                    //23
 				    {"data" : "labStatus",		  "title":"Lab Status"       	 ,    
