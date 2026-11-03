@@ -111,3 +111,19 @@ function decorateDetailInputCells() {
 		}
 	});
 }
+
+// เตือนเมื่อค้นหาไม่ได้เพราะยังไม่ได้เลือกตัวกรองบังคับ — บอกว่ายังขาดช่องไหน และไม่ปิดเอง (เดิมหายไปเองใน 1 วินาที ไม่บอกว่าขาดอะไร)
+function warnEmptySearchFilters(customer, customerShort, userStatus, division) {
+	var miss = [];
+	if (!customer || customer.length === 0) { miss.push('Customer'); }
+	if (!customerShort || customerShort.length === 0) { miss.push('Cust.(Name4)'); }
+	if (!userStatus || userStatus.length === 0) { miss.push('UserStatus'); }
+	if (!division || division.length === 0) { miss.push('Division'); }
+	Swal.fire({
+		title: 'ยังค้นหาไม่ได้',
+		html: 'ต้องเลือกอย่างน้อย 1 รายการในช่อง: <b>' + miss.join(', ') + '</b>'
+			+ '<br><small>หลังกด Clear Search ช่องเหล่านี้จะว่าง — กด "Select All" หรือเลือกรายการก่อน แล้วค้นหาอีกครั้ง</small>',
+		icon: 'warning',
+		confirmButtonText: 'ตกลง'
+	});
+}

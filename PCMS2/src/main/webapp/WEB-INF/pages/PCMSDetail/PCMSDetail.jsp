@@ -1442,13 +1442,7 @@ function searchByDetail(){
 		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
-		Swal.fire({
-   		    title: 'คำเตือน',
-   		    text: 'กรุณาเลือกอย่างน้อย 1 ช่องเพื่อค้นหา',
-   		    icon: 'warning',   
-   		    timer: 1000,
-   		    showConfirmButton: false,
-   		})
+		warnEmptySearchFilters(customer, customerShort, userStatus, division)
 	}  
 	else if (distChannel == ''){
 		Swal.fire({
