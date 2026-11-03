@@ -109,3 +109,35 @@ SELECT c.* INTO PCMS.dbo.SumBillCache_bak_20261103 FROM PCMS.dbo.SumBillCache c
 2. เริ่ม **ระยะ 1 (D)** ได้ทันที: ผมเขียนในสาขาแยก + A/B บน PRD (อ่านอย่างเดียว) + ทดสอบหน้าจอ + เปิด MR (ความเสี่ยงต่ำ ย้อนกลับ = revert)
 3. คุยกับเจ้าของ proc/DBA เรื่อง **ระยะ 2 (B)** แล้วค่อยเลือกว่าจะอยู่ที่ D หรือกลับไปอ่านแคช
 4. ตรวจ `TEMP_ProdWorkDate` / `TEMP_UserStatusAuto` / `SumGRCache` ด้วยวิธีเดียวกัน (อ่านอย่างเดียว) — ผมทำให้ได้
+
+---
+
+## ภาคผนวก A: ตรวจแคช/ตารางสรุปตัวอื่นด้วยวิธีเดียวกัน (PRD, SELECT อย่างเดียว, 2026-11-03 ~13:40)
+
+| ตาราง | แถว | สุขภาพ | ข้อสังเกต |
+|---|---|---|---|
+| **`SumGRCache`** | 64,306 | ✅ ดี | ค้าง **1 แถว** (`C4L041` เกรด A 31.1 kg รีเฟรชล่าสุด 2026-03-23 — ต้นทางไม่มีใบ 'O' แล้ว) · ค่าต่าง 0 · ขนาดเล็กมาก แต่เป็นกลไกเดียวกับ `SumBillCache` (ไม่ลบ) |
+| **`TEMP_ProdWorkDate`** | 69,819 | ✅ ดี | **1 แถวต่อ PO พอดี ไม่มีซ้ำ** · ทุก PO ที่ `FromSapMainProd`(O) มีแถวครบ (ขาด 0) · สด (เปลี่ยนล่าสุด 13:14 วันนี้, 1,237 แถวใน 24 ชม.) · มี PO 2,030 ตัวที่ไม่อยู่ใน `FromSapMainProd` เลย — ไม่เป็นปัญหา (join ด้วย PO) |
+| **`TEMP_UserStatusAuto`** | 105,965 (O 68,737 / X 37,228) | 🟠 พบความผิดปกติเล็กน้อย | **ใช้ `DataStatus` ทำ soft-delete ได้ถูก** (ต่างจาก `SumBillCache`) · สด (13:14) · แต่พบ 3 เรื่องข้างล่าง |
+
+### เรื่องที่พบใน `TEMP_UserStatusAuto`
+1. **คีย์ซ้ำ 12 คีย์** (PO, SaleOrder, SaleLine, Grade ที่ DataStatus='O' มี 2 แถว สถานะเหมือนกัน เช่น `P6E243/1000003325/2/A`, `P6G000/1000003335/1/A`, **`P6I000/1000002555/2/A`**) — ตารางไม่มี unique index (มีแต่ nonclustered `ProductionOrder, DataStatus`) → `LEFT JOIN` ทำให้ **แถวในหน้า Detail/Summary ซ้ำ** สำหรับ PO เหล่านี้ · `P6I000` คือ PO เดียวกับแถวซ้ำที่เจอในหน้า Detail ก่อนหน้า (🟡 น่าจะเกี่ยวข้อง ยังไม่พิสูจน์ว่าเป็นต้นเหตุทั้งหมด) · เป็นปัญหา **ของ proc ฝั่งเติมข้อมูล** ไม่ใช่โค้ดแอป
+2. **แถว 'O' ของ PO ที่ไม่มีใน `FromSapMainProd`(O) 28 แถว** — ค้างเล็กน้อย (ผลต่อหน้าจอต่ำ เพราะ join ด้วย PO)
+3. **PO ที่ `FromSapMainProd`(O) แต่ไม่มีแถว 'O' 498 ตัว** — ไม่ใช่การค้าง (486 ตัวสร้างมาเกิน 7 วัน, ใหม่สุด 2026-10-31) สถานะส่วนใหญ่ = `รับเข้าST.(P/S)` 251 · `ปิดเพื่อแก้ไข` 117 · `ยกเลิก` 54 · `ม้วนแล้วรอรับ FG` 28 · `รอผ้าดิบ` 21 · `ตัดเกรดZ` 11 → 🟡 น่าจะ **ตั้งใจ** (สถานะที่ระบบคำนวณอัตโนมัติไม่ครอบ จึงใช้สถานะของ PO เอง) ควรยืนยันกับเจ้าของ proc
+
+### ผลต่อแผนหลัก (ปรับทะเบียนความเสี่ยง R9)
+- **R9 ปิดแล้ว:** `TEMP_ProdWorkDate` ปลอดภัย · `SumGRCache` เสี่ยงต่ำมาก (1 แถว) → ไม่ต้องรีบ แต่ใส่ในงาน "แก้ proc ระยะ 2" ด้วยเพื่อกันไม่ให้โตเหมือน bill
+- **เพิ่ม R13:** `TEMP_UserStatusAuto` มีคีย์ซ้ำ 12 รายการ → แถวซ้ำที่ผู้ใช้เห็น · แก้ที่ proc (กันซ้ำ) + ใส่ unique index `(ProductionOrder, SaleOrder, SaleLine, Grade, DataStatus)` **หลังล้างซ้ำ** (เป็นงาน DB ของระยะ 2) · ฝั่งอ่านป้องกันชั่วคราวได้ด้วย `ROW_NUMBER()`/`DISTINCT` แต่ต้องระวังไม่ให้เปลี่ยนความหมาย (ควรทำพร้อม A/B)
+- **สรุปรูปแบบปัญหา:** ปัญหา "แคชไม่ลบ" เกิดเฉพาะ `SumBillCache` (กลุ่มที่ต้นทางหาย) และเล็กน้อยที่ `SumGRCache` · `TEMP_UserStatusAuto` มีกลไกลบ (DataStatus) แต่ **ไม่กันคีย์ซ้ำ**
+
+### SQL ตรวจเฝ้าระวังเพิ่ม (อ่านอย่างเดียว)
+```sql
+-- คีย์ซ้ำใน TEMP_UserStatusAuto (ควรเป็น 0)
+SELECT COUNT(*) FROM (SELECT ProductionOrder,SaleOrder,SaleLine,Grade FROM PCMS.dbo.TEMP_UserStatusAuto
+                      WHERE DataStatus='O' GROUP BY ProductionOrder,SaleOrder,SaleLine,Grade HAVING COUNT(*)>1) x;
+-- แถวซ้ำต่อ PO ใน TEMP_ProdWorkDate (ควรเป็น 0)
+SELECT COUNT(*) FROM (SELECT ProductionOrder FROM PCMS.dbo.TEMP_ProdWorkDate GROUP BY ProductionOrder HAVING COUNT(*)>1) x;
+-- SumGRCache ค้าง (ควรเป็น 0)
+SELECT COUNT(*) FROM PCMS.dbo.SumGRCache c WHERE NOT EXISTS (SELECT 1 FROM PCMS.dbo.FromSapGoodReceive g WITH (NOLOCK)
+  WHERE g.DataStatus='O' AND g.ProductionOrder=c.ProductionOrder AND ISNULL(g.Grade,'')=ISNULL(c.Grade,''));
+```
