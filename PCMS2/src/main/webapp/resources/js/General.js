@@ -70,3 +70,21 @@ function dateDDMMYYYToDDMM(dateStr) {
 	}
 	return dateStr;
 }
+
+// ช่วยผู้กรอกในตาราง Detail: ใส่ placeholder ให้ช่องวันที่/หมายเหตุ และเครื่องหมาย ✎ ที่หัวคอลัมน์ที่กรองได้
+// แก้เฉพาะ attribute/ป้ายหัวตาราง — ไม่เปลี่ยนค่า การบันทึก หรือ event ของช่อง · เรียกซ้ำได้ (idempotent)
+function decorateDetailInputCells() {
+	var dateSel = '#MainTable .CFMPlanLabDateInput, #MainTable .SendCFMCusDateInput, #MainTable .DeliveryDateInput';
+	var textSel = '#MainTable .CauseOfDelayInput, #MainTable .PCRemarkInput, #MainTable .ReplacedRemarkInput, '
+		+ '#MainTable .SwitchRemarkInput, #MainTable .StockRemarkInput, #MainTable .StockLoadInput';
+	$(dateSel).each(function () { if (!this.placeholder) { this.placeholder = 'dd/MM/yyyy'; } });
+	$(textSel).each(function () { if (!this.placeholder) { this.placeholder = 'พิมพ์ที่นี่'; } });
+	var editable = ['Plan CFM LAB', 'Send CFM Cus Date', 'Plan Delivery Date', 'Cause of Delay', 'Delayed Department',
+		'PCRemark', 'ReplacedRemark', 'SwitchRemark', 'StockRemark', 'StockLoad'];
+	$('.dataTables_scrollHead th, #MainTable thead th').each(function () {
+		var $th = $(this);
+		if ($th.find('.th-edit-mark').length === 0 && editable.indexOf($.trim($th.text())) !== -1) {
+			$th.prepend('<span class="th-edit-mark" aria-hidden="true" title="ช่องสำหรับกรอก">✎ </span>');
+		}
+	});
+}
