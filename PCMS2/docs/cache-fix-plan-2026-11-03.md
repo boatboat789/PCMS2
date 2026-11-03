@@ -1,0 +1,143 @@
+# แผนแก้ไข + จุดเสี่ยง: แคชยอดส่ง (`SumBillCache`) ค้างข้อมูลจากใบที่ยกเลิก — 2026-11-03
+
+> ที่มา: ตรวจจาก PRD จริง (SELECT/metadata อย่างเดียว) + อ่านโค้ด `main` `b627b05` · **ยังไม่ได้แก้อะไร** เอกสารนี้คือแผนให้ตัดสินใจ
+> ผู้ตัดสิน: เจ้าของงาน (ควรมี DBA ที่ดูแล `spd_SumBillAndGoodReceive` ร่วมด้วย — นิยาม proc อ่านจาก login ของเครื่องนี้ไม่ได้ `OBJECT_DEFINITION` = NULL)
+> 🟡 = ข้อสันนิษฐานที่ยังไม่ได้พิสูจน์ (เพราะอ่านนิยาม proc ไม่ได้)
+
+## 1) ปัญหาในประโยคเดียว
+`SumBillCache` ถูกเติมแบบ "เขียนเพิ่มเฉพาะกลุ่มที่เปลี่ยน" และ **ไม่เคยลบกลุ่มที่ใบส่งถูกยกเลิก** → ยอดส่งของบิลที่ยกเลิกแล้วยังโผล่ในหน้า Detail/Summary และ drill-down
+
+## 2) หลักฐาน (PRD, 2026-11-03)
+| ข้อเท็จจริง | ตัวเลข |
+|---|---|
+| กลุ่มในแคชที่ **ไม่มีใบ 'O' เหลือในต้นทาง** (เฉพาะ `FromSapMainBillBatch`) | **2,166 กลุ่ม / 189,869 kg** (เมื่อวาน 2,154 — **โตทุกวัน**) |
+| อยู่บน sale line **ที่ยังเปิด** (SaleStatus ≠ C) | 389 กลุ่ม / 30,085 kg ← **ผู้ใช้เห็นแล้วหลงได้จริง** |
+| อยู่บน sale line ที่มีใบส่งจริงอยู่ด้วย → **ยอดรวมของแถวนั้นสูงเกินจริง** | 739 กลุ่ม |
+| ในขอบเขต "G TECH" (3,492 sale line) | แคช 3,845 แถว · ของจริง 3,565 แถว → **เก่า 280 แถว (7.3%)** |
+| ค่าที่ต่างในกลุ่มที่ยังมีจริง | **0** (ค่าถูก เสียแค่ "แถวที่ควรหาย" ไม่หาย) |
+| อัตราการเกิด | stale ใหม่ ≈ 300 กลุ่ม/เดือน (ก.พ. 386 · เม.ย. 269 · พ.ค. 419 · ก.ค. 312 · ส.ค. 366 · ก.ย. 293) |
+| ที่มาของอัตรา | ต้นทาง `FromSapMainBillBatch`: 'O' 235,222 แถว · **'X' (ยกเลิก) 110,314 แถว (32%)** — ยกเลิกเป็นเรื่องปกติ |
+| `SumGRCache` (ตัวคู่กัน) | ต่าง 1 แถว (64,304 vs 64,303) ค่าต่าง 0 — **เกิดน้อยมากแต่เป็นกลไกเดียวกัน** |
+
+## 2.1) กลไกที่รู้ (จากข้อมูล + โค้ด)
+- ตาราง: `SumBillCache` (PK คลัสเตอร์ PO+SO+Line+Grade, 42,649 แถว) · `SumGRCache` (PK PO+Grade, 64,306 แถว) สร้าง 2026-01-22 · proc `spd_SumBillAndGoodReceive` สร้าง 2026-01-23 แก้ล่าสุด **2026-06-18**
+- เติมเมื่อไร: job `ERP_SYNC_JOB` ที่ **:14 และ :44 ทุกชั่วโมง** เป็น **ขั้นสุดท้ายของ `sortBackGroundAfterGetERPDataProcedure`** (หลัง ProdWorkDate และ UserStatus) ผ่าน `BackGroundJobDaoImpl.execSumBillAndGoodReceive`
+- **เขียนเฉพาะแถวที่เปลี่ยน:** แต่ละรอบ `LastRefreshDT` ถูกประทับกับแถวที่เปลี่ยนเท่านั้น (รอบ 10:14 วันนี้ 19 แถว · 02/11 16:14 16 แถว) ไม่ใช่โหลดใหม่ทั้งตาราง → 🟡 proc ทำ MERGE/UPSERT โดยไม่มีขั้น DELETE หรือรีเซ็ตกลุ่มที่ต้นทางหาย
+- **ข้อผิดพลาดถูกกลืน:** ทุกขั้นของ job อยู่ใน `try/catch` ที่ `log.error` เท่านั้น (และ log ของแอปบางตัวเป็น NOP) → ถ้า proc ล้ม **ไม่มีใครรู้** แคชค้างเงียบๆ
+- **จุดอ่านแคชยอดส่งมีที่เดียว:** `PCMSSqlService.createTempSumBill` (บรรทัด ~1182) ถูกประกอบเข้า SQL ใน 7 จุด (ชุดตารางกลาง `buildCommonLookupTables` 1, Summary 1, drill-down ของ Detail 5) และทุกจุดอ่านผ่าน `#tempSumBill` + `getLeftJoinTempSumBill` → **แก้ที่ `createTempSumBill` จุดเดียวครอบทุกหน้า**
+- **แคช GR อ่านหลายจุด** (`createTempSumGR`, `...Filtered`, บรรทัด 639/751/763/950/973)
+- ตารางลักษณะเดียวกันที่ยังไม่ได้ตรวจ: `TEMP_ProdWorkDate` (69,819 แถว) และ `TEMP_UserStatusAuto` (105,965 แถว) ซึ่งเติมโดย `spd_UpsertToTEMP_*` ใน job เดียวกัน
+
+## 3) ทางเลือก (วัดเวลาจริงบน PRD ด้วย temp table, 3 รอบ/ทางเลือก)
+| | วิธี | ความถูกต้อง | เวลาอ่าน (G TECH 3,492 SL) | เวลาอ่าน (ทุก SL ที่ยังเปิด) | แตะ DB? | ย้อนกลับ |
+|---|---|---|---|---|---|---|
+| **0** | ปล่อยไว้ (ปัจจุบัน) | ❌ โตทุกวัน | ~31 ms | ~31 ms | ไม่ | — |
+| **A** | แคช + `WHERE EXISTS` ใบ 'O' | ✅ | **~390–500 ms** (ช้ากว่า D) | ~375–407 ms | ไม่ | revert โค้ด |
+| **B** | **แก้ proc** ให้ลบ/ศูนย์กลุ่มที่ไม่มีใบ 'O' (+ ล้าง 2,166 แถวเดิม) | ✅ ที่ต้นทาง | ~31 ms | ~31 ms | **ใช่ (PRD)** | ต้องมีแผนสำรอง |
+| **C** | B + มาตรวจเฝ้าระวัง (monitor) | ✅ | ~31 ms | ~31 ms | ใช่ | — |
+| **D** | **อ่านสดแบบจำกัดขอบเขต** `FromSapMainBillBatch` 'O' JOIN `#tempMainSale` GROUP BY (เลิกใช้แคชยอดส่ง) | ✅ ถูกโดยโครงสร้าง ไม่มีแถวค้างอีก | **~312–328 ms** | **~218 ms** | **ไม่** (โค้ดอย่างเดียว) | revert โค้ด |
+| **E** | D ก่อน แล้ว B แล้วค่อยกลับมาอ่านแคช | ✅ | 312 → 31 ms | 218 → 31 ms | ภายหลัง | ทีละขั้น |
+
+หมายเหตุการวัด: ดัชนีที่มี `IX_BillBatch_O (ProductionOrder, SaleOrder, SaleLine, Grade)` (ไม่ได้นำหน้าด้วย SO/line จึงสแกนแต่ยังเร็ว) · ที่ค้นหาแต่ละครั้งใช้เวลารวม ~2–8 วินาที → D เพิ่ม ≈ **0.2–0.3 วินาที (~4%)** · A ไม่คุ้ม (ช้ากว่า D แต่ไม่ได้ถูกกว่าอะไร)
+
+## 4) แผนที่แนะนำ — ทำเป็น 3 ระยะ (ตัวเลือก E)
+**ระยะ 1 — แก้ฝั่งอ่าน (D) ทันที · โค้ดอย่างเดียว · ความเสี่ยงต่ำสุด**
+- แก้ `createTempSumBill` จุดเดียว: อ่านสดจาก `FromSapMainBillBatch` (DataStatus='O') JOIN `#tempMainSale` GROUP BY (PO, SO, Line, Grade) ให้ชื่อคอลัมน์ผลลัพธ์ตรงกับที่ `#tempSumBill` ใช้ (`BillSendWeightQuantity`, `BillSendYDQuantity`, `BillSendMRQuantity`) แล้วคง `CREATE CLUSTERED INDEX` เดิม
+- ไม่มีผลต่อ SQL ของหน้าอื่น เพราะทุกเมธอดอ่านผ่าน `#tempSumBill`
+- ทดสอบ: A/B บน PRD (อ่านอย่างเดียว) ด้วย `tools/run-harness-ab.ps1 -Target PRD` เทียบ "main ปัจจุบัน" กับ "สาขาแก้" · **ผลที่คาดหวัง:** ต่างเฉพาะ `billSend*` ที่หายไปราว 377 ชุด (+ที่ลดลง) · ค่าอื่น = 0 · เวลา ≤ +10%
+- เกณฑ์ผ่าน: ไม่มีค่าอื่นเปลี่ยน · ทุกแถวที่ billSend* หายไป ต้องไม่มีใบ 'O' ในต้นทาง (ตรวจด้วย SQL ในหัวข้อ 7)
+
+**ระยะ 2 — แก้ที่ต้นเหตุ (B) โดยเจ้าของ proc · มีแผนสำรอง**
+- ให้ `spd_SumBillAndGoodReceive` ลบ (หรือ MERGE ... WHEN NOT MATCHED BY SOURCE THEN DELETE) กลุ่มในแคชที่ไม่มีใบ 'O' · ทำเหมือนกันกับ `SumGRCache`
+- ล้างข้อมูลเดิม 2,166 แถว **หลัง** สำรองไว้ในตาราง `SumBillCache_bak_YYYYMMDD` (SELECT INTO) · ทำนอกเวลา job (ไม่ใกล้ :14/:44) ในทรานแซกชัน
+- ทำตามกฎ `schema-change-deploy-order.md`: ไฟล์ `sql/YYYY-MM-DD_NN_*.sql` รันซ้ำได้ + แถวตรวจใน `verify_patches_applied.sql` + บอกลำดับ deploy
+- ต้องการ: อนุมัติจากคุณ + DBA (นิยาม proc, สิทธิ์เขียน PRD)
+
+**ระยะ 3 — กลับไปอ่านแคช (ถ้าต้องการความเร็ว) + เฝ้าระวัง**
+- เมื่อ B ใช้งานแล้วและ monitor ว่า stale = 0 สม่ำเสมอ ค่อยสลับ `createTempSumBill` กลับเป็นอ่านแคช (ประหยัด ~0.2–0.3 วินาที/ค้นหา) — **ไม่จำเป็น ถ้ายอมรับ 0.3 วินาที ให้อยู่ที่ D ต่อได้** (ง่ายกว่า ไม่พึ่ง proc)
+- เพิ่ม monitor (หัวข้อ 7) และให้ job แจ้งเตือนเมื่อ proc ล้ม
+
+## 5) ทะเบียนจุดเสี่ยง
+| # | ความเสี่ยง | ระดับ | ใช้กับ | มาตรการ |
+|---|---|---|---|---|
+| R1 | **ช้าลง** เมื่ออ่านสด | ต่ำ-กลาง | D | วัดแล้ว +0.2–0.3 วินาที (ค้นหาทั้งหน้า 2–8 วินาที) · A/B เวลา 3 รอบก่อน merge · ถ้าไม่ผ่านให้ใช้ B |
+| R2 | **ตัวเลขหายจากหน้าจอ** (ผู้ใช้เคยเห็นยอดส่ง 377 ชุดแล้วไม่เห็น) — ถูกต้องแต่ **เปลี่ยนที่ผู้ใช้เห็น** | กลาง | ทุกทางเลือก | แจ้งฝ่ายที่ใช้ยอดส่ง/ตัวอย่าง SO ก่อน deploy (ใช้ตารางแถวที่หาย) |
+| R3 | **ความหมาย Grade** ต้องเหมือนเดิม (แคชกลุ่มตาม PO+SO+Line+Grade; ในแคชมี 131 คีย์ที่ >1 เกรด, ต้นทาง 2) | กลาง | D, B | D ต้อง GROUP BY ชุดเดียวกัน · A/B เทียบแล้วต้องไม่มี "ค่าไม่ว่างเปลี่ยน" |
+| R4 | **อ่านนิยาม proc ไม่ได้** → ไม่รู้ว่าทำไมไม่ลบ (อาจตั้งใจ? เช่น เก็บประวัติ) | กลาง | B | ถามเจ้าของ proc ก่อน · 🟡 ยังไม่รู้ว่ามีที่ใดอาศัยกลุ่มที่ "ค้าง" (เช่น รายงานอื่น) |
+| R5 | **เขียน PRD** (ล้างข้อมูล/แก้ proc) พลาด = ข้อมูลหาย | สูง | B | สำรองก่อน (SELECT INTO), ทำในทรานแซกชัน, off-peak, ทดสอบบนสำเนา/DEV ก่อน, ผู้อนุมัติชัดเจน |
+| R6 | ชน job :14/:44 (ล็อก/PK ชน) | กลาง | B | ทำช่วง :20–:40 · ใช้ทรานแซกชันสั้น · ตรวจว่า job ไม่รันอยู่ |
+| R7 | **DEV ทดสอบไม่ได้จริง** (DEV แคช/ข้อมูลไม่ตรงกับต้นทาง ไม่มีข้อมูลสวม) | กลาง | ทุกทาง | ใช้ A/B อ่านอย่างเดียวบน PRD เป็นหลักฐาน (มีเครื่องมือพร้อม) |
+| R8 | `NOLOCK` อ่านสด = อ่านข้อมูลที่ยังไม่ commit ได้ | ต่ำ | D | ฝั่งเดิมก็ใช้ NOLOCK อยู่แล้ว (`b150c87`) |
+| R9 | ตารางแคชอื่น (`TEMP_ProdWorkDate`, `TEMP_UserStatusAuto`, `SumGRCache`) อาจมีปัญหาเดียวกัน | กลาง | — | ตรวจแบบเดียวกัน (แคช vs ต้นทาง) ก่อน · GR พบ 1 แถว |
+| R10 | **proc ล้มแล้วไม่มีใครรู้** (try/catch กลืน) | กลาง | B/C | monitor ค่า `MAX(LastRefreshDT)` + แจ้งเตือน |
+| R11 | ใบที่ถูกยกเลิกแล้ว **กลับมา 'O'** ภายหลัง | ต่ำ | B | ถ้า proc เป็น upsert ตามใบ 'O' จะกลับมาเอง · ตรวจกรณีนี้ใน SQL ทดสอบ |
+| R12 | แก้ `createTempSumBill` แล้วกระทบ drill-down/Excel | ต่ำ | D | ทุกเมธอดอ่านผ่าน `#tempSumBill` (จุดเดียว) · ทดสอบหน้าจอ + Excel ที่ DEV/PRD |
+
+## 6) ที่ยังไม่รู้ (ต้องถาม/ตรวจ)
+1. นิยาม `spd_SumBillAndGoodReceive` (ใครเป็นเจ้าของ · ทำไมไม่ลบ · มีรายงานอื่นอ่านแคชนี้ไหม)
+2. ความหมายทางธุรกิจ: **ยอดส่งจากใบยกเลิกไม่ควรแสดงเลย** ใช่ไหม (สมมติฐานที่ใช้ในแผนนี้)
+3. `TEMP_ProdWorkDate` / `TEMP_UserStatusAuto` มีแถวค้างแบบเดียวกันไหม (ยังไม่ได้ตรวจ)
+4. ประวัติก่อน 2026-01 (ตอนนั้นอ่านสดอยู่ จึงไม่มีปัญหา) — ผู้ใช้อาจเพิ่งเจอตั้งแต่ ม.ค.
+
+## 7) SQL ที่ใช้ (อ่านอย่างเดียว — รันซ้ำได้)
+**เฝ้าระวัง (monitor) — จำนวน/ปริมาณกลุ่มค้าง (ควรเป็น 0 หลังระยะ 2):**
+```sql
+SELECT COUNT(*) AS stale_groups, CAST(SUM(c.BillSendWeightQuantity) AS DECIMAL(18,1)) AS kg
+FROM PCMS.dbo.SumBillCache c
+WHERE NOT EXISTS (SELECT 1 FROM PCMS.dbo.FromSapMainBillBatch b WITH (NOLOCK)
+                  WHERE b.DataStatus='O' AND b.ProductionOrder=c.ProductionOrder AND b.SaleOrder=c.SaleOrder
+                    AND b.SaleLine=c.SaleLine AND ISNULL(b.Grade,'')=ISNULL(c.Grade,''));
+```
+**ตรวจแถวที่ billSend* จะหายหลังระยะ 1 (ต้อง "ไม่มีใบ O" ทุกชุด):**
+```sql
+-- แทน (po,so,line) ด้วยชุดจากรายงาน A/B
+SELECT COUNT(*) AS has_live_O FROM PCMS.dbo.FromSapMainBillBatch WITH (NOLOCK)
+WHERE DataStatus='O' AND ProductionOrder=@po AND SaleOrder=@so AND SaleLine=@line;  -- ต้องได้ 0
+```
+**ร่างล้างข้อมูล (ระยะ 2 — ยังไม่รัน ต้องอนุมัติ):**
+```sql
+BEGIN TRAN;
+SELECT c.* INTO PCMS.dbo.SumBillCache_bak_20261103 FROM PCMS.dbo.SumBillCache c
+ WHERE NOT EXISTS (SELECT 1 FROM PCMS.dbo.FromSapMainBillBatch b WITH (NOLOCK) WHERE b.DataStatus='O'
+   AND b.ProductionOrder=c.ProductionOrder AND b.SaleOrder=c.SaleOrder AND b.SaleLine=c.SaleLine AND ISNULL(b.Grade,'')=ISNULL(c.Grade,''));
+-- ตรวจจำนวนใน bak ก่อน (ควรได้ ~2,166 และไม่เกินที่คาด) แล้วค่อย DELETE ด้วยเงื่อนไขเดียวกัน
+-- COMMIT เมื่อจำนวนตรง · ROLLBACK ถ้าไม่ตรง
+```
+
+## 8) ลำดับที่เสนอและสิ่งที่ต้องการจากคุณ
+1. ✅ ตัดสินใจ: ยืนยันว่าควร **ไม่แสดงยอดส่งจากใบที่ยกเลิก** (ข้อ 6.2)
+2. เริ่ม **ระยะ 1 (D)** ได้ทันที: ผมเขียนในสาขาแยก + A/B บน PRD (อ่านอย่างเดียว) + ทดสอบหน้าจอ + เปิด MR (ความเสี่ยงต่ำ ย้อนกลับ = revert)
+3. คุยกับเจ้าของ proc/DBA เรื่อง **ระยะ 2 (B)** แล้วค่อยเลือกว่าจะอยู่ที่ D หรือกลับไปอ่านแคช
+4. ตรวจ `TEMP_ProdWorkDate` / `TEMP_UserStatusAuto` / `SumGRCache` ด้วยวิธีเดียวกัน (อ่านอย่างเดียว) — ผมทำให้ได้
+
+---
+
+## ภาคผนวก A: ตรวจแคช/ตารางสรุปตัวอื่นด้วยวิธีเดียวกัน (PRD, SELECT อย่างเดียว, 2026-11-03 ~13:40)
+
+| ตาราง | แถว | สุขภาพ | ข้อสังเกต |
+|---|---|---|---|
+| **`SumGRCache`** | 64,306 | ✅ ดี | ค้าง **1 แถว** (`C4L041` เกรด A 31.1 kg รีเฟรชล่าสุด 2026-03-23 — ต้นทางไม่มีใบ 'O' แล้ว) · ค่าต่าง 0 · ขนาดเล็กมาก แต่เป็นกลไกเดียวกับ `SumBillCache` (ไม่ลบ) |
+| **`TEMP_ProdWorkDate`** | 69,819 | ✅ ดี | **1 แถวต่อ PO พอดี ไม่มีซ้ำ** · ทุก PO ที่ `FromSapMainProd`(O) มีแถวครบ (ขาด 0) · สด (เปลี่ยนล่าสุด 13:14 วันนี้, 1,237 แถวใน 24 ชม.) · มี PO 2,030 ตัวที่ไม่อยู่ใน `FromSapMainProd` เลย — ไม่เป็นปัญหา (join ด้วย PO) |
+| **`TEMP_UserStatusAuto`** | 105,965 (O 68,737 / X 37,228) | 🟠 พบความผิดปกติเล็กน้อย | **ใช้ `DataStatus` ทำ soft-delete ได้ถูก** (ต่างจาก `SumBillCache`) · สด (13:14) · แต่พบ 3 เรื่องข้างล่าง |
+
+### เรื่องที่พบใน `TEMP_UserStatusAuto`
+1. **คีย์ซ้ำ 12 คีย์** (PO, SaleOrder, SaleLine, Grade ที่ DataStatus='O' มี 2 แถว สถานะเหมือนกัน เช่น `P6E243/1000003325/2/A`, `P6G000/1000003335/1/A`, **`P6I000/1000002555/2/A`**) — ตารางไม่มี unique index (มีแต่ nonclustered `ProductionOrder, DataStatus`) → `LEFT JOIN` ทำให้ **แถวในหน้า Detail/Summary ซ้ำ** สำหรับ PO เหล่านี้ · `P6I000` คือ PO เดียวกับแถวซ้ำที่เจอในหน้า Detail ก่อนหน้า (🟡 น่าจะเกี่ยวข้อง ยังไม่พิสูจน์ว่าเป็นต้นเหตุทั้งหมด) · เป็นปัญหา **ของ proc ฝั่งเติมข้อมูล** ไม่ใช่โค้ดแอป
+2. **แถว 'O' ของ PO ที่ไม่มีใน `FromSapMainProd`(O) 28 แถว** — ค้างเล็กน้อย (ผลต่อหน้าจอต่ำ เพราะ join ด้วย PO)
+3. **PO ที่ `FromSapMainProd`(O) แต่ไม่มีแถว 'O' 498 ตัว** — ไม่ใช่การค้าง (486 ตัวสร้างมาเกิน 7 วัน, ใหม่สุด 2026-10-31) สถานะส่วนใหญ่ = `รับเข้าST.(P/S)` 251 · `ปิดเพื่อแก้ไข` 117 · `ยกเลิก` 54 · `ม้วนแล้วรอรับ FG` 28 · `รอผ้าดิบ` 21 · `ตัดเกรดZ` 11 → 🟡 น่าจะ **ตั้งใจ** (สถานะที่ระบบคำนวณอัตโนมัติไม่ครอบ จึงใช้สถานะของ PO เอง) ควรยืนยันกับเจ้าของ proc
+
+### ผลต่อแผนหลัก (ปรับทะเบียนความเสี่ยง R9)
+- **R9 ปิดแล้ว:** `TEMP_ProdWorkDate` ปลอดภัย · `SumGRCache` เสี่ยงต่ำมาก (1 แถว) → ไม่ต้องรีบ แต่ใส่ในงาน "แก้ proc ระยะ 2" ด้วยเพื่อกันไม่ให้โตเหมือน bill
+- **เพิ่ม R13:** `TEMP_UserStatusAuto` มีคีย์ซ้ำ 12 รายการ → แถวซ้ำที่ผู้ใช้เห็น · แก้ที่ proc (กันซ้ำ) + ใส่ unique index `(ProductionOrder, SaleOrder, SaleLine, Grade, DataStatus)` **หลังล้างซ้ำ** (เป็นงาน DB ของระยะ 2) · ฝั่งอ่านป้องกันชั่วคราวได้ด้วย `ROW_NUMBER()`/`DISTINCT` แต่ต้องระวังไม่ให้เปลี่ยนความหมาย (ควรทำพร้อม A/B)
+- **สรุปรูปแบบปัญหา:** ปัญหา "แคชไม่ลบ" เกิดเฉพาะ `SumBillCache` (กลุ่มที่ต้นทางหาย) และเล็กน้อยที่ `SumGRCache` · `TEMP_UserStatusAuto` มีกลไกลบ (DataStatus) แต่ **ไม่กันคีย์ซ้ำ**
+
+### SQL ตรวจเฝ้าระวังเพิ่ม (อ่านอย่างเดียว)
+```sql
+-- คีย์ซ้ำใน TEMP_UserStatusAuto (ควรเป็น 0)
+SELECT COUNT(*) FROM (SELECT ProductionOrder,SaleOrder,SaleLine,Grade FROM PCMS.dbo.TEMP_UserStatusAuto
+                      WHERE DataStatus='O' GROUP BY ProductionOrder,SaleOrder,SaleLine,Grade HAVING COUNT(*)>1) x;
+-- แถวซ้ำต่อ PO ใน TEMP_ProdWorkDate (ควรเป็น 0)
+SELECT COUNT(*) FROM (SELECT ProductionOrder FROM PCMS.dbo.TEMP_ProdWorkDate GROUP BY ProductionOrder HAVING COUNT(*)>1) x;
+-- SumGRCache ค้าง (ควรเป็น 0)
+SELECT COUNT(*) FROM PCMS.dbo.SumGRCache c WHERE NOT EXISTS (SELECT 1 FROM PCMS.dbo.FromSapGoodReceive g WITH (NOLOCK)
+  WHERE g.DataStatus='O' AND g.ProductionOrder=c.ProductionOrder AND ISNULL(g.Grade,'')=ISNULL(c.Grade,''));
+```
