@@ -1254,7 +1254,8 @@ public class PCMSSqlService {
 		}
 		String[] dateArray = dateRange.split("-");
 		String sqlTemplate = "and (%s.%s >= CONVERT(DATE,'%s',103) and \n" + "           %s.%s <= CONVERT(DATE,'%s',103)) \n";
-		return String.format(sqlTemplate, para, columnName, dateArray[0].trim(), para, columnName, dateArray[1].trim());
+		return String.format(sqlTemplate, para, columnName, dateArray[0].trim().replace("'", "''"), para, columnName,
+				dateArray[1].trim().replace("'", "''"));
 	}
 
 	private String buildLikeClause(String columnName, String value, String para)
@@ -1262,7 +1263,7 @@ public class PCMSSqlService {
 		if (value.isEmpty()) {
 			return "";
 		}
-		return String.format("and %s.%s like '%s%%' \n", para, columnName, value);
+		return String.format("and %s.%s like '%s%%' \n", para, columnName, value.replace("'", "''"));
 	}
 
 	private String buildListClause(String columnName, List<String> list, String para)
@@ -1308,7 +1309,7 @@ public class PCMSSqlService {
 			return String.format(sqlTemplate, saleStatus);
 		default:
 			sqlTemplate = "and (SaleStatus like '%s%%' or a.[RemainQuantity] = 0) \n";
-			return String.format(sqlTemplate, saleStatus);
+			return String.format(sqlTemplate, saleStatus.replace("'", "''"));
 		}
 	}
 

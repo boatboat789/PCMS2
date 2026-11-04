@@ -138,16 +138,16 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 		String where = " where DataStatus = 'O' ";
 //		String where = " where 1 = 1 "; 
 		if ( ! custName.equals("")) {
-			where += " and a.[CustomerName] like '" + custName + "%' \r\n";
+			where += " and a.[CustomerName] like '" + custName.replace("'", "''") + "%' \r\n";
 		}
 		if ( ! so.equals("")) {
-			where += " and a.[SO] like '" + so + "%' \r\n";
+			where += " and a.[SO] like '" + so.replace("'", "''") + "%' \r\n";
 		}
 		if ( ! prodOrder.equals("")) {
-			where += " and a.[ProdId] like '" + prodOrder + "%' \r\n";
+			where += " and a.[ProdId] like '" + prodOrder.replace("'", "''") + "%' \r\n";
 		}
 		if ( ! lotNubmer.equals("")) {
-			where += " and a.LotNo like '" + lotNubmer + "%' \r\n";
+			where += " and a.LotNo like '" + lotNubmer.replace("'", "''") + "%' \r\n";
 		}
 		where += PCMSSqlService.buildDateClause("SendDate", sendDate, "a");
 		where += PCMSSqlService.buildDateClause("ReplyDate", replyDate, "a");

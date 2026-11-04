@@ -71,3 +71,15 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 ## 6. ข้อจำกัด
 - สแกนด้วย regex และอ่านเฉพาะโค้ด Java ใน `src/main/java` ไม่ได้ดู JSP/JS และ config
 - ไม่ได้คอมไพล์ ไม่ได้รัน ไม่ได้ทดสอบกับ DB
+
+## 7. สถานะหลังแก้ (อัปเดตรอบที่ 2)
+
+แก้แล้ว (escape `'` เป็น `''`, ไม่เปลี่ยนโครงสร้าง SQL):
+- B3: `PCMSSqlService` และ `PCMSSqlServiceV2` — `buildLikeClause`, `buildDateClause` (ทั้งสองส่วนของช่วงวันที่) และกรณี `default` ของ `buildSaleStatusClause` ที่ต่อ `saleStatus` จาก request ตรง ๆ (เจอเพิ่มระหว่างแก้)
+- B1: `ERPAtechDaoImpl` (2 เมธอด), `FromSapMainProdDaoImpl`, `FromSapMainSaleDaoImpl` — วันที่เริ่ม/สิ้นสุด และ productionOrder/saleOrder (null-safe)
+- B2: `Z_ATT_CustomerConfirm2DaoImpl` — `custName`, `so`, `prodOrder`, `lotNubmer`
+
+ยังไม่ได้ทำ / ไม่ได้เปลี่ยน:
+- `buildDateClause` ยังเกิด `ArrayIndexOutOfBoundsException` ถ้า `dateRange` ไม่มี `-` (พฤติกรรมเดิม ไม่ได้แตะ เพราะไม่รู้ว่าฝั่งหน้าเว็บต้องการให้ตอบอย่างไร)
+- ข้อ LDAP (`AdInfo.getSearchFilter`) และรหัสผ่านใน `AdInfo.java` — ยังไม่แก้ เพราะไลบรารี `core` (build ใน Eclipse ของผู้ใช้) ไม่อยู่ใน repo จึงยืนยันพฤติกรรมของ `ActiveDirectory.getContext` ไม่ได้
+- ยังไม่ได้ compile / ทดสอบกับ DB จริง

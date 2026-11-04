@@ -89,16 +89,16 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[ChangeDate] AS DATE) >= convert(date,'"
-					+ startLogDate
+					+ (startLogDate == null ? "" : startLogDate.replace("'", "''"))
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[ChangeDate] AS DATE) <= convert(date,'"
-					+ endLogDate
+					+ (endLogDate == null ? "" : endLogDate.replace("'", "''"))
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 //			where += " CAST(a.[CreateDate] AS DATE) = convert(date, '"+createDate+"', 103)  \r\n" ;
 		}
 		if ( ! saleOrder.equals("")) {
-			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[SaleOrder] = '" + (saleOrder == null ? "" : saleOrder.replace("'", "''")) + "' \r\n" + "	) \r\n";
 		}
 		String sql = " " + " SELECT DISTINCT \r\n" + this.selectForLog + " FROM [FromSapMainSale] a\r\n" + where;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
