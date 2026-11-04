@@ -137,3 +137,29 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 ### อัปเดตรอบที่ 5: escape `CustomerNo`
 - แก้แล้ว 4 จุด (escape `'` เป็น `''` ต่อ element หลัง `split(",")`): `FromSapMainSaleDaoImpl` (`getCustomerNameDetail`, `getCustomerShortNameDetail`) และ `CustomerDetailDaoImpl` (2 จุดใน `getCustomerNameForOption`) — แก้ข้อ 8.1 ว่า "ยังไม่ได้แก้"
 - ยังไม่ได้คอมไพล์/ทดสอบ
+
+## 9. ข้อค้นพบรอบที่ 6: การสแกนก่อนหน้าพลาดไปหลายไฟล์ ⚠️ (ยังไม่ได้แก้ รอการอนุมัติ)
+
+**แก้ไขข้อสรุปเดิม:** รอบก่อนๆ ผมรายงานว่า "ไล่กลุ่ม A/B ครบ" แต่การตรวจละเอียดเปิดอ่านเฉพาะไฟล์ที่อยู่ในอันดับต้นของการนับ regex (ซึ่งนับรวมข้อความ `'` ใน literal ด้วย) จึงข้าม DAO อีกหลายไฟล์ที่ต่อค่าเข้า SQL จริง รอบนี้สแกนใหม่ด้วยรูปแบบ `'" + ตัวแปร` (รวมกรณีต่อหลายบรรทัด) ทั่ว `dao/service/logic/utilities/controller` และได้รายการด้านล่าง
+
+### 9.1 `getPrdDetailByRow` ยังไม่ปลอดภัยทั้งเมธอด (การแก้รอบแรกไม่ครบ)
+- รอบแรกผม escape `prdOrder` เฉพาะ query แรกที่บรรทัด 884 (`PCMSMainDaoImpl`)
+- แต่เมธอดเดียวกันนี้ส่ง `productionOrder` / `prdOrder` ดิบต่อไปยัง service/DAO อีกชุด (`PCMSMainDaoImpl` ~บรรทัด 915-975) ซึ่งแต่ละตัวต่อ SQL เอง:
+  - `FromSapCFMDaoImpl:51`, `FromSapDyeingDaoImpl:62`, `FromSapPackingDaoImpl:57`, `FromSapPresetDaoImpl:52`, `FromSapReceipeDaoImpl:47`, `FromSapSaleDaoImpl:50`, `FromSapSaleInputDaoImpl:50`, `FromSapWaitTestDaoImpl:44`, `FromSapWorkInLabDaoImpl:44`
+  - `InspectSystem/InspectNcDaoImpl:45`, `InspectSystem/InspectOrdersDaoImpl:45`, `LBMS/ImportDetailDaoImpl:44`, `PPMM/RollFromSapDaoImpl:45`, `PPMM/ShopFloorControlDaoImpl:32`
+  - ฐานข้อมูลที่เกี่ยวข้องอาจเป็นคนละ DB (LBMS, PPMM, Inspect) — **ยังไม่ได้ตรวจ** ว่าบัญชี DB ที่ใช้มีสิทธิ์อะไรบ้าง
+- `SwitchProdOrderDaoImpl:60-63,160` และ `ReplacedProdOrderDaoImpl:~110-120` ต่อ `prodOrder`/`saleOrder`/`saleLine` แบบหลายบรรทัด (regex ตัวแรกจับไม่ได้)
+
+### 9.2 เส้นทางบันทึก/ตรวจวันที่ใน Detail
+`PCMSDetailDaoImpl.saveInputDate` เองใช้ `PreparedStatement` (ปลอดภัย) แต่เรียก service ที่ใช้ DAO ต่อไปนี้ซึ่งต่อค่าจาก request ตรง ๆ:
+- `PlanCFMDateDaoImpl:58-60, 86, 112-115`
+- `PlanCFMLabDateDaoImpl:58-60, 87-90, 113`
+- `PlanDeliveryDateDaoImpl:54, 81-84`
+- `PlanSendCFMCusDateDaoImpl:56`
+ค่าที่ต่อ: `productionOrder`, `saleOrder`, `saleLine` และวันที่ (`cfmPlanDate`, `cfmPlanLabDate`, `deliveryDate`) ใน `CONVERT(DATE,'...',103)`
+
+### 9.3 อื่น ๆ ที่เจอ
+- `PermitsDaoImpl:94,137-138`, `UsersDaoImpl:92`, `ConfigCustomerUserDaoImpl:51` — ต่อ `permitId`/`userId` (มาจาก session/DB; เกี่ยวกับข้อ LDAP)
+- `FromSapCFMDaoImpl:190,205,218` ต่อ `systemUser` (ค่าภายในระบบ ไม่น่ามาจาก request — ยังไม่ได้ยืนยันที่มา)
+- ตรวจเพิ่ม: write endpoint ที่ใช้ `PreparedStatement` ครบ — `ColumnSettingDaoImpl.upsertColumnSettingDetail/upsertColumnVisibleSummary`, `PCMSDetailDaoImpl.saveInputDate` (INSERT) เป็นพารามิเตอร์ ไม่พบปัญหา (หมายเหตุ: `upsertColumnVisibleSummary` เรียก `connection.prepareStatement(sql)` ซ้ำโดยไม่ใช้ผล เป็นโค้ดซ้ำที่ไม่เกี่ยวกับความปลอดภัย)
+- **`/Main/getEncrypted/{userId}` (`PCMSMainController:239-270`):** ผู้ใช้ที่ login แล้วเรียกเพื่อขอ "userId ที่เข้ารหัส" ได้กับ userId ใดก็ได้ (ไม่ใช้ session) โดย key, salt ฝังในโค้ด (`secretPass`, `secretSalt`) และใช้ IV เป็นศูนย์ทั้งหมด (AES/CBC เหมือนกันทุกครั้ง); JS ใช้เรียกก่อนสร้างลิงก์ไประบบ LBMS / INSPECT / SFC / QCMS (`web-app.js:42-175`) — ถ้าระบบปลายทางยอมรับค่านี้เป็นตัวตนผู้ใช้ ผู้ใช้ที่ login แล้วอาจสร้างลิงก์ในนามผู้ใช้อื่นได้ **ยืนยันไม่ได้** เพราะไม่เห็นฝั่งปลายทาง ต้องถามผู้ใช้
