@@ -547,3 +547,8 @@ table.dataTable thead.thead-dark th {
 
 /* ช่อง/ดรอปดาวน์ในตารางหน้า Detail สูง ≥32px (ux-ui-guideline.md) — เฉพาะในตาราง ไม่แตะ .form-control ทั้งระบบ */
 #MainTable td input.form-control, #MainTable td select.form-control { height: 32px; }
+
+/* เป้ากดของเมนูบนจอ >= 992px ให้สูง >= 44px (เดิม navbar สูง 42px ต่ำกว่าเกณฑ์แท็บเล็ต) */
+@media (min-width: 992px) {
+  #navbar .navbar-nav .nav-link { min-height: 44px; display: flex; align-items: center; }
+}

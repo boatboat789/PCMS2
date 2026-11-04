@@ -825,7 +825,33 @@ $(document) .ready( function() {
 	})  
 	preLoaderHandler( preloader)   
 });   
-function searchByDetail(){  
+// ตรวจรูปแบบวันที่ของช่องค้นหา (dd/MM/yyyy หรือ dd/MM/yyyy - dd/MM/yyyy) ก่อนส่ง server — ผิดรูปแบบจะแจ้งชื่อช่องแทนกล่อง "ติดต่อทีม IT"
+function checkSearchDateFields(){
+	var fields = [["input_saleOrderDate","SO Date"],["input_prdOrderDate","Prod. Create Date"],["input_dueDate","Due Date"]];
+	function okDate(s){
+		var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+		if(!m){ return false; }
+		var d = new Date(+m[3], +m[2]-1, +m[1]);
+		return d.getFullYear() == +m[3] && d.getMonth() == +m[2]-1 && d.getDate() == +m[1];
+	}
+	for(var i = 0; i < fields.length; i++){
+		var el = document.getElementById(fields[i][0]);
+		var v = el ? el.value.trim() : "";
+		if(v == ""){ continue; }
+		var parts = v.split("-");
+		var ok = parts.length <= 2;
+		for(var j = 0; ok && j < parts.length; j++){ ok = okDate(parts[j].trim()); }
+		if(!ok){ return "ช่อง " + fields[i][1] + " รูปแบบไม่ถูกต้อง — ใช้ dd/MM/yyyy หรือ dd/MM/yyyy - dd/MM/yyyy (เลือกจากปฏิทินได้)"; }
+	}
+	return "";
+}
+function searchByDetail(){
+	var dateErr = checkSearchDateFields();
+	if(dateErr != ""){
+		$('#btn_search').prop('disabled', false);
+		Swal.fire({ title: 'คำเตือน', text: dateErr, icon: 'warning' });
+		return;
+	}  
 	var saleOrder = document.getElementById("input_saleOrder").value .trim();  
 	var article = document.getElementById("input_article").value .trim();  
 	var prdOrder = document.getElementById("input_prdOrder").value .trim();
