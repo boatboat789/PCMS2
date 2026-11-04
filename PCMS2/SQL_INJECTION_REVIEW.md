@@ -95,3 +95,25 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 - exception จึงหลุดไปที่ servlet container → `web.xml` `<error-page><location>/handleError</location>` → `ErrorController.customError` (`@RequestMapping` แบบ GET เท่านั้น) ซึ่งแสดงหน้า `error/404` พร้อมข้อความ "Wrong Path." เมื่อ login แล้ว และบันทึก `originalUrl` ลง session
 - ฝั่ง JS: ทุก `$.ajax` ในหน้า Main, Detail, DetailV2, CFMReport, Log มี `error:` handler (จำนวนเท่ากับ ajax) แสดง `swal("Fail", "Please contact to IT", "error")` — ผู้ใช้เห็น popup ทั่วไป ไม่เห็นข้อมูลผิด
 - ยังไม่ได้ยืนยัน (ต้องทดสอบจริง): (ก) request แบบ POST ที่ error-dispatch ไป `/handleError` ซึ่งรับเฉพาะ GET จะได้ 405 แทนหน้า error หรือไม่ (ข) stack trace/ข้อความ `Invalid date range: <column>` ไปอยู่ใน log ของ container ตามปกติหรือไม่ (ค) daterangepicker ที่ผู้ใช้พิมพ์ค่าเองจะส่งรูปแบบใดมาจริง (ง) `originalUrl` ใน session ถูกเขียนทับด้วย URL ของ AJAX ที่ล้มเหลว อาจกระทบ redirect หลัง login ครั้งถัดไป (`LoginController` ใช้ค่านี้ — ยังไม่ได้ไล่)
+
+## 8. ผลไล่ `CustomerNo` และ `FilterLogin` (อัปเดตรอบที่ 4, อ่านโค้ดเท่านั้น)
+
+### 8.1 `CustomerNo` (second-order)
+- อ่านจากตาราง `[PCMS].[dbo].[ConfigCustomerUser]` ผ่าน `ConfigCustomerUserDaoImpl:47-50` (SELECT อย่างเดียว) — `ConfigCustomerUserDao` มีเมธอดเดียวคือ `getConfigCustomerUserDetail(userId)`
+- ค้นทั้งโปรเจกต์ไม่พบ INSERT/UPDATE/DELETE/MERGE ที่เขียนตารางนี้ → ผู้เขียนค่านี้อยู่นอกโค้ดนี้ (ไม่ทราบ: ผู้ดูแล DB โดยตรงหรือระบบอื่นที่ใช้ DB เดียวกัน) **ยืนยันไม่ได้ว่าใครเขียน**
+- จุดที่ใช้ `CustomerNo` ต่อ SQL ตรง ๆ โดยไม่ escape (แยกด้วย `,`):
+  - `FromSapMainSaleDaoImpl.java:154-163` (`getCustomerNameDetail(list)`) และ `:182-190` (`getCustomerShortNameDetail(list)`) — ถูกเรียกจาก `PCMSMainController:107-117` และ controller Detail/DetailV2 ที่ใช้รูปแบบเดียวกัน (ใช้ `user` จาก session เป็น key)
+  - `CustomerDetailDaoImpl.java:105-112` และ `:136-143` — `getCustomerNameForOption(poList)` ไม่พบ caller นอกชั้น service (น่าจะไม่ถูกใช้)
+- ความเสี่ยง: ผู้ใช้เว็บแก้ค่านี้ไม่ได้ ต้องมีสิทธิ์เขียนตาราง config จึงเสี่ยงต่ำกว่ากลุ่ม A/B แต่ escape ได้ง่าย (4 จุด) — **ยังไม่ได้แก้ รอคำตัดสินจากผู้ใช้**
+
+### 8.2 `FilterLogin`
+- `web.xml`: map `/*` (ครอบทุก URL ในแอป รวม `/Report/CFM/getReportDetail`, log API, `/Main/searchByDetail`, `/DetailV2/*`)
+- ผ่านโดยไม่ต้อง login เฉพาะ: `/login`, `/login/loginAuth` (เทียบ `getRequestURI()` แบบตรงตัว) และ URI ที่ขึ้นต้นด้วย `/resources/`
+- เงื่อนไข login = มี session attribute `user` และ `userObject` เท่านั้น → ตรวจ **authentication** อย่างเดียว ไม่มีการตรวจสิทธิ์รายเส้นทาง (permit) ดังนั้นผู้ใช้ที่ login แล้วทุกคนเรียก endpoint ที่มีช่องโหว่ในหัวข้อ 2 ได้ (ยืนยันว่าความเสี่ยงของกลุ่ม A/B คือ "ผู้ใช้ที่ login แล้ว")
+- `startsWith("/resources/")` ใช้กับ URI ดิบ ผมยังไม่ได้ทดสอบว่ารูปแบบ path แปลก ๆ (เช่น `..;`) ทำให้เลี่ยง filter ได้หรือไม่ — **ยืนยันไม่ได้**
+- error-page dispatch (`/handleError`) ไม่ผ่าน filter ตามค่าเริ่มต้นของ `<filter-mapping>` ที่ไม่ได้ระบุ `<dispatcher>` (ตามสเปค Servlet; ไม่ได้ทดสอบ)
+
+### 8.3 ข้อค้นพบเพิ่ม: การจำกัดข้อมูลตามลูกค้า (authorization) ฝั่งเซิร์ฟเวอร์ ⚠️
+- ผู้ใช้ประเภทลูกค้า (`isCustomer`) ถูกจำกัดแค่ "ตัวเลือกใน dropdown" (`PCMSMainController:107-117` เรียก `getCustomerNameDetail(listConfigCus)`)
+- ตอน search: `PCMSMainController.doGetSearchByDetail` (`:170-185`) ส่ง `poList` จาก request ไปที่ `PCMSMainProcess.searchByDetail` (`:33-43`) ซึ่งเมื่อ `isCustomer` เป็นจริง **ทำแค่ล้างฟิลด์ `cfmDetailAll` และ `rollNoRemarkAll`** — ไม่พบการบังคับกรองตาม `CustomerNo` ของผู้ใช้จาก session ในเส้นทางนี้ (ใน `dao` มีการอ้างถึง `ConfigCustomerUser` เพียงที่เดียวคือ `ConfigCustomerUserDaoImpl`)
+- ผลที่คาด (จากการอ่านโค้ด ยังไม่ได้ทดสอบ): ผู้ใช้ลูกค้าที่ส่ง request เอง (ไม่ใส่ filter ลูกค้า หรือใส่ชื่อลูกค้าอื่น) อาจเห็นข้อมูลของลูกค้ารายอื่นได้ — ต้องยืนยันด้วยการทดสอบด้วยบัญชีลูกค้าจริง และตรวจ `PCMSDetail*` ว่าเป็นแบบเดียวกันหรือไม่ (ยังไม่ได้ตรวจ)
