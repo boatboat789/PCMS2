@@ -1,0 +1,12 @@
+{
+  "name": "userstatus_general",
+  "description": "G TECH + userStatus กลุ่มทั่วไป (ไม่ใช่ LotNo): รอตอบ CFM, HOLD,รอโอน — เส้นทาง #tempUserStatusList/UCAL; ค่าจริงจาก DEV",
+  "enabled": true,
+  "bean": {
+    "userStatusList": ["รอตอบ CFM", "HOLD,รอโอน"],
+    "customerNameList": ["G TECH MATERIAL CO.,LTD."],
+    "customerShortNameList": ["G TECH"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

@@ -32,3 +32,11 @@ CSS/* Hover effect ที่นุ่มนวลขึ้น + ขยายน�
     margin-top: 0.75rem;
   }
 }
+
+/* ===== Detail: ช่องกรอกในตาราง — ใหญ่พอคลิก (>=32px), มองออกว่ากรอกได้, โฟกัสเห็นชัด ===== */
+#MainTable td > input.form-control,
+#MainTable td > select.form-control { height: 34px !important; padding: 4px 6px !important; background-color: #fffef5; border: 1px solid #a89f72; }
+#MainTable td > input.form-control:focus,
+#MainTable td > select.form-control:focus { background-color: #ffffff; outline: 3px solid #1a56db; outline-offset: 0; border-color: #1a56db; }
+#MainTable td > input.form-control::placeholder { color: #6b6b6b; opacity: 1; font-size: 13px; }
+.th-edit-mark { color: #8a6d00; font-weight: 700; }

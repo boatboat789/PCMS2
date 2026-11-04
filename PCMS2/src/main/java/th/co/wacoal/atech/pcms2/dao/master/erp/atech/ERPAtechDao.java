@@ -53,6 +53,9 @@ public interface ERPAtechDao {
 
 	ArrayList<SaleOrderLogDetail> getFromErpMainSaleDetailWithRangeOfChangeDate(String changeDateStart, String changeDateEnd,
 			String productionOrder);
- 
+
+	void setTimeFocusForCurrentThread(String fromDate);
+
+	void clearTimeFocusForCurrentThread();
 
 }

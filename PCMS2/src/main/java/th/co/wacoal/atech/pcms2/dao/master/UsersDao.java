@@ -8,6 +8,8 @@ public interface UsersDao {
 
 	ArrayList<UserDetail> getUsersByUserId(String userId);
 
-	ArrayList<UserDetail> getUsers(); 
+	ArrayList<UserDetail> getUsers();
+
+	int updateUserPermit(String userId, String permitId, String changeBy);
 
 }

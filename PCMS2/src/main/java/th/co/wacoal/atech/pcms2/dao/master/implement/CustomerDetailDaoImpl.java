@@ -10,8 +10,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.master.CustomerDao;
@@ -19,19 +23,19 @@ import th.co.wacoal.atech.pcms2.entities.ConfigCustomerUserDetail;
 import th.co.wacoal.atech.pcms2.entities.erp.atech.CustomerDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
 import th.co.wacoal.atech.pcms2.utilities.SqlStatementHandler;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class CustomerDetailDaoImpl implements CustomerDao {
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private BeanCreateService bcModel = new BeanCreateService();
 	private SqlStatementHandler sshUtl = new SqlStatementHandler();
-	private Database database;
+	private JdbcTemplate jdbc;
 	public SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat hhmm = new SimpleDateFormat("HH:mm");
 
 	@Autowired
-	public CustomerDetailDaoImpl(@Qualifier("pcmsDatabase") Database database) {
-		this.database = database;
+	public CustomerDetailDaoImpl(@Qualifier("pcmsDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ "      ,[SyncDate]\r\n"
 				+ "  FROM [PCMS].[dbo].[CustomerDetail]\r\n"
 				+ "";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -71,7 +75,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ "  FROM [PCMS].[dbo].[CustomerDetail]\r\n"
 				+ "  ORDER BY [CustomerName] "
 				+ "";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -89,7 +93,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ "  FROM [PCMS].[dbo].[CustomerDetail]\r\n"
 				+ "  ORDER BY [CustomerShortName] "
 				+ "";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -120,7 +124,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ where
 				+ "  ORDER BY [CustomerName] "
 				+ "";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -150,7 +154,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ where
 				+ "  ORDER BY [CustomerShortName] "
 				+ "";
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genCustomerDetail(map));
@@ -197,12 +201,11 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 				+ "    ); "
 				+ ";";
 
-		// 1. ดึง Connection มาถือไว้เฉยๆ (ห้ามใส่ในวงเล็บ try)
-Connection connection = this.database.getConnection();
-PreparedStatement prepared = null;
+		Connection connection = DataSourceUtils.getConnection(this.jdbc.getDataSource());
+		PreparedStatement prepared = null;
 
-try {
-    prepared = connection.prepareStatement(sql);
+		try {
+		    prepared = connection.prepareStatement(sql);
 
 			int index = 1;
 			for (CustomerDetail bean : paList) {
@@ -227,20 +230,18 @@ try {
 				prepared.setBoolean(index ++ , bean.isSabina());
 				prepared.setTimestamp(index ++ , new Timestamp(time));
 				prepared.setTimestamp(index ++ , new Timestamp(time));
-//this.sshUtl.setSqlDate(prepared, bean.get , index++); 
-//				prepared.setTimestamp(index++, new Timestamp(time));
-//this.sshUtl.setSqlBigDecimal(prepared, bean.get , index++); 
 				this.sshUtl.setSqlTimeStamp(prepared, bean.getSyncDate(), index ++ );
 				prepared.addBatch();
 			}
 			prepared.executeBatch();
 			prepared.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("[ERP-sync] upsertCustomerDetail failed", e);
 			iconStatus = "E";
 		}  finally {
 			// 2. ปิดแค่ Statement เท่านั้น!! (ห้ามสั่ง connection.close())
 			if (prepared != null) try { prepared.close(); } catch (Exception e) { }
+			DataSourceUtils.releaseConnection(connection, this.jdbc.getDataSource());
 		}
 		return iconStatus;
 	}

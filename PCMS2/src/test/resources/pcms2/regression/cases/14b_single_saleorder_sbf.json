@@ -1,0 +1,13 @@
+{
+  "name": "single_saleorder_sbf",
+  "description": "SBF + SaleOrder 1111002712 — ปลายทาง switch ของ W2B083 (self-switch) ที่ sale ต้นทาง 1111002704; ค่าจริงจาก DEV",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["SABINA PUBLIC CO.,LTD."],
+    "customerShortNameList": ["SBF"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "saleOrder": "1111002712"
+  }
+}

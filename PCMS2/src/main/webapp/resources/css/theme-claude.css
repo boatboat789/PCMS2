@@ -1,0 +1,549 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   theme-claude.css — Claude design language (PASTEL BLUE)
+   ------------------------------------------------------------
+   พอร์ตจาก SFC/LBMS แต่เปลี่ยนโทน coral/cream → ฟ้าพาสเทล
+   • humanist sans (Sarabun) รองรับไทย+ละติน
+   • คงความหนาแน่นข้อมูล (ตาราง/ฟอร์ม)
+   • โหลดท้ายสุดใน baseCSS.jsp เพื่อ override Bootstrap
+   • ไม่ตั้งสีพื้น tbody แถวข้อมูล — สีเฉพาะหน้า (row highlight)
+     ใน style.css / style_overide.css ยังทำงานเหมือนเดิม
+   ============================================================ */
+
+:root {
+  /* Brand & accent */
+  --c-primary:          #5b8ac9;
+  --c-primary-active:   #436fa8;
+  --c-primary-soft:     #e6eff7;
+  --c-primary-disabled: #dbe4ee;
+
+  /* Text */
+  --c-ink:         #1a2733;
+  --c-body-strong: #27384a;
+  --c-body:        #3c4d5e;
+  --c-muted:       #6b7886;
+  --c-muted-soft:  #93a0ad;
+  --c-on-primary:  #ffffff;
+  --c-on-dark:     #eef4fb;
+  --c-on-dark-soft:#9fb0c2;
+
+  /* Surface
+     canvas = กลางๆ near-white (พื้นหลัง) ให้การ์ดขาว+หัวตารางฟ้าเด่นไม่กลืน
+     surface-soft = ฟ้าอ่อนชัด ใช้กับ thead/หัวแผง ให้ต่างจาก canvas */
+  --c-canvas:        #f3f4f6;
+  --c-surface-soft:  #e3edf9;
+  --c-surface-card:  #d4e4f5;
+  --c-surface-dark:  #1e2a38;
+  --c-surface-dark-elev: #27384a;
+  --c-hairline:      #cad7e6;
+  --c-hairline-soft: #dde6f1;
+
+  /* override PCMS2 token เดิม (tokens.css) ให้หัว DataTable เลิกฟ้าจัด
+     → ทุก rule ที่อ้าง var นี้กลายเป็นฟ้าอ่อนกลมกลืนชุดเดียว
+     เข้มขึ้นกว่าเดิม (#e3edf9 → #cfe2f6) เพื่อให้แยกจาก search-panel/content-panel สีขาวชัดเจน */
+  --pcms-dt-header-bg: #cfe2f6;
+  /* แถบ striped เดิม #e9ecf0 สว่างพอๆ กับหัวฟ้า → กลืนกัน
+     เปลี่ยนเป็นเทาอ่อนกลางๆ ให้แถวอยู่ "ต่ำกว่า" หัวตารางชัด */
+  --pcms-dt-odd-bg: #f2f4f7;
+
+  /* Semantic (คงความหมายเดิม) */
+  --c-success: #4f9d6b;
+  --c-warning: #d4a017;
+  --c-error:   #c0504d;
+  --c-teal:    #4ba7b5;
+  --c-amber:   #e0944a;
+
+  /* Radius */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-pill: 9999px;
+
+  --font-sans: "Sarabun", "Segoe UI", Tahoma, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ── Base canvas ── */
+body {
+  background-color: var(--c-canvas);
+  color: #2c3a48;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: var(--c-ink);
+  font-family: var(--font-sans);
+}
+a { color: var(--c-primary); }
+a:hover { color: var(--c-primary-active); }
+
+/* ════════════════ NAVBAR — dark navy ════════════════ */
+#navbar.bg-dark {
+  background-color: var(--c-surface-dark) !important;
+  border-bottom: 1px solid #16202c;
+}
+#navbar .nav-link {
+  color: var(--c-on-dark) !important;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  transition: color .15s ease;
+}
+#navbar .nav-link:hover,
+#navbar .nav-link:focus,
+#navbar .nav-link.show { color: var(--c-on-dark) !important; }
+#navbar .navbar-nav .dropdown-menu {
+  background-color: var(--c-canvas);
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-md);
+  box-shadow: 0 4px 16px rgba(20,30,45,.12);
+}
+#navbar .dropdown-item { color: var(--c-body); border-radius: var(--r-sm); }
+#navbar .dropdown-item:hover,
+#navbar .dropdown-item:focus {
+  background-color: var(--c-primary-soft);
+  color: var(--c-ink);
+}
+#navbar .dropdown-header { color: var(--c-muted); }
+
+/* ════════════════ BUTTONS ════════════════ */
+.btn { border-radius: var(--r-md); font-weight: 600; font-size: 14px; }
+
+.btn-primary {
+  background-color: var(--c-primary);
+  border-color: var(--c-primary);
+  color: var(--c-on-primary);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--c-primary-active) !important;
+  border-color: var(--c-primary-active) !important;
+  color: var(--c-on-primary);
+  box-shadow: none;
+}
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: var(--c-primary-disabled);
+  border-color: var(--c-primary-disabled);
+  color: var(--c-muted);
+}
+
+.btn-outline-primary { color: var(--c-primary); border-color: var(--c-primary); }
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--c-primary) !important;
+  border-color: var(--c-primary) !important;
+  color: var(--c-on-primary) !important;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: var(--c-canvas);
+  border-color: var(--c-hairline);
+  color: var(--c-ink);
+}
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: var(--c-surface-card) !important;
+  border-color: var(--c-hairline) !important;
+  color: var(--c-ink) !important;
+  box-shadow: none;
+}
+
+.btn-outline-secondary { color: var(--c-body-strong); border-color: var(--c-muted); background-color: #fff; }
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus,
+.btn-outline-secondary:active {
+  background-color: var(--c-surface-card) !important;
+  border-color: var(--c-muted) !important;
+  color: var(--c-ink) !important;
+  box-shadow: none;
+}
+
+/* focus ring (blue) */
+.btn:focus-visible,
+.form-control:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(91,138,201,.20);
+}
+
+/* ════════════════ INPUTS ════════════════ */
+.form-control {
+  background-color: #fff;
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-md);
+  color: var(--c-ink);
+  font-size: 14px;
+}
+.form-control::placeholder { color: var(--c-muted-soft); }
+
+/* ════════════════ CARDS / PANELS ════════════════ */
+.card {
+  background-color: #fff;
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-lg);
+}
+.card-header {
+  background-color: var(--c-surface-soft);
+  border-bottom: 1px solid var(--c-hairline);
+  color: var(--c-body-strong);
+}
+
+/* ════════════════ DATATABLES (เฉพาะ header/hover — ไม่แตะสีแถวข้อมูล) ════════════════ */
+.table { color: #2c3a48; font-size: 15px; }
+/* หัวตาราง — บังคับโทนฟ้าอ่อนเดียวกันทุกหน้า (ชนะ datatable.overide.css
+   ที่ตั้ง .table thead = สี cyan เดิม) ครอบ thead/th/td + header ที่ DataTables
+   clone ตอน scrollX ด้วย */
+.table thead,
+.table thead th,
+.table thead td,
+table.dataTable thead th,
+table.dataTable thead td,
+.dataTables_scrollHead .table thead th {
+  background-color: var(--pcms-dt-header-bg) !important;
+  color: var(--c-ink) !important;
+  border-bottom: 2px solid var(--c-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: .01em;
+}
+.table-bordered td, .table-bordered th { border-color: var(--c-hairline); }
+
+/* คอลัมน์ที่ปักหมุดด้วย FixedColumns (sticky) ต้องมีพื้นทึบเอง
+   ไม่งั้นข้อมูลคอลัมน์อื่นที่เลื่อนอยู่ข้างล่างจะโผล่ทะลุให้เห็น */
+table.dataTable td.dtfc-fixed-left,
+table.dataTable th.dtfc-fixed-left {
+  background-color: #fff;
+}
+table.table-striped tbody tr:nth-of-type(odd) td.dtfc-fixed-left {
+  background-color: var(--pcms-dt-odd-bg);
+}
+table.dataTable tbody tr:hover:not(.selected) td.dtfc-fixed-left {
+  background-color: var(--c-primary-soft) !important;
+}
+table.dataTable tbody tr.selected td.dtfc-fixed-left {
+  background-color: var(--pcms-dt-selected-cell-bg) !important;
+}
+
+/* ช่องกรองคอลัมน์ในหัวตาราง (.monitor_search) — เดิมไม่มีกรอบ มองไม่ออกว่าพิมพ์ได้ */
+.table thead .monitor_search {
+  background: #fff;
+  border: 1px solid #b9cee2;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-ink);
+  box-sizing: border-box;
+}
+.table thead .monitor_search:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(91,138,201,.20);
+  outline: none;
+}
+.table thead .monitor_search::placeholder { color: var(--c-muted-soft); }
+.table thead .monitor_search.has-value {
+  border-color: var(--c-primary);
+  background-color: var(--c-primary-soft);
+  font-weight: 600;
+}
+
+/* hover ทั้งแถว — ตารางมี 30-50 คอลัมน์ scrollX เวลาลากตาข้ามคอลัมน์เยอะๆ มักหลุดแถว
+   ไม่ทับสีป้ายประเภทงาน (bg-orderpuang/switch/replaced) และแถวที่ select ไว้อยู่แล้ว */
+.table.dataTable tbody tr:hover:not(.selected) > td:not(.bg-orderpuang):not(.bg-switch):not(.bg-replaced) {
+  background-color: var(--c-primary-soft) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--c-primary) !important;
+  border-color: var(--c-primary) !important;
+  color: var(--c-on-primary) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: var(--c-surface-card) !important;
+  border-color: var(--c-hairline) !important;
+  color: var(--c-ink) !important;
+}
+
+/* ════════════════ GENERIC MODAL ════════════════ */
+.modal-content {
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-lg);
+  box-shadow: 0 12px 40px rgba(20,30,45,.22);
+}
+.modal-header {
+  background-color: var(--c-surface-soft);
+  border-bottom: 1px solid var(--c-hairline);
+}
+.modal-title { color: var(--c-ink); }
+
+/* ════════════════ MISC ════════════════ */
+.badge-pill, .badge.badge-light {
+  background-color: var(--c-surface-card);
+  color: var(--c-ink);
+}
+hr { border-top-color: var(--c-hairline); }
+
+/* ============================================================
+   SEARCH PANEL  —  #wrapper-top.search-panel
+   ใช้ id-specificity เพื่อ override search-panel.css เดิม (ถ้ามี)
+   look: การ์ดขาว + เส้นล่างฟ้า (ตรงกับ preview ที่อนุมัติ)
+   ============================================================ */
+#wrapper-top.search-panel {
+  margin: 4px 6px 2px;
+  padding: 14px 18px;
+  font-size: 13px;
+  background: #f7fafd;
+  border: 1px solid var(--c-hairline);
+  border-bottom: 4px solid var(--c-primary);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  box-shadow: 0 3px 10px rgba(20,30,45,.10);
+}
+#wrapper-top.search-panel .search-panel-header {
+  border-bottom: 1px solid var(--c-hairline);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+#wrapper-top.search-panel .search-panel-title {
+  color: var(--c-ink);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 0;
+  margin: 0;
+}
+#wrapper-top.search-panel .search-panel-sub {
+  display: block;
+  color: var(--c-muted);
+  font-size: 13px;
+  text-align: left;
+  margin: 2px 0 0;
+  font-weight: 400;
+}
+#wrapper-top.search-panel h2 {
+  color: var(--c-ink);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 10px;
+}
+
+/* labels — เข้มขึ้น+หนาขึ้นกว่าเดิม (400→600, 0.82rem→0.86rem) ให้อ่านหัวข้อ filter ได้ไวขึ้น */
+#wrapper-top.search-panel label {
+  display: block;
+  color: var(--c-ink);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+}
+#wrapper-top.search-panel .input-group label {
+  text-transform: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--c-ink);
+  letter-spacing: 0;
+}
+
+/* inputs ในแผง — ตัวหนังสือค่าที่กรอกชัดขึ้น (0.82rem→0.86rem, เพิ่ม weight) */
+#wrapper-top.search-panel .form-control {
+  background: #fff;
+  border: 1px solid #b9cee2;
+  color: var(--c-ink);
+  border-radius: 4px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  padding: 3px 9px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+#wrapper-top.search-panel .form-control:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 2px rgba(91,138,201,.22);
+  outline: none;
+}
+#wrapper-top.search-panel .bootstrap-select > .dropdown-toggle {
+  background: #fff !important;
+  border: 1px solid #b9cee2 !important;
+  color: var(--c-ink) !important;
+  border-radius: 4px !important;
+  font-size: 0.86rem !important;
+  font-weight: 500 !important;
+  padding: 3px 28px 3px 9px !important;
+}
+#wrapper-top.search-panel .bootstrap-select > .dropdown-toggle:focus,
+#wrapper-top.search-panel .bootstrap-select.show > .dropdown-toggle {
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 0 0 2px rgba(91,138,201,.22) !important;
+}
+#wrapper-top.search-panel .form-group { margin-bottom: 7px; }
+
+/* action column */
+#wrapper-top.search-panel .sp-action-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+}
+#wrapper-top.search-panel #btn_search,
+#wrapper-top.search-panel #btn_clear {
+  height: 30px;
+  font-size: 0.8rem;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  border-radius: 4px;
+}
+#wrapper-top.search-panel #btn_search {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+}
+#wrapper-top.search-panel #btn_search:hover  { background: var(--c-primary-active); border-color: var(--c-primary-active); }
+#wrapper-top.search-panel #btn_clear {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid #94b3d4;
+  color: var(--c-primary-active);
+}
+#wrapper-top.search-panel #btn_clear:hover { background: #fff; border-color: var(--c-primary); color: var(--c-ink); }
+
+/* download buttons */
+#wrapper-top.search-panel .csv-button {
+  background: transparent !important;
+  border: 1px solid var(--c-success) !important;
+  color: #2f7d4f !important;
+  border-radius: 4px !important;
+  font-size: 0.76rem !important;
+  height: 28px;
+  padding: 0 8px !important;
+  white-space: nowrap;
+  width: 100%;
+  display: block;
+  text-align: center;
+  line-height: 26px;
+}
+#wrapper-top.search-panel .csv-button:hover {
+  background: rgba(79,157,107,0.10) !important;
+  color: #246b3f !important;
+}
+#wrapper-top.search-panel .sp-dl-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── Compact filter card (.setting-filter-card) ── */
+#wrapper-top.setting-filter-card {
+  margin: 4px 6px 2px;
+  padding: 6px 10px;
+  font-size: 13px;
+  background: #fff;
+  border: 1px solid var(--c-hairline);
+  border-bottom: 3px solid var(--c-primary);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  box-shadow: 0 3px 10px rgba(20,30,45,.08);
+}
+#wrapper-top.setting-filter-card label:not(.invisible) {
+  display: block;
+  text-transform: none;
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin-bottom: 2px;
+  color: var(--c-body-strong);
+}
+#wrapper-top.setting-filter-card label.invisible {
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+#wrapper-top.setting-filter-card .form-group { margin-bottom: 4px; }
+
+/* ============================================================
+   PAGE HEADER + CONTENT PANEL (สำหรับหน้า Setting/Log/ทั่วไป
+   ให้เป็นโครงเดียวกับ SFC/LBMS)
+   ============================================================ */
+.page-header-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 2px 2px 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--c-hairline);
+}
+.page-title {
+  color: var(--c-ink);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+.page-sub { color: var(--c-muted); font-size: 13px; margin: 0; }
+
+.content-panel {
+  background: #fff;
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--r-lg);
+  box-shadow: 0 1px 3px rgba(20,30,45,.05);
+  padding: 16px 18px;
+  margin: 4px 6px;
+}
+
+/* ── ทำให้หัวตารางทุกหน้าเป็นโทนเดียว (เลิก thead-dark สีดำ) ── */
+.thead-dark th,
+.thead-light th,
+table.dataTable thead.thead-dark th {
+  background-color: var(--c-surface-soft) !important;
+  color: var(--c-body-strong) !important;
+  border-color: var(--c-hairline) !important;
+}
+
+/* ── NAVBAR RESPONSIVE (เหมือน SFC) ──
+   ไม่พับเมนู (ผู้ใช้ต้องเห็นแล้วกดได้ทันที ไม่ต้องกดเปิดก่อน)
+   ≥992px : แถวเดียว · <992px : รายการตัดบรรทัดเป็นแถวกะทัดรัด (เป้ากด ≥44px) + dropdown กว้างเต็มจอใต้แถบเมนู */
+#navbar .nav-link.active { box-shadow: inset 0 -3px 0 var(--c-primary); }
+#navbar .dropdown-item.active,
+#navbar .dropdown-item.active:hover { background-color: var(--c-primary-soft); color: var(--c-ink); font-weight: 600; }
+#navbar .nav-link:focus-visible,
+#navbar .dropdown-item:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
+@media (max-width: 991.98px) {
+  #navbar { position: relative; flex-wrap: nowrap; align-items: flex-start; padding: .35rem .75rem; }
+  #navbar .navbar-brand { margin-top: .1rem; }
+  #navbar .navbar-collapse { flex: 1 1 0; min-width: 0; flex-wrap: wrap; align-items: flex-start; }
+  #navbar .navbar-nav { flex-direction: row; flex-wrap: wrap; }
+  #navbar .navbar-nav.ml-lg-auto { margin-left: auto; }
+  #navbar .navbar-nav .nav-link { padding: .5rem .5rem; min-height: 44px; display: flex; align-items: center; font-size: 14.5px; }
+  #navbar .nav-item.dropdown { position: static; }
+  #navbar .navbar-nav .dropdown-menu { position: absolute; left: .5rem; right: .5rem; top: 100%; width: auto; min-width: 0; max-width: none; margin: 0; max-height: calc(100vh - 90px); overflow-y: auto; transform: none !important; z-index: 1030; }
+  #navbar .dropdown-item { padding: .65rem 1rem; min-height: 44px; display: flex; align-items: center; white-space: normal; }
+}
+@media (max-width: 575.98px) {
+  #navbar .navbar-nav .nav-link { padding: .5rem .45rem; font-size: 14px; }
+}
+
+/* ช่องพิมพ์ข้อความในตาราง (หมายเหตุ/Stock Load) ใช้เคอร์เซอร์พิมพ์ — inline style เดิมตั้ง pointer ไว้ */
+#MainTable td input.PCRemarkInput,
+#MainTable td input.ReplacedRemarkInput,
+#MainTable td input.SwitchRemarkInput,
+#MainTable td input.StockRemarkInput,
+#MainTable td input.StockLoadInput,
+#MainTable td input.CauseOfDelayInput { cursor: text !important; }
+
+/* ปุ่ม Save/Load Default ในแผงค้นหา: คอลัมน์แคบ (lg=2/12) ที่ ≤1100px ปุ่ม nowrap กว้างกว่ากลุ่มจนหน้าล้นแนวนอน ~30px — ให้ข้อความตัดบรรทัดได้ */
+#btn_saveDefault, #btn_loadDefault { min-width: 0; white-space: normal; line-height: 1.25; padding-left: 2px; padding-right: 2px; }
+
+/* ช่อง/ดรอปดาวน์ในตารางหน้า Detail สูง ≥32px (ux-ui-guideline.md) — เฉพาะในตาราง ไม่แตะ .form-control ทั้งระบบ */
+#MainTable td input.form-control, #MainTable td select.form-control { height: 32px; }

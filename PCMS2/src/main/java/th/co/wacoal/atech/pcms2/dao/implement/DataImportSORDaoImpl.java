@@ -6,22 +6,22 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.dao.DataImportSORDao;
 import th.co.wacoal.atech.pcms2.entities.SORDetail;
 import th.co.wacoal.atech.pcms2.service.BeanCreateService;
-import th.in.totemplate.core.sql.Database;
 
 @Repository // Spring annotation to mark this as a DAO component
 public class DataImportSORDaoImpl implements DataImportSORDao {
-	private Database database;  
+	private JdbcTemplate jdbc;
 	private BeanCreateService bcModel = new BeanCreateService();
 
 	@Autowired
-	public DataImportSORDaoImpl(@Qualifier("sorDatabase")Database database) {
-		this.database = database; 
-	}  
+	public DataImportSORDaoImpl(@Qualifier("sorDatabase") JdbcTemplate jdbc) {
+		this.jdbc = jdbc;
+	}
 	@Override
 	public ArrayList<SORDetail> getList()
 	{
@@ -37,12 +37,12 @@ public class DataImportSORDaoImpl implements DataImportSORDao {
 				+ " inner join [SOR_PRODUCTION].[dbo].[POLineItems] as POLI on PO.Id = POLI.[POId] and viewPCMS2.MaterialCode = POLI.MaterialCode\r\n"
 				+ " where [SaleOrderId] is not null and "
 				+ "		  POLI.[IsActive] = 1 and  \r\n"
-				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n" ; 
-		List<Map<String, Object>> datas = this.database.queryList(sql); 
+				+ "       (CONVERT(date, POLI.[LastUpdateCFM]) > CONVERT(date, GETDATE()-1)  )\r\n" ;
+		List<Map<String, Object>> datas = this.jdbc.queryForList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genSORDetail(map));
-		} 
+		}
 		return list;
 	}
 

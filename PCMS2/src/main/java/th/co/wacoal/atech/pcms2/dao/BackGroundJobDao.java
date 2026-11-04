@@ -11,6 +11,8 @@ public interface BackGroundJobDao {
 
 	void handlerERPAtechToWebAppProductionOrder();
 
+	void runFullErpSyncWithDateRange(String fromDate, String toDate);
+
 	void handlerERPAtechToWebAppSaleOrder();
 
 	void sortBackGroundAfterGetERPDataProcedure();

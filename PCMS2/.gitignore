@@ -1,1 +1,8 @@
 /target/
+src/main/resources/database.properties
+# credential ของ regression harness (ชี้ DEV) — ห้าม commit
+src/test/resources/database.properties
+# สำเนาสำรองที่ tools/run-harness-ab.ps1 สร้าง (มี credential เหมือนไฟล์ข้างบน)
+src/test/resources/database.properties.dev.bak
+# baseline ของ harness — ใหญ่ (~18MB) + มี business data จริง + regenerate ได้ด้วย mode=capture
+src/test/resources/pcms2/regression/baseline/

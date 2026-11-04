@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import th.co.wacoal.atech.pcms2.entities.PCMSAllDetail;
@@ -12,16 +11,14 @@ import th.co.wacoal.atech.pcms2.entities.PCMSTableDetail;
 import th.co.wacoal.atech.pcms2.service.PCMSMainService;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
 import th.co.wacoal.atech.pcms2.service.master.SearchSettingService;
-import th.in.totemplate.core.sql.Database;
-@Repository // Spring annotation to mark this as a DAO component
-public class PCMSMainProcess { 
+@Repository
+public class PCMSMainProcess {
 	private final FromSapMainProdService fromSapMainProdService;
     private final SearchSettingService searchSettingService;
     private final PCMSMainService pCMSMainService;
 	private String forPage = "Summary";
 	@Autowired
 	    public PCMSMainProcess(
-	            @Qualifier("pcmsDatabase") Database database, 
 	            PCMSMainService pCMSMainService,
 	            FromSapMainProdService fromSapMainProdService,
 	            SearchSettingService searchSettingService  ) {
@@ -29,7 +26,7 @@ public class PCMSMainProcess {
 	        this.fromSapMainProdService = fromSapMainProdService;
 	        this.searchSettingService = searchSettingService;
 			this.pCMSMainService = pCMSMainService;
-	    } 
+	    }
 	public ArrayList<PCMSTableDetail> searchByDetail(ArrayList<PCMSTableDetail> poList, boolean isCustomer) {
 		ArrayList<PCMSTableDetail> list = this.pCMSMainService.getPCMSSumaryDetail(poList );
 

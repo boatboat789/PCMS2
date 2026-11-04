@@ -1,0 +1,12 @@
+{
+  "name": "customer_winnerwear",
+  "description": "ค้นด้วยลูกค้า WINNER WEAR (CK) — ชุดเล็กกว่า มี switch prod order (SaleOrderSW 1107011020) exercise Switch branch แบบ focused; ค่าจริงจาก DEV",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["WINNER WEAR CO.,LTD."],
+    "customerShortNameList": ["WINNER WEAR"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

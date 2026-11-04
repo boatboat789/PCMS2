@@ -1,0 +1,12 @@
+{
+  "name": "customer_sbf",
+  "description": "ค้นด้วยลูกค้า SBF (SABINA) — มี switch prod order บน DEV (CK+TW division) exercise Switch + Main + OrderPuang; ค่าจริงจาก DEV",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["SABINA PUBLIC CO.,LTD."],
+    "customerShortNameList": ["SBF"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}

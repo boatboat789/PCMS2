@@ -5,17 +5,17 @@ table.dataTable, table.dataTable th, table.dataTable td {
 .dt-custom-unavailable {
 	color: white;
 	font-weight: normal;
-	background-color: #c0c0c0 !important;
+	background-color: var(--pcms-dt-unavailable-bg) !important;
 }
 
 .dt-custom-highlight {
 	color: #555;
 	font-weight: normal;
-	background-color: #bbb !important;
+	background-color: var(--pcms-dt-highlight-bg) !important;
 }
 
 .table thead {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 
 td.dt-custom-tvd {
@@ -116,10 +116,10 @@ th.dt-custom-thdate {
 	overflow-wrap: break-word;
 }
 
-td.dt-custom-td80 {
-	width: 80px !important;
-	min-width: 80px !important;
-	max-width: 80px !important;
+td.dt-custom-td85 {
+	width: 85px !important;
+	min-width: 85px !important;
+	max-width: 85px !important;
 	overflow-wrap: break-word;
 	/*vertical-align: middle !important;*/
 }
@@ -168,15 +168,15 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
 }
 
 .dataTables_scrollBody {
-	background-color: whitesmoke;
+	background-color: var(--pcms-dt-scroll-bg);
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable thead th, table.dataTable thead td {
-	background-color: #c0eaf9;
+	background-color: var(--pcms-dt-header-bg);
 }
 /* fix column color case  */
 tr.even td {
@@ -184,17 +184,17 @@ tr.even td {
 }
 
 tr.odd td {
-	background-color: #e9ecf0;
+	background-color: var(--pcms-dt-odd-bg);
 }
 
 table.dataTable tbody tr.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 table.dataTable tbody tr.odd.selected {
 	/*     color: white !important; */
-	background-color: #b0bed9 !important;
+	background-color: var(--pcms-dt-selected-bg) !important;
 }
 
 .fixed-column {
@@ -204,7 +204,7 @@ table.dataTable tbody tr.odd.selected {
 }
 
 table.dataTable tbody tr.selected td {
-	background-color: #b0c4de !important;
+	background-color: var(--pcms-dt-selected-cell-bg) !important;
 	color: white;
 }
 
@@ -215,3 +215,14 @@ table.dataTable tbody tr.selected td {
 #MainTable>tbody>tr>td {
 	padding: 2px;
 }
+
+/* ===== Due Date: วันที่ + สถานะ (เลยกำหนด/วันนี้/ใกล้ถึง) — ข้อความกำกับเสมอ ไม่พึ่งสีอย่างเดียว · คอนทราสต์ >= 7:1 ===== */
+.due-pill { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.25;
+	padding: 2px 4px; border-radius: 6px; border: 1px solid transparent; white-space: nowrap; }
+.due-pill b { font-size: 13px; font-weight: 700; }
+.due-pill small { font-size: 12px; font-weight: 700; }
+.due-over  { background: #fde8e8; color: #8a1c1c; border-color: #f0b4b4; }
+.due-today { background: #ffe7c2; color: #6b3a00; border-color: #eab76a; }
+.due-soon  { background: #fff4cf; color: #614700; border-color: #e6cf7e; }
+.due-plain { font-size: 13px; }
+.due-empty { color: #555; }

@@ -23,11 +23,11 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Controller;
 
 import th.co.wacoal.atech.pcms2.entities.erp.atech.Z_ATT_CustomerConfirm2Detail;
 
-@Controller
+// ห้ามทำเป็น Spring bean (@Controller/@Service/@Component) — class นี้ถือ workbook/rowCount เป็น instance state
+// ต้อง new ต่อ request เท่านั้น (ดู ReportController) ถ้าเป็น singleton จะเกิดบั๊กไฟล์ export ปนข้อมูลเก่าแบบที่เคยเจอใน PPMM2
 public class ExportExcelCFMReportService {
 
 	private XSSFWorkbook workbook;

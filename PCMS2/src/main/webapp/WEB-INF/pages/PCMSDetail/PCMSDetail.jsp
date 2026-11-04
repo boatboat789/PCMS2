@@ -17,10 +17,10 @@
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
-	<div id="wrapper-center" class="row" style="margin: 0 5px;">
-		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="font-size: 12.5px; padding: 0px; margin: 0px 0px;">
+	<div id="wrapper-center">
+		<div class="content-panel" style="font-size: 15px;">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font width: 100%; margin: 0px !important;">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="width: 100%; margin: 0px !important;">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">DIV</th>
@@ -113,6 +113,9 @@
 .p-r-15 {
 	padding-right: 15px !important;
 }
+#MainTable td {
+	font-variant-numeric: tabular-nums;
+}
 /* tfoot .dtfc-fixed-left{   */
 /*     background-color: white;    */
 /* }      */
@@ -124,8 +127,13 @@ var dd = String('0' + today.getDate()).slice(-2);
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy; 
-var MainTable ;  
-var mapsDataHeader  = new Map(); 
+var MainTable ;
+var mapsDataHeader  = new Map();
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+} 
 var mapsTitleHeader  = new Map();    
 var mapsColumnHeader  = new Map(); 
 var check1 = 0	;
@@ -230,9 +238,10 @@ $(document) .ready( function() {
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
 	$('#MainTable thead tr:eq(1) th') .each( function(i) {        
 		var title = $(this).text();      	      
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '  
-// 				+'placeholder="Search '+title+'" '    
-				+ '/>');   	     
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" '
+				+ 'placeholder="" '
+				+ 'aria-label="กรอง ' + title + '" '
+				+ '/>');
 	});             
 	    MainTable = $('#MainTable').DataTable({   
 			scrollX: true,                         
@@ -258,19 +267,19 @@ $(document) .ready( function() {
 				    {"data" : "saleOrder" ,       "title":"SO No.",
 				          orderData: [ 1, 2,25 ]        ,       
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.saleOrder+'</div>'
+							let html = '<div name="n_'+row.saleOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleOrder+'</div>'
 							return  html; 
 					   	  }         },                          //1
 				    {"data" : "saleLine"   ,      "title":"SO Line" ,            
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.saleLine+' data-toggle="tooltip"  title="' + row.typePrd + '"> '+row.saleLine+'</div>'
+							let html = '<div name="n_'+row.saleLine+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.saleLine+'</div>'
 							return  html; 
 					   	  }             },                          //2
 				    {"data" : "customerShortName","title":"Cust.(Name4)" ,      	     
 						  	  	className : 'dt-custom-td140',      
 						  	  	type: 'string'    },                              //3
 				    {"data" : "saleCreateDate" ,  "title":"SO Date"   ,            
-					  	  className : 'dt-custom-td80',    	           
+					  	  className : 'dt-custom-td85',    	           
 					  	  type: 'date-euro'  },           //4 
 				    {"data" : "purchaseOrder" ,   "title":"P/O" ,                    
 				  	  	className : 'dt-custom-td160',      
@@ -322,11 +331,12 @@ $(document) .ready( function() {
 						        : '<div style="visibility: visible;color: red; font-weight: bolder;">' + data + '</div>';
 						   	  }    },                   //20
 				    {"data" : "customerDue" ,     "title":"Due Cus.",            
-					  	  className : 'dt-custom-td80',    	        
+					  	  className : 'dt-custom-td85',    	        
 					  	  type: 'date-euro'  },              //21
 				    {"data" : "dueDate" ,         "title":"Due Date",            
-					  	  className : 'dt-custom-td80',    	        
-					  	  type: 'date-euro'  },              //22  
+					  	  className : 'dt-custom-td85',    	        
+					  	  type: 'date-euro',
+					  	  render: renderDueDate  },          //22  
 				    {"data" : "labNo",			  "title":"Lab No",                        
 						  	  className : 'dt-custom-td100', type: 'string'      },                                    //23
 				    {"data" : "labStatus",		  "title":"Lab Status"       	 ,    
@@ -335,16 +345,16 @@ $(document) .ready( function() {
 				    {"data" : "lotNo",            "title":"Lot"    ,                        
 					  	  className : 'dt-custom-td100', type: 'string'           ,             
 						render: function (data, type, row) {	     
-							let html = '<div name="n_'+row.lotNo+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.lotNo+'</div>'
+							let html = '<div name="n_'+row.lotNo+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.lotNo+'</div>'
 							return  html; 
 					   	  }     },                                       //25 
 				    {"data" : "dyePlan","title":"Dye [Plan]" ,'type': 'date-euro',//,             
 						  render: function (data, type, row) {	 
 						   		var htmlEx = data;                                      
 			   					htmlEx = ''          
-			   					+ '<div data-search="' + data + '" '          
+			   					+ '<div data-search="' + escAttr(data) + '" '          
 			   					+ ' name="DateInput" type="text" '
-			   					+ ' value = "' + data   + "' "                 
+			   					+ ' value = "' + escAttr(data)   + "' "                 
 			   					+ ' autocomplete="off" >'       
 			   					+ dateDDMMYYYToDDMM(data) 
 			   					+ '</div>';       
@@ -356,7 +366,7 @@ $(document) .ready( function() {
 				    {"data" : "cfmPlanLabDate","title":"Plan CFM LAB",
 				    	  'type': 'date-euro',    
 				  		  orderable: false,                   
-					  	  className : 'CFMPlanLabDateParent dt-custom-td80',            
+					  	  className : 'CFMPlanLabDateParent dt-custom-td85',            
 					   	  render: function (data, type, row) {
 				   			var htmlEx = ''     
 				   				if(row.lotNo == "รอจัด Lot"   || row.lotNo  == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"
@@ -364,7 +374,7 @@ $(document) .ready( function() {
 									htmlEx = '';     
 								}
 							else{
-								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="CFMPlanLabDate" type="text"  value = "' + row.cfmPlanLabDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control CFMPlanLabDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="CFMPlanLabDate" aria-label="CFM Plan Lab Date" type="text"  value = "' + escAttr(row.cfmPlanLabDate)+ '" autocomplete="off" >';
 							}
 							return  htmlEx;
 					   	  }             
@@ -373,11 +383,11 @@ $(document) .ready( function() {
 				    {"data" : "cfmCusAnsLabDate","title":"Answer LAB",'type': 'date-euro'},              //31
 				    {"data" : "tkCFM","title":"TK CFM"},                       						     //32 
 				    {"data" : "cfmPlanDate","title":"Plan CFM Date" ,                      
-					  	  className : 'CFMPlanDateParent dt-custom-td80',       
+					  	  className : 'CFMPlanDateParent dt-custom-td85',       
 						  orderable: false,   
 				  	      type: 'date-euro' },                //33  
 				    {"data" : "sendCFMCusDate","title":"Send CFM Cus Date",'type': 'date-euro',                      
-					  	  className : 'SendCFMCusDateParent dt-custom-td80',    
+					  	  className : 'SendCFMCusDateParent dt-custom-td85',    
 						  orderable: false,
 		   	  			  render: function (data, type, row) {	
 		 				   		var htmlEx = ''  
@@ -386,12 +396,12 @@ $(document) .ready( function() {
 									htmlEx = row.sendCFMCusDate ; 
 								}
 								else{
-									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
-									+ row.sendCFMCusDate
+									htmlEx = '<input class="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" aria-label="Send CFM Cus Date" type="text"  value = "' 
+									+ escAttr(row.sendCFMCusDate)
 									+ '" autocomplete="off" >';
 								} 
 								return  htmlEx
-					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="SendCFMCusDate" type="text"  value = "' 
+					   	  }   },         //34 <------------- ss="form-control SendCFMCusDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="SendCFMCusDate" type="text"  value = "' 
 						
  				    {"data" : "cfmDateActual","title":"Actual CFM Date",'type': 'date-euro'},            //35 
 				    {"data" : "userStatus","title":"User Status",      	     
@@ -415,12 +425,12 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}
 							else{   
-								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"  name="DeliveryDate" type="text"  value = "' + row.deliveryDate+ '" autocomplete="off" >';
+								htmlEx = '<input class="form-control DeliveryDateInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"  name="DeliveryDate" aria-label="Delivery Date" type="text"  value = "' + escAttr(row.deliveryDate)+ '" autocomplete="off" >';
 							}
 							return  htmlEx           
 							}	},       //40
 				    {"data" : "lotShipping","title":"Bill Date" ,            
-							  	  className : 'dt-custom-td80',    	        
+							  	  className : 'dt-custom-td85',    	        
 							  	  type: 'date-euro'  },                 //41 Replaced ShipDate {"data" : "ShipDate","title":"Bill Date",'type': 'date-euro'},                    //40 
 				    {"data" : "remark","title":"EFFECT"  , 
 				  	  	className : 'dt-custom-td450 p-r-15',      
@@ -441,13 +451,13 @@ $(document) .ready( function() {
 				   						row.typePrdRemark == "SUB" || 
 				   						row.typePrdRemark == "" ||
 			   						  	row.typePrd == "OrderPuang"){ 
-				   					htmlEx = '<input data-search="' + row.causeOfDelay+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-				   					+ row.causeOfDelay+ '" autocomplete="off" >'; 
+				   					htmlEx = '<input data-search="' + escAttr(row.causeOfDelay)+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" aria-label="Cause of Delay" type="text"  value = "' 
+				   					+ escAttr(row.causeOfDelay)+ '" autocomplete="off" >'; 
 								}      
 								else{   
-									htmlEx = '<input data-search="' + row.causeOfDelay
-									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="CauseOfDelayRemark" type="text"  value = "' 
-									+ row.causeOfDelay+ '" autocomplete="off" >'; 
+									htmlEx = '<input data-search="' + escAttr(row.causeOfDelay)
+									+ '" class="form-control CauseOfDelayInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="CauseOfDelayRemark" aria-label="Cause of Delay" type="text"  value = "' 
+									+ escAttr(row.causeOfDelay)+ '" autocomplete="off" >'; 
 								}
 								return  htmlEx      
 							}         
@@ -468,13 +478,13 @@ $(document) .ready( function() {
 				   					( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN"|| 
 			  							row.typePrdRemark == "SUB" || row.typePrdRemark == "") ||
 			  							row.typePrd == "OrderPuang"){ 
-									 htmlEx = '<select data-search="' + row.delayedDepartment+ 
+									 htmlEx = '<select data-search="' + escAttr(row.delayedDepartment)+ 
 											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
 											 getSelectOptions(data) + '</select>';    
 								} 
 					   			                    
 								else{   
-									htmlEx = '<select data-search="' + row.delayedDepartment+ 
+									htmlEx = '<select data-search="' + escAttr(row.delayedDepartment)+ 
 											 '" class="form-control DelayedDepInput" data-col="' + meta.col + '">' + 
 											 getSelectOptions(data) + '</select>';     
 								}  
@@ -486,7 +496,7 @@ $(document) .ready( function() {
 				  	  	type: 'string'  ,     
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = ''    
-								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="PCRemark" type="text"  value = "' + row.pcRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control PCRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="PCRemark" aria-label="PC Remark" type="text"  value = "' + escAttr(row.pcRemark)+ '" autocomplete="off" >'; 
 								return  htmlEx      
 								}    },                                         //45
 				    {"data" : "replacedRemark","title":"ReplacedRemark",                       
@@ -495,16 +505,16 @@ $(document) .ready( function() {
 					   	  render: function (data, type, row) {	     
 						   		var htmlEx = '';
 						   		if( ( row.typePrd == "Replaced" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								}         
 						   		else if(row.lotNo  == "รอจัด Lot"	  || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว"	|| row.lotNo  == ""|| row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot" ){ 
-						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+						   			htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								} 
 								else if(row.typePrd == "Switch" || row.typePrd == "Replaced" || row.typePrd == "OrderPuang" || row.typePrdRemark == "SUB" || row.typePrdRemark == ""){ 
 									htmlEx = ''; 
 								}         
 								else{   
-									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="ReplacedRemark" type="text"  value = "' + row.replacedRemark+ '" autocomplete="off" >'; 
+									htmlEx = '<input class="form-control ReplacedRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="ReplacedRemark" aria-label="Replaced Remark" type="text"  value = "' + escAttr(row.replacedRemark)+ '" autocomplete="off" >'; 
 								}
 						   		return  htmlEx            
 								}    
@@ -514,7 +524,7 @@ $(document) .ready( function() {
 				   	  	render: function (data, type, row) {	          
 							var htmlEx = ''           
 							if( ( row.typePrd == "Switch" && row.typePrdRemark == "MAIN")  || ( row.typePrd == "MAIN" && row.typePrdRemark == "MAIN") ){  
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 							}        
 							else if(row.typePrd == "Replaced" || row.typePrd == "OrderPuang"
 									||row.lotNo == "รอจัด Lot"	 || row.lotNo == "ขาย stock" ||row.lotNo == "รับจ้างถัก"	||row.lotNo == "Lot ขายแล้ว" || row.lotNo == "พ่วงแล้วรอสวม"	|| row.lotNo == "รอสวมเคยมี Lot"	
@@ -522,7 +532,7 @@ $(document) .ready( function() {
 								htmlEx = ''; 
 							}     
 							else{   
-								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+								htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 							}
 							return  htmlEx      
 							}    },                                 //47
@@ -531,7 +541,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,       
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''    
-							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockRemark" type="text"  value = "' + row.stockRemark+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockRemark" aria-label="Stock Remark" type="text"  value = "' + escAttr(row.stockRemark)+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}      },                                   //48
 				    {"data" : "stockLoad","title":"StockLoad",                       
@@ -539,7 +549,7 @@ $(document) .ready( function() {
 						  	  	type: 'string'  ,     
 				   	  	render: function (data, type, row) {	     
 							var htmlEx = ''       
-							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="StockLoadInput" type="text"  value = "' + row.stockLoad+ '" autocomplete="off" >'; 
+							htmlEx = '<input class="form-control StockLoadInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="StockLoadInput" aria-label="Stock Load" type="text"  value = "' + escAttr(row.stockLoad)+ '" autocomplete="off" >'; 
 							return  htmlEx      
 							}       
 						} ,                                                  //49
@@ -567,7 +577,10 @@ $(document) .ready( function() {
 					$('td', row).eq(mapsDataHeader.get("dyePlan")).addClass('bg-color-azure'); 
 				} 
 			},     
-			drawCallback: function( settings ){  console.log('draw')},   
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
+				if (typeof decorateDetailInputCells === 'function') { decorateDetailInputCells(); }
+			},   
 			initComplete: function () { console.log('initcom')}  
 	 	 });      	
     $( MainTable.table().container() ).on( 'keyup', 'tfoot input', function () {
@@ -582,11 +595,12 @@ $(document) .ready( function() {
 			MainTable.column(indexAfterReCol).search(searchVal).draw();  
 		}      	
     } );      
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {                  
-// 		MainTable.column($(this).data('index')).search(this.value).draw(); 
-		let searchVal = this.value;      
-		soLineTmp = '';            
-		soTmp = '';       
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+// 		MainTable.column($(this).data('index')).search(this.value).draw();
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
+		soLineTmp = '';
+		soTmp = '';
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
 		let colHeaderData = columnsHeader[indexAfterReCol].data; 
 		let regrex = '';   
@@ -639,7 +653,7 @@ $(document) .ready( function() {
 			   	  render: function (data, type, row) {	     
 			   		var htmlEx = '';
 			   		if(row.typePrd == "MAIN"  ){  
-			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 12.5px"maxlength="200"  name="SwitchRemark" type="text"  value = "' + row.switchRemark+ '" autocomplete="off" >'; 
+			   			htmlEx = '<input class="form-control SwitchRemarkInput" style=" cursor: pointer; padding: 4px 2px;font-size: 15px"maxlength="200"  name="SwitchRemark" aria-label="Switch Remark" type="text"  value = "' + escAttr(row.switchRemark)+ '" autocomplete="off" >'; 
 			   			}
 					else{   
 						 htmlEx = '';
@@ -666,7 +680,7 @@ $(document) .ready( function() {
 		],        	         
 		columnDefs :  [   
 			{ targets : [0,1, 3 ],                    
-// 			  	  className : 'dt-custom-td80',    
+// 			  	  className : 'dt-custom-td85',    
 			  	  type: 'date-euro'  
 				} ,                      
 			{ targets : [2,4 ],                       
@@ -742,20 +756,18 @@ $(document) .ready( function() {
 	 	        leftColumns: 0,
 	 	        rightColumns: 0   
 	 	    } );   
-	    	swal({  
-				title: "Success",    
-			 	text: "Clear Lock Success" ,
+	    	Swal.fire({  
+				title: 'สำเร็จ',    
+			 	text: "ปลดล็อกสำเร็จ" ,
 				icon: "success",
-				button: "confirm",
 			});  
 	    }
 	    else{           
 			let colReArray = colReOrderBySelect(columnsHeader,selectedItem);
-			swal({  
-				title: "Success",    
-			 	text: "Lock all previous column of "+selectedItem ,
+			Swal.fire({  
+				title: 'สำเร็จ',    
+			 	text: "ล็อกคอลัมน์ก่อนหน้าทั้งหมดของ "+selectedItem ,
 				icon: "success",
-				button: "confirm",
 			});  
 //			 MainTable.colReorder.order(          
 //					 colReArray   
@@ -792,10 +804,11 @@ $(document) .ready( function() {
  		addLockColOption(mapsDataHeader,mapsTitleHeader);           
  		     
  	} );     
-    $('#btn_search').on( 'click', function () {     
-    	$("#submit_button").click()  
-    	soLineTmp = '';            
-		soTmp = '';  
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
+    	$("#submit_button").click()
+    	soLineTmp = '';
+		soTmp = '';
     	searchByDetail();    
     	 var selectedItem = $('#multi_lockCol').val();    // get selected list  
  	    clearStickyInput();
@@ -847,12 +860,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				swal({   
-		   		    title: 'Warning',      
-		   		    text: "ProductionOrder can't switch same productionOrder.",    
+				Swal.fire({   
+		   		    title: 'คำเตือน',      
+		   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 				})
 			  	rowData.switchRemark  = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -866,12 +879,12 @@ $(document) .ready( function() {
 				handlerInputField("switchRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)
 			 }
 			 else{
-				 swal({   
-			   		    title: 'Warning',      
-			   		    text: "ProductionOrder can't switch same productionOrder.",    
+				 Swal.fire({   
+			   		    title: 'คำเตือน',      
+			   		    text: "ไม่สามารถสวมขาย ProductionOrder ตัวเดิมได้",
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 			  	rowData.switchRemark = oldValue;
 			  	MainTable.row(idx).invalidate() ;  
@@ -890,15 +903,15 @@ $(document) .ready( function() {
 			oldValue: oldValue,      
 		    idx: idx,  
 	  };  
-		 swal({ 
-			  title: "Are you sure to change "+fieldName+" ?",
-			  text: "From : "+oldValue+" to "+newValue+" ",
+		 Swal.fire({ 
+			  title: "ยืนยันการเปลี่ยน "+(({pcRemark:"PC Remark",stockLoad:"Stock Load",stockRemark:"Stock Remark",switchRemark:"Switch Remark",replacedRemark:"Replaced Remark",causeOfDelay:"Cause of Delay",delayedDep:"Delayed Dept."})[fieldName]||fieldName)+" ?",
+			  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 			  icon: "warning",
-			  buttons: true,      
-			  dangerMode: true,						   								   																																	  
+			  showCancelButton: true,      
+			  confirmButtonColor: '#d33',						   								   																																	  
 			})
-			.then((willDelete) => {  
-			  if (willDelete) {          
+			.then((result) => {  
+			  if (result.isConfirmed) {          
 			  	setValueWithFieldName(fieldName,rowData,newValue)
 				MainTable.row(idx).invalidate() ;  
 		 		var json = createInputDateJsonData(rowData,fieldName ); 
@@ -976,12 +989,12 @@ $(document) .ready( function() {
 					else{ break;   } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			   		    title: 'Warning',
-			   		    text: 'After = only numbers are required.',    
+					Swal.fire({   
+			   		    title: 'คำเตือน',
+			   		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else{ handlerInputField("replacedRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx);   } 
@@ -1004,9 +1017,9 @@ $(document) .ready( function() {
 					else{ break; } 
 				}
 				if(!checkDigit)  {
-					swal({   
-			  		    title: 'Warning',
-			  		    text: 'After = only numbers are required..',    
+					Swal.fire({   
+			  		    title: 'คำเตือน',
+			  		    text: 'ช่อง After ต้องเป็นตัวเลขเท่านั้น',
 			  		    icon: 'warning',
 			  		    timer: 1000,
 			  		    buttons: false,
@@ -1027,12 +1040,12 @@ $(document) .ready( function() {
 			 e.preventDefault();    
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
+	        	Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 } 
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx)  }
@@ -1042,12 +1055,12 @@ $(document) .ready( function() {
 			 e.preventDefault();      
 			 if(oldValue == newValue){  }
 			 else if(rowData.grade == ''){
-	        	swal({   
-		   		    title: 'Warning',
-		   		    text: 'This StockRemark need grade for input.',    
+	        	Swal.fire({   
+		   		    title: 'คำเตือน',
+		   		    text: 'StockRemark นี้ต้องระบุเกรด',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			 }
 			 else{ handlerInputField("stockRemark" ,oldValue,newValue,check1,rowData ,MainTable,idx); }    
@@ -1069,21 +1082,21 @@ $(document) .ready( function() {
 	           	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
@@ -1102,21 +1115,21 @@ $(document) .ready( function() {
 	           	MainTable.row(idx).invalidate() ; 
            }
            else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
@@ -1142,34 +1155,34 @@ $(document) .ready( function() {
              	MainTable.row(idx).invalidate() ;  //      			MainTable.row(idx).invalidate().draw();  
 			}
 			else if(newValue == 'E1'){ 
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}
 			else if(newValue == 'E2'){
-				swal({
-		   		    title: 'Warning',
-		   		    text: 'Date need greater than equal today.',
+				Swal.fire({
+		   		    title: 'คำเตือน',
+		   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})  
 			}       
 			else if(newValue == 'E3'){ }
 			else{
-				swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue+" ",
+				Swal.fire({ 
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue+" ",
 					  icon: "warning",
-					  buttons: true,  
-					  dangerMode: true,						   																																								  
+					  showCancelButton: true,  
+					  confirmButtonColor: '#d33',						   																																								  
 					})
-					.then((willDelete) => {        
-					  if (willDelete) {     
+					.then((result) => {        
+					  if (result.isConfirmed) {     
 						  rowData.cfmPlanLabDate  = newValue;
 						  MainTable.row(idx).invalidate() ; 
 // 						  MainTable.row(idx).invalidate().draw();  
@@ -1197,34 +1210,34 @@ $(document) .ready( function() {
              	MainTable.row(idx).invalidate() ; 
              }
              else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		}) 
 				}      
 				else if(newValue == 'E3'){ }
              else{  
-	           	 swal({ 
-					  title: "Are you sure to change date?",
-					  text: "From : "+oldValue+" to "+newValue,
+	           	 Swal.fire({ 
+					  title: "ยืนยันการเปลี่ยนวันที่?",
+					  text: "จาก : "+oldValue+" เป็น "+newValue,
 					  icon: "warning",
-					  buttons: true,
-					  dangerMode: true,																																														  
+					  showCancelButton: true,
+					  confirmButtonColor: '#d33',																																														  
 					})
-					.then((willDelete) => {
-					  if (willDelete) {  
+					.then((result) => {
+					  if (result.isConfirmed) {  
 						  rowData.cfmPlanLabDate  = newValue;
 							MainTable.row(idx).invalidate() ;  
 	 				 		var json = createInputDateJsonData(rowData,'cfmPlanLabDate'); 
@@ -1256,34 +1269,34 @@ $(document) .ready( function() {
 	             	rowData.deliveryDate  = oldValue;
 	             	MainTable.row(idx).invalidate() ; 
 	             }else if(newValue == 'E1'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Pleas check format input date ( DD/MM/YYYY ).',
+						Swal.fire({
+				   		    title: 'คำเตือน',
+				   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}
 					else if(newValue == 'E2'){
-						swal({
-				   		    title: 'Warning',
-				   		    text: 'Date need greater than equal today.',
+						Swal.fire({
+				   		    title: 'คำเตือน',
+				   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 				   		    icon: 'warning',
 				   		    timer: 1000,
-				   		    buttons: false,
+				   		    showConfirmButton: false,
 				   		})
 					}      
 					else if(newValue == 'E3'){ }
 				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+					Swal.fire({
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 					})     
-					.then((willDelete) => {
-						if (willDelete) {  
+					.then((result) => {
+						if (result.isConfirmed) {  
 							 rowData.deliveryDate  = newValue;
 							 MainTable.row(idx).invalidate() ; 
 							 var json = createInputDateJsonData(rowData,'deliveryDate'); 
@@ -1311,34 +1324,34 @@ $(document) .ready( function() {
 	             	MainTable.row(idx).invalidate() ;
 	             }   
 				else if(newValue == 'E1'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Please check format input date ( DD/MM/YYYY ).',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'กรุณาตรวจสอบรูปแบบวันที่ ( DD/MM/YYYY )',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}
 				else if(newValue == 'E2'){
-					swal({
-			   		    title: 'Warning',
-			   		    text: 'Date need greater than equal today.',
+					Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'วันที่ต้องมากกว่าหรือเท่ากับวันนี้',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}      
 				else if(newValue == 'E3'){ }
 				else{
-					swal({
-						  title: "Are you sure to change date?",
-						  text: "From : "+oldValue+" to "+newValue,  		
+					Swal.fire({
+						  title: "ยืนยันการเปลี่ยนวันที่?",
+						  text: "จาก : "+oldValue+" เป็น "+newValue,  		
 						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,																																														  
+						  showCancelButton: true,
+						  confirmButtonColor: '#d33',																																														  
 						})     
-						.then((willDelete) => {
-						  if (willDelete) {  
+						.then((result) => {
+						  if (result.isConfirmed) {  
 							  rowData.deliveryDate  = newValue;
 							  MainTable.row(idx).invalidate() ;
 							  var json = createInputDateJsonData(rowData,'deliveryDate'); 
@@ -1429,21 +1442,15 @@ function searchByDetail(){
 		 if( hwCheck ){ if(distChannel != "") {distChannel = distChannel + "|" } distChannel = distChannel + "HW";}   
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0)  )  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need select some field for search.',
-   		    icon: 'warning',   
-   		    timer: 1000,
-   		    buttons: false,
-   		})
+		warnEmptySearchFilters(customer, customerShort, userStatus, division)
 	}  
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need to choose  distribute channel from check box.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
@@ -1692,29 +1699,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }  
 function saveInputDateToServer(arrayTmp) {   
@@ -1729,47 +1734,43 @@ function saveInputDateToServer(arrayTmp) {
 				var bean = data[0]; 
 				if(bean.iconStatus == 'I0'){    
 					if( bean.countPlanDate >= 35){
-						swal({  
-							title: "Warning",    
+						Swal.fire({  
+							title: 'คำเตือน',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "warning",
-							button: "confirm",
 	   					});  
 					} 
 					else {
-						swal({  
-							title: "Success",    
+						Swal.fire({  
+							title: 'สำเร็จ',    
 						 	text: bean.systemStatus+' \r\n Plan by PCMS(count) : '+bean.countPlanDate ,
 							icon: "success",
-							button: "confirm",
 	   					});  	
 					}
 					 
 				}
 				else if(bean.iconStatus == 'I1'){      
-					swal({  
-						title: "Success",    
+					Swal.fire({  
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "success",
-						button: "confirm",
    					});  	  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			} 
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	  
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }    
 function getSwitchProdOrderDetailByPrd( dataP) {      
@@ -1863,11 +1864,10 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			if(data.length > 0){   
 				var bean = data[0];       
 				if(bean.iconStatus == 'I'){ 
-					swal({
-						title: "Success",    
+					Swal.fire({
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",  
    					});  
 					 
 					if(objTmp.fieldName == 'switchRemark' ){ 
@@ -1885,13 +1885,12 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 					} 
 				} 
 				else{       
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',     
 // 			   		    timer: 2000,
-// 			   		    buttons: false,
-			   		    button: "confirm",    
+// 			   		    showConfirmButton: false,
 			   		})    
 			   		if(objTmp.fieldName == 'switchRemark' || objTmp.fieldName == 'replacedRemark' ){ 
 			   			setValueWithFieldName(objTmp.fieldName,objTmp.rowData,objTmp.oldValue)
@@ -1901,19 +1900,18 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});     
 }    
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",  
-		data: JSON.stringify(arrayTmp),      
-		url: ctx+"/Detail/searchByDetail",  
-		success: function(data) {    
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Detail/searchByDetail",
+		success: function(data) {
 			let lastSo = "";
 			let lastLine = "";
 			data.forEach(function(row, i) {
@@ -1925,18 +1923,17 @@ function searchByDetailToServer(arrayTmp) {
 			        lastLine = row.saleLine;
 			    }
 			});
-			
-			
-			MainTable.clear();      
-			MainTable.rows.add(data);      
-			MainTable.columns.adjust().draw();     
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.columns.adjust().draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }       
 </script>
 <script type="text/javascript">  
@@ -2303,12 +2300,12 @@ function getInputDate(arrTmp,colIdx){
 		    data : JSON.stringify(arrTmp),    
 		    success : function(data) {
 		    	if(data.length == 0){
-		    		swal({
-			   		    title: 'Warning',
-			   		    text: 'No Data found.',
+		    		Swal.fire({
+			   		    title: 'คำเตือน',
+			   		    text: 'ไม่พบข้อมูล',
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 		    	}
 		    	else{
@@ -2320,7 +2317,7 @@ function getInputDate(arrTmp,colIdx){
 		    },
 		    error : function(e) {
 		        console.log("ERROR: ", e);
-		        swal("Fail", "Please contact to IT", "error");
+		        Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
 		    },
 		    done : function(e) {
 		    	console.log(e);
@@ -2363,29 +2360,27 @@ function saveDefault( ){
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
@@ -2400,20 +2395,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
-				 	text: "No search default data."  , 
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 
@@ -2538,11 +2532,10 @@ function getSwitchProdOrderListByRowProd(arrayTmp) {
 			if(data.length > 0){  
 				var bean = data[0];  
 				if(bean.iconStatus == 'E'){ 
-					swal({   
-						title: "Warning ",        
+					Swal.fire({   
+						title: 'แจ้งเตือน',        
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
-			   		    button: "confirm",
 			   		})
 				}
 				else{       
@@ -2555,10 +2548,9 @@ function getSwitchProdOrderListByRowProd(arrayTmp) {
 			}     
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});       
 }    
 </script>

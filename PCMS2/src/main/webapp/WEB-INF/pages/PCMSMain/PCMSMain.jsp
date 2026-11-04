@@ -18,10 +18,10 @@
 	<jsp:include page="/WEB-INF/pages/config/navbar.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/loading.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/pages/config/searchDiv.jsp"></jsp:include>
-	<div id="wrapper-center" class="row" style="margin: 0px 5px;">
-		<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " style="padding: 0px; margin: 0px 0px;">
+	<div id="wrapper-center">
+		<div class="content-panel">
 			<div class="table-responsive ">
-				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="zoom: 95%; font-size: 12.5px; width: 100%">
+				<table id="MainTable" class="table compact table-bordered table-striped text-center" style="font-size: 15px; width: 100%">
 					<thead>
 						<tr>
 							<th class="row-table" style="vertical-align: middle;">SO No.</th>
@@ -88,6 +88,9 @@
 .p-r-15 {
 	padding-right: 15px !important;
 }
+#MainTable td {
+	font-variant-numeric: tabular-nums;
+}
 </style>  
 <script>              	   
 var userId = '' ;   
@@ -98,8 +101,13 @@ var dd = String('0' + today.getDate()).slice(-2);
 var mm = String('0' + (today.getMonth() + 1)).slice(-2); ; //January is 0!
 var yyyy = today.getFullYear();
 var startDate = dd+'/'+mm+'/'+yyyy;      
-var MainTable ;  
-var poTable ;       
+var MainTable ;
+var poTable ;
+
+function typePrdLabel(typePrd) {
+    var labels = { 'Main': 'ปกติ', 'Replaced': 'โยกขาย', 'Switch': 'สวมขาย', 'OrderPuang': 'ออเดอร์พ่วง' };
+    return labels[typePrd] || typePrd;
+}       
 var mapsDataHeader  = new Map();  
 var mapsTitleHeader  = new Map();  
 var mapsColumnHeader  = new Map(); 
@@ -109,9 +117,8 @@ var colList ;
 var userStatusList ;  	
 var cusNameList ; 
 var divisionList ;  
-var cusShortNameList ;  
-var isCustomer = 0 ;  	
-var workInLabTable ; 
+var cusShortNameList ;
+var workInLabTable ;
 var cfmTable;
 var saleTable; 
 var submitDateTable;
@@ -222,11 +229,12 @@ $(document) .ready( function() {
     $('#btn_loadDefault').on( 'click', function () {       
 	     loadDefault();
 	} );
-    $('#btn_search').on( 'click', function () {      
+    $('#btn_search').on( 'click', function () {
+        $('#btn_search').prop('disabled', true);
     	$("#submit_button").click()
-    	soLineTmp = '';            
-		soTmp = '';   
-    	searchByDetail();          
+    	soLineTmp = '';
+		soTmp = '';
+    	searchByDetail();
  	} );                             
     $('#btn_colSetting').on( 'click', function () {      
 // 		MainTable. colReorder.order( [ 5,24,25,2,3,4,0,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 ,1  ] ); 
@@ -250,23 +258,23 @@ $(document) .ready( function() {
     $('#btn_prdDetail').on( 'click', function () {    
     	var tblData = MainTable.rows( '.selected').data();    
 		if(tblData.length == 0 ){
-			swal({
-	   		    title: 'Warning',   
-	   		    text: 'Need to select atleast 1 row.',
+			Swal.fire({
+	   		    title: 'คำเตือน',   
+	   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 	   		    icon: 'warning',
 	   		    timer: 1000,
-	   		    buttons: false,
+	   		    showConfirmButton: false,
 	   		})
 		}         
 		else {
 			var prdOrder = tblData[0].productionOrder
 			if(prdOrder  == "รอจัด Lot"	 || prdOrder  == "ขาย stock" ||prdOrder == "รับจ้างถัก"	|| prdOrder == "พ่วงแล้วรอสวม"	|| prdOrder == "รอสวมเคยมี Lot"||prdOrder == "Lot ขายแล้ว"){
-				swal({
-		   		    title: 'Warning',   
-		   		    text: 'Need to select atleast 1 row.',
+				Swal.fire({
+		   		    title: 'คำเตือน',   
+		   		    text: 'กรุณาเลือกอย่างน้อย 1 แถว',
 		   		    icon: 'warning',
 		   		    timer: 1000, 
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		})
 			}      
 			else {
@@ -283,9 +291,9 @@ $(document) .ready( function() {
 //     var StartDate = $("#input_requestDate").data('daterangepicker').startDate.format('DD/MM/YYYY');
 // 	 var EndDate = $("#input_requestDate").data('daterangepicker').endDate.format('DD/MM/YYYY');  
 	$('#MainTable thead tr').clone(true).appendTo('#MainTable thead');
-	$('#MainTable thead tr:eq(1) th') .each( function(i) {      
-		var title = $(this).text();         
-		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '"/>');
+	$('#MainTable thead tr:eq(1) th') .each( function(i) {
+		var title = $(this).text();
+		$(this).html( '<input type="text" class="monitor_search" style="width:100%" data-index="' + i + '" placeholder="" aria-label="กรอง ' + title + '"/>');
 	});     
 	 MainTable = $('#MainTable').DataTable({    
 //	     	stateSave: true ,    
@@ -309,23 +317,25 @@ $(document) .ready( function() {
 //	 		colReorder: {      
 //	             realtime: true       
 //	         },                     
-			deferRender: true, // run again in column     
-	 		colReorder: true,  
-			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],             
-	 	   	columns :    
-	 	   		[      
+			deferRender: true, // run again in column
+	 		/* iFixedColumnsLeft: 2 ปักหมุด SO No. + SO Line (2 คอลัมน์แรก อยู่ริมซ้ายอยู่แล้ว ไม่ต้องย้าย)
+	 		   ให้ลากสลับไม่ได้และ fix ซ้ายไว้เสมอ — คอลัมน์อื่นยังลากสลับได้อิสระเหมือนเดิม */
+	 		colReorder: { realtime: true, iFixedColumnsLeft: 2 },
+			rowsGroup: [ 0 ,1,2,3,4,5,6,7,8,9  ],
+	 	   	columns :
+	 	   		[
 			    {"data" : "saleOrder",  "title": 'SO No.'} ,         //0
 			    {"data" : "saleLine",  "title": 'SO Line'},              //1
-			    {"data" : "purchaseOrder",  "title": 'PO'}, 
-			    {"data" : "articleFG",  "title": 'Article No'}, 
-			    {"data" : "designFG",  "title": 'Design No'}, 
+			    {"data" : "purchaseOrder",  "title": 'PO'},
+			    {"data" : "articleFG",  "title": 'Article No'},
+			    {"data" : "designFG",  "title": 'Design No'},
 			    {"data" : "color",  "title": 'ATT Color'},               //5
 			    {"data" : "colorCustomer",  "title": 'Cust.Color'},      //6
 			    {"data" : "saleQuantity",  "title": 'Order Qty.','type': 'num'},      //7
 			    {"data" : "billQuantity",  "title": 'Shipped Qty.','type': 'num'},    //8
 			    {"data" : "saleUnit",  "title": 'Unit'},                              //9
 			    {"data" : "productionOrder",  "title": 'Prod.No.'},                   //10
-			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11 
+			    {"data" : "totalQuantity",  "title": 'Prod.Qty.','type': 'num'},      //11
 			    {"data" : "planGreigeDate",  "title": 'Plan Greige Date' ,'type': 'date-euro'},            //12
 			    {"data" : "greigeInDate",  "title": 'Greige In' ,'type': 'date-euro'},                     //13
 			    {"data" : "userStatus",  "title": 'User Status'},                     //14
@@ -347,13 +357,13 @@ $(document) .ready( function() {
 			    {"data" : "lotShipping",  "title": 'Shipping','type': 'date-euro'}              //30    
 //	 		    {"data" : "ShipDate"}          //23   
 			],       	           
-			columnDefs :  [	        
-				{ targets:[10]  ,           
-					render: function (data, type, row) {	   
-						let html = '<div  name="n_'+row.productionOrder+' data-toggle="tooltip" title="' + row.typePrd + '"> '+row.productionOrder+'</div>'
-						return  html; 
-				   	  }    
-				},     
+			columnDefs :  [
+				{ targets:[10]  ,
+					render: function (data, type, row) {
+						let html = '<div name="n_'+row.productionOrder+'" data-toggle="tooltip" title="' + typePrdLabel(row.typePrd) + '"> '+row.productionOrder+'</div>'
+						return  html;
+				   	  }
+				},
 				{ targets : [ 25],     
 			   	  render: function (data, type, row) {	 
 				   		var htmlEx = dateDDMMYYYToDDMM(row.cfmPlanDate);     
@@ -396,21 +406,28 @@ $(document) .ready( function() {
 					$('td', row).eq(mapsDataHeader.get("deliveryDate")).addClass('bg-color-azure');  
 				} 
 			},      
-			drawCallback: function( settings ) { 
-//	 			console.log(settings) 
+			drawCallback: function( settings ) {
+				$('[data-toggle="tooltip"]').tooltip();
 			},   
-			initComplete: function () {  
-				if ( isCustomer == 1 ) {      
+			initComplete: function () {
+				if ( isCustomer == 1 ) {
 			        // Hide Office column
-// 			        api.column(27).visible( false );    
-// 			        api.column(28).visible( false );    
+// 			        api.column(27).visible( false );
+// 			        api.column(28).visible( false );
 
 // 			        api.column(mapsDataHeader.get("cfmDetailAll")).visible( false );
 // 			        api.column(mapsDataHeader.get("rollNoRemarkAll")).visible( false );
-			                
-			      }       
-			}      
-	 	 });        
+
+			      }
+			}
+	 	 });
+	 	// ปักหมุด SO No. + SO Line (คอลัมน์ 0-1) ไว้ซ้ายสุดเสมอ แม้เลื่อนตารางแนวนอน
+	 	// ต้องเรียกหลัง MainTable ถูก assign แล้วเท่านั้น — ห้ามเรียกใน initComplete
+	 	// เพราะตอนนั้นตัวแปร MainTable ยังเป็น undefined อยู่ (assignment ยังไม่เสร็จ)
+	 	new $.fn.dataTable.FixedColumns( MainTable, {
+	 		leftColumns: 2,
+	 		rightColumns: 0
+	 	} );
 	var today = new Date();  
     var date = new Date((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()); 
     var startdate = moment();
@@ -681,8 +698,9 @@ $(document) .ready( function() {
 					} ,           
 			],     order: [[ 0, "desc" ]]        
 	 	 });        
-	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {         
-		let searchVal = this.value;      
+	$(".dataTables_scrollHead").on('keyup', '.monitor_search', function() {
+		let searchVal = this.value;
+		$(this).toggleClass('has-value', searchVal.trim() !== '');
 		let indexAfterReCol =  MainTable.colReorder.transpose( $(this).data('index') );
 // 		console.log($(this),$(this).data('index'),indexAfterReCol)
 // 		11 , 14-25 date
@@ -835,22 +853,16 @@ function searchByDetail(){
 
 	if(  (customer.length == 0 ||  customerShort.length == 0 ||  userStatus.length == 0 || division.length  == 0) 
   			)  { 
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need select some field for search.',
-   		    icon: 'warning',
-   		    timer: 1000,
-   		    buttons: false,
-   		})
+		warnEmptySearchFilters(customer, customerShort, userStatus, division)
 	} 
 
 	else if (distChannel == ''){
-		swal({
-   		    title: 'Warning',
-   		    text: 'Need to choose distribute channel from check box.',
+		Swal.fire({
+   		    title: 'คำเตือน',
+   		    text: 'กรุณาเลือกช่องทางการจัดจำหน่ายจาก checkbox',
    		    icon: 'warning',
    		    timer: 1000,
-   		    buttons: false,
+   		    showConfirmButton: false,
    		})
 	}
 	else{
@@ -1048,10 +1060,9 @@ function getPrdDetailByRow(arrayTmp) {
 			setModalDetail(data);   
 		},     
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});      
 }     
 function clearInput(){
@@ -1076,23 +1087,24 @@ function clearInput(){
 	$('#multi_cusShortName').selectpicker('refresh'); 
 	$('#multi_division').selectpicker('refresh');       
 }
-function searchByDetailToServer(arrayTmp) {    
+function searchByDetailToServer(arrayTmp) {
 	$.ajax({
-		type: "POST",  
-		contentType: "application/json",   
-		data: JSON.stringify(arrayTmp),    
-		url: ctx+"/Main/searchByDetail", 
-		success: function(data) {   
-			MainTable.clear();        
-			MainTable.rows.add(data);           
-			MainTable.draw();      
-		},   
-		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(arrayTmp),
+		url: ctx+"/Main/searchByDetail",
+		success: function(data) {
+			MainTable.clear();
+			MainTable.rows.add(data);
+			MainTable.draw();
 		},
-		done: function(e) {       
-		}   	
-	});   
+		error: function(e) {
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		},
+		complete: function() {
+			$('#btn_search').prop('disabled', false);
+		}
+	});
 }      
 function setModalDetail(data){
     
@@ -1316,29 +1328,27 @@ function saveColSettingToServer(arrayTmp) {
 			if(data.length > 0){
 				var bean = data[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 }     
 function addUserStatusOption(data ){ 
@@ -1494,29 +1504,27 @@ function saveDefault( ){
 			if(response.length > 0){
 				var bean = response[0];   
 				if(bean.iconStatus == 'I'){
-					swal({   
-						title: "Success",    
+					Swal.fire({   
+						title: 'สำเร็จ',    
 					 	text: bean.systemStatus ,
 						icon: "info",
-						button: "confirm",
    					});  
 				}
 				else{  //E
-					swal({   
-						title: "Warning ",    
+					Swal.fire({   
+						title: 'แจ้งเตือน',    
 					 	text: bean.systemStatus  , 
 			   		    icon: 'warning',
 			   		    timer: 1000,
-			   		    buttons: false,
+			   		    showConfirmButton: false,
 			   		})
 				}  
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function loadDefault(){  
@@ -1530,20 +1538,19 @@ function loadDefault(){
 				setSearchDefault(data); 
 			}
 			else{
-				swal({   
-					title: "Warning ",    
-				 	text: "No search default data."  , 
+				Swal.fire({   
+					title: 'แจ้งเตือน',    
+				 	text: "ไม่พบข้อมูลค่าเริ่มต้นสำหรับค้นหา"  ,
 		   		    icon: 'warning',
 		   		    timer: 1000,
-		   		    buttons: false,
+		   		    showConfirmButton: false,
 		   		}) 
 			}
 		},   
 		error: function(e) {
-			swal("Fail", "Please contact to IT", "error");
-		},
-		done: function(e) {       
-		}   	   
+			Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+		}
+
 	});   
 } 
 function setSearchDefault(data){ 

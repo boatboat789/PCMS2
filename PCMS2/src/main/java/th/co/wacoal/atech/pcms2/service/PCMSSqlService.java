@@ -26,6 +26,9 @@ public class PCMSSqlService {
 		  + "IF OBJECT_ID('tempdb..#tmpCRP')                 IS NOT NULL DROP TABLE #tmpCRP;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tmpSaleAgg')             IS NOT NULL DROP TABLE #tmpSaleAgg;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tmpProdAgg')             IS NOT NULL DROP TABLE #tmpProdAgg;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempTargetPO')           IS NOT NULL DROP TABLE #tempTargetPO;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempRelatedPO')          IS NOT NULL DROP TABLE #tempRelatedPO;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempRPMatch')            IS NOT NULL DROP TABLE #tempRPMatch;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempMainSale')           IS NOT NULL DROP TABLE #tempMainSale;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempPlandeliveryDate')   IS NOT NULL DROP TABLE #tempPlandeliveryDate;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempPrepWaitLot')        IS NOT NULL DROP TABLE #tempPrepWaitLot;\r\n"
@@ -43,6 +46,7 @@ public class PCMSSqlService {
 		  + "IF OBJECT_ID('tempdb..#tempProdWorkDate')       IS NOT NULL DROP TABLE #tempProdWorkDate;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempProdWorkDateFiltered') IS NOT NULL DROP TABLE #tempProdWorkDateFiltered;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempSPO')                IS NOT NULL DROP TABLE #tempSPO;\r\n"
+		  + "IF OBJECT_ID('tempdb..#tempSPOAnti')            IS NOT NULL DROP TABLE #tempSPOAnti;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempSPOSale')            IS NOT NULL DROP TABLE #tempSPOSale;\r\n"
 		  + "IF OBJECT_ID('tempdb..#tempPlanCFMLabDate')     IS NOT NULL DROP TABLE #tempPlanCFMLabDate;\r\n"
 		  + "IF OBJECT_ID('tempdb..#FlagHasRP')              IS NOT NULL DROP TABLE #FlagHasRP;\r\n"
@@ -590,12 +594,27 @@ public class PCMSSqlService {
 
 	// ใช้แทน buildLeftJoinUserStatusAuto ใน createTempProdMain
 	// join #tempUCAL (small, pre-filtered) แทน TEMP_UserStatusAuto (large permanent table)
+	// ⚠️ ระวัง: NULL-check อยู่ที่ UCAL.Grade — คนละ semantics กับ buildLeftJoinUserStatusAuto
+	//    (ของเดิม check ที่ %s.Grade ฝั่ง SumGR) — ห้ามใช้แทนกันตรงๆ ดู getLeftJoinTempUCALSameAsAuto
 	public String getLeftJoinTempUCAL(String aliasProd, String aliasGrade)
 	{
 		return String.format(
 				" LEFT JOIN #tempUCAL AS UCAL ON UCAL.ProductionOrder = %s.ProductionOrder\r\n"
 				+ "     AND (UCAL.Grade = %s.Grade OR UCAL.Grade IS NULL)\r\n",
 				aliasProd, aliasGrade);
+	}
+
+	// drop-in ของ buildLeftJoinUserStatusAuto("UCAL", aliasProd, aliasGrade) แต่ join #tempUCAL
+	// คง ON clause เดิมทุกตัวอักษร (DataStatus='O' ย้ายเข้า temp ตอนสร้างแล้ว):
+	//   เดิม:  (m.Grade = UCAL.Grade OR m.Grade IS NULL)  ← NULL-check ฝั่ง SumGR grade
+	// harness จับได้ว่า NULL-check ฝั่ง UCAL.Grade (getLeftJoinTempUCAL) ให้ผลต่าง 77 แถว (userStatus เกิน)
+	public String getLeftJoinTempUCALSameAsAuto(String aliasProd, String aliasGrade)
+	{
+		return String.format(" "
+				+ "     LEFT JOIN #tempUCAL AS UCAL \n"
+				+ "     ON %s.ProductionOrder = UCAL.ProductionOrder \n"
+				+ "     AND (%s.Grade = UCAL.Grade OR %s.Grade IS NULL) \n",
+				aliasProd, aliasGrade, aliasGrade);
 	}
 
 	// ใช้แทน buildLeftJoinViewUserStatusMappingPCMS ใน createTempProdMain
@@ -731,6 +750,58 @@ public class PCMSSqlService {
 			+ " INTO #tempSumGR\r\n"
 			+ " FROM [PCMS].[dbo].SumGRCache;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
+	// filtered version — คง granularity (ProductionOrder, Grade) เดิมทุกอย่าง แค่กรอง SumGRCache
+	// เหลือเฉพาะ PO ที่ search นี้อ้างถึง → copy row น้อยลงมากบน PRD. ชุด PO ต้องตรงกับ
+	// createTempProdWorkDateFiltered ทุก UNION (regular, OrderPuang, replaced, switch ต้นทาง/ปลายทาง,
+	// OPSW) — แก้ UNION ที่หนึ่งต้องแก้อีกที่ด้วย. POs ที่ถูกตัดออกไม่เคย match join
+	// `aliasMain.ProductionOrder = m.ProductionOrder` อยู่แล้ว (ถ้าชุดนี้ครอบ PO ที่ query จริง join) → output ต้องเท่าเดิม (harness gate)
+	// requires #tempMainSale + clustered index ก่อน
+	public String createTempSumGRFiltered = ""
+			+ this.buildIfTempTableDrop("#tempSumGR")
+			+ " SELECT sg.*\r\n"
+			+ " INTO #tempSumGR\r\n"
+			+ " FROM [PCMS].[dbo].SumGRCache AS sg\r\n"
+			+ " INNER JOIN (\r\n"
+			+ "     SELECT fsp.ProductionOrder\r\n"
+			+ "     FROM [PCMS].[dbo].[FromSapMainProd] AS fsp\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fsp.SaleOrder AND ms.SaleLine = fsp.SaleLine\r\n"
+			+ "     WHERE fsp.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT fps.ProductionOrder\r\n"   // OrderPuang subs: sale→prod mapping ทั้งหมด
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     WHERE fps.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT rpo.ProductionOrderRP\r\n"   // replaced
+			+ "     FROM [PCMS].[dbo].[ReplacedProdOrder] AS rpo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = rpo.SaleOrder AND ms.SaleLine = rpo.SaleLine\r\n"
+			+ "     WHERE rpo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrder\r\n"   // switch — ต้นทาง
+			+ "     FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "     WHERE spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrderSW\r\n"   // switch — ปลายทาง
+			+ "     FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "     WHERE spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			// OPSW: PO คู่ switch ของ PO ใน ProdSale (mirror CASE B/C ของ createTempSPOSale แต่ไม่กรอง <> = superset)
+			// ไม่ต้องพึ่ง sale ปลายทางอยู่ใน scope — ชุดเดียวกับ createTempProdWorkDateFiltered
+			+ "     SELECT spo.ProductionOrderSW\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งต้นทาง → คู่คือ ProductionOrderSW
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrder = fps.ProductionOrder\r\n"
+			+ "     WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
+			+ "     UNION\r\n"
+			+ "     SELECT spo.ProductionOrder\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งปลายทาง → คู่คือ ProductionOrder
+			+ "     FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "     INNER JOIN #tempMainSale AS ms ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "     INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrderSW = fps.ProductionOrder\r\n"
+			+ "     WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
+			+ " ) AS flt ON flt.ProductionOrder = sg.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
 	// pre-build PlanSendCFMCusDate → #tempSCC (1 scan ครั้งเดียว แทนหลาย scan ต่อ query)
 	public String createTempSCC = ""
 			+ this.buildIfTempTableDrop("#tempSCC")
@@ -762,6 +833,12 @@ public class PCMSSqlService {
 	// filters to only POs relevant to the current search:
 	//   regular POs  : FromSapMainProd   JOIN #tempMainSale (SaleOrder, SaleLine)
 	//   replaced POs : ReplacedProdOrder JOIN #tempMainSale (SaleOrder, SaleLine) -> ProductionOrderRP
+	//   puang POs    : FromSapMainProdSale JOIN #tempMainSale — OP join g ด้วย PO จาก ProdSale (ไม่ใช่ FromSapMainProd)
+	//   switch POs   : SwitchProdOrder ที่ SaleOrderSW ∈ #tempMainSale — SW join g ด้วย ProductionOrderSW
+	//                  แต่แถว FromSapMainProd ของ PO นั้นผูกกับ sale ต้นทาง (อาจไม่อยู่ในขอบเขต → g.* เป็น NULL)
+	//   OPSW POs     : PO คู่ switch ของ PO ใน ProdSale (mirror CASE B/C ของ createTempSPOSale แต่ไม่กรอง <> = superset)
+	// ชุด PO เหมือน createTempSumGRFiltered ทุก UNION (แก้ที่หนึ่งต้องแก้อีกที่ด้วย) — superset ปลอดภัย:
+	// join ผูก ProductionOrder ตัวเดียว
 	// eliminates ~90% of TEMP_ProdWorkDate rows → cuts tempdb I/O dramatically
 	public String createTempProdWorkDateFiltered = ""
 			+ this.buildIfTempTableDrop("#tempProdWorkDate")
@@ -775,13 +852,210 @@ public class PCMSSqlService {
 			+ "        ON ms.SaleOrder = fsp.SaleOrder AND ms.SaleLine = fsp.SaleLine\r\n"
 			+ "    WHERE fsp.DataStatus = 'O'\r\n"
 			+ "    UNION\r\n"
-			+ "    SELECT rpo.ProductionOrderRP\r\n"
+			+ "    SELECT fps.ProductionOrder\r\n"   // OrderPuang subs
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    WHERE fps.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT rpo.ProductionOrderRP\r\n"   // replaced
 			+ "    FROM [PCMS].[dbo].[ReplacedProdOrder] AS rpo\r\n"
 			+ "    INNER JOIN #tempMainSale AS ms\r\n"
 			+ "        ON ms.SaleOrder = rpo.SaleOrder AND ms.SaleLine = rpo.SaleLine\r\n"
 			+ "    WHERE rpo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrder\r\n"   // switch — ต้นทาง
+			+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "    WHERE spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrderSW\r\n"   // switch — ปลายทาง
+			+ "    FROM [PCMS].[dbo].[SwitchProdOrder] AS spo\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = spo.SaleOrderSW AND ms.SaleLine = spo.SaleLineSW\r\n"
+			+ "    WHERE spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrderSW\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งต้นทาง → คู่คือ ProductionOrderSW
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrder = fps.ProductionOrder\r\n"
+			+ "    WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
+			+ "    UNION\r\n"
+			+ "    SELECT spo.ProductionOrder\r\n"   // OPSW — PO ใน ProdSale เป็นฝั่งปลายทาง → คู่คือ ProductionOrder
+			+ "    FROM [PCMS].[dbo].[FromSapMainProdSale] AS fps\r\n"
+			+ "    INNER JOIN #tempMainSale AS ms\r\n"
+			+ "        ON ms.SaleOrder = fps.SaleOrder AND ms.SaleLine = fps.SaleLine\r\n"
+			+ "    INNER JOIN [PCMS].[dbo].[SwitchProdOrder] AS spo ON spo.ProductionOrderSW = fps.ProductionOrder\r\n"
+			+ "    WHERE fps.DataStatus = 'O' AND spo.DataStatus = 'O'\r\n"
 			+ ") AS flt ON flt.ProductionOrder = pwd.ProductionOrder;\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
+
+	// ===== 7.2b: expansion drilldown — target-PO filtered fragments =====
+	// expansion (getNormalCaseByProdOrder ฯลฯ) ไม่มีเงื่อนไขลูกค้า → #tempMainSale/#tempSumGR/
+	// #tempProdWorkDate เดิม copy ทั้งตารางลง tempdb ทุกคลิก แต่ผลลัพธ์ใช้แค่ไม่กี่ PO
+	// (final WHERE a.ProductionOrder IN (targetPOs)). กรองด้วย #tempTargetPO ที่ DAO materialize
+	// จาก poList → ตัด I/O ทิ้งเกือบทั้งหมด. ปลอดภัยเพราะ:
+	//   - แถวที่รอด final WHERE มี ProductionOrder ∈ targetPOs อยู่แล้ว (sentinel 'รอจัด Lot' ฯลฯ
+	//     เป็นข้อความไทย ไม่มีทาง = เลข PO จริงที่ caller ส่งมา)
+	//   - downstream LEFT JOIN #tempSumGR/#tempProdWorkDate ผูก ProductionOrder ตัวเดียว
+	//   - ใช้ EXISTS (ไม่ใช่ INNER JOIN) กัน row-multiplication แม้ #tempTargetPO มี PO ซ้ำ
+	//   - COLLATE DATABASE_DEFAULT บนฝั่ง temp กัน collation mismatch (temp default vs PCMS db)
+	// requires: #tempTargetPO (สร้างก่อน) — DAO เป็นคนสร้างเพราะค่ามาจาก Java list
+
+	// createTempMainSale แต่เหลือเฉพาะ sale line ที่มี FromSapMainProd row PO ∈ #tempTargetPO
+	// คง LEFT JOIN ConfigCustomerEX เดิมเป๊ะ (row multiplicity เท่าเดิม) เพิ่มแค่ WHERE EXISTS
+	public String createTempMainSaleTargetFiltered = ""
+			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempMainSale\r\n"
+			+ "	end ; "
+			+ " SELECT   \r\n"
+			+ "	   a.*\r\n"
+			+ " INTO #tempMainSale \r\n"
+			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O' "
+			+ " WHERE EXISTS (\r\n"
+			+ "     SELECT 1 FROM [PCMS].[dbo].[FromSapMainProd] fsp\r\n"
+			+ "     INNER JOIN #tempTargetPO tp ON tp.ProductionOrder COLLATE DATABASE_DEFAULT = fsp.ProductionOrder\r\n"
+			+ "     WHERE fsp.SaleOrder = a.SaleOrder AND fsp.SaleLine = a.SaleLine\r\n"
+			+ " );\r\n";
+
+	// เหมือน createTempMainSaleTargetFiltered แต่กรองผ่าน FromSapMainProdSale (b.DataStatus='O')
+	// ใช้กับ OrderPuang: #tempPrdOPA INNER JOIN FromSapMainProdSale บน (SaleOrder,SaleLine) แล้วกรอง
+	// b.ProductionOrder ∈ targetPOs → #tempMainSale ต้องมี sale line ที่มี FromSapMainProdSale
+	// DataStatus='O' PO ∈ target (mirror INNER JOIN เป๊ะ; sale line ที่มีแต่ row non-O ให้ผลว่างอยู่แล้ว)
+	public String createTempMainSaleTargetFilteredViaProdSale = ""
+			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempMainSale\r\n"
+			+ "	end ; "
+			+ " SELECT   \r\n"
+			+ "	   a.*\r\n"
+			+ " INTO #tempMainSale \r\n"
+			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O' "
+			+ " WHERE EXISTS (\r\n"
+			+ "     SELECT 1 FROM [PCMS].[dbo].[FromSapMainProdSale] fps\r\n"
+			+ "     INNER JOIN #tempTargetPO tp ON tp.ProductionOrder COLLATE DATABASE_DEFAULT = fps.ProductionOrder\r\n"
+			+ "     WHERE fps.SaleOrder = a.SaleOrder AND fps.SaleLine = a.SaleLine AND fps.DataStatus = 'O'\r\n"
+			+ " );\r\n";
+
+	// #tempSumGR เหลือเฉพาะ PO ∈ #tempTargetPO (คง granularity (ProductionOrder, Grade) เดิม)
+	public String createTempSumGRTargetFiltered = ""
+			+ this.buildIfTempTableDrop("#tempSumGR")
+			+ " SELECT sg.*\r\n"
+			+ " INTO #tempSumGR\r\n"
+			+ " FROM [PCMS].[dbo].SumGRCache AS sg\r\n"
+			+ " WHERE EXISTS (SELECT 1 FROM #tempTargetPO tp\r\n"
+			+ "               WHERE tp.ProductionOrder COLLATE DATABASE_DEFAULT = sg.ProductionOrder);\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
+
+	// #tempProdWorkDate เหลือเฉพาะ PO ∈ #tempTargetPO
+	public String createTempProdWorkDateTargetFiltered = ""
+			+ this.buildIfTempTableDrop("#tempProdWorkDate")
+			+ "SELECT pwd.*\r\n"
+			+ "INTO #tempProdWorkDate\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_ProdWorkDate] AS pwd\r\n"
+			+ "WHERE EXISTS (SELECT 1 FROM #tempTargetPO tp\r\n"
+			+ "              WHERE tp.ProductionOrder COLLATE DATABASE_DEFAULT = pwd.ProductionOrder);\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
+
+	// ===== 7.2b: expansion ที่ SumGR/ProdWorkDate join ด้วย "child PO" (Switch/OrderPuangSW/Replaced)
+	// ไม่ใช่ target PO ที่รับเข้ามา → ใช้ #tempRelatedPO (child set ที่ DAO/fragment สร้างต่างกันต่อ method)
+	// filter generic 2 ตัวนี้ reuse ได้ทุก method. superset ปลอดภัย: LEFT JOIN keyed ProductionOrder
+	// อย่างเดียว → PO เกินไม่ match แถว output; PO ที่ต้องมีต้องครบทุก Grade (EXISTS เก็บทั้ง PO)
+	public String createTempSumGRRelatedFiltered = ""
+			+ this.buildIfTempTableDrop("#tempSumGR")
+			+ " SELECT sg.*\r\n"
+			+ " INTO #tempSumGR\r\n"
+			+ " FROM [PCMS].[dbo].SumGRCache AS sg\r\n"
+			+ " WHERE EXISTS (SELECT 1 FROM #tempRelatedPO rp\r\n"
+			+ "               WHERE rp.ProductionOrder COLLATE DATABASE_DEFAULT = sg.ProductionOrder);\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSumGR ON #tempSumGR(ProductionOrder, Grade);\r\n";
+	public String createTempProdWorkDateRelatedFiltered = ""
+			+ this.buildIfTempTableDrop("#tempProdWorkDate")
+			+ "SELECT pwd.*\r\n"
+			+ "INTO #tempProdWorkDate\r\n"
+			+ "FROM [PCMS].[dbo].[TEMP_ProdWorkDate] AS pwd\r\n"
+			+ "WHERE EXISTS (SELECT 1 FROM #tempRelatedPO rp\r\n"
+			+ "              WHERE rp.ProductionOrder COLLATE DATABASE_DEFAULT = pwd.ProductionOrder);\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempProdWorkDate ON #tempProdWorkDate(ProductionOrder);\r\n";
+
+	// Switch: #tempRelatedPO = ProductionOrderSW (child ปลายทาง) ของ SwitchProdOrder ที่ ProductionOrder
+	// (ต้นทาง) ∈ #tempTargetPO. omit DataStatus = superset (ปลอดภัยกว่าสำหรับ LEFT JOIN). ต้องรัน
+	// หลัง #tempTargetPO
+	public String createTempRelatedPOFromSwitchChild = ""
+			+ this.buildIfTempTableDrop("#tempRelatedPO")
+			+ "SELECT DISTINCT spo.ProductionOrderSW AS ProductionOrder\r\n"
+			+ "INTO #tempRelatedPO\r\n"
+			+ "FROM [PCMS].[dbo].[SwitchProdOrder] spo\r\n"
+			+ "INNER JOIN #tempTargetPO tp ON tp.ProductionOrder COLLATE DATABASE_DEFAULT = spo.ProductionOrder;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempRelatedPO ON #tempRelatedPO(ProductionOrder);\r\n";
+
+	// Replaced: #tempRelatedPO = ProductionOrderRP (child) ของ ReplacedProdOrder ที่ match filter
+	// (DAO สร้าง #tempRPMatch จาก where เดิมก่อน). superset ปลอดภัย (LEFT JOIN keyed ProductionOrder)
+	public String createTempRelatedPOFromRPMatch = ""
+			+ this.buildIfTempTableDrop("#tempRelatedPO")
+			+ "SELECT DISTINCT ProductionOrderRP AS ProductionOrder\r\n"
+			+ "INTO #tempRelatedPO\r\n"
+			+ "FROM #tempRPMatch;\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempRelatedPO ON #tempRelatedPO(ProductionOrder);\r\n";
+
+	// Replaced: #tempMainSale = sale line ของ ReplacedProdOrder ที่ match filter (ผ่าน #tempRPMatch)
+	// mirror outer INNER JOIN #tempMainSale a ON a.SaleOrder=b.SaleOrder AND a.SaleLine=b.SaleLine
+	public String createTempMainSaleTargetFilteredViaRPMatch = ""
+			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempMainSale\r\n"
+			+ "	end ; "
+			+ " SELECT   \r\n"
+			+ "	   a.*\r\n"
+			+ " INTO #tempMainSale \r\n"
+			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O' "
+			+ " WHERE EXISTS (\r\n"
+			+ "     SELECT 1 FROM #tempRPMatch m\r\n"
+			+ "     WHERE m.SaleOrder = a.SaleOrder AND m.SaleLine = a.SaleLine\r\n"
+			+ " );\r\n";
+
+	// Switch: #tempMainSale = sale line ที่เป็น (SaleOrderSW, SaleLineSW) ของ SwitchProdOrder ที่
+	// ProductionOrder ∈ #tempTargetPO (DataStatus='O') — mirror INNER JOIN ใน createTempPrdSWFirst
+	public String createTempMainSaleTargetFilteredViaSwitchSW = ""
+			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempMainSale\r\n"
+			+ "	end ; "
+			+ " SELECT   \r\n"
+			+ "	   a.*\r\n"
+			+ " INTO #tempMainSale \r\n"
+			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O' "
+			+ " WHERE EXISTS (\r\n"
+			+ "     SELECT 1 FROM [PCMS].[dbo].[SwitchProdOrder] spo\r\n"
+			+ "     INNER JOIN #tempTargetPO tp ON tp.ProductionOrder COLLATE DATABASE_DEFAULT = spo.ProductionOrder\r\n"
+			+ "     WHERE spo.SaleOrderSW = a.SaleOrder AND spo.SaleLineSW = a.SaleLine AND spo.DataStatus = 'O'\r\n"
+			+ " );\r\n";
+
+	// OrderPuangSW: #tempMainSale = sale line ที่มี #tempSPOSale row (mapped ProductionOrder) ∈
+	// #tempTargetPO (SaleLine<>'') — mirror INNER JOIN ใน createTempOPSWFirst.
+	// ⚠️ ต้องรัน AFTER #tempSPOSale (caller ย้าย createTempSPO+createTempSPOSale ขึ้นก่อน MainSale)
+	public String createTempMainSaleTargetFilteredViaSPOSale = ""
+			+ " If(OBJECT_ID('tempdb..#tempMainSale') Is Not Null)\r\n"
+			+ "	begin\r\n"
+			+ "		Drop Table #tempMainSale\r\n"
+			+ "	end ; "
+			+ " SELECT   \r\n"
+			+ "	   a.*\r\n"
+			+ " INTO #tempMainSale \r\n"
+			+ " FROM [PCMS].[dbo].[FromSapMainSale] as a\r\n"
+			+ " left join [PCMS].[dbo].[ConfigCustomerEX] as b on a.[CustomerNo] = b.[CustomerNo] and b.[DataStatus] = 'O' "
+			+ " WHERE EXISTS (\r\n"
+			+ "     SELECT 1 FROM #tempSPOSale sp\r\n"
+			+ "     INNER JOIN #tempTargetPO tp ON tp.ProductionOrder COLLATE DATABASE_DEFAULT = sp.ProductionOrder\r\n"
+			+ "     WHERE sp.SaleOrder = a.SaleOrder AND sp.SaleLine = a.SaleLine AND sp.SaleLine <> ''\r\n"
+			+ " );\r\n";
 
 	// pre-build SwitchProdOrder → #tempSPO (1 scan แทนหลาย scan ต่อ query)
 	public String createTempSPO = ""
@@ -791,7 +1065,16 @@ public class PCMSSqlService {
 			+ "FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 			+ "WHERE ProductionOrder <> ProductionOrderSW AND DataStatus = 'O';\r\n"
 			+ "CREATE CLUSTERED INDEX IX_tempSPO_SW ON #tempSPO(ProductionOrderSW);\r\n"
-			+ "CREATE NONCLUSTERED INDEX IX_tempSPO_PO ON #tempSPO(ProductionOrder);\r\n";
+			+ "CREATE NONCLUSTERED INDEX IX_tempSPO_PO ON #tempSPO(ProductionOrder);\r\n"
+			// anti-join แยกจาก #tempSPO: ต้องรวมแถว self-switch (ProductionOrder = ProductionOrderSW)
+			// เหมือนโค้ดเดิมที่ join SwitchProdOrder ตรงๆ — #tempSPO ตัดแถว self ออกเพราะใช้ map PO (CASE B/C)
+			// ถ้าใช้ #tempSPO ทำ anti-join PO แบบ self-switch จะหลุดกลับมาในรายการปกติ
+			+ this.buildIfTempTableDrop("#tempSPOAnti")
+			+ "SELECT DISTINCT ProductionOrderSW\r\n"
+			+ "INTO #tempSPOAnti\r\n"
+			+ "FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
+			+ "WHERE DataStatus = 'O';\r\n"
+			+ "CREATE CLUSTERED INDEX IX_tempSPOAnti_SW ON #tempSPOAnti(ProductionOrderSW);\r\n";
 
 	// pre-build FromSapMainProdSale filtered to SPO rows only → #tempSPOSale (reused by OPSW and SW)
 	public String createTempSPOSale = ""
@@ -1247,7 +1530,7 @@ public class PCMSSqlService {
 		return whereClauses;
 	}
 
-	private static final java.util.regex.Pattern DATE_DDMMYYYY = java.util.regex.Pattern.compile("\\d{2}/\\d{2}/\\d{4}");
+	private static final java.util.regex.Pattern DATE_DDMMYYYY = java.util.regex.Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4}"); // dd/MM/yyyy หรือ d/M/yyyy (ผู้ใช้พิมพ์เองได้) — CONVERT style 103 รับทั้งสองแบบ
 
 	public static String buildDateClause(String columnName, String dateRange, String para)
 	{
@@ -1460,7 +1743,8 @@ public class PCMSSqlService {
 
 	public String getLeftJoinSwitchProdOrder(String aliasProd)
 	{
-		return String.format(" LEFT JOIN #tempSPO AS SPO ON SPO.ProductionOrderSW = %s.ProductionOrder\r\n", aliasProd);
+		// #tempSPOAnti (รวม self-switch) ไม่ใช่ #tempSPO — ดูเหตุผลที่ createTempSPO
+		return String.format(" LEFT JOIN #tempSPOAnti AS SPO ON SPO.ProductionOrderSW = %s.ProductionOrder\r\n", aliasProd);
 	}
 
 	public String getLeftJoinTempPlandeliveryDate(String aliasProd, String aliasSale)
@@ -1519,13 +1803,8 @@ public class PCMSSqlService {
 		);
 	}
 
-	public String buildInnerJoinViewUSM_SPE(String aliasMain, int specialCon,String aliasUserStatus )
-	{
-		return String.format(" "
-				+ "	INNER JOIN [PCMS].[dbo].[viewUserStatusMappingPCMS] AS viewUSM_SPE \r\n"
-				+ "		ON %s.%s = viewUSM_SPE.UserStatus \n"
-				+ "     and viewUSM_SPE.[Special] = %s  \n", aliasMain, aliasUserStatus, specialCon);
-	}
+	// buildInnerJoinViewUSM_SPE ถูกลบ 2026-07-03 — ทุก caller ย้ายไปใช้ buildInnerJoinTempUSMSpecial1
+	// (join #tempUSMSpecial1 ที่ pre-materialize จาก viewUserStatusMappingPCMS WHERE Special=1)
 
 //	public String buildLeftJoinViewUSM_SPE(String aliasMain, int specialCon)
 //	{
@@ -1540,6 +1819,28 @@ public class PCMSSqlService {
 		String sqlTemplate =
 				"" + " If(OBJECT_ID('tempdb..%s') Is Not Null)\r\n" + "	begin\r\n" + "		Drop Table %s\r\n" + "	end ;\r\n";
 		return String.format(sqlTemplate, tempName, tempName);
+	}
+
+	/**
+	 * Common lookup preamble ที่ getPCMSSumaryDetail (PCMSMainDaoImpl) และ searchByDetail
+	 * (PCMSDetailDaoImpl) ใช้ร่วมกัน — นิยาม temp set ที่เดียว ลำดับ fragment ห้ามสลับ
+	 * (#tempMainSale ต้องมาก่อน fragment ที่ filter ด้วยมัน)
+	 *
+	 * sumGRFragment: ส่ง createTempSumGR หรือ createTempSumGRFiltered ตาม caller
+	 * (ตอนนี้ Detail ใช้ Filtered แล้ว ส่วน Main ยังใช้ตัวเต็ม — จูน perf แยกกัน)
+	 * ส่วน fragment เฉพาะของแต่ละ method ให้ caller ต่อท้ายเอง
+	 */
+	public String buildCommonLookupTables(String createUserStatus, String createCusList,
+			String whereSale, String sumGRFragment)
+	{
+		return createUserStatus + createCusList
+				+ createTempMainSaleWithJoinCustomer + whereSale
+				+ createTempMainSaleIndex
+				+ createTempPlanDeliveryDate
+				+ sumGRFragment
+				+ createTempSumBill
+				+ createTempSCC
+				+ createTempProdWorkDateFiltered;   // filtered by #tempMainSale — was full scan
 	}
 
 }

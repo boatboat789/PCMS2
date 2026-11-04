@@ -140,4 +140,12 @@ public class ERPAtechService {
 				this.dao.getFromErpMainSaleDetailWithRangeOfChangeDate(changeDateStart, changeDateEnd, saleOrder);
 		return list;
 	}
+
+	public void setRepairDateFrom(String fromDate) {
+		this.dao.setTimeFocusForCurrentThread(fromDate);
+	}
+
+	public void clearRepairDate() {
+		this.dao.clearTimeFocusForCurrentThread();
+	}
 }

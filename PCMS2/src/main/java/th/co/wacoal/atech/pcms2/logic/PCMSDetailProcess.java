@@ -163,7 +163,7 @@ public class PCMSDetailProcess {
 				// get normal case from main prod order RP Remark
 				poList = pCMSDetailService.getNormalCaseByProdOrder(this.C_PRODORDER, poListOld);
 				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
+				bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 			} else {
 //				bean = this.updateReplacedPrd(bean, "X");
 				poList.clear();
@@ -309,7 +309,7 @@ public class PCMSDetailProcess {
 					poList.add(poListOP.get(i));
 				}
 				bean.setIconStatus("I");
-				bean.setSystemStatus("Update Success.");
+				bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 			} else {
 				poList.clear();
 				bean.setIconStatus("E");
@@ -417,7 +417,7 @@ public class PCMSDetailProcess {
 					bean.setSaleLineSW(beanL.getSaleLine()); // 1
 					bean = switchProdOrderService.upsertSwitchProdOrder(bean, "O");
 //					bean.setIconStatus("I");
-//					bean.setSystemStatus("Update Success.");
+//					bean.setSystemStatus("อัพเดตข้อมูลสำเร็จ");
 					poList.add(bean);
 					poList = pCMSDetailService.getSwitchProdOrderListByPrd(poList);
 					poListOP = pCMSDetailService.getOrderPuangListByPrd(poList);

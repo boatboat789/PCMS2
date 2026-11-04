@@ -1,0 +1,12 @@
+{
+  "name": "customer_gtech",
+  "description": "ค้นด้วยลูกค้า G TECH (CustomerName+CustomerShortName ต้องคู่กันเพราะ createTempMainSaleWithJoinCustomer INNER JOIN ทั้งสอง temp) — G TECH มี switch prod order บน DEV จึง exercise Switch branch; ค่าจริงจาก DEV (FromSapMainSale DataStatus=O)",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": ["G TECH MATERIAL CO.,LTD."],
+    "customerShortNameList": ["G TECH"],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW"
+  }
+}
