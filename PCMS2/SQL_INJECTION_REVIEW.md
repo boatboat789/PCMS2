@@ -117,3 +117,19 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 - ผู้ใช้ประเภทลูกค้า (`isCustomer`) ถูกจำกัดแค่ "ตัวเลือกใน dropdown" (`PCMSMainController:107-117` เรียก `getCustomerNameDetail(listConfigCus)`)
 - ตอน search: `PCMSMainController.doGetSearchByDetail` (`:170-185`) ส่ง `poList` จาก request ไปที่ `PCMSMainProcess.searchByDetail` (`:33-43`) ซึ่งเมื่อ `isCustomer` เป็นจริง **ทำแค่ล้างฟิลด์ `cfmDetailAll` และ `rollNoRemarkAll`** — ไม่พบการบังคับกรองตาม `CustomerNo` ของผู้ใช้จาก session ในเส้นทางนี้ (ใน `dao` มีการอ้างถึง `ConfigCustomerUser` เพียงที่เดียวคือ `ConfigCustomerUserDaoImpl`)
 - ผลที่คาด (จากการอ่านโค้ด ยังไม่ได้ทดสอบ): ผู้ใช้ลูกค้าที่ส่ง request เอง (ไม่ใส่ filter ลูกค้า หรือใส่ชื่อลูกค้าอื่น) อาจเห็นข้อมูลของลูกค้ารายอื่นได้ — ต้องยืนยันด้วยการทดสอบด้วยบัญชีลูกค้าจริง และตรวจ `PCMSDetail*` ว่าเป็นแบบเดียวกันหรือไม่ (ยังไม่ได้ตรวจ)
+
+### 8.4 ผลตรวจต่อเรื่องการจำกัดข้อมูลตามลูกค้า (อ่านโค้ด ยังไม่ได้ทดสอบ)
+**แก้คำคาดการณ์ใน 8.3:** ผมเคยคาดว่า "ไม่ใส่ filter ลูกค้า = เห็นทั้งหมด" ไม่ถูก — จากโค้ดจริง ตัวกรองลูกค้าเป็น `INNER JOIN #tempCustomerList` และ `#tempCustomerShortList` (`PCMSSqlService.java:928-931`, `PCMSSqlServiceV2.java:134-137, 1159-1162`) ถ้า request ส่งรายการว่างจะได้ผลว่าง ไม่ใช่ทั้งหมด (และหน้า Main ฝั่ง JS บังคับเลือกลูกค้าก่อนค้นหา `PCMSMain.jsp:~834`)
+
+ที่ยืนยันจากโค้ด:
+- รายชื่อลูกค้าที่ใช้กรองมาจาก `bean.getCustomerNameList()` / `getCustomerShortNameList()` ที่มากับ request body (`PCMSMainDaoImpl:619`, `PCMSDetailDaoImpl:1003`, `PCMSDetailV2DaoImpl:169,1109`) ผ่าน `PCMSSearchDaoImpl.handlerTempTableCustomerSearchList` (escape `'` แล้ว)
+- ไม่พบการเทียบรายชื่อนั้นกับสิทธิ์ลูกค้าของผู้ใช้ (`ConfigCustomerUser.CustomerNo` ของ session) ฝั่งเซิร์ฟเวอร์ — สิทธิ์ใช้แค่เติมตัวเลือกใน dropdown (`PCMSMainController:107-117` และเทียบเท่าใน Detail/DetailV2)
+- `isCustomer` ถูกใช้ใน `PCMSMainController` เท่านั้น (ล้าง `cfmDetailAll`, `rollNoRemarkAll`) ไม่ถูกใช้ใน `PCMSDetailController` / `PCMSDetailV2Controller`
+- endpoint ระดับ ProductionOrder เช่น `getPrdDetailByRow` (`PCMSMainDaoImpl:880-884`) กรองด้วย `ProductionOrder` ที่ส่งมาเท่านั้น ไม่มีเงื่อนไขลูกค้า
+
+ผลที่ตามมา (ถ้าผู้ใช้ลูกค้าส่ง request เอง): ใส่ชื่อลูกค้ารายอื่นใน `customerNameList`/`customerShortNameList` หรือระบุ ProductionOrder อื่น อาจได้ข้อมูลของลูกค้ารายอื่น — **ยังไม่ได้ทดสอบ**
+
+ที่ยังไม่รู้ (ต้องถามผู้ใช้/ทดสอบ):
+1. ผู้ใช้ประเภทลูกค้า (`Users.isCustomer`) เข้าหน้า Detail/DetailV2 ได้จริงหรือไม่ (ยังไม่ได้ดูเมนู/permit)
+2. `CustomerNo` ใน `ConfigCustomerUser` ผูกกับ `CustomerName`/`CustomerShortName` ใน `FromSapMainSale` อย่างไร (ใช้ `[CustomerNo]` ใน `FromSapMainSaleDaoImpl:154-190`) — ต้องรู้ก่อนออกแบบการบังคับกรองฝั่งเซิร์ฟเวอร์
+3. ผู้ใช้ภายใน (ไม่ใช่ลูกค้า) ต้องเห็นทุกลูกค้าหรือไม่ — `getConfigCustomerUserDetail` ว่างหมายถึงเห็นทั้งหมด (`PCMSMainController:108-113`)
