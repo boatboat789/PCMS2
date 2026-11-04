@@ -881,7 +881,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 		String prdOrder = "" ;
 		PCMSTableDetail bean = poList.get(0);
 		prdOrder = bean.getProductionOrder();
-		where += " a.ProductionOrder = '" + prdOrder + "' \r\n";
+		where += " a.ProductionOrder = '" + (prdOrder == null ? "" : prdOrder.replace("'", "''")) + "' \r\n";
 		String fromMainB = ""
 				+ " from ( \r\n"
 				+ "			SELECT distinct \r\n"
@@ -910,7 +910,7 @@ public class PCMSMainDaoImpl implements PCMSMainDao {
 				+ fromMainB
 				+ this.pss.buildLeftJoinTempProdWorkDate("b")
 				+ " Order by SaleOrder , 	SaleLine"; 
-		List<Map<String, Object>> datas = this.database.queryList(sql);
+		List<Map<String, Object>> datas = SqlStatementHandler.queryList(this.database, PCMSSqlService.dropAllTemp, sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSAllDetail(map));
