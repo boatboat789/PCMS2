@@ -55,9 +55,9 @@ public class PlanCFMLabDateDaoImpl implements  PlanCFMLabDateDao{
 				    + "	  	 ,'0:PCMS' as InputFrom \r\n"
 				    + "      ,LotNo \r\n"
 				    + " FROM [PCMS].[dbo].[PlanCFMLabDate]  as a\r\n"
-				    + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and \r\n"
-				    + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-				    + "       a.[SaleLine] = '" +  saleLine+ "' \r\n"
+				    + " where a.[ProductionOrder] = '" + (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''")) + "' and \r\n"
+				    + "       a.[SaleOrder] = '" + (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''")) + "' and \r\n"
+				    + "       a.[SaleLine] = '" +  (saleLine == null ? "" : saleLine.replace("'", "''"))+ "' \r\n"
 		 		  	+ " ORDER BY InputFrom ,CreateDate desc ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -84,10 +84,10 @@ public class PlanCFMLabDateDaoImpl implements  PlanCFMLabDateDao{
 		 		  + "				on a.ProductionOrder = b.ProductionOrder and \r\n"
 		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and \r\n"
 		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
-		 		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and \r\n"
-		 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-		 		  + "       a.[SaleLine] = '" + saleLine+ "' and \r\n"
-		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanLabDate()+ "',103)  ";
+		 		  + " where a.[ProductionOrder] = '" + (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''")) + "' and \r\n"
+		 		  + "       a.[SaleOrder] = '" + (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''")) + "' and \r\n"
+		 		  + "       a.[SaleLine] = '" + (saleLine == null ? "" : saleLine.replace("'", "''"))+ "' and \r\n"
+		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+(bean.getCfmPlanLabDate() == null ? "" : bean.getCfmPlanLabDate().replace("'", "''"))+ "',103)  ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -110,7 +110,7 @@ public class PlanCFMLabDateDaoImpl implements  PlanCFMLabDateDao{
 		 		  + "				on a.ProductionOrder = b.ProductionOrder and \r\n"
 		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and\r\n"
 		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
-		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanLabDate()+ "',103) ";
+		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+(bean.getCfmPlanLabDate() == null ? "" : bean.getCfmPlanLabDate().replace("'", "''"))+ "',103) ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

@@ -53,9 +53,9 @@ public class SearchSettingDaoImpl implements SearchSettingDao {
 				+ "   ,[SaleCreateDate] ,[PrdCreateDate],[UserStatus],[Division],[PurchaseOrder]\r\n"
 				+ " FROM [PCMS].[dbo].[SearchSetting]\r\n"
 				+ " where [EmployeeId] = '"
-				+ userId
+				+ (userId == null ? "" : userId.replace("'", "''"))
 				+ "' and [ForPage] = '"
-				+ forPage
+				+ (forPage == null ? "" : forPage.replace("'", "''"))
 				+ "' ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

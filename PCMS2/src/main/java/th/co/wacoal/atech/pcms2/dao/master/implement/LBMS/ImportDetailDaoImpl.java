@@ -41,7 +41,7 @@ public class ImportDetailDaoImpl implements  ImportDetailDao{
 	public  ArrayList<ImportDetail> getImportDetailByProductionOrder(String prodOrder){
 		ArrayList<ImportDetail> list = null;
 		String where = " where  "; 
-		where += " imd.ProductionOrder = '" + prodOrder + "'  AND "
+		where += " imd.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  AND "
 				+ " SendFrom in (\r\n"
 				+ "  'QA',\r\n"
 				+ "  'Dye',\r\n"

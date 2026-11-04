@@ -53,7 +53,7 @@ public class PlanSendCFMCusDateDaoImpl implements  PlanSendCFMCusDateDao{
 			    + "			end as InputFrom \r\n"
 			    + "       , LotNo \r\n"
 			    + " FROM [PCMS].[dbo].[PlanSendCFMCusDate] as a\r\n"
-			  	+ " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' \r\n"
+			  	+ " where a.[ProductionOrder] = '" + (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''")) + "' \r\n"
 			  	+ " ORDER BY  [ChangeDate] desc ";
 
 

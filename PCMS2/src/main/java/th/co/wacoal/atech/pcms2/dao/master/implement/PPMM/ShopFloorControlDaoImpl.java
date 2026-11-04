@@ -29,7 +29,7 @@ public class ShopFloorControlDaoImpl implements  ShopFloorControlDao{
 	public  ArrayList<ShopFloorControlDetail> getShopFloorControlDetailByProductionOrder(String prodOrder){
 		ArrayList<ShopFloorControlDetail> list = null;
 		String where = " where  "; 
-		where += " dfs.ProductionOrder = '" + prodOrder + "' and \r\n"
+		where += " dfs.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "' and \r\n"
 			+ "		dfs.[AdminStatus] = '-'\r\n";
 		String sql =
 				  "  SELECT DISTINCT  \r\n"

@@ -47,7 +47,7 @@ public class FromSapSaleInputDaoImpl implements FromSapSaleInputDao {
 	{
 		ArrayList<SaleInputDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = " SELECT DISTINCT  \r\n"
 				+ " 	[ProductionOrder],[BillDate]\r\n"
 				+ "     ,[BillQtyPerSale],[SaleOrder]\r\n"

@@ -65,7 +65,7 @@ public class EmployeePermitsDaoImpl implements EmployeePermitsDao {
 				+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
 				+ "       A.DataStatus = 'O' and \r\n"
 				+ "		  a.[EmployeeId] = '"
-				+ userId
+				+ (userId == null ? "" : userId.replace("'", "''"))
 				+ "' \r\n";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

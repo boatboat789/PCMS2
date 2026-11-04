@@ -48,7 +48,7 @@ public class ConfigCustomerUserDaoImpl implements  ConfigCustomerUserDao{
 				  + "      ,[CustomerDivision]\r\n" 
 				  + "      ,[DataStatus]\r\n"
 				  + "  FROM [PCMS].[dbo].[ConfigCustomerUser] as a\r\n"
-			  	+ " where a.[EmployeeId] = '" + userId+ "' \r\n"
+			  	+ " where a.[EmployeeId] = '" + (userId == null ? "" : userId.replace("'", "''"))+ "' \r\n"
 			  	+ " ORDER BY EmployeeId desc "; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

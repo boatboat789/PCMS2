@@ -48,7 +48,7 @@ public class FromSapCFMDaoImpl implements FromSapCFMDao {
 	{
 		ArrayList<CFMDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = " SELECT DISTINCT  \r\n"
 				+ "   [Id]"
 				+ "   ,[ProductionOrder],[CFMNo],[CFMNumber]\r\n"

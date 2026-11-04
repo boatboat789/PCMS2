@@ -50,7 +50,7 @@ public class ColumnSettingDaoImpl implements ColumnSettingDao {
 				+ "		[EmployeeId] ,[ColVisibleDetail] ,[ColVisibleSummary]\r\n"
 				+ " FROM [PCMS].[dbo].[ColumnSetting] \r\n "
 				+ " where [EmployeeId] = '"
-				+ user
+				+ (user == null ? "" : user.replace("'", "''"))
 				+ "' ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);

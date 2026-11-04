@@ -163,3 +163,12 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 - `FromSapCFMDaoImpl:190,205,218` ต่อ `systemUser` (ค่าภายในระบบ ไม่น่ามาจาก request — ยังไม่ได้ยืนยันที่มา)
 - ตรวจเพิ่ม: write endpoint ที่ใช้ `PreparedStatement` ครบ — `ColumnSettingDaoImpl.upsertColumnSettingDetail/upsertColumnVisibleSummary`, `PCMSDetailDaoImpl.saveInputDate` (INSERT) เป็นพารามิเตอร์ ไม่พบปัญหา (หมายเหตุ: `upsertColumnVisibleSummary` เรียก `connection.prepareStatement(sql)` ซ้ำโดยไม่ใช้ผล เป็นโค้ดซ้ำที่ไม่เกี่ยวกับความปลอดภัย)
 - **`/Main/getEncrypted/{userId}` (`PCMSMainController:239-270`):** ผู้ใช้ที่ login แล้วเรียกเพื่อขอ "userId ที่เข้ารหัส" ได้กับ userId ใดก็ได้ (ไม่ใช้ session) โดย key, salt ฝังในโค้ด (`secretPass`, `secretSalt`) และใช้ IV เป็นศูนย์ทั้งหมด (AES/CBC เหมือนกันทุกครั้ง); JS ใช้เรียกก่อนสร้างลิงก์ไประบบ LBMS / INSPECT / SFC / QCMS (`web-app.js:42-175`) — ถ้าระบบปลายทางยอมรับค่านี้เป็นตัวตนผู้ใช้ ผู้ใช้ที่ login แล้วอาจสร้างลิงก์ในนามผู้ใช้อื่นได้ **ยืนยันไม่ได้** เพราะไม่เห็นฝั่งปลายทาง ต้องถามผู้ใช้
+
+### อัปเดตรอบที่ 7: escape ตามหัวข้อ 9 (62 จุด ใน 28 ไฟล์)
+- escape `'` เป็น `''` แบบ null-safe (`x == null ? "" : x.replace("'", "''")`) ในจุดที่ต่อค่าเข้า SQL: DAO ที่ `getPrdDetailByRow` เรียกต่อ (FromSapCFM, Dyeing, Packing, Preset, Receipe, Sale, SaleInput, WaitTest, WorkInLab, FromSapMainProd, FromSapSubmitDate, InspectNc, InspectOrders, LBMS/ImportDetail, PPMM/RollFromSap, PPMM/ShopFloorControl), `SwitchProdOrderDaoImpl`, `ReplacedProdOrderDaoImpl`, `PlanCFMDateDaoImpl`, `PlanCFMLabDateDaoImpl`, `PlanDeliveryDateDaoImpl`, `PlanSendCFMCusDateDaoImpl` (รวมค่าวันที่ใน `CONVERT(DATE,'...',103)`)
+- เพิ่มเติมแบบ defense-in-depth: `userId`/`permitId`/`forPage` ใน `PermitsDaoImpl`, `UsersDaoImpl`, `ConfigCustomerUserDaoImpl`, `SearchSettingDaoImpl`, `ColumnSettingDaoImpl`, `EmployeePermitsDaoImpl`
+- ไม่ได้แก้: `FromSapCFMDaoImpl:190,205,218` (`systemUser` ค่าภายในระบบ ยังไม่ได้ตรวจที่มา)
+- การ escape ที่ DAO ครอบคลุม `getPrdDetailByRow` ทั้งเมธอดแล้ว (ตัวแปร `prdOrder`/`productionOrder` ในเมธอดนั้นยังเป็นค่าดิบ ไม่ถูก escape ซ้ำ)
+- วันที่ใน `Plan*DaoImpl` ใช้การ escape เท่านั้น (ไม่ได้ whitelist รูปแบบ) — ค่าไม่ใช่วันที่จะทำให้ SQL แปลงวันที่ error ไม่ใช่ injection
+- ตรวจ: ชนิดตัวแปรที่ครอบเป็น `String` ทั้งหมด (ตรวจ declaration และ getter ใน `PCMSSecondTableDetail`) แต่ยัง **ไม่ได้คอมไพล์/ทดสอบ**
+- สแกนซ้ำหลังแก้ (รูปแบบ `'" + var` แบบ inline และหลายบรรทัดใน `dao/`): เหลือเฉพาะ `systemUser` ข้างบน ไม่รวมรูปแบบที่ regex นี้ไม่จับ (เช่น `String.format`, ตัวเลขที่ต่อโดยไม่มี `'`)

@@ -41,7 +41,7 @@ public class FromSapWaitTestDaoImpl implements  FromSapWaitTestDao{
 	public  ArrayList<WaitTestDetail> getFromSapWaitTestDetailByProductionOrder(String prodOrder){
 		ArrayList<WaitTestDetail> list = null;
 		String where = " where  "; 
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql =
 				  " SELECT DISTINCT  \r\n"
 				+ "    [ProductionOrder],[No],[DateInTest]\r\n"

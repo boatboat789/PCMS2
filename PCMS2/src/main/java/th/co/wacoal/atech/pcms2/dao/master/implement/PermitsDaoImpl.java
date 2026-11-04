@@ -91,7 +91,7 @@ public class PermitsDaoImpl implements PermitsDao {
 						+ "  FROM [PCMS].[dbo].[Permits] as a\r\n"
 						+ " WHERE a.[WebApp] = 'PCMS2' and \r\n"
 						+ "       A.DataStatus = 'O' and \r\n"
-						+ "		  a.[PermitId] = '"+permitId+"' \r\n";  
+						+ "		  a.[PermitId] = '"+(permitId == null ? "" : permitId.replace("'", "''"))+"' \r\n";  
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {
@@ -134,8 +134,8 @@ public class PermitsDaoImpl implements PermitsDao {
 						+ "on pe.PermitId = ep.PermitId  \r\n"
 						+ " WHERE EP.WebApp = 'PCMS2' AND\r\n"
 						+ "		  pe.WebApp = 'PCMS2' AND\r\n"
-						+ "		  pe.[PermitId] = '"+permitId+"' AND\r\n"
-						+ "		  ed.UserId = '"+userId+"' \r\n" 
+						+ "		  pe.[PermitId] = '"+(permitId == null ? "" : permitId.replace("'", "''"))+"' AND\r\n"
+						+ "		  ed.UserId = '"+(userId == null ? "" : userId.replace("'", "''"))+"' \r\n" 
 						+ " ORDER BY ed.UserId\r\n"
 						+ "\r\n"  ;   
 		List<Map<String, Object>> datas = this.database.queryList(sql);

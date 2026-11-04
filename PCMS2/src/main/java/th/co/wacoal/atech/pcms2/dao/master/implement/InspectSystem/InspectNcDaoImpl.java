@@ -42,7 +42,7 @@ public class InspectNcDaoImpl implements  InspectNcDao{
 		ArrayList<NCDetail> list = null;
 		String where = " where  "; 
 		where += " "
-				+ " PrdNumber = '" + prodOrder + "' and \r\n"
+				+ " PrdNumber = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "' and \r\n"
 				+ " NcSolution <> 'ADMIN หลังบ้านออก'    \r\n";
 		String sql = ""
 				+ " SELECT [Id]\r\n" 

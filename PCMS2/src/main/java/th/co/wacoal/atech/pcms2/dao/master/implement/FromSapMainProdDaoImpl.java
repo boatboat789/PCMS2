@@ -113,7 +113,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] \r\n"
 				+ " where \r\n "
 				+ " 	ProductionOrder = '"
-				+ prdOrder
+				+ (prdOrder == null ? "" : prdOrder.replace("'", "''"))
 				+ "'  \r\n"
 				+ "		and ( DataStatus = 'O' ) ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);
