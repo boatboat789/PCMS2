@@ -87,3 +87,11 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 - แก้ใน `PCMSSqlService` และ `PCMSSqlServiceV2` ตามตัวเลือก C ที่ผู้ใช้เลือก: whitelist รูปแบบ `dd/MM/yyyy` (regex `\d{2}/\d{2}/\d{4}`), วันที่เดียว = ช่วงวันเดียว, รูปแบบอื่นหรือเกิน 2 ส่วนโยน `IllegalArgumentException("Invalid date range: <column>")`
 - แทนที่การ escape ในรอบก่อน (whitelist แน่นกว่า) และแก้ `ArrayIndexOutOfBoundsException`
 - ยังไม่ได้ตรวจว่า exception นี้ไปถึงผู้ใช้อย่างไร (controller/JS) และยังไม่ได้ตรวจทุกหน้าว่าส่งรูปแบบ `dd/MM/yyyy` เท่านั้น (ดูเฉพาะ JSP ที่ใช้ daterangepicker)
+
+### เส้นทาง exception ของ `buildDateClause` (ตรวจจากโค้ด ไม่ได้รันระบบ)
+- `buildDateClause` ถูกเรียกจาก `PCMSSqlService.buildWhereClauses` (ใช้ใน `PCMSMainDaoImpl:576`, `PCMSDetailV2DaoImpl:163,1103`, `PCMSDetailDaoImpl:951`) และ `Z_ATT_CustomerConfirm2DaoImpl:152-153`
+- ไม่มี try/catch บนเส้นทาง controller → logic/service → dao ของ search ทั้ง 3 controller (`try` ที่พบคือ `PCMSMainController:246-265` เป็นเมธอดอื่น และ `PCMSDetailProcess:209` เป็น `NumberFormatException`)
+- ไม่มี handler ที่ใช้งานได้: `MyExceptionController` มี `@ControllerAdvice` ถูกคอมเมนต์ไว้ และจัดการเฉพาะ `NoHandlerFoundException`; ไม่พบ reference ถึงคลาสนี้ที่อื่น
+- exception จึงหลุดไปที่ servlet container → `web.xml` `<error-page><location>/handleError</location>` → `ErrorController.customError` (`@RequestMapping` แบบ GET เท่านั้น) ซึ่งแสดงหน้า `error/404` พร้อมข้อความ "Wrong Path." เมื่อ login แล้ว และบันทึก `originalUrl` ลง session
+- ฝั่ง JS: ทุก `$.ajax` ในหน้า Main, Detail, DetailV2, CFMReport, Log มี `error:` handler (จำนวนเท่ากับ ajax) แสดง `swal("Fail", "Please contact to IT", "error")` — ผู้ใช้เห็น popup ทั่วไป ไม่เห็นข้อมูลผิด
+- ยังไม่ได้ยืนยัน (ต้องทดสอบจริง): (ก) request แบบ POST ที่ error-dispatch ไป `/handleError` ซึ่งรับเฉพาะ GET จะได้ 405 แทนหน้า error หรือไม่ (ข) stack trace/ข้อความ `Invalid date range: <column>` ไปอยู่ใน log ของ container ตามปกติหรือไม่ (ค) daterangepicker ที่ผู้ใช้พิมพ์ค่าเองจะส่งรูปแบบใดมาจริง (ง) `originalUrl` ใน session ถูกเขียนทับด้วย URL ของ AJAX ที่ล้มเหลว อาจกระทบ redirect หลัง login ครั้งถัดไป (`LoginController` ใช้ค่านี้ — ยังไม่ได้ไล่)
