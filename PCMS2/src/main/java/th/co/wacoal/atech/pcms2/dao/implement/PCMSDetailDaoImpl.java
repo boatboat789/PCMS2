@@ -612,7 +612,47 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		for (Map<String, Object> map : datas) {
 			list.add(this.bcModel._genPCMSSecondTableDetail(map));
 		}
+		fillSaleStatus(list);
 		return list;
+	}
+
+	/**
+	 * เติม saleStatus (O/C/X) จาก FromSapMainSale ให้แต่ละแถว — SQL หลักไม่ได้ส่งคอลัมน์นี้ออกมา
+	 * ใช้ query แยก (อ่านอย่างเดียว, key = SaleOrder+SaleLine) ไม่แตะ SQL ที่ใช้กรอง/คำนวณ
+	 * ถ้า query ล้มเหลวไม่ทำให้การค้นหาล้ม — saleStatus ว่าง = หน้าจอทำงานเหมือนเดิม
+	 */
+	private void fillSaleStatus(ArrayList<PCMSSecondTableDetail> list) {
+		try {
+			java.util.LinkedHashSet<String> orders = new java.util.LinkedHashSet<>();
+			for (PCMSSecondTableDetail b : list) {
+				if (b.getSaleOrder() != null && !b.getSaleOrder().isEmpty()) {
+					orders.add(b.getSaleOrder());
+				}
+			}
+			Map<String, String> statusByKey = new java.util.HashMap<>();
+			ArrayList<String> all = new ArrayList<>(orders);
+			final int chunk = 1000;
+			for (int from = 0; from < all.size(); from += chunk) {
+				List<String> part = all.subList(from, Math.min(from + chunk, all.size()));
+				StringBuilder ph = new StringBuilder();
+				for (int i = 0; i < part.size(); i++) {
+					ph.append(i == 0 ? "?" : ",?");
+				}
+				String q = "SELECT SaleOrder, SaleLine, MAX(SaleStatus) AS SaleStatus FROM [PCMS].[dbo].[FromSapMainSale] "
+						+ "WHERE SaleOrder IN (" + ph + ") GROUP BY SaleOrder, SaleLine";
+				List<Map<String, Object>> rows = this.jdbc.queryForList(q, part.toArray());
+				for (Map<String, Object> r : rows) {
+					Object st = r.get("SaleStatus");
+					statusByKey.put(r.get("SaleOrder") + "|" + r.get("SaleLine"), st == null ? "" : st.toString().trim());
+				}
+			}
+			for (PCMSSecondTableDetail b : list) {
+				String st = statusByKey.get(b.getSaleOrder() + "|" + b.getSaleLine());
+				b.setSaleStatus(st == null ? "" : st);
+			}
+		} catch (Exception e) {
+			System.out.println("[Detail] fillSaleStatus skipped: " + e.getMessage());
+		}
 	}
 
 	// =========================================================================
