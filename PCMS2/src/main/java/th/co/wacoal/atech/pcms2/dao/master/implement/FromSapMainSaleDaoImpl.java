@@ -155,7 +155,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		String where = " where 1 = 1 AND DataStatus = 'O' AND (";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
-			where += " [CustomerNo] = '" + array[i] + "' ";
+			where += " [CustomerNo] = '" + array[i].replace("'", "''") + "' ";
 			if (i != array.length-1) {
 				where += " or \r\n";
 			}
@@ -183,7 +183,7 @@ public class FromSapMainSaleDaoImpl implements FromSapMainSaleDao {
 		String where = " where 1 = 1 AND DataStatus = 'O' AND ( [CustomerNo] IN ( ";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
-			where += " '" + array[i] + "' ";
+			where += " '" + array[i].replace("'", "''") + "' ";
 			if (i != array.length-1) {
 				where += " , \r\n";
 			}

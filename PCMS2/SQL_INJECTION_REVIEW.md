@@ -133,3 +133,7 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 1. ผู้ใช้ประเภทลูกค้า (`Users.isCustomer`) เข้าหน้า Detail/DetailV2 ได้จริงหรือไม่ (ยังไม่ได้ดูเมนู/permit)
 2. `CustomerNo` ใน `ConfigCustomerUser` ผูกกับ `CustomerName`/`CustomerShortName` ใน `FromSapMainSale` อย่างไร (ใช้ `[CustomerNo]` ใน `FromSapMainSaleDaoImpl:154-190`) — ต้องรู้ก่อนออกแบบการบังคับกรองฝั่งเซิร์ฟเวอร์
 3. ผู้ใช้ภายใน (ไม่ใช่ลูกค้า) ต้องเห็นทุกลูกค้าหรือไม่ — `getConfigCustomerUserDetail` ว่างหมายถึงเห็นทั้งหมด (`PCMSMainController:108-113`)
+
+### อัปเดตรอบที่ 5: escape `CustomerNo`
+- แก้แล้ว 4 จุด (escape `'` เป็น `''` ต่อ element หลัง `split(",")`): `FromSapMainSaleDaoImpl` (`getCustomerNameDetail`, `getCustomerShortNameDetail`) และ `CustomerDetailDaoImpl` (2 จุดใน `getCustomerNameForOption`) — แก้ข้อ 8.1 ว่า "ยังไม่ได้แก้"
+- ยังไม่ได้คอมไพล์/ทดสอบ
