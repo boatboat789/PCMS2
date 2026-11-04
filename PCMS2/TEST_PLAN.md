@@ -14,6 +14,7 @@
 ## 1. เตรียมการ
 1. `git fetch origin claude/vigilant-ptolemy-g4o3sm && git checkout claude/vigilant-ptolemy-g4o3sm && git pull`
 2. commit ที่เกี่ยวข้อง (ใหม่ → เก่า) เทียบกับ baseline `c6e6109` (ก่อนแก้):
+   - `389aac3` escape ใน DAO ที่เหลือ 62 จุด / 28 ไฟล์ (FromSap*, Inspect*, LBMS, PPMM, Switch/Replaced ProdOrder, Plan*, Permits/Users/ConfigCustomerUser/SearchSetting/ColumnSetting/EmployeePermits)
    - `ecf785f` escape `CustomerNo` (4 จุด)
    - `3cb5bf0` `buildDateClause` whitelist `dd/MM/yyyy` (V1 + V2)
    - `cecf693` escape ใน `buildLikeClause`, `buildSaleStatusClause`, Log API 4 DAO, `Z_ATT_CustomerConfirm2DaoImpl`
@@ -40,6 +41,11 @@ Base URL: `http://<host>:8080/PCMS2` · ทุก endpoint ต้อง login �
 | R8 | `/Report/CFM/Detail` | ค้นด้วย Prod ID, Lot, Customer, SO, Send Date, Reply Date | ผลเท่า baseline |
 | R9 | `/Main` และ `/Detail*` (โหลดหน้า) | login ด้วยผู้ใช้ที่มี `ConfigCustomerUser` | dropdown ลูกค้าแสดงถูก (ครอบคลุม `getCustomerNameDetail` / `getCustomerShortNameDetail` ที่แก้ escape `CustomerNo`) |
 | R10 | ทุกหน้า | วันที่ว่าง (Clear) | ไม่ error ไม่กรองวันที่ |
+| R11 | `POST /Main/getPrdDetailByRow` ด้วย ProductionOrder จริง **ที่มีข้อมูลครบทุกแหล่ง** | เปิด modal รายละเอียดแล้วดูทุกส่วน: Roll/PO (RollFromSap), Packing, Import/Lab (LBMS ImportDetail), CFM, Sale, Submit Date, NC (Inspect), Shop Floor (SFC), Inspect Orders, Dyeing, Preset, Receipe, WaitTest, WorkInLab, FromSapMainProd | ข้อมูลทุกส่วนเท่า baseline (ถ้าส่วนไหนว่างทั้ง baseline และ branch ให้จดว่า "ไม่มีข้อมูลให้เทียบ") |
+| R12 | `/Detail` และ `/DetailV2` | ในแต่ละแถวเปิดช่องวันที่แผน: CFM Plan Date, CFM Plan Lab Date, Delivery Plan Date, Send CFM Cus Date (เรียก `POST .../getCFMPlanDateDetail`, `getCFMPlanLabDateDetail`, `getDeliveryPlanDateDetail`, `getSendCFMCusDateDetail`) | ประวัติวันที่เท่า baseline |
+| R13 | `/Detail` และ `/DetailV2` | **บันทึกวันที่แผน** (`POST .../saveInputDate`) ทั้ง `cfmPlanDate`, `cfmPlanLabDate`, `deliveryDate` ด้วยแถวทดสอบ แล้วบันทึกซ้ำวันเดิม | ครั้งแรกสำเร็จ (`Update Success.`) ครั้งที่สอง `Date : ... already confirm.` เหมือน baseline และจำนวน count เพิ่มตามปกติ — **เขียนข้อมูล ใช้ DB ทดสอบเท่านั้น** |
+| R14 | `/Detail` และ `/DetailV2` | **บันทึก Remark** (`POST .../saveInputDetail`) กรณี `switchRemark` และ `replacedRemark` ที่ผ่าน `SwitchProdOrderDaoImpl` / `ReplacedProdOrderDaoImpl`, และ `POST .../getSwitchProdOrderListByRowProd` | ผลเท่า baseline; ข้อมูลที่เขียนลงตาราง `SwitchProdOrder` / `ReplacedProdOrder` ถูกต้อง — **เขียนข้อมูล ใช้ DB ทดสอบเท่านั้น** |
+| R15 | login ปกติ (ทั้งผู้ใช้ที่ผ่าน AD และผู้ใช้ในตาราง `Users`) | login แล้วเข้า `/Main` `/Detail` `/DetailV2` | ผ่านโดยไม่ error; โหลดสิทธิ์ (`Permits`, `EmployeePermits`, `Users`), ตัวเลือกลูกค้า (`ConfigCustomerUser`), ตั้งค่าคอลัมน์ (`ColumnSetting`: โหลดและ `POST .../saveColSettingToServer`), ค่าเริ่มต้นค้นหา (`SearchSetting`: `POST .../saveDefault` แล้ว `POST .../loadDefault`) ทำงานเท่า baseline |
 
 ## 3. การเปลี่ยนพฤติกรรมที่ตั้งใจ — ต้องตรวจ
 
@@ -71,6 +77,11 @@ Base URL: `http://<host>:8080/PCMS2` · ทุก endpoint ต้อง login �
 | I4 | endpoint Detail ที่ใช้ `PCMSSecondTableDetail` (ดู `PCMSDetailProcess`: เปิดรายละเอียดแถว) และ `POST /Detail/getSwitchProdOrderListByPrd`, `POST /DetailV2/getSwitchProdOrderListByPrd` | `productionOrder`, `productionOrderRP`, `saleOrder`, `saleLine` |
 | I5 | `POST /Log/ProductionOrderLog/{dataType}/getProductionOrderLogBySearch` body `{productionOrder, changeDateStart, changeDateEnd}` | `productionOrder` (วันที่ใช้รูปแบบ `dd/MM/yyyy` ปกติ; ทดสอบ P1 ที่วันที่ด้วย: ค่าที่มี `'` ต้องไม่ทำให้ SQL พัง แต่จะ error เรื่องแปลงวันที่ได้) |
 | I6 | `GET /Log/SaleOrderLog/{dataType}/getSaleOrderLogBySearch?saleOrder=<P>&changeDateStart=..&changeDateEnd=..` | `saleOrder` |
+| I8 | `POST /Main/getPrdDetailByRow` (ต่อจาก I1 แต่เน้นว่า payload ไม่ทำให้ **query ย่อยใด ๆ** พัง) | `productionOrder` — ดู log ของ server ว่าไม่มี SQL error จาก DAO ใด ๆ ใน R11 (FromSap*, Inspect*, LBMS ImportDetail, PPMM, SubmitDate, FromSapMainProd) |
+| I9 | `POST /Detail/getCFMPlanDateDetail`, `getCFMPlanLabDateDetail`, `getDeliveryPlanDateDetail`, `getSendCFMCusDateDetail` และของ `/DetailV2` (body `PCMSSecondTableDetail[]`) | `productionOrder`, `saleOrder`, `saleLine` และวันที่ `cfmPlanDate` / `cfmPlanLabDate` / `deliveryDate` (วันที่ทดสอบด้วย P1: ต้องไม่ทำให้ SQL syntax พัง; error แปลงวันที่เป็นพฤติกรรมที่ยอมรับได้) |
+| I10 | `POST /Detail/saveInputDate` และ `/DetailV2/saveInputDate` | `productionOrder`, `saleOrder`, `saleLine` — **ใช้ค่าที่ไม่มีอยู่จริงในแถวทดสอบ ห้ามให้ INSERT เขียนข้อมูลขยะลงตารางจริง**; ตรวจว่าแถวที่เขียน (ถ้ามี) เก็บค่าที่มี `'` ตามตัวอักษร ไม่ใช่ถูกตัด/ตีความเป็น SQL และลบแถวทดสอบทิ้งหลังจบ (ถ้าผู้ใช้อนุญาต) |
+| I11 | `POST /Detail/saveInputDetail`, `/DetailV2/saveInputDetail` กรณี `switchRemark`, `replacedRemark` | `productionOrder`, `productionOrderSW`/`productionOrderRP`, `saleOrder`, `saleLine` (ผ่าน `SwitchProdOrderDaoImpl`, `ReplacedProdOrderDaoImpl`) — ข้อควรระวังเดียวกับ I10 |
+| I12 | `POST /Detail/getSwitchProdOrderListByRowProd`, `/DetailV2/...` | `productionOrder` |
 | I7 | `GET /Report/CFM/getReportDetail?data=<json>` ที่ `json` = `[{"prodID":"<P>","lotNo":"","replyDateRange":"","customerName":"","so":"","sendDateRange":""}]` แทนค่า P ทีละฟิลด์ `prodID`, `lotNo`, `customerName`, `so` | `prodID`, `lotNo`, `customerName`, `so` |
 
 เกณฑ์ผ่านข้อ I: (ก) ไม่มี SQL syntax error จาก P1 (ข) P2/P3 ไม่ให้ผลลัพธ์มากกว่าการค้นด้วยค่าที่ไม่มีอยู่ (ค) ไม่มีผลข้างเคียงต่อข้อมูล ตรวจ log ของ server ด้วย
@@ -97,9 +108,15 @@ Base URL: `http://<host>:8080/PCMS2` · ทุก endpoint ต้อง login �
 | A3 | ลูกค้า A เปิด `/Detail` และ `/DetailV2` ได้หรือไม่ และเห็นข้อมูลต่างจากหน้า Main อย่างไร | บันทึกตามจริง |
 | A4 | ผู้ใช้ภายใน (ไม่ใช่ลูกค้า) เห็นทุกลูกค้า | ยืนยันพฤติกรรม |
 
+## 6.5 ข้อควรรู้เรื่องค่า `userId` / `permitId` / `forPage`
+รอบ `389aac3` เพิ่ม escape ให้ DAO ที่ต่อ `userId` (จาก session), `permitId` (จากแถวใน DB), `forPage` — **ทดสอบแค่การใช้งานปกติ (R15)** ห้ามพยายาม login ด้วย username ที่มี `'` หรืออักขระพิเศษ LDAP กับ AD จริง (ดูหัวข้อ 7)
+
 ## 7. ที่ตั้งใจไม่ทดสอบ / ทดสอบไม่ได้ (บอกผู้ใช้ตามจริง)
 - LDAP injection ใน `AdInfo.getSearchFilter` — ยังไม่ได้แก้ และไม่มีซอร์ส `ActiveDirectory` (ไลบรารี `core` build ใน Eclipse ของผู้ใช้); **ห้ามลองยิง payload ใส่ AD จริง** ถ้าผู้ใช้อยากตรวจให้ขอ `core` source แล้วอ่านโค้ดก่อน
 - รหัสผ่าน AD ที่ฝังใน `AdInfo.java` — ไม่ต้องทดสอบ ต้องให้เจ้าของระบบเปลี่ยนรหัส
+- `FromSapCFMDaoImpl:190,205,218` ยังต่อ `systemUser` โดยไม่ escape (ค่าภายในระบบ ที่มายังไม่ยืนยัน) — ไม่มีเคสทดสอบ ถ้าสงสัยให้รายงาน ไม่ต้องลองยิง
+- `/Main/getEncrypted/{userId}` (key/salt ฝังโค้ด, IV เป็นศูนย์, ใช้ userId ใดก็ได้) — ยังไม่ได้แก้ และยังไม่ทราบว่าระบบ LBMS/INSPECT/SFC/QCMS ใช้ค่านี้ยืนยันตัวตนหรือไม่; ถ้าต้องตรวจให้ถามผู้ใช้ก่อน ห้ามใช้ค่าที่เข้ารหัสไปเข้าระบบอื่นในนามผู้ใช้อื่น
+- การสแกนหา SQL injection เป็น regex จับรูปแบบ `'" + ตัวแปร`; รูปแบบอื่น (เช่น `String.format` กับค่าจาก request, ตัวเลขที่ต่อโดยไม่มี `'`) อาจหลุด — ถ้า Claude ฝั่งทดสอบเจอ error SQL ที่ไม่คาดคิดจาก payload ใด ให้รายงานไฟล์:บรรทัดจาก stack trace
 - `startsWith("/resources/")` ใน `FilterLogin` กับ path แปลก ๆ — ยังไม่ยืนยัน; ถ้าทดสอบให้ทำกับ environment ทดสอบและรายงานผลดิบ
 
 ## 8. รูปแบบรายงานผล (ให้ใส่ในไฟล์ `TEST_RESULTS.md` ที่ root ของ `PCMS2/` โดยไม่ commit/push จนกว่าผู้ใช้สั่ง)
