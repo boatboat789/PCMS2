@@ -1,15 +1,20 @@
 /*
-  2026-11-04_01 — แก้ TEMP_UserStatusAuto คีย์ซ้ำ  (⚠️ สคริปต์เตรียมไว้ ยังไม่รันบน PRD — ให้ DBA/เจ้าของ proc ตรวจก่อน)
-  สาเหตุ (อ่านจากนิยาม proc บน PRD): spd_UpsertToTEMP_UserStatusOnWeb ขั้น UPDATE จับคู่แค่ (ProductionOrder, Grade)
-  แต่ขั้น INSERT เช็ค NOT EXISTS ด้วย 4 คีย์ → PO ที่อยู่หลาย sale line (พ่วง) ถูกเขียนทับให้เป็น SaleOrder/SaleLine เดียวกัน = คีย์ซ้ำ
-  ผลต่อหน้าจอ: Detail เลือกแถวเดียวด้วย #tempUCALBest (PO+Grade) จึงไม่เห็นแถวซ้ำ แต่ SaleOrder/SaleLine ในตารางผิดและโตเรื่อยๆ
+  2026-11-04_01 — กัน TEMP_UserStatusAuto คีย์ซ้ำ  (⚠️ ยังไม่รันบน PRD — ให้ DBA/เจ้าของ proc ตรวจก่อน)
 
-  ลำดับรัน: (A) แก้ proc  →  (B) ตรวจ/ล้างแถวซ้ำเดิม  →  (C) unique index (หลัง B เหลือ 0 เท่านั้น)
+  ข้อเท็จจริงที่ตรวจบน PRD 2026-11-04 (คีย์ = ProductionOrder+SaleOrder+SaleLine+Grade, DataStatus='O'):
+    - ซ้ำจริง 12 กลุ่ม กลุ่มละ 2 แถว สถานะเหมือนกัน สร้างห่างกันไม่กี่ ms (18/6, 2/7, 4/8, 5/8/2026) · ทุกกลุ่มเป็น PO ที่มี sale line เดียว
+    - เหตุที่เป็นไปได้: proc รันซ้อนกันสองรอบ (job + กดบันทึกหน้าเว็บ) → ทั้งสองรอบเช็ค NOT EXISTS ผ่านก่อน insert (race)
+    - ผลต่อหน้าจอ: ไม่มี (สถานะเหมือนกัน และ Detail เลือกแถวเดียวด้วย #tempUCALBest)
+    - (ตัวเลข 1,408 ที่เคยรายงานนับโดยไม่รวม Grade — ผิด อย่าใช้)
+
+  ลำดับ: (B) ตรวจ/ปิดแถวซ้ำ → (C) unique index แบบ IGNORE_DUP_KEY (insert ซ้ำถูกข้ามเงียบๆ ไม่ทำให้ proc error)
+         (A) แก้ proc เป็นของเสริม "ไม่บังคับ": เดิม UPDATE จับคู่แค่ PO+Grade ซึ่งเสี่ยงเขียนทับ SaleOrder/SaleLine
+             ถ้า PO อยู่หลาย sale line และ Grade เดียวกัน — ยังไม่พบกรณีจริงบน PRD จึงเป็นการป้องกันล่วงหน้า (ยังไม่ทดสอบ)
   รันซ้ำได้ · ไม่รันช่วง job (:14/:44, 01:00)
 */
 USE [PCMS]
 GO
--- (A) แก้ proc: ใช้ ALTER (proc มีอยู่แล้ว) ข้างล่างคือนิยามเดิมเต็ม + เฉพาะขั้น UPDATE ที่แก้
+-- (A) [ไม่บังคับ] แก้ proc: ใช้ ALTER (proc มีอยู่แล้ว) ข้างล่างคือนิยามเดิมเต็ม + เฉพาะขั้น UPDATE ที่แก้ — ข้ามส่วนนี้ได้ถ้าจะทำแค่ (B)+(C)
 -- =============================================
 -- Author:		Thiti
 -- Create date: 16/05/2563
@@ -412,9 +417,8 @@ from (
 	inner join  #tempUCAL as a on b.[ProductionOrder] = a.[ProductionOrder] 
 	where b.[DataStatus] = 'O'
 
-	-- FIX 2026-11-04: จับคู่ด้วยคีย์เต็ม (PO + Grade + SaleOrder + SaleLine) และไม่เขียนทับคอลัมน์คีย์
-	-- เดิมจับแค่ (PO + Grade) → PO ที่อยู่หลาย sale line (พ่วง) จะอัปเดตทุกแถวให้เป็นค่าของ sale line ใดก็ได้
-	-- แล้วทำให้คีย์ซ้ำ + สถานะคนละค่า (พบ 1,408 กลุ่มบน PRD ณ 2026-11-04)
+	-- FIX 2026-11-04 (ป้องกันล่วงหน้า): จับคู่ด้วยคีย์เต็ม (PO + Grade + SaleOrder + SaleLine) และไม่เขียนทับคอลัมน์คีย์
+	-- เดิมจับแค่ (PO + Grade) → ถ้า PO อยู่หลาย sale line และ Grade เดียวกัน แถวทั้งหมดจะถูกเขียนทับเป็นค่าของ line ใดก็ได้
 	UPDATE b SET
 	   b.[UserStatusCalFrom]  = CAST(a.[UserStatusCalFrom] AS nvarchar(50))
 	  ,b.[UserStatusCal]      = CAST(a.[UserStatusCal] AS nvarchar(50))
@@ -499,10 +503,12 @@ SELECT COUNT(*) AS dup_key_groups FROM (
 UPDATE t SET DataStatus='X', ChangeDate=GETDATE()
 FROM [PCMS].[dbo].[TEMP_UserStatusAuto] t INNER JOIN d ON d.Id=t.Id WHERE d.rn>1;
 */
+-- ผลที่คาดจาก (B) บน PRD 2026-11-04 = 12 กลุ่ม (ผู้ใช้รันแล้ว)
 GO
--- (C) กันซ้ำถาวร — ทำหลัง (B) เหลือ 0 เท่านั้น
+-- (C) กันซ้ำถาวร — ทำหลัง (B) เหลือ 0 เท่านั้น · IGNORE_DUP_KEY = ON: ถ้าสองรอบ insert พร้อมกัน แถวที่ซ้ำถูกข้าม (ไม่ throw)
 /*
 CREATE UNIQUE NONCLUSTERED INDEX UX_TEMP_UserStatusAuto_O
 ON [PCMS].[dbo].[TEMP_UserStatusAuto] (ProductionOrder, SaleOrder, SaleLine, Grade)
-WHERE DataStatus = 'O';
+WHERE DataStatus = 'O'
+WITH (IGNORE_DUP_KEY = ON);
 */
