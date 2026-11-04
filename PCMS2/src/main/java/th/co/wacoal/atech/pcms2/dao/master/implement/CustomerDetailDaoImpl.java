@@ -110,7 +110,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 		String where = " where 1 = 1 AND ( [CustomerNo] IN ( ";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
-			where += " '" + array[i] + "' ";
+			where += " '" + array[i].replace("'", "''") + "' ";
 			if (i != array.length-1) {
 				where += " , \r\n";
 			}
@@ -141,7 +141,7 @@ public class CustomerDetailDaoImpl implements CustomerDao {
 		String where = " where 1 = 1 AND ( [CustomerNo] IN ( ";
 		String[] array = custNo.split(",");
 		for (int i = 0; i < array.length; i ++ ) {
-			where += " '" + array[i] + "' ";
+			where += " '" + array[i].replace("'", "''") + "' ";
 			if (i != array.length-1) {
 				where += " , \r\n";
 			}

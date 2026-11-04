@@ -1,0 +1,17 @@
+{
+  "name": "date_nopad_duedate",
+  "description": "dueDate 1/1/2022-30/6/2022 (ไม่เติมศูนย์) — MR !21 ผ่อนให้รับ d/M/yyyy; ต้องได้ผลเดียวกับ main (รับค่านี้ได้เหมือนกัน)",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [
+      "G TECH MATERIAL CO.,LTD."
+    ],
+    "customerShortNameList": [
+      "G TECH"
+    ],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "dueDate": "1/1/2022-30/6/2022"
+  }
+}

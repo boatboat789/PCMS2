@@ -1,0 +1,17 @@
+{
+  "name": "quote_article",
+  "description": "articleFG มี ' (LIKE) — main: SQL syntax error (known), MR !21: escape แล้ว ได้ 0 แถว",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [
+      "G TECH MATERIAL CO.,LTD."
+    ],
+    "customerShortNameList": [
+      "G TECH"
+    ],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "articleFG": "O'Brien"
+  }
+}

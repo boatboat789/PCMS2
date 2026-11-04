@@ -952,6 +952,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return listInput;
 	}
 
+	/** Escape single quotes for values concatenated into SQL string literals (null-safe). */
+	private static String escSql(String value)
+	{
+		return value == null ? "" : value.replace("'", "''");
+	}
+
 	@Override
 	public ArrayList<PCMSSecondTableDetail> getWaitLotCaseBySaleOrder(ArrayList<PCMSSecondTableDetail> listRP)
 	{

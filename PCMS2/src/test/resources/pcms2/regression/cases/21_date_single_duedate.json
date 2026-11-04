@@ -1,0 +1,17 @@
+{
+  "name": "single_date_duedate",
+  "description": "dueDate วันเดียว 15/03/2022 — main: ArrayIndexOutOfBounds (ใช้ไม่ได้), MR !21: ใช้ได้ (คาดว่า main พัง = known)",
+  "enabled": true,
+  "bean": {
+    "userStatusList": [],
+    "customerNameList": [
+      "G TECH MATERIAL CO.,LTD."
+    ],
+    "customerShortNameList": [
+      "G TECH"
+    ],
+    "divisionList": [],
+    "distChannel": "DM|EX|HW",
+    "dueDate": "15/03/2022"
+  }
+}
