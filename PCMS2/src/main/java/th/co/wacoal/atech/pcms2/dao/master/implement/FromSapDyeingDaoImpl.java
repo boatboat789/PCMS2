@@ -59,7 +59,7 @@ public class FromSapDyeingDaoImpl implements  FromSapDyeingDao{
 	public  ArrayList<DyeingDetail> getFromSapDyeingDetailByProductionOrder(String prodOrder){
 		ArrayList<DyeingDetail> list = null;
 		String where = " where  "; 
-		where += " dfs.ProductionOrder = '" + prodOrder + "'  and "
+		where += " dfs.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and "
 				+ "		dfs.[Operation] >= 100 and dfs.Operation <= 104 and\r\n"
 				+ "	    dfs.[AdminStatus] = '-'\r\n";
 		String sql =

@@ -81,16 +81,16 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[ChangeDate] AS DATE) >= convert(date,'"
-					+ startLogDate
+					+ (startLogDate == null ? "" : startLogDate.replace("'", "''"))
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[ChangeDate] AS DATE) <= convert(date,'"
-					+ endLogDate
+					+ (endLogDate == null ? "" : endLogDate.replace("'", "''"))
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 //			where += " CAST(a.[CreateDate] AS DATE) = convert(date, '"+createDate+"', 103)  \r\n" ;
 		}
 		if ( ! productionOrder.equals("")) {
-			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[ProductionOrder] = '" + (productionOrder == null ? "" : productionOrder.replace("'", "''")) + "' \r\n" + "	) \r\n";
 		}
 		String sql = " " + " SELECT DISTINCT \r\n" + this.selectForLog + " FROM [PCMS].[dbo].[FromSapMainProd] a\r\n" + where;
 		List<Map<String, Object>> datas = this.database.queryList(sql);
@@ -113,7 +113,7 @@ public class FromSapMainProdDaoImpl implements FromSapMainProdDao {
 				+ " FROM [PCMS].[dbo].[FromSapMainProd] \r\n"
 				+ " where \r\n "
 				+ " 	ProductionOrder = '"
-				+ prdOrder
+				+ (prdOrder == null ? "" : prdOrder.replace("'", "''"))
 				+ "'  \r\n"
 				+ "		and ( DataStatus = 'O' ) ";
 		List<Map<String, Object>> datas = this.database.queryList(sql);

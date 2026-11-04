@@ -62,13 +62,13 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 				+ "	   , '1:PCMS' as InputFrom \r\n"
 				+ " FROM [PCMS].[dbo].[PlanCFMDate]  as a\r\n"
 				+ " where a.[ProductionOrder] = '"
-				+ prdOrder
+				+ (prdOrder == null ? "" : prdOrder.replace("'", "''"))
 				+ "' and \r\n"
 				+ "       a.[SaleOrder] = '"
-				+ bean.getSaleOrder()
+				+ (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''"))
 				+ "' and \r\n"
 				+ "       a.[SaleLine] = '"
-				+ saleLine
+				+ (saleLine == null ? "" : saleLine.replace("'", "''"))
 				+ "' \r\n"
 				+ " union ALL  \r\n "
 				+ " SELECT \r\n"
@@ -81,7 +81,7 @@ public class FromSapSubmitDateDaoImpl implements FromSapSubmitDateDao {
 				+ "	   , '0:ERP365' as InputFrom \r\n"
 				+ " FROM [PCMS].[dbo].[FromSapSubmitDate]  as a\r\n"
 				+ " where a.[ProductionOrder] = '"
-				+ prdOrder
+				+ (prdOrder == null ? "" : prdOrder.replace("'", "''"))
 				+ "' and SubmitDate is not null \r\n"
 				+ "   and a.[DataStatus] = 'O' \r\n"
 				+ " ORDER BY InputFrom ,CreateDate ";

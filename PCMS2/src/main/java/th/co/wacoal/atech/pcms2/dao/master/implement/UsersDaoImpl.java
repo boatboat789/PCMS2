@@ -89,7 +89,7 @@ public class UsersDaoImpl implements UsersDao {
 				+ "  FROM [PCMS].[dbo].[Users] as a \r\n" 
 				+ "  left join [PCMS].[dbo].[EmployeePermits] as b on a.[UserId] = b.[EmployeeId] \r\n"
 				+ "  where  ( b.[WebApp] = 'PCMS2' OR B.[WebApp] IS NULL )\r\n" 
-				+ "     and  a.[UserId] = '"+userId+"' \r\n"; 
+				+ "     and  a.[UserId] = '"+(userId == null ? "" : userId.replace("'", "''"))+"' \r\n"; 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
 		for (Map<String, Object> map : datas) {

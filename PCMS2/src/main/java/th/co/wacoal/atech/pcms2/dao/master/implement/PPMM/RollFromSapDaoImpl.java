@@ -42,7 +42,7 @@ public class RollFromSapDaoImpl implements RollFromSapDao {
 	{
 		ArrayList<PODetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] in ( 'O' ) \r\n";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and a.[DataStatus] in ( 'O' ) \r\n";
 		String sql = " SELECT DISTINCT  \r\n"
 				+ this.selectPO
 				+ " from [PPMM].[dbo].[RollFromSap] as a \r\n "

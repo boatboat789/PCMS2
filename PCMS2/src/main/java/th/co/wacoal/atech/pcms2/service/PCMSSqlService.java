@@ -1247,14 +1247,21 @@ public class PCMSSqlService {
 		return whereClauses;
 	}
 
+	private static final java.util.regex.Pattern DATE_DDMMYYYY = java.util.regex.Pattern.compile("\\d{2}/\\d{2}/\\d{4}");
+
 	public static String buildDateClause(String columnName, String dateRange, String para)
 	{
 		if (dateRange.isEmpty()) {
 			return "";
 		}
-		String[] dateArray = dateRange.split("-");
+		String[] parts = dateRange.split("-");
+		String from = parts[0].trim();
+		String to = parts.length == 2 ? parts[1].trim() : from;
+		if (parts.length > 2 || !DATE_DDMMYYYY.matcher(from).matches() || !DATE_DDMMYYYY.matcher(to).matches()) {
+			throw new IllegalArgumentException("Invalid date range: " + columnName);
+		}
 		String sqlTemplate = "and (%s.%s >= CONVERT(DATE,'%s',103) and \n" + "           %s.%s <= CONVERT(DATE,'%s',103)) \n";
-		return String.format(sqlTemplate, para, columnName, dateArray[0].trim(), para, columnName, dateArray[1].trim());
+		return String.format(sqlTemplate, para, columnName, from, para, columnName, to);
 	}
 
 	private String buildLikeClause(String columnName, String value, String para)
@@ -1262,7 +1269,7 @@ public class PCMSSqlService {
 		if (value.isEmpty()) {
 			return "";
 		}
-		return String.format("and %s.%s like '%s%%' \n", para, columnName, value);
+		return String.format("and %s.%s like '%s%%' \n", para, columnName, value.replace("'", "''"));
 	}
 
 	private String buildListClause(String columnName, List<String> list, String para)
@@ -1308,7 +1315,7 @@ public class PCMSSqlService {
 			return String.format(sqlTemplate, saleStatus);
 		default:
 			sqlTemplate = "and (SaleStatus like '%s%%' or a.[RemainQuantity] = 0) \n";
-			return String.format(sqlTemplate, saleStatus);
+			return String.format(sqlTemplate, saleStatus.replace("'", "''"));
 		}
 	}
 

@@ -547,15 +547,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
-					+ changeDateStart
+					+ (changeDateStart == null ? "" : changeDateStart.replace("'", "''"))
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
-					+ changeDateEnd
+					+ (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"))
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
 		if ( ! productionOrder.equals("")) {
-			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[ProductionOrder] = '" + (productionOrder == null ? "" : productionOrder.replace("'", "''")) + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT  \r\n"
@@ -733,15 +733,15 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
-					+ changeDateStart
+					+ (changeDateStart == null ? "" : changeDateStart.replace("'", "''"))
 					+ "', 103) AND \r\n"
 					+ "	CAST(a.[SyncDate] AS DATE) <= convert(date,'"
-					+ changeDateEnd
+					+ (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"))
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
 		if ( ! saleOrder.equals("")) {
-			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrder + "' \r\n" + "	) \r\n";
+			where += " " + " and (  " + " a.[SaleOrder] = '" + (saleOrder == null ? "" : saleOrder.replace("'", "''")) + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
 				+ " SELECT  [SaleOrder]\r\n"

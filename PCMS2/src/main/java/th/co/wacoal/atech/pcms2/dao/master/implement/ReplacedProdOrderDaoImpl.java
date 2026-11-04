@@ -58,7 +58,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where Productionorder <> [ProductionOrderRP] and DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrderRP] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -84,7 +84,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  where Productionorder <> [ProductionOrderRP] and \r\n"
 				+ "        DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -110,13 +110,13 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' and\r\n"
 				+ "       [SaleOrder] = '"
-				+ saleOrder
+				+ (saleOrder == null ? "" : saleOrder.replace("'", "''"))
 				+ "' and\r\n"
 				+ "       [SaleLine] = '"
-				+ saleLine
+				+ (saleLine == null ? "" : saleLine.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -141,7 +141,7 @@ public class ReplacedProdOrderDaoImpl implements ReplacedProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[ReplacedProdOrder]\r\n"
 				+ "  where DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";

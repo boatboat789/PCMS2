@@ -1311,6 +1311,12 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		return listInput;
 	}
 
+	/** Escape single quotes for values concatenated into SQL string literals (null-safe). */
+	private static String escSql(String value)
+	{
+		return value == null ? "" : value.replace("'", "''");
+	}
+
 	@Override
 	public ArrayList<PCMSSecondTableDetail> getWaitLotCaseBySaleOrder(ArrayList<PCMSSecondTableDetail> listRP)
 	{
@@ -1325,7 +1331,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				PCMSSecondTableDetail bean = listRP.get(i);
 				saleOrder = bean.getSaleOrder();
 				saleLine = bean.getSaleLine();
-				where = where + " ( a.SaleOrder = '" + saleOrder + "' and a.SaleLine = '" + saleLine + "' ) ";
+				where = where + " ( a.SaleOrder = '" + escSql(saleOrder) + "' and a.SaleLine = '" + escSql(saleLine) + "' ) ";
 				if (i != sizeList-1) {
 					where += " or ";
 				}
@@ -1424,7 +1430,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 				} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 					prodOrder = poList.get(i).getProductionOrderRP();
 				}
-				where = where + "'" + prodOrder + "' ";
+				where = where + "'" + escSql(prodOrder) + "' ";
 				if (i != poList.size()-1) {
 					where += " , ";
 				}
@@ -1499,18 +1505,18 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 						+ " ( a."
 						+ prdOrderType
 						+ " = '"
-						+ prodOrder
+						+ escSql(prodOrder)
 						+ "' and\r\n"
 						+ "    a.[SaleOrder] = '"
-						+ poList.get(i).getSaleOrder()
+						+ escSql(poList.get(i).getSaleOrder())
 						+ "' and\r\n"
 						+ "    a.[SaleLine] = '"
-						+ saleLine
+						+ escSql(saleLine)
 						+ "' \r\n"
 						+ " ) \r\n";
 			} else if (prdOrderType.equals(this.C_PRODORDERRP)) {
 				prodOrder = poList.get(i).getProductionOrderRP();
-				where = where + " " + prdOrderType + " = '" + prodOrder + "' ";
+				where = where + " " + prdOrderType + " = '" + escSql(prodOrder) + "' ";
 			}
 			if (i != poList.size()-1) {
 				where += " or ";
@@ -1559,7 +1565,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
+			where = where + " '" + escSql(ProductionOrder) + "' ";
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
@@ -1608,7 +1614,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 		String where = " and  ( b.ProductionOrder in ( \r\n";
 		for (int i = 0; i < poList.size(); i ++ ) {
 			String ProductionOrder = poList.get(i).getProductionOrder();
-			where = where + " '" + ProductionOrder + "' ";
+			where = where + " '" + escSql(ProductionOrder) + "' ";
 			if (i != poList.size()-1) {
 				where += " , ";
 			}
@@ -1659,7 +1665,7 @@ public class PCMSDetailDaoImpl implements PCMSDetailDao {
 			List<String> productionOrders = new ArrayList<>();
 
 			for (PCMSSecondTableDetail detail : poList) {
-				productionOrders.add("'" + detail.getProductionOrder() + "'");
+				productionOrders.add("'" + escSql(detail.getProductionOrder()) + "'");
 			}
 
 			where += String.join(", ", productionOrders) + ") \r\n";

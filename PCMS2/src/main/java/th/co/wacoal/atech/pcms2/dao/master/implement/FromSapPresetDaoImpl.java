@@ -49,7 +49,7 @@ public class FromSapPresetDaoImpl implements  FromSapPresetDao{
 		ArrayList<PresetDetail> list = null;
 		String where = " where  "; 
 		where += ""
-				+ " a.ProductionOrder = '" + prodOrder + "'  and \r\n"
+				+ " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and \r\n"
 				+ "	a.[DataStatus] = 'O' \r\n";
 		String sql =
 				" SELECT DISTINCT \r\n "

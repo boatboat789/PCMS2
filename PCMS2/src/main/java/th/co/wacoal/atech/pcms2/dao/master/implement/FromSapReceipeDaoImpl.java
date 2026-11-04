@@ -44,7 +44,7 @@ public class FromSapReceipeDaoImpl implements FromSapReceipeDao {
 	{
 		ArrayList<ReceipeDetail> list = null;
 		String where = " where  ";
-		where += " a.ProductionOrder = '" + prodOrder + "'  and a.[DataStatus] = 'O' \r\n";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and a.[DataStatus] = 'O' \r\n";
 		String sql = "SELECT DISTINCT  \r\n"
 				+ "   [ProductionOrder],[No],[PostingDate] ,[LotNo],[Receipe],a.[DataStatus] \r\n"
 				+ " from [PCMS].[dbo].[FromSapReceipe] as a \r\n "

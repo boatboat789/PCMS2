@@ -55,9 +55,9 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		    + "	 	 , '1:PCMS' as InputFrom \r\n"
 		    + "   	 , LotNo \r\n"
 		    + " FROM [PCMS].[dbo].[PlanCFMDate] as a\r\n"
-		    + " where a.[ProductionOrder] = '" + bean.getProductionOrder() + "' and \r\n"
-		    + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-		    + "       a.[SaleLine] = '" + saleLine+ "' \r\n"
+		    + " where a.[ProductionOrder] = '" + (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''")) + "' and \r\n"
+		    + "       a.[SaleOrder] = '" + (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''")) + "' and \r\n"
+		    + "       a.[SaleLine] = '" + (saleLine == null ? "" : saleLine.replace("'", "''"))+ "' \r\n"
 //  		  + "   and [DataStatus] = 'O' "
 		  + " ORDER BY InputFrom ,CreateDate desc ";
 
@@ -83,7 +83,7 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		 		  + "           a.SaleOrder = b.SaleOrder and "
 		 		  + "           a.SaleLine = b.SaleLine and\r\n"
 		 		  + "		    a.[CreateDate] = b.[MaxCreateDate] \r\n "
-		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanDate()+ "',103) ";
+		 		  + " where a.[PlanDate] = CONVERT(DATE,'"+(bean.getCfmPlanDate() == null ? "" : bean.getCfmPlanDate().replace("'", "''"))+ "',103) ";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();
@@ -109,10 +109,10 @@ public class PlanCFMDateDaoImpl implements  PlanCFMDateDao{
 		 		  + "				on a.ProductionOrder = b.ProductionOrder and \r\n"
 		 		  + "                  a.SaleOrder = b.SaleOrder and a.SaleLine = b.SaleLine and\r\n"
 		 		  + "				   a.[CreateDate] = b.[MaxCreateDate] \r\n "
-		 		  + " where a.[ProductionOrder] = '" + bean.getProductionOrder()+ "' and \r\n"
-		 		  + "       a.[SaleOrder] = '" + bean.getSaleOrder() + "' and \r\n"
-		 		  + "       a.[SaleLine] = '" + saleLine+ "' and \r\n"
- 		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+bean.getCfmPlanDate()+ "',103) \r\n";
+		 		  + " where a.[ProductionOrder] = '" + (bean.getProductionOrder() == null ? "" : bean.getProductionOrder().replace("'", "''"))+ "' and \r\n"
+		 		  + "       a.[SaleOrder] = '" + (bean.getSaleOrder() == null ? "" : bean.getSaleOrder().replace("'", "''")) + "' and \r\n"
+		 		  + "       a.[SaleLine] = '" + (saleLine == null ? "" : saleLine.replace("'", "''"))+ "' and \r\n"
+ 		  		  + "       a.[PlanDate] = CONVERT(DATE,'"+(bean.getCfmPlanDate() == null ? "" : bean.getCfmPlanDate().replace("'", "''"))+ "',103) \r\n";
 
 		List<Map<String, Object>> datas = this.database.queryList(sql);
 		list = new ArrayList<>();

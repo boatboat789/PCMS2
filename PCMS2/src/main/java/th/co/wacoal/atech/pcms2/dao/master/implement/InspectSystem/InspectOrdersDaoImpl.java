@@ -42,7 +42,7 @@ public class InspectOrdersDaoImpl implements  InspectOrdersDao{
 		ArrayList<InspectOrdersDetail> list = null;
 		String where = " where  "; 
 		where += " "
-				+ " PrdNumber = '" + prodOrder + "'  \r\n" ;
+				+ " PrdNumber = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  \r\n" ;
 		String sql = ""
 				+ " SELECT [Id]\r\n"
 				+ "      ,[PrdNumber]  \r\n"

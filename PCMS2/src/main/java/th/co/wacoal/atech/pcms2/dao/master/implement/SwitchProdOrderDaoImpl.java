@@ -59,7 +59,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 				+ "  where DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrderSW] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -85,7 +85,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 				+ "  where Productionorder <> [ProductionOrderSW] and DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrderSW] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -111,7 +111,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ "  FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 				+ "  where Productionorder <> [ProductionOrderSW] and DataStatus = 'O' and \r\n"
 				+ "       [ProductionOrder] = '"
-				+ prodOrder
+				+ (prodOrder == null ? "" : prodOrder.replace("'", "''"))
 				+ "' \r\n"
 				+ "  ORDER BY productionorder \r\n"
 				+ " ";
@@ -136,11 +136,11 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 				+ "  LEFT JOIN (SELECT ProductionOrderSW, 1 as countInSW  \r\n"
 				+ "			  FROM [PCMS].[dbo].[SwitchProdOrder]\r\n"
 				+ "			  where DataStatus = 'O' AND  ProductionOrderSW = '"
-				+ prdOrderSW
+				+ (prdOrderSW == null ? "" : prdOrderSW.replace("'", "''"))
 				+ "' \r\n"
 				+ "			  group by ProductionOrderSW ) AS B ON A.ProductionOrder = B.ProductionOrderSW\r\n"
 				+ "  where SaleOrder <> '' AND a.ProductionOrder = '"
-				+ prdOrderSW
+				+ (prdOrderSW == null ? "" : prdOrderSW.replace("'", "''"))
 				+ "' \r\n"
 				+ " ";
 		list = new ArrayList<>();
@@ -157,7 +157,7 @@ public class SwitchProdOrderDaoImpl implements SwitchProdOrderDao {
 		ArrayList<PCMSSecondTableDetail> list = null;
 //		String saleLine = String.format("%06d", Integer.parseInt(bean.getSaleLine()));
 		String where = " ( \r\n";
-		where += " a.ProductionOrder = '" + prodOrder + "' ";
+		where += " a.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "' ";
 		where += " ) \r\n";
 		String sql = " SELECT   \r\n"
 				+ "     case \r\n"

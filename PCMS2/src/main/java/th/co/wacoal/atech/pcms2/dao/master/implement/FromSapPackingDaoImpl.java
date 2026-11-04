@@ -54,7 +54,7 @@ public class FromSapPackingDaoImpl implements FromSapPackingDao {
 	{
 		ArrayList<PackingDetail> list = null;
 		String where = " where  ";
-		where += " " + " fsp.ProductionOrder = '" + prodOrder + "'  and \r\n" + " fsp.[DataStatus] = 'O' \r\n";
+		where += " " + " fsp.ProductionOrder = '" + (prodOrder == null ? "" : prodOrder.replace("'", "''")) + "'  and \r\n" + " fsp.[DataStatus] = 'O' \r\n";
 		String sql = ""
 				+ " SELECT DISTINCT  \r\n"
 				+ this.selectPacking
