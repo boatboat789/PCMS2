@@ -80,6 +80,10 @@ path ย่อ: `S = PCMS2/src/main/java/th/co/wacoal/atech/pcms2`
 - B2: `Z_ATT_CustomerConfirm2DaoImpl` — `custName`, `so`, `prodOrder`, `lotNubmer`
 
 ยังไม่ได้ทำ / ไม่ได้เปลี่ยน:
-- `buildDateClause` ยังเกิด `ArrayIndexOutOfBoundsException` ถ้า `dateRange` ไม่มี `-` (พฤติกรรมเดิม ไม่ได้แตะ เพราะไม่รู้ว่าฝั่งหน้าเว็บต้องการให้ตอบอย่างไร)
 - ข้อ LDAP (`AdInfo.getSearchFilter`) และรหัสผ่านใน `AdInfo.java` — ยังไม่แก้ เพราะไลบรารี `core` (build ใน Eclipse ของผู้ใช้) ไม่อยู่ใน repo จึงยืนยันพฤติกรรมของ `ActiveDirectory.getContext` ไม่ได้
 - ยังไม่ได้ compile / ทดสอบกับ DB จริง
+
+### อัปเดตรอบที่ 3: `buildDateClause`
+- แก้ใน `PCMSSqlService` และ `PCMSSqlServiceV2` ตามตัวเลือก C ที่ผู้ใช้เลือก: whitelist รูปแบบ `dd/MM/yyyy` (regex `\d{2}/\d{2}/\d{4}`), วันที่เดียว = ช่วงวันเดียว, รูปแบบอื่นหรือเกิน 2 ส่วนโยน `IllegalArgumentException("Invalid date range: <column>")`
+- แทนที่การ escape ในรอบก่อน (whitelist แน่นกว่า) และแก้ `ArrayIndexOutOfBoundsException`
+- ยังไม่ได้ตรวจว่า exception นี้ไปถึงผู้ใช้อย่างไร (controller/JS) และยังไม่ได้ตรวจทุกหน้าว่าส่งรูปแบบ `dd/MM/yyyy` เท่านั้น (ดูเฉพาะ JSP ที่ใช้ daterangepicker)
