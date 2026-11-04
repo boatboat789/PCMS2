@@ -73,6 +73,8 @@ public class PCMSSecondTableDetail {
 	private String switchRemark ;
 	private String typePrd ;
 	private String typePrdRemark ;
+	// สถานะ sale line (O/C/X) — เติมหลังค้นหาหน้า Detail ให้ฝั่งหน้าจอไม่เตือน Due Date ของ line ที่ปิด/ยกเลิก
+	private String saleStatus ;
 	private int countInSW;
 	private String saleOrderSW;
 	private String saleLineSW;
@@ -674,4 +676,6 @@ public class PCMSSecondTableDetail {
 			this.customerDivision = customerDivision;
 		}
 
+	public String getSaleStatus() { return saleStatus; }
+	public void setSaleStatus(String saleStatus) { this.saleStatus = saleStatus; }
 }

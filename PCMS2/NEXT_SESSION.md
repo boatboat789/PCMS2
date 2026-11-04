@@ -2,6 +2,14 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-04 — ทดสอบหน้าเว็บบน PRD (รันบนเครื่อง ชี้ DB PRD, VIEWONLY, job ปิด, อ่านอย่างเดียว) + แก้ Due Date ของ line ที่ปิด
+
+- ผ่าน: ค้น SO (Detail) · ค้นทั้งหมด In-Process 6,294 แถว (server ~8.4s) · แถว WaitLot มีค่า Replaced Remark 64 / PC Remark 7 · Excel Detail 14MB ไม่มี error · Summary 6,276 แถว · log Tomcat ไม่มี SQL error
+- **บั๊กที่เจอ:** Due Date ของ sale line ที่ปิด/ยกเลิกยังขึ้น "เลย N วัน" — `renderDueDate` (0547839) เช็ค `row.saleStatus` แต่ SQL หลักของ Detail ไม่ส่งคอลัมน์นี้ออกมา เงื่อนไขจึงไม่เคยทำงาน (DEV ไม่เห็น เพราะเทียบแค่เลขวัน)
+- **แก้:** `PCMSDetailDaoImpl.fillSaleStatus` query แยก (อ่านอย่างเดียว) เติม `saleStatus` จาก `FromSapMainSale` ตาม SaleOrder+SaleLine หลังค้นหา — ไม่แตะ SQL กรอง/คำนวณ · ถ้า query ล้มจะข้าม (หน้าจอทำงานเหมือนเดิม) · field ใหม่ `PCMSSecondTableDetail.saleStatus`
+- ตรวจบน PRD หลังแก้: SO 1107010287 radio Closed → saleStatus=C ทั้ง 2 แถว วันที่แสดงปกติไม่มีป้ายเลย · In-Process ทั้งหมด saleStatus=O · ค้นทั้งหมด 8.6s (เดิม 8.4s)
+- ไม่ได้ทดสอบเขียนข้อมูลบน PRD · ยังไม่ deploy
+
 ## ✅ 2026-11-03 (เย็น) — ตรวจความพร้อมขึ้น PRD ของ `main` (e9e5324) — พร้อม · รอ user สั่ง deploy
 
 > user สั่ง commit/push/merge (2026-11-03) → branch `release/prd-readiness-2026-11-03` merge เข้า `main` ผ่าน MR (เอกสารล้วน ไม่มีโค้ด) · **deploy ยังไม่ได้ทำ**
