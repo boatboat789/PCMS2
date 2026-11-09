@@ -2,6 +2,38 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV 2026-11-09 ผ่านเกือบทั้งหมด · ยังไม่ commit/push)
+
+branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที่ดึงไว้ 11-04 — VPN ยังไม่ต่อ ดึงใหม่ไม่ได้) · VPN: Fortinet ตัดอยู่ (twcgit/DB ต่อไม่ได้) ต้องต่อเองแล้ว fetch
+
+### แก้แล้ว
+- `ReportController`: เช็คสิทธิ์ `permit.isReport()` ที่ endpoint ข้อมูล · guard list ว่าง/JSON เสีย/reportType ไม่รู้จัก/วันที่ผิดรูป → 400/403 ข้อความภาษาไทย · **Excel ส่งแค่ id แล้ว server ดึงข้อมูลจริงเอง** (ไม่เขียนตัวเลขที่ client ส่งกลับ) เพดาน 20,000 แถว
+- `CFMReport.jsp`: ปุ่ม Download ส่งออกเฉพาะแถวที่เห็นตามตัวกรองคอลัมน์ (`rows({search:'applied'})`, ทุกหน้า) ตารางว่าง → เตือน · ใช้ `fetch` อ่านข้อความ error · **ตัดสินใจเอง: เดิมส่งทั้งตาราง ถ้าต้องการทั้งตารางให้เปลี่ยนกลับเป็น `mainTable.rows().data()`**
+- `PCMSSqlService.buildDateClause`: null/ว่าง → ไม่กรอง (main แก้ SQL injection ไปแล้วด้วย regex)
+- `ExportExcelCFMReportService`: ค่า 0 แสดงเป็น 0 (ไม่ใช่ว่าง) · คอลัมน์สี 3 ทศนิยม (Qty คง 2)
+- `CustomDateDeserializer`: Locale.US, รองรับรูปแบบมีเวลา (ไม่ตัดเป็นเที่ยงคืน), คืน null เมื่อว่าง
+- `Z_ATT_CustomerConfirm2DaoImpl`: `ById` รายการว่าง → คืนว่าง (เดิมคืนทุกแถว) · CTE `OperationMax`/`CTE_Data` กรองเฉพาะ PO ที่อยู่ในตาราง CFM (ผลลัพธ์เท่าเดิม แต่ไม่ aggregate `DataFromSap` ทั้งตาราง)
+- `ERPAtechDaoImpl`: `CustomerDue` เช็ค `[CustomerDue] = ''` (เดิมพิมพ์เป็น `[DueDate]`) · ERP365 log `TOP (50001)` + null-safe
+- Log controllers (Production/Sale): ข้อความ "ค้นหาสำเร็จ" แทน "บันทึกข้อมูลสำเร็จ" · จับ error ส่ง JSON `error` · เกิน 50,000 แถวตัด+เตือน · JSP ขึ้น Swal เมื่อ error/ถูกตัด
+- `PCMSDetail.jsp`: Swal เมื่อล้าง Replaced Remark ตอบ `[]`
+
+### ✅ ผลทดสอบ DEV 2026-11-09 (Tomcat 8082 สร้างจากสำเนา `C:/temp/pcms2_build` ไม่แตะ target/ ของ Eclipse · shutdown port ใน `pcms2-dev-tomcat/conf/server.xml` เปลี่ยน 8007→8017 เพราะชน)
+- 🔴 เจอและแก้บั๊กที่ตัวเองสร้าง: regex ใน `CFMReport.jsp` ถูกสคริปต์แปลง `` เป็นอักขระ 0x02 → JSP parse ไม่ได้ (500) — **เครื่องมือ Bash ยุบ `\` เป็น `\` ใน heredoc: เขียน backslash ผ่านสคริปต์ให้ใช้ `chr(92)`** และตรวจ control char หลังแก้ไฟล์
+- Report: 400/403/404 ข้อความไทยถูก (JSON ว่าง/เสีย, วันที่ฉีด SQL, id ไม่มี) · ค้นด้วยแถวทดสอบ ZZTEST 4 แถว (ผูก PO จริง S2K252/S2J385/P3C137/P3C138) ได้ครบ ค่าสี Color Check มาถูก · กรองคอลัมน์ prodID เหลือ 2 แถว → Download ส่ง `[{id:3},{id:4}]` ได้ xlsx · xlsx 4 แถว 39 คอลัมน์ ค่า 0 แสดงเป็น 0 รูปแบบ `#,##0.000` · ตารางว่าง/กรองเหลือ 0 → Swal เตือน · พิมพ์วันที่ผิด → Swal ข้อความรูปแบบวันที่
+- SQL CTE ใหม่ vs เก่า: ผลเท่ากัน (EXCEPT สองทาง = 0) · **เวลาเท่ากันบน DEV (ผลลัพธ์ 4 แถว optimizer ผลัก predicate เองอยู่แล้ว) — ยังไม่พิสูจน์ว่าเร็วขึ้น ต้องวัดบน PRD ที่ผลลัพธ์ใหญ่ (อ่านอย่างเดียว)**
+- Log: ATT Production/Sale ค้นได้ (33,436 แถวไม่กรอง, PO เดียว 1 แถว) · ค่า null ไม่ NPE · ERP365 **ทดสอบ SQL ไม่ได้บน DEV** (ไม่มี `FromErpMainProd`/`FromErpMainSale` ใน DEV PCMS) ได้ status=error + Swal แทนหน้า 500 → ตรวจกับ ERP_PROD จริงแล้ว ดูหัวข้อ PRD
+- Replaced Remark: ตั้ง/ล้างบน DEV ผ่านปกติ (S1C340 ↔ S2K252, ปิดเป็น X เหลือ history) · เคสตอบ `[]` ไม่มีข้อมูลทำให้เกิดจริง ทดสอบสาขาใหม่ด้วยจำลอง `$.ajax` → Swal ขึ้น ตารางไม่ถูกแตะ ฟิลด์อื่นไม่ขึ้น
+### ✅ ผลทดสอบ PRD อ่านอย่างเดียว 2026-11-09 08:35 (SELECT ล้วน · ผลเก็บ `#temp` ใน tempdb เท่านั้น · ก่อนรอบ sync :44)
+- SQL CFM เก่า vs ใหม่ (14,175 แถว, 11,339 PO): ผลเท่ากัน (EXCEPT สองทาง = 0) · **เวลา 610 ms → 418 ms (เร็วขึ้น ~30%)** วัด 2 รอบคงที่
+- แถวซ้ำจาก `ShopFloorControlDetail` (PO+Operation ของ Dye/ColorCheck) และ `FromSapMainProd` ซ้ำต่อ PO: **0 ทั้งหมด** → ความกังวลเรื่อง join คูณแถวไม่เกิดกับข้อมูลปัจจุบัน (ความเสี่ยงแฝงเท่านั้น ไม่ต้องแก้ตอนนี้)
+- Log ERP365: จับ SQL ที่ DAO สร้างจริง (`SELECT TOP (50001) … Order by SyncDate desc`) รันบน `ERP_PROD` ได้ถูก syntax — Production 2 วัน 11 แถว · Sale ตั้งแต่ 1 ต.ค. 1,655 แถว (มี CustomerDue 1,630) · บั๊ก `CustomerDue` ไม่มีแถวที่เข้าเงื่อนไขผิดในช่วงนี้ จึงยืนยันได้แค่ว่าแก้แล้วไม่พัง
+- เก็บกวาด: ลบแถว ZZTEST ใน `Z_ATT_CustomerConfirm2` แล้ว (0 แถว) · Tomcat DEV หยุดแล้ว
+
+### 🔲 ต้องทำ
+- [x] วัดเวลา SQL CFM บน PRD + ตรวจแถวซ้ำ/ตรวจ SQL ERP365 กับ ERP_PROD จริง — เสร็จ (ผลอยู่ในหัวข้อ "ผลทดสอบ PRD")
+- [ ] ต่อ VPN → fetch → merge/rebase กับ `main` ล่าสุด → push 2 remote → MR
+- [ ] SQL `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` (untracked) รอ DBA · deploy PRD รอ user สั่ง
+
 ## ✅ 2026-11-04 — ทดสอบหน้าเว็บบน PRD (รันบนเครื่อง ชี้ DB PRD, VIEWONLY, job ปิด, อ่านอย่างเดียว) + แก้ Due Date ของ line ที่ปิด
 
 - ผ่าน: ค้น SO (Detail) · ค้นทั้งหมด In-Process 6,294 แถว (server ~8.4s) · แถว WaitLot มีค่า Replaced Remark 64 / PC Remark 7 · Excel Detail 14MB ไม่มี error · Summary 6,276 แถว · log Tomcat ไม่มี SQL error

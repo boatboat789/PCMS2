@@ -358,7 +358,12 @@ $(document) .ready( function() {
 	    searchByDetail();
  	} );   
  	$('#btn_download').on( 'click', function () {      
-		var ObjMarkup = mainTable.data().toArray(); 
+		// ส่งออกเฉพาะแถวที่เห็นตามตัวกรองคอลัมน์บนจอ (ทุกหน้าของตาราง ไม่ใช่แค่หน้าที่แสดง) — ส่งแค่ id ให้ server ดึงข้อมูลจริงเอง
+		var ObjMarkup = mainTable.rows({ search: 'applied' }).data().toArray().map(function(r){ return { id: r.id }; });
+		if (ObjMarkup.length === 0) {
+			Swal.fire("คำเตือน", "ไม่มีข้อมูลให้ส่งออก — กรุณาค้นหาก่อน หรือผ่อนตัวกรองคอลัมน์", "warning");
+			return;
+		}
 		exportCSV(ObjMarkup)
 	 	} );   
 	$("#mainTable_filter").hide();  
@@ -424,7 +429,11 @@ $(document) .ready( function() {
 	            mainTable.draw();
 	        },
 	        error: function(e) {
-	            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+	            if (e.status === 400 || e.status === 403) {
+	                Swal.fire("ไม่สามารถค้นหาได้", e.responseText || "เงื่อนไขไม่ถูกต้อง", "warning");
+	            } else {
+	                Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+	            }
 	            console.log(e);
 	        },
 	        complete: function() {
@@ -434,45 +443,43 @@ $(document) .ready( function() {
 	}
 
 	function exportCSV(value) { 	 
-	    $.ajax({
-	        type: "POST",  
-	        contentType: "application/json; charset=utf-8",  
-	        url: ctx+'/Report/CFM/createExcelReportDetail',
-	        data: JSON.stringify(value),  
-	        xhrFields: {
-	            responseType: 'blob'  // Handle the response as a binary blob
-	        },
-	        success: function(blob, status, xhr) {
-	            // Extract filename from the response header
-	            const disposition = xhr.getResponseHeader('Content-Disposition');
-	            let filename = "CFM_Report.xlsx";
-
-	            if (disposition && disposition.indexOf('attachment') !== -1) {
-	                const filenameMatch = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-	                if (filenameMatch != null && filenameMatch[1]) {
-	                    filename = filenameMatch[1].replace(/['"]/g, '');
-	                }
-	            }
-
-	            // Create a link and trigger the download
-	            const url = window.URL.createObjectURL(blob);
-	            const link = document.createElement('a');
+	    $('#btn_download').prop('disabled', true);
+	    fetch(ctx + '/Report/CFM/createExcelReportDetail', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+	        credentials: 'same-origin',
+	        body: JSON.stringify(value)
+	    }).then(function(resp) {
+	        if (!resp.ok) {
+	            // 400/403/404 มีข้อความภาษาไทยจาก server เป็น text
+	            return resp.text().then(function(t) {
+	                var friendly = (resp.status === 400 || resp.status === 403 || resp.status === 404);
+	                Swal.fire(friendly ? "ส่งออกไม่ได้" : "ผิดพลาด",
+	                          friendly ? t : "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT",
+	                          friendly ? "warning" : "error");
+	            });
+	        }
+	        var disposition = resp.headers.get('Content-Disposition');
+	        var filename = "CFM_Report.xlsx";
+	        if (disposition && disposition.indexOf('attachment') !== -1) {
+	            var m = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+	            if (m != null && m[1]) { filename = m[1].replace(/['"]/g, ''); }
+	        }
+	        return resp.blob().then(function(blob) {
+	            var url = window.URL.createObjectURL(blob);
+	            var link = document.createElement('a');
 	            link.href = url;
 	            link.download = filename;
 	            document.body.appendChild(link);
 	            link.click();
-
-	            // Cleanup
 	            window.URL.revokeObjectURL(url);
 	            link.remove();
-	        },
-	        error: function(e) {
-	            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
-	            console.log(e);
-	        },
-	        complete: function() {
-	            console.log("Request completed");    
-	        }
+	        });
+	    }).catch(function(e) {
+	        Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาด / กรุณาติดต่อทีม IT", "error");
+	        console.log(e);
+	    }).then(function() {
+	        $('#btn_download').prop('disabled', false);
 	    });
 	}
 	// Capitalize First Letter  

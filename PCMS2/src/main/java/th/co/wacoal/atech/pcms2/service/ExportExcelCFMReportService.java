@@ -51,6 +51,7 @@ public class ExportExcelCFMReportService {
 	private CellStyle headerStyle;
 	private CellStyle dateStyle;
 	private CellStyle numberStyleTwoDecimal;
+	private CellStyle numberStyleThreeDecimal; // ค่าสี L/a/b/DeltaE เก็บใน DB เป็น DECIMAL(13,3) ต้องเห็นครบ 3 ตำแหน่ง
 	private CellStyle defaultStyle;
 	private CellStyle integerStyle;
 
@@ -96,6 +97,9 @@ public class ExportExcelCFMReportService {
 		numberStyleTwoDecimal = workbook.createCellStyle();
 		numberStyleTwoDecimal.setDataFormat(workbook.createDataFormat().getFormat("#,##0.00"));
 		setBorders(numberStyleTwoDecimal);
+		numberStyleThreeDecimal = workbook.createCellStyle();
+		numberStyleThreeDecimal.setDataFormat(workbook.createDataFormat().getFormat("#,##0.000"));
+		setBorders(numberStyleThreeDecimal);
 
 		// Default style for empty cells
 		defaultStyle = workbook.createCellStyle();
@@ -193,13 +197,9 @@ public class ExportExcelCFMReportService {
 			}
 			cell.setCellStyle(integerStyle);
 		} else if (value instanceof BigDecimal) {
-			BigDecimal bdValue = (BigDecimal) value;
-			if (bdValue.compareTo(BigDecimal.ZERO) == 0) {
-				cell.setCellValue("");
-			} else {
-				cell.setCellValue(bdValue.doubleValue());
-			}
-			cell.setCellStyle(numberStyleTwoDecimal);
+			// ค่า 0 คือค่าที่วัดได้จริง (ต่างจาก null = ไม่มีข้อมูล) จึงต้องแสดง 0 ไม่ใช่เซลล์ว่าง
+			cell.setCellValue(((BigDecimal) value).doubleValue());
+			cell.setCellStyle(fieldName.equals("qty") ? numberStyleTwoDecimal : numberStyleThreeDecimal);
 		} else if (value instanceof Date) {
 			cell.setCellValue((Date) value);
 			cell.setCellStyle(dateStyle);

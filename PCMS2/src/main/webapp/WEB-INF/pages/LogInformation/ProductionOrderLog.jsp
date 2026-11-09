@@ -317,6 +317,11 @@
 					if (response.data.length > 0) {
 						reportTable.rows.add(response.data);
 					}
+					if (response.message && response.message.indexOf("แสดงเพียง") === 0) {
+						Swal.fire("คำเตือน", response.message, "warning");
+					}
+				} else {
+					Swal.fire("ผิดพลาด", response.message || "ค้นหาไม่สำเร็จ", "error");
 				}
 				reportTable.columns.adjust();
 				reportTable.draw(); 
