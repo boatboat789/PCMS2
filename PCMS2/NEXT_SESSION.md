@@ -2,7 +2,7 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
-## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV 2026-11-09 ผ่านเกือบทั้งหมด · ยังไม่ commit/push)
+## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV+PRD อ่านอย่างเดียวแล้ว · commit `72d41c9` push 2 remote แล้ว · **MR !24 https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/24 รอ review/merge** · ยังไม่ deploy)
 
 branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที่ดึงไว้ 11-04 — VPN ยังไม่ต่อ ดึงใหม่ไม่ได้) · VPN: Fortinet ตัดอยู่ (twcgit/DB ต่อไม่ได้) ต้องต่อเองแล้ว fetch
 
@@ -31,7 +31,7 @@ branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที�
 
 ### 🔲 ต้องทำ
 - [x] วัดเวลา SQL CFM บน PRD + ตรวจแถวซ้ำ/ตรวจ SQL ERP365 กับ ERP_PROD จริง — เสร็จ (ผลอยู่ในหัวข้อ "ผลทดสอบ PRD")
-- [ ] ต่อ VPN → fetch → merge/rebase กับ `main` ล่าสุด → push 2 remote → MR
+- [x] ต่อ VPN → fetch → push 2 remote → MR !24 (เปิดแล้ว 2026-11-09; `main` ไม่ขยับระหว่างทำงาน)
 - [ ] SQL `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` (untracked) รอ DBA · deploy PRD รอ user สั่ง
 
 ## ✅ 2026-11-04 — ทดสอบหน้าเว็บบน PRD (รันบนเครื่อง ชี้ DB PRD, VIEWONLY, job ปิด, อ่านอย่างเดียว) + แก้ Due Date ของ line ที่ปิด
