@@ -2,6 +2,26 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🔥 2026-11-09 — ตรวจ SQL `2026-11-04_01_fix_userstatusauto_duplicate_key.sql` ให้ DBA (แก้ไฟล์แล้ว · ยังไม่ได้รันอะไรบน PRD · ไฟล์ยัง untracked)
+
+### ที่พบ (ตรวจ PRD อ่านอย่างเดียว + ทดสอบใน tempdb)
+- (A) ฉบับเดิม **รันบน PRD ไปแล้ว** (proc modify_date 2026-11-04 16:58:41, นิยามตรงไฟล์เดิมทุกบรรทัด) และ (B) ล้างซ้ำ 9 คีย์รันไปแล้ว (16:58:17) — ไฟล์เดิมเขียนว่า "ยังไม่รัน" ผิดสถานะ
+- ปัญหา**ยังเกิดซ้ำ**: คีย์ซ้ำใหม่ 3 คีย์หลัง (B) (P6E076/2R, P6H142 ← 11-06 13:44 · S6I012 ← 11-07 16:44) · ตาราง 106,302 แถว · 29 คีย์มี >1 แถว (O+O 3 · O+X 9 · X+X 17)
+- 🔴 (C) เดิม **สร้างไม่ได้** (Msg 10618: filtered index + IGNORE_DUP_KEY) · ถ้าเปลี่ยนเป็น unique ธรรมดา **proc จะ error 2601** เพราะ UPDATE ขั้น 2 พลิกทุกแถวของคีย์เป็น O (9 คีย์ O+X เข้าข่าย) และ proc ไม่อยู่ใน transaction → ขั้น 1 ที่ปิด O→X ทั้ง batch commit ไปแล้ว สถานะว่างทั้ง batch จนรอบถัดไป · (A) เดิมก็ทำให้แถว X ที่ (B) ปิดไว้ถูกพลิกกลับเป็น O ได้
+- ต้นเหตุซ้ำ = race: CreateDate ของแถวซ้ำเท่ากันถึง ms · ทดสอบ 2 session ใน tempdb: **ไม่มี lock → 2 แถวซ้ำ, ใช้ sp_getapplock → 1 แถว**
+- SQL Server 2014 (compat 120): ไม่มี STRING_AGG WITHIN GROUP · filtered index ต้อง QUOTED_IDENTIFIER ON ทุกผู้เขียน (proc ปัจจุบัน ON)
+
+### ไฟล์ใหม่ (เขียนทับของเดิม สำรองไว้ที่ scratchpad)
+(A2) ALTER proc = นิยามจาก PRD + 2 จุด (ค้น "FIX 2026-11-09"): UPDATE ฟื้นเฉพาะแถว Id สูงสุดต่อคีย์ · ครอบ NOT EXISTS+INSERT ด้วย applock+TRY/CATCH · (B2) ตรวจ/ปิดแถว O ซ้ำที่เหลือ (UPDATE ถูก comment) · (C2) unique index ธรรมดา **ไม่บังคับ แนะนำรอ** จนซ้ำ = 0 ต่อเนื่อง
+- ตรวจแล้ว: PARSEONLY ผ่านทั้งไฟล์ · diff กับ proc บน PRD = เพิ่ม 23 บรรทัด ไม่มีบรรทัดเดิมเปลี่ยน · ลอจิก UPDATE/applock ทดสอบใน #temp/##temp
+- **ยังไม่ได้ทดสอบ:** รัน proc ทั้งตัว (ควรลองบน DEV ก่อน) · ผลของ applock ต่อเวลาที่ proc รอกัน (timeout 120 วิ)
+
+### 🔲 ครั้งหน้า
+- [ ] user ส่งไฟล์ให้ DBA → ลอง DEV ก่อน → PRD (ไม่รันช่วง :14/:44/01:00; สำรอง `sp_helptext` ก่อน ALTER)
+- [ ] หาผู้เรียก proc ตัวที่สอง (job สองตัว? DEV ชี้ PRD?) — เวลาเกิดซ้ำไม่ตรง :14/:44 เสมอ
+- [ ] หลัง deploy เฝ้า `dup_key_groups_O` ทุกวันประมาณ 1 สัปดาห์ → ค่อยพิจารณา (C2)
+- [ ] commit ไฟล์ SQL เข้า repo เมื่อ user สั่ง (ตอนนี้ untracked)
+
 ## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV+PRD อ่านอย่างเดียวแล้ว · commit `72d41c9` push 2 remote แล้ว · **MR !24 https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/24 รอ review/merge** · ยังไม่ deploy)
 
 branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที่ดึงไว้ 11-04 — VPN ยังไม่ต่อ ดึงใหม่ไม่ได้) · VPN: Fortinet ตัดอยู่ (twcgit/DB ต่อไม่ได้) ต้องต่อเองแล้ว fetch
