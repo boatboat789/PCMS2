@@ -564,7 +564,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		String changeDateStartSafe = (changeDateStart == null ? "" : changeDateStart.replace("'", "''"));
 		String changeDateEndSafe = (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"));
 		String productionOrderSafe = (productionOrder == null ? "" : productionOrder.replace("'", "''"));
-		if ( ! changeDateStart.equals("")) {
+		if ( ! changeDateStartSafe.equals("")) {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
@@ -575,11 +575,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
-		if ( ! productionOrder.equals("")) {
+		if ( ! productionOrderSafe.equals("")) {
 			where += " " + " and (  " + " a.[ProductionOrder] = '" + productionOrderSafe + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
-				+ " SELECT  \r\n"
+				+ " SELECT TOP (50001) \r\n"
 				+ "	      [ProductionOrder]\r\n"
 				+ "      ,[SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
@@ -753,7 +753,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 		String changeDateStartSafe = (changeDateStart == null ? "" : changeDateStart.replace("'", "''"));
 		String changeDateEndSafe = (changeDateEnd == null ? "" : changeDateEnd.replace("'", "''"));
 		String saleOrderSafe = (saleOrder == null ? "" : saleOrder.replace("'", "''"));
-		if ( ! changeDateStart.equals("")) {
+		if ( ! changeDateStartSafe.equals("")) {
 			where += " "
 					+ " and (  "
 					+ "	CAST(a.[SyncDate] AS DATE) >= convert(date,'"
@@ -764,11 +764,11 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 					+ "', 103) \r\n"
 					+ "	) \r\n";
 		}
-		if ( ! saleOrder.equals("")) {
+		if ( ! saleOrderSafe.equals("")) {
 			where += " " + " and (  " + " a.[SaleOrder] = '" + saleOrderSafe + "' \r\n" + "	) \r\n";
 		}
 		String sql = " "
-				+ " SELECT  [SaleOrder]\r\n"
+				+ " SELECT TOP (50001) [SaleOrder]\r\n"
 				+ "      ,[SaleLine]\r\n"
 				+ "      ,[Division]\r\n"
 				+ "      ,[MaterialNo]\r\n"
@@ -796,7 +796,7 @@ public class ERPAtechDaoImpl implements ERPAtechDao {
 				+ "	     END AS [DueDate]\r\n"
 				+ "	  ,CASE\r\n"
 				+ "	      WHEN [CustomerDue] = '1900-01-01 00:00:00.000' THEN NULL\r\n"
-				+ "	      WHEN [CustomerDue] IS NULL OR [DueDate] = '' THEN NULL\r\n"
+				+ "	      WHEN [CustomerDue] IS NULL OR [CustomerDue] = '' THEN NULL\r\n"
 				+ "	      ELSE CONVERT(varchar,CustomerDue, 103) \r\n"
 				+ "	     END AS [CustomerDue]     \r\n"
 				+ "      ,[SaleQuantity]\r\n"

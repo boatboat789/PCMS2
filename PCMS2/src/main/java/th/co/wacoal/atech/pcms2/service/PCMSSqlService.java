@@ -1534,9 +1534,10 @@ public class PCMSSqlService {
 
 	public static String buildDateClause(String columnName, String dateRange, String para)
 	{
-		if (dateRange.isEmpty()) {
+		if (dateRange == null || dateRange.trim().isEmpty()) {
 			return "";
 		}
+		dateRange = dateRange.trim();
 		String[] parts = dateRange.split("-");
 		String from = parts[0].trim();
 		String to = parts.length == 2 ? parts[1].trim() : from;

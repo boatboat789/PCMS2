@@ -2,6 +2,95 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-10 — แก้ช่องว่างสิทธิ์หน้า Detail (code-complete · compile ผ่าน JDK 1.8 · ยังไม่ได้ทดสอบกับเบราว์เซอร์ · ยังไม่ deploy)
+
+- `PCMSDetailController`: หน้า GET เช็ค `IsPCMSDetail` (เดิม `IsPCMSMain`) + ทุก POST 12 ตัวเช็คผ่าน `requireDetailPermit` → 403
+- 🔲 ก่อน deploy: ตรวจใน PRD ว่า Permit ที่ `IsPCMSMain=1` และใช้ Detail จริงมี `IsPCMSDetail=1` ด้วย (SELECT `Permits` WHERE WebApp='PCMS2') ไม่งั้นผู้ใช้กลุ่มนั้นเข้า Detail ไม่ได้
+- 🔲 ทดสอบ: ผู้ใช้ Detail=1 เข้าได้/กรอกได้ · Detail=0 ได้ AccessDenied และ POST ตรงได้ 403
+- ช่องว่างที่เหลือ: Log ไม่เช็ค `IsReport` · `IsUserManagement` ไม่ถูกใช้
+
+## ✅ 2026-11-10 — ทำความเข้าใจระบบ + เติมเอกสารที่ยังเป็น template/TODO (เอกสารล้วน · ยังไม่ commit)
+
+### ที่ทำ
+- เติมของจริงแทน placeholder: `docs/pcms2.md` (เดิม TODO) · `docs/business/roles.md` · `workflow.md` · `rules.md` · `docs/api.md` · `docs/database.md` (เดิมเป็น template `[PROJECT_NAME]` ทั้งหมด)
+- แก้ของเก่าที่ไม่ตรงโค้ด: `docs/architecture.md` (mssql-jdbc 6.1.0→9.4.1, ไม่มี `PCMSDetailV2*` แล้ว, Tomcat ให้ admin ยืนยัน) · `CLAUDE.md` (Document Index เพิ่มเอกสารวิเคราะห์ 11-03/background-jobs/webapi, แก้รายชื่อ controller)
+- ที่มา: อ่านโค้ด (controller/logic/entities/JSP navbar+searchDiv) + เอกสารวิเคราะห์ 11-03 + NEXT_SESSION · **ไม่ได้ต่อ DB/รันแอป** — รายชื่อ PermitId อื่นนอก ADMIN/ITSUPP/VIEWONLY และ DB ของ `ShopFloorControlDetail` ยังไม่ยืนยัน
+
+### 🔴 ช่องว่างสิทธิ์ที่เจอตอนไล่โค้ด (ยังไม่แก้ — รอ user ตัดสิน · รายละเอียด `docs/business/roles.md` §5)
+1. เมนู Detail ใช้ `IsPCMSDetail` แต่ `PCMSDetailController` เช็ค `IsPCMSMain`
+2. `POST /Detail/saveInputDetail` / `saveInputDate` ไม่เช็ค permit (แค่ login)
+3. Log controllers ไม่เช็ค `IsReport` (เมนูซ่อนอยู่ใต้ Report)
+4. `IsUserManagement`, `Users.IsAdmin/IsSystem` ไม่ถูกใช้ตัดสินสิทธิ์
+
+### 🔲 ครั้งหน้า
+- [ ] user ตรวจเอกสารใหม่ แล้วสั่ง commit + push 2 remote (`origin` + `gitlab_master`) — เอกสารล้วน ไม่แตะ database.properties
+- [ ] ยืนยันกับเจ้าของงานคำถาม 🟡 ใน `docs/business/rules.md` §4 (Prod. Qty/WaitLot/OP-OPSW/กุญแจ PO)
+- [ ] ตัดสินเรื่องช่องว่างสิทธิ์ข้างบน (แก้โค้ดหรือบันทึกเป็น known issue)
+
+## 🔥 2026-11-09 — ตรวจ SQL `2026-11-04_01_fix_userstatusauto_duplicate_key.sql` ให้ DBA (แก้ไฟล์แล้ว · ยังไม่ได้รันอะไรบน PRD · ไฟล์ยัง untracked)
+
+### ที่พบ (ตรวจ PRD อ่านอย่างเดียว + ทดสอบใน tempdb)
+- (A) ฉบับเดิม **รันบน PRD ไปแล้ว** (proc modify_date 2026-11-04 16:58:41, นิยามตรงไฟล์เดิมทุกบรรทัด) และ (B) ล้างซ้ำ 9 คีย์รันไปแล้ว (16:58:17) — ไฟล์เดิมเขียนว่า "ยังไม่รัน" ผิดสถานะ
+- ปัญหา**ยังเกิดซ้ำ**: คีย์ซ้ำใหม่ 3 คีย์หลัง (B) (P6E076/2R, P6H142 ← 11-06 13:44 · S6I012 ← 11-07 16:44) · ตาราง 106,302 แถว · 29 คีย์มี >1 แถว (O+O 3 · O+X 9 · X+X 17)
+- 🔴 (C) เดิม **สร้างไม่ได้** (Msg 10618: filtered index + IGNORE_DUP_KEY) · ถ้าเปลี่ยนเป็น unique ธรรมดา **proc จะ error 2601** เพราะ UPDATE ขั้น 2 พลิกทุกแถวของคีย์เป็น O (9 คีย์ O+X เข้าข่าย) และ proc ไม่อยู่ใน transaction → ขั้น 1 ที่ปิด O→X ทั้ง batch commit ไปแล้ว สถานะว่างทั้ง batch จนรอบถัดไป · (A) เดิมก็ทำให้แถว X ที่ (B) ปิดไว้ถูกพลิกกลับเป็น O ได้
+- ต้นเหตุซ้ำ = race: CreateDate ของแถวซ้ำเท่ากันถึง ms · ทดสอบ 2 session ใน tempdb: **ไม่มี lock → 2 แถวซ้ำ, ใช้ sp_getapplock → 1 แถว**
+- SQL Server 2014 (compat 120): ไม่มี STRING_AGG WITHIN GROUP · filtered index ต้อง QUOTED_IDENTIFIER ON ทุกผู้เขียน (proc ปัจจุบัน ON)
+
+### ไฟล์ใหม่ (เขียนทับของเดิม สำรองไว้ที่ scratchpad)
+(A2) ALTER proc = นิยามจาก PRD + 2 จุด (ค้น "FIX 2026-11-09"): UPDATE ฟื้นเฉพาะแถว Id สูงสุดต่อคีย์ · ครอบ NOT EXISTS+INSERT ด้วย applock+TRY/CATCH · (B2) ตรวจ/ปิดแถว O ซ้ำที่เหลือ (UPDATE ถูก comment) · (C2) unique index ธรรมดา **ไม่บังคับ แนะนำรอ** จนซ้ำ = 0 ต่อเนื่อง
+- ตรวจแล้ว: PARSEONLY ผ่านทั้งไฟล์ · diff กับ proc บน PRD = เพิ่ม 23 บรรทัด ไม่มีบรรทัดเดิมเปลี่ยน · ลอจิก UPDATE/applock ทดสอบใน #temp/##temp
+- **ยังไม่ได้ทดสอบ:** รัน proc ทั้งตัว (ควรลองบน DEV ก่อน) · ผลของ applock ต่อเวลาที่ proc รอกัน (timeout 120 วิ)
+
+### ✅ ทดสอบ proc ใหม่บน DEV 2026-11-09 (`PCMSDEV` · สำรองตารางก่อน คืนครบหลังทดสอบ: EXCEPT สองทาง = 0, 34,597 แถว)
+- DEV มี proc รุ่นเก่ากว่า PRD (ก่อน (A), หน้าต่าง 40 นาที) และคีย์ O ซ้ำ 288 กลุ่ม → ติดตั้งไฟล์ใหม่ (A2) บน DEV แล้ว **ยังคงติดตั้งอยู่** (นิยามเดิมของ DEV เก็บที่ scratchpad `dev_proc_ORIGINAL_backup.txt`)
+- รันจริง 3 รอบ × 6 พร้อมกัน (PO ที่ไม่มีแถวใน TEMP): ไม่มี error (มีแต่ warning "Null value is eliminated") · ได้ 6 แถวต่อรอบ · คีย์ซ้ำ 0 · ค่า UserStatusCal เท่าที่สำรองไว้ (0 ต่าง)
+- คีย์ที่มี X+O: ฟื้นเฉพาะแถว Id สูงสุด (23447 / 23425) ที่เหลือคง X · ไม่ซ้ำคืนชีพ
+- ติดตั้ง (C2) unique index ชั่วคราวหลัง (B2): proc ใหม่ 3 รอบ × 6 พร้อมกัน **ไม่ชน 2601** · ใส่ proc เดิมคืนภายใต้ index เดียวกัน → **Msg 2601 ที่ UPDATE (line 403)** และคีย์ C2J042 กลายเป็น X ทั้งสองแถว (สถานะหาย) ตรงกับที่วิเคราะห์ · แล้วคืน proc ใหม่ + ลบ index
+- ⚠️ ทดสอบ race ของ INSERT บน DEV ด้วย proc เดิมไม่ซ้ำเอง (proc รัน 1–2 วิ ช่องแคบ) — กลไกพิสูจน์ด้วย ##temp ใน tempdb แล้ว (ไม่มี lock 2 แถว / applock 1 แถว)
+- ยังไม่ได้ทดสอบ: ผลกับ PRD จริง (ข้อมูลใหญ่กว่า, ผู้เรียกจริง) · DEV ไม่ได้มีผู้เรียกที่สอง
+
+### ✅ (A2) ติดตั้งบน PRD แล้ว 2026-11-09 08:58:12 (modify_date ของ proc) — ตรวจนิยามบน PRD เทียบไฟล์ใน repo: **ตรงกันทุกบรรทัด (466)**
+- ผล SELECT (B2) หลังติดตั้ง: ยังเหลือ O ซ้ำ 3 คีย์ (P6E076/2R · P6H142 · S6I012 — แถวเก่าก่อนติดตั้ง, ChangeDate เท่ากันทั้งคู่) → (A2) ไม่ล้างแถวที่ซ้ำอยู่แล้ว · UPDATE ของ (B2) ยังไม่ได้รัน (comment อยู่)
+- ไม่ต้องรีบ: เมื่อ PO เหล่านี้ถูกประมวลผลอีก proc ใหม่จะยุบคู่ซ้ำเอง (ทดสอบบน DEV แล้ว) · ถ้าอยากให้เป็น 0 ทันที ให้ DBA ยกเลิก comment UPDATE ใน (B2) แล้วรัน (ไม่ลบข้อมูล แค่ปิดแถวที่ไม่ใช่ Id สูงสุด)
+
+### 🔲 ครั้งหน้า
+- [x] (A2) ลง DEV แล้ว + ลง PRD แล้ว (08:58 วันที่ 11-09) · [ ] (B2) UPDATE ล้างซ้ำ 3 คีย์ (ไม่บังคับ)
+- [ ] หาผู้เรียก proc ตัวที่สอง (job สองตัว? DEV ชี้ PRD?) — เวลาเกิดซ้ำไม่ตรง :14/:44 เสมอ
+- [ ] หลัง deploy เฝ้า `dup_key_groups_O` ทุกวันประมาณ 1 สัปดาห์ → ค่อยพิจารณา (C2)
+- [ ] commit ไฟล์ SQL เข้า repo เมื่อ user สั่ง (ตอนนี้ untracked)
+
+## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV+PRD อ่านอย่างเดียวแล้ว · commit `72d41c9` push 2 remote แล้ว · **MR !24 https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/24 รอ review/merge** · ยังไม่ deploy)
+
+branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที่ดึงไว้ 11-04 — VPN ยังไม่ต่อ ดึงใหม่ไม่ได้) · VPN: Fortinet ตัดอยู่ (twcgit/DB ต่อไม่ได้) ต้องต่อเองแล้ว fetch
+
+### แก้แล้ว
+- `ReportController`: เช็คสิทธิ์ `permit.isReport()` ที่ endpoint ข้อมูล · guard list ว่าง/JSON เสีย/reportType ไม่รู้จัก/วันที่ผิดรูป → 400/403 ข้อความภาษาไทย · **Excel ส่งแค่ id แล้ว server ดึงข้อมูลจริงเอง** (ไม่เขียนตัวเลขที่ client ส่งกลับ) เพดาน 20,000 แถว
+- `CFMReport.jsp`: ปุ่ม Download ส่งออกเฉพาะแถวที่เห็นตามตัวกรองคอลัมน์ (`rows({search:'applied'})`, ทุกหน้า) ตารางว่าง → เตือน · ใช้ `fetch` อ่านข้อความ error · **ตัดสินใจเอง: เดิมส่งทั้งตาราง ถ้าต้องการทั้งตารางให้เปลี่ยนกลับเป็น `mainTable.rows().data()`**
+- `PCMSSqlService.buildDateClause`: null/ว่าง → ไม่กรอง (main แก้ SQL injection ไปแล้วด้วย regex)
+- `ExportExcelCFMReportService`: ค่า 0 แสดงเป็น 0 (ไม่ใช่ว่าง) · คอลัมน์สี 3 ทศนิยม (Qty คง 2)
+- `CustomDateDeserializer`: Locale.US, รองรับรูปแบบมีเวลา (ไม่ตัดเป็นเที่ยงคืน), คืน null เมื่อว่าง
+- `Z_ATT_CustomerConfirm2DaoImpl`: `ById` รายการว่าง → คืนว่าง (เดิมคืนทุกแถว) · CTE `OperationMax`/`CTE_Data` กรองเฉพาะ PO ที่อยู่ในตาราง CFM (ผลลัพธ์เท่าเดิม แต่ไม่ aggregate `DataFromSap` ทั้งตาราง)
+- `ERPAtechDaoImpl`: `CustomerDue` เช็ค `[CustomerDue] = ''` (เดิมพิมพ์เป็น `[DueDate]`) · ERP365 log `TOP (50001)` + null-safe
+- Log controllers (Production/Sale): ข้อความ "ค้นหาสำเร็จ" แทน "บันทึกข้อมูลสำเร็จ" · จับ error ส่ง JSON `error` · เกิน 50,000 แถวตัด+เตือน · JSP ขึ้น Swal เมื่อ error/ถูกตัด
+- `PCMSDetail.jsp`: Swal เมื่อล้าง Replaced Remark ตอบ `[]`
+
+### ✅ ผลทดสอบ DEV 2026-11-09 (Tomcat 8082 สร้างจากสำเนา `C:/temp/pcms2_build` ไม่แตะ target/ ของ Eclipse · shutdown port ใน `pcms2-dev-tomcat/conf/server.xml` เปลี่ยน 8007→8017 เพราะชน)
+- 🔴 เจอและแก้บั๊กที่ตัวเองสร้าง: regex ใน `CFMReport.jsp` ถูกสคริปต์แปลง `` เป็นอักขระ 0x02 → JSP parse ไม่ได้ (500) — **เครื่องมือ Bash ยุบ `\` เป็น `\` ใน heredoc: เขียน backslash ผ่านสคริปต์ให้ใช้ `chr(92)`** และตรวจ control char หลังแก้ไฟล์
+- Report: 400/403/404 ข้อความไทยถูก (JSON ว่าง/เสีย, วันที่ฉีด SQL, id ไม่มี) · ค้นด้วยแถวทดสอบ ZZTEST 4 แถว (ผูก PO จริง S2K252/S2J385/P3C137/P3C138) ได้ครบ ค่าสี Color Check มาถูก · กรองคอลัมน์ prodID เหลือ 2 แถว → Download ส่ง `[{id:3},{id:4}]` ได้ xlsx · xlsx 4 แถว 39 คอลัมน์ ค่า 0 แสดงเป็น 0 รูปแบบ `#,##0.000` · ตารางว่าง/กรองเหลือ 0 → Swal เตือน · พิมพ์วันที่ผิด → Swal ข้อความรูปแบบวันที่
+- SQL CTE ใหม่ vs เก่า: ผลเท่ากัน (EXCEPT สองทาง = 0) · **เวลาเท่ากันบน DEV (ผลลัพธ์ 4 แถว optimizer ผลัก predicate เองอยู่แล้ว) — ยังไม่พิสูจน์ว่าเร็วขึ้น ต้องวัดบน PRD ที่ผลลัพธ์ใหญ่ (อ่านอย่างเดียว)**
+- Log: ATT Production/Sale ค้นได้ (33,436 แถวไม่กรอง, PO เดียว 1 แถว) · ค่า null ไม่ NPE · ERP365 **ทดสอบ SQL ไม่ได้บน DEV** (ไม่มี `FromErpMainProd`/`FromErpMainSale` ใน DEV PCMS) ได้ status=error + Swal แทนหน้า 500 → ตรวจกับ ERP_PROD จริงแล้ว ดูหัวข้อ PRD
+- Replaced Remark: ตั้ง/ล้างบน DEV ผ่านปกติ (S1C340 ↔ S2K252, ปิดเป็น X เหลือ history) · เคสตอบ `[]` ไม่มีข้อมูลทำให้เกิดจริง ทดสอบสาขาใหม่ด้วยจำลอง `$.ajax` → Swal ขึ้น ตารางไม่ถูกแตะ ฟิลด์อื่นไม่ขึ้น
+### ✅ ผลทดสอบ PRD อ่านอย่างเดียว 2026-11-09 08:35 (SELECT ล้วน · ผลเก็บ `#temp` ใน tempdb เท่านั้น · ก่อนรอบ sync :44)
+- SQL CFM เก่า vs ใหม่ (14,175 แถว, 11,339 PO): ผลเท่ากัน (EXCEPT สองทาง = 0) · **เวลา 610 ms → 418 ms (เร็วขึ้น ~30%)** วัด 2 รอบคงที่
+- แถวซ้ำจาก `ShopFloorControlDetail` (PO+Operation ของ Dye/ColorCheck) และ `FromSapMainProd` ซ้ำต่อ PO: **0 ทั้งหมด** → ความกังวลเรื่อง join คูณแถวไม่เกิดกับข้อมูลปัจจุบัน (ความเสี่ยงแฝงเท่านั้น ไม่ต้องแก้ตอนนี้)
+- Log ERP365: จับ SQL ที่ DAO สร้างจริง (`SELECT TOP (50001) … Order by SyncDate desc`) รันบน `ERP_PROD` ได้ถูก syntax — Production 2 วัน 11 แถว · Sale ตั้งแต่ 1 ต.ค. 1,655 แถว (มี CustomerDue 1,630) · บั๊ก `CustomerDue` ไม่มีแถวที่เข้าเงื่อนไขผิดในช่วงนี้ จึงยืนยันได้แค่ว่าแก้แล้วไม่พัง
+- เก็บกวาด: ลบแถว ZZTEST ใน `Z_ATT_CustomerConfirm2` แล้ว (0 แถว) · Tomcat DEV หยุดแล้ว
+
+### 🔲 ต้องทำ
+- [x] วัดเวลา SQL CFM บน PRD + ตรวจแถวซ้ำ/ตรวจ SQL ERP365 กับ ERP_PROD จริง — เสร็จ (ผลอยู่ในหัวข้อ "ผลทดสอบ PRD")
+- [x] ต่อ VPN → fetch → push 2 remote → MR !24 (เปิดแล้ว 2026-11-09; `main` ไม่ขยับระหว่างทำงาน)
+- [ ] SQL `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` (untracked) รอ DBA · deploy PRD รอ user สั่ง
+
 ## ✅ 2026-11-04 — ทดสอบหน้าเว็บบน PRD (รันบนเครื่อง ชี้ DB PRD, VIEWONLY, job ปิด, อ่านอย่างเดียว) + แก้ Due Date ของ line ที่ปิด
 
 - ผ่าน: ค้น SO (Detail) · ค้นทั้งหมด In-Process 6,294 แถว (server ~8.4s) · แถว WaitLot มีค่า Replaced Remark 64 / PC Remark 7 · Excel Detail 14MB ไม่มี error · Summary 6,276 แถว · log Tomcat ไม่มี SQL error

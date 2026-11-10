@@ -18,11 +18,11 @@
 | Framework | Spring MVC 5.2 |
 | Security | FilterLogin + AD (ไม่ใช่ Spring Security) |
 | Build | Maven (WAR) |
-| Server | Apache Tomcat 9 · context path `/PCMS2` · `10.11.44.100:8080` |
+| Server | Apache Tomcat (เครื่องทดสอบใช้ 9.0.100 — เวอร์ชันบน PRD ให้ admin ยืนยันด้วย `binersion.bat`) · context path `/PCMS2` · `10.11.44.100:8080` |
 | Database | SQL Server — 4 DB (PCMS, PPMM, SOR, ERP) |
 | ORM | JdbcTemplate + raw SQL (no JPA/Hibernate) |
 | JSON | Gson + `@ResponseBody String` |
-| Connection pool | HikariCP 4.0.3 + mssql-jdbc 6.1.0.jre8 (migrated 2026-06-19) |
+| Connection pool | HikariCP 4.0.3 + mssql-jdbc 9.4.1.jre8 (migrated 2026-06-19) |
 | Frontend | JSP + JSTL + Bootstrap 4 + jQuery + DataTables + Bootstrap Select |
 | Reports | Apache POI 5.2.5 + JXLS 2.13.0 (Excel templates from classpath) |
 
@@ -57,8 +57,9 @@ Request
 src/main/java/th/co/wacoal/atech/pcms2/
 ├── config/          DatabaseConfig (4 HikariDataSource + 4 JdbcTemplate), AppConfig, SchedulerConfig
 ├── filter/          FilterLogin (session + AD auth)
-├── controller/      PCMSMainController, PCMSDetailController, PCMSDetailV2Controller,
-│                    ReportController, SapToWebController, LoginController, ...
+├── controller/      PCMSMainController, PCMSDetailController, ReportController,
+│                    ProductionOrderLogController, SaleOrderLogController,
+│                    PermitManagementController, JobManagementController, LoginController, ...
 ├── service/         business logic layer
 ├── dao/             interfaces
 ├── dao/implement/   DaoImpl classes
@@ -122,4 +123,9 @@ src/main/webapp/
 - JDK must be 1.8 (`$env:JAVA_HOME = "C:\Program Files\Java\jdk-1.8"`)
 - Temp tables `#xxx` ต้อง DROP ก่อนคืน connection กลับ pool (Pattern A/B)
 - PCMSSearch temp tables (`#tempLotNoList` ฯลฯ) ห้ามรวมใน dropAllTemp
-- `PCMSDetailV2DaoImpl` ยังไม่ migrate ไป JdbcTemplate (ข้ามไว้ตอน migrate)
+- ไม่มี `PCMSDetailV2*` แล้ว (ลบออกจากโค้ด) — เหลือ `PCMSSqlServiceV2` เป็นตัวสร้าง SQL ชุดเสริม
+- DB สามตัว (`ppmm`/`sor`/`erp`) เป็นอ่านอย่างเดียว · DB ที่เขียนได้มีตัวเดียวคือ `pcmsDatabase`
+- ใช้ Spring MVC ล้วน (ไม่ใช่ Boot) · Spring 5.2.0 · JSP · ไม่มี Spring Security
+- หน้า Detail ตารางกว้าง ~7,600px (51 คอลัมน์) — ตัวกรอง/ช่องกรอกอยู่ในตาราง
+
+ดูภาพรวมธุรกิจ/การไหลของข้อมูลที่ `docs/pcms2.md` · `docs/business/*`
