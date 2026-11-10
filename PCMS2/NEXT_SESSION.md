@@ -2,6 +2,24 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-10 — ทำความเข้าใจระบบ + เติมเอกสารที่ยังเป็น template/TODO (เอกสารล้วน · ยังไม่ commit)
+
+### ที่ทำ
+- เติมของจริงแทน placeholder: `docs/pcms2.md` (เดิม TODO) · `docs/business/roles.md` · `workflow.md` · `rules.md` · `docs/api.md` · `docs/database.md` (เดิมเป็น template `[PROJECT_NAME]` ทั้งหมด)
+- แก้ของเก่าที่ไม่ตรงโค้ด: `docs/architecture.md` (mssql-jdbc 6.1.0→9.4.1, ไม่มี `PCMSDetailV2*` แล้ว, Tomcat ให้ admin ยืนยัน) · `CLAUDE.md` (Document Index เพิ่มเอกสารวิเคราะห์ 11-03/background-jobs/webapi, แก้รายชื่อ controller)
+- ที่มา: อ่านโค้ด (controller/logic/entities/JSP navbar+searchDiv) + เอกสารวิเคราะห์ 11-03 + NEXT_SESSION · **ไม่ได้ต่อ DB/รันแอป** — รายชื่อ PermitId อื่นนอก ADMIN/ITSUPP/VIEWONLY และ DB ของ `ShopFloorControlDetail` ยังไม่ยืนยัน
+
+### 🔴 ช่องว่างสิทธิ์ที่เจอตอนไล่โค้ด (ยังไม่แก้ — รอ user ตัดสิน · รายละเอียด `docs/business/roles.md` §5)
+1. เมนู Detail ใช้ `IsPCMSDetail` แต่ `PCMSDetailController` เช็ค `IsPCMSMain`
+2. `POST /Detail/saveInputDetail` / `saveInputDate` ไม่เช็ค permit (แค่ login)
+3. Log controllers ไม่เช็ค `IsReport` (เมนูซ่อนอยู่ใต้ Report)
+4. `IsUserManagement`, `Users.IsAdmin/IsSystem` ไม่ถูกใช้ตัดสินสิทธิ์
+
+### 🔲 ครั้งหน้า
+- [ ] user ตรวจเอกสารใหม่ แล้วสั่ง commit + push 2 remote (`origin` + `gitlab_master`) — เอกสารล้วน ไม่แตะ database.properties
+- [ ] ยืนยันกับเจ้าของงานคำถาม 🟡 ใน `docs/business/rules.md` §4 (Prod. Qty/WaitLot/OP-OPSW/กุญแจ PO)
+- [ ] ตัดสินเรื่องช่องว่างสิทธิ์ข้างบน (แก้โค้ดหรือบันทึกเป็น known issue)
+
 ## 🔥 2026-11-09 — ตรวจ SQL `2026-11-04_01_fix_userstatusauto_duplicate_key.sql` ให้ DBA (แก้ไฟล์แล้ว · ยังไม่ได้รันอะไรบน PRD · ไฟล์ยัง untracked)
 
 ### ที่พบ (ตรวจ PRD อ่านอย่างเดียว + ทดสอบใน tempdb)
