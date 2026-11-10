@@ -180,6 +180,10 @@ public class PCMSSqlService {
 
 	// เวอร์ชัน filter ด้วย #tempMainSale — ใช้เฉพาะที่สร้าง #tempMainSale ไว้ก่อนแล้ว
 	// (getPCMSSumaryDetail, searchByDetail) ลด I/O ลงอย่างมากเมื่อ user search ด้วย criteria
+	// REMARK (2026-11-04, user ยืนยัน): Prod.Qty ของแถว Main = Volumn − สวม − พ่วง โดยยอดสวม/พ่วงนับเฉพาะ sale line ที่อยู่ในขอบเขตการค้นหา
+	//   (#tmpSumVolOP/#tmpSumVolRP INNER JOIN #tempMainSale) จึงเปลี่ยนตามตัวกรองลูกค้า/SO — ฝ่ายแผนและฝ่ายขายขอให้คงพฤติกรรมนี้ไว้ก่อน
+	//   ห้ามเปลี่ยนไปกรองด้วย PO โดยไม่ถามผู้ใช้ก่อน (ตัวอย่าง: SO 1107010287/200 PO S1K190 ค้น G TECH อย่างเดียว=300, รวมลูกค้าปลายทางที่ถูกพ่วง=200)
+	//   รายละเอียด: NEXT_SESSION.md (2026-11-04) และ docs/logic-map-detail-2026-11-03.md
 	public String createTempForMainAndWaitLotFiltered = ""
 			+ this.buildIfTempTableDrop("#BillBatchFlag")
 			+ "SELECT a.SaleOrder, a.SaleLine\r\n"
