@@ -80,6 +80,7 @@ public class ProductionOrderLogController {
 //	}
 	
 // POST - JSON
+	private static final int MAX_LOG_ROWS = 50000;
 	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
 	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
 			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
@@ -89,16 +90,27 @@ public class ProductionOrderLogController {
 	    String changeDateStart = bean.getChangeDateStart() ;
 	    String changeDateEnd = bean.getChangeDateEnd();
 	    String productionOrder = bean.getProductionOrder();
-		if(dataType.equals("ERP365")) { 
-	    	resultList = erpService.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
+	    changeDateStart = changeDateStart == null ? "" : changeDateStart;
+	    changeDateEnd = changeDateEnd == null ? "" : changeDateEnd;
+	    productionOrder = productionOrder == null ? "" : productionOrder;
+	    String status = "success";
+	    String message = "ค้นหาสำเร็จ";
+	    try {
+			if(dataType.equals("ERP365")) { 
+		    	resultList = erpService.getFromErpMainProdDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,productionOrder);
+		    }
+		    else { 
+		    	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);
+		    }
+		    if (resultList != null && resultList.size() > MAX_LOG_ROWS) {
+		    	resultList = new ArrayList<>(resultList.subList(0, MAX_LOG_ROWS));
+		    	message = "แสดงเพียง " + MAX_LOG_ROWS + " แถวแรก กรุณาแคบเงื่อนไขค้นหา";
+		    }
+	    } catch (RuntimeException e) {
+	    	resultList = new ArrayList<>();
+	    	status = "error";
+	    	message = "ค้นหาไม่สำเร็จ กรุณาตรวจรูปแบบวันที่ (dd/MM/yyyy) หรือติดต่อทีม IT";
 	    }
-	    else { 
-	    	resultList = fsmpModel.getFromSapMainProdDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,productionOrder);
-	    }
-		response.setContentType("application/json");
-	    boolean isSuccess = true;
-	    String status = isSuccess ? "success" : "error";
-	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
 
 	    ApiResponse<List<ProductionOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
 	    return ResponseEntity.ok(apiResponse);

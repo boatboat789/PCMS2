@@ -1,20 +1,39 @@
 /*
-  2026-11-04_01 — กัน TEMP_UserStatusAuto คีย์ซ้ำ  (⚠️ ยังไม่รันบน PRD — ให้ DBA/เจ้าของ proc ตรวจก่อน)
+  2026-11-04_01 (แก้ไขรอบ 2026-11-09) — กัน TEMP_UserStatusAuto คีย์ซ้ำ   ⚠️ ส่งให้ DBA ตรวจก่อนรัน
 
-  ข้อเท็จจริงที่ตรวจบน PRD 2026-11-04 (คีย์ = ProductionOrder+SaleOrder+SaleLine+Grade, DataStatus='O'):
-    - ซ้ำจริง 12 กลุ่ม กลุ่มละ 2 แถว สถานะเหมือนกัน สร้างห่างกันไม่กี่ ms (18/6, 2/7, 4/8, 5/8/2026) · ทุกกลุ่มเป็น PO ที่มี sale line เดียว
-    - เหตุที่เป็นไปได้: proc รันซ้อนกันสองรอบ (job + กดบันทึกหน้าเว็บ) → ทั้งสองรอบเช็ค NOT EXISTS ผ่านก่อน insert (race)
-    - ผลต่อหน้าจอ: ไม่มี (สถานะเหมือนกัน และ Detail เลือกแถวเดียวด้วย #tempUCALBest)
-    - (ตัวเลข 1,408 ที่เคยรายงานนับโดยไม่รวม Grade — ผิด อย่าใช้)
+  คีย์ = ProductionOrder + SaleOrder + SaleLine + Grade (ตาราง PCMS.dbo.TEMP_UserStatusAuto, SQL Server 2014 compat 120)
 
-  ลำดับ: (B) ตรวจ/ปิดแถวซ้ำ → (C) unique index แบบ IGNORE_DUP_KEY (insert ซ้ำถูกข้ามเงียบๆ ไม่ทำให้ proc error)
-         (A) แก้ proc เป็นของเสริม "ไม่บังคับ": เดิม UPDATE จับคู่แค่ PO+Grade ซึ่งเสี่ยงเขียนทับ SaleOrder/SaleLine
-             ถ้า PO อยู่หลาย sale line และ Grade เดียวกัน — ยังไม่พบกรณีจริงบน PRD จึงเป็นการป้องกันล่วงหน้า (ยังไม่ทดสอบ)
-  รันซ้ำได้ · ไม่รันช่วง job (:14/:44, 01:00)
+  ▌สถานะบน PRD (ตรวจ 2026-11-09 08:40 แบบอ่านอย่างเดียว)
+    - proc spd_UpsertToTEMP_UserStatusOnWeb ถูก ALTER แล้วเมื่อ 2026-11-04 16:58:41 (ส่วน (A) ฉบับแรกรันไปแล้ว — นิยามบน PRD ตรงกับไฟล์ฉบับเดิมทุกบรรทัด)
+    - ล้างคีย์ซ้ำ (B) รันไปแล้ว ~16:58:17 (แถว X 9 คีย์ ChangeDate 2026-11-04 16:58:17)
+    - แต่ซ้ำเกิดใหม่ 3 คีย์หลังจากนั้น: P6E076/2R (06 พ.ย. 13:44), P6H142 (06 พ.ย. 13:44), S6I012 (07 พ.ย. 16:44) → ปัญหายังเกิดซ้ำ ~วันละราย
+    - ตาราง 106,302 แถว (O 68,924 / X 37,378) · 29 คีย์มีมากกว่า 1 แถว (นับทุกสถานะ): O+O 3 · O+X 9 · X+X 17
+    - ยังไม่มี unique index ใดๆ (มีแค่ IX_TEMP_UserStatusAuto_PO_Grade_Sale ไม่ unique)
+
+  ▌ข้อผิดพลาดของฉบับเดิมที่พบตอนตรวจ (ทดสอบใน tempdb ไม่แตะตารางจริง)
+    1) (C) เดิม CREATE UNIQUE ... WHERE DataStatus='O' WITH (IGNORE_DUP_KEY = ON) **สร้างไม่ได้** — Msg 10618: filtered index ใช้ IGNORE_DUP_KEY ไม่ได้
+    2) ถ้าเปลี่ยนเป็น unique ธรรมดา UPDATE ขั้น 2 ของ proc จะ **พังด้วย Msg 2601** เมื่อคีย์มีหลายแถว เพราะ UPDATE พลิก "ทุกแถว" ของคีย์กลับเป็น 'O'
+       (ฉบับ (A) เดิมก็มีผลเดียวกัน: แถว X ที่ (B) ปิดไว้ถูกพลิกกลับเป็น O เมื่อ PO นั้นถูกประมวลผลอีก → ซ้ำคืนชีพ; 9 คีย์ O+X ตอนนี้เข้าข่าย)
+       และ proc ไม่ได้อยู่ใน transaction: ขั้น 1 (ปิด O→X ทั้ง batch) commit แล้ว ขั้น 2 error → สถานะของทั้ง batch ว่างจนรอบถัดไป
+    3) ต้นเหตุของซ้ำ: แถวซ้ำมี CreateDate เท่ากันถึง ms (เช่น 2026-06-18 14:53:14.737) และ Id สลับกันเป็นชุด 3+3 → proc สองรอบเริ่มพร้อมกัน
+       ทั้งคู่เช็ค NOT EXISTS ผ่านก่อน INSERT (race) · ยังไม่ทราบว่าผู้เรียกที่สองคือใคร (ข้อสงสัย: job สองตัวที่ยิง proc เดียวกัน เช่น TaskService ของ PCMS2 กับ BGJOB, หรือเครื่อง DEV ที่ชี้ PRD) — ควรหาด้วย
+       (เวลาที่เกิด 14:53:14 / 13:44:11 / 16:44:14 ไม่ตรงกับ :14/:44 เสมอไป)
+
+  ▌สิ่งที่ฉบับนี้ทำ
+    (A2) ALTER proc จากนิยามบน PRD เดิม แก้ 2 จุดเท่านั้น (ค้นคำว่า "FIX 2026-11-09" ในตัว proc):
+         - UPDATE ขั้น 2 ฟื้นเฉพาะแถว Id สูงสุดของแต่ละคีย์ (ไม่พลิกทุกแถว)
+         - ครอบ "ตรวจ NOT EXISTS แล้ว INSERT" ด้วย sp_getapplock (Exclusive, Transaction) + TRY/CATCH — ปิด race ที่ต้นเหตุ ไม่ต้องพึ่ง index
+    (B2) ปิดแถว O ซ้ำที่เหลือ (ตอนนี้ 3 คีย์) — SELECT ตรวจก่อน, UPDATE ถูก comment ไว้
+    (C2) [ไม่บังคับ — แนะนำรอ] unique index แบบ filtered ธรรมดา (ไม่มี IGNORE_DUP_KEY) เป็นตาข่ายกันพลาด:
+         ทุก connection ที่เขียนตารางนี้ต้อง SET QUOTED_IDENTIFIER ON (sqlcmd/job เก่าบางตัวเป็น OFF → INSERT/UPDATE จะ error) และถ้า race หลุด proc จะ error แทนที่จะซ้ำเงียบๆ
+         จึงควรรัน (A2) แล้วเฝ้าดู dup_key_groups = 0 สักสัปดาห์ก่อนค่อยสร้าง
+
+  ▌ลำดับรัน: (A2) → (B2) → ตรวจผล (SELECT ท้ายไฟล์) · ไม่รันช่วง job (:14/:44, 01:00) · รันซ้ำได้ · ก่อน ALTER ให้ script นิยามเดิมเก็บไว้ (sp_helptext) เพื่อย้อนกลับ
+  ▌ไม่ได้ทดสอบ: การรัน proc ทั้งตัว (ตรวจแค่ syntax ด้วย PARSEONLY + ทดสอบลอจิก UPDATE/INSERT/applock ใน #temp table) — ควรลองบน DEV ก่อน
 */
 USE [PCMS]
 GO
--- (A) [ไม่บังคับ] แก้ proc: ใช้ ALTER (proc มีอยู่แล้ว) ข้างล่างคือนิยามเดิมเต็ม + เฉพาะขั้น UPDATE ที่แก้ — ข้ามส่วนนี้ได้ถ้าจะทำแค่ (B)+(C)
+-- (A2) ALTER proc (นิยามเต็ม = PRD ณ 2026-11-09 + 2 จุดที่แก้)
 -- =============================================
 -- Author:		Thiti
 -- Create date: 16/05/2563
@@ -439,7 +458,22 @@ from (
 	    AND (b.SaleOrder = a.SaleOrder OR (b.SaleOrder IS NULL AND a.SaleOrder IS NULL))
 	    AND (b.SaleLine  = a.SaleLine  OR (b.SaleLine  IS NULL AND a.SaleLine  IS NULL))
 	    AND a.rn = 1
+	-- FIX 2026-11-09: คีย์เดียวอาจมีหลายแถว (เช่น X+O จากการล้างซ้ำ) — เดิม UPDATE พลิก "ทุกแถว" ของคีย์กลับเป็น 'O' ทำให้ซ้ำคืนชีพ
+	-- และจะชน unique index ถ้ามี · เลือกฟื้นเฉพาะแถว Id สูงสุดของคีย์ (แถวอื่นของคีย์เดียวกันคงสถานะ X)
+	WHERE b.Id = (
+	    SELECT MAX(x.Id) FROM [PCMS].[dbo].[TEMP_UserStatusAuto] AS x
+	    WHERE x.[ProductionOrder] = b.[ProductionOrder]
+	      AND (x.Grade     = b.Grade     OR (x.Grade     IS NULL AND b.Grade     IS NULL))
+	      AND (x.SaleOrder = b.SaleOrder OR (x.SaleOrder IS NULL AND b.SaleOrder IS NULL))
+	      AND (x.SaleLine  = b.SaleLine  OR (x.SaleLine  IS NULL AND b.SaleLine  IS NULL))
+	)
 
+-- FIX 2026-11-09: ครอบ "ตรวจแล้ว INSERT" ด้วย applock + transaction สั้นๆ — สองรอบที่เริ่มพร้อมกัน (CreateDate ตรงกันถึง ms) เคยเช็ค NOT EXISTS ผ่านทั้งคู่แล้ว insert ซ้ำ
+DECLARE @lockResult int;
+BEGIN TRY
+BEGIN TRAN;
+EXEC @lockResult = sp_getapplock @Resource = 'spd_UpsertToTEMP_UserStatusOnWeb_insert', @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = 120000;
+IF @lockResult < 0 RAISERROR('spd_UpsertToTEMP_UserStatusOnWeb: ขอ applock ไม่ได้ (timeout)', 16, 1);
 ;WITH UCAL_Distinct AS (
     SELECT 
         ProductionOrder,
@@ -487,28 +521,37 @@ WHERE a.ProductionOrder <> ''
           AND (d.SaleOrder = a.SaleOrder OR (d.SaleOrder IS NULL AND a.SaleOrder IS NULL))
           AND (d.SaleLine  = a.SaleLine  OR (d.SaleLine  IS NULL AND a.SaleLine  IS NULL))
   );
+COMMIT TRAN;
+END TRY
+BEGIN CATCH
+	IF @@TRANCOUNT > 0 ROLLBACK TRAN;
+	THROW;
+END CATCH
+
  END
-
 GO
--- (B) ตรวจแถวซ้ำที่มีอยู่ (DataStatus='O'): ต้องดูผลก่อนล้าง
-SELECT COUNT(*) AS dup_key_groups FROM (
-  SELECT 1 x FROM [PCMS].[dbo].[TEMP_UserStatusAuto] WHERE DataStatus='O'
-  GROUP BY ProductionOrder, SaleOrder, SaleLine, Grade HAVING COUNT(*)>1) t;
-
--- ล้าง: เก็บแถว Id สูงสุดของแต่ละคีย์ ปิด (X) แถวที่เหลือ — ไม่ลบจริง · ยกเลิก comment เมื่อพร้อม
+-- (B2) ตรวจแถว O ซ้ำที่เหลือ
+SELECT ProductionOrder, SaleOrder, SaleLine, Grade, COUNT(*) AS rows_O, MIN(Id) AS minId, MAX(Id) AS maxId
+FROM [PCMS].[dbo].[TEMP_UserStatusAuto] WHERE DataStatus = 'O'
+GROUP BY ProductionOrder, SaleOrder, SaleLine, Grade HAVING COUNT(*) > 1;
+-- ปิด (X) แถวที่ไม่ใช่ Id สูงสุดของแต่ละคีย์ — ไม่ลบจริง · ยกเลิก comment เมื่อพร้อม
 /*
 ;WITH d AS (
   SELECT Id, ROW_NUMBER() OVER (PARTITION BY ProductionOrder, SaleOrder, SaleLine, Grade ORDER BY Id DESC) rn
-  FROM [PCMS].[dbo].[TEMP_UserStatusAuto] WHERE DataStatus='O')
-UPDATE t SET DataStatus='X', ChangeDate=GETDATE()
-FROM [PCMS].[dbo].[TEMP_UserStatusAuto] t INNER JOIN d ON d.Id=t.Id WHERE d.rn>1;
+  FROM [PCMS].[dbo].[TEMP_UserStatusAuto] WHERE DataStatus = 'O')
+UPDATE t SET DataStatus = 'X', ChangeDate = GETDATE()
+FROM [PCMS].[dbo].[TEMP_UserStatusAuto] t INNER JOIN d ON d.Id = t.Id WHERE d.rn > 1;
 */
--- ผลที่คาดจาก (B) บน PRD 2026-11-04 = 12 กลุ่ม (ผู้ใช้รันแล้ว)
 GO
--- (C) กันซ้ำถาวร — ทำหลัง (B) เหลือ 0 เท่านั้น · IGNORE_DUP_KEY = ON: ถ้าสองรอบ insert พร้อมกัน แถวที่ซ้ำถูกข้าม (ไม่ throw)
+-- ตรวจผลหลัง (A2)+(B2): ต้องได้ 0 และเฝ้าดูซ้ำทุกวัน (ค่าที่ควรเป็น 0 ตลอด)
+SELECT COUNT(*) AS dup_key_groups_O FROM (
+  SELECT 1 x FROM [PCMS].[dbo].[TEMP_UserStatusAuto] WHERE DataStatus = 'O'
+  GROUP BY ProductionOrder, SaleOrder, SaleLine, Grade HAVING COUNT(*) > 1) t;
+GO
+-- (C2) [ไม่บังคับ — แนะนำรอ] ทำเมื่อ dup_key_groups_O = 0 ต่อเนื่อง และตรวจแล้วว่าทุกผู้เขียนตารางนี้ใช้ QUOTED_IDENTIFIER ON
 /*
+SET QUOTED_IDENTIFIER ON;
 CREATE UNIQUE NONCLUSTERED INDEX UX_TEMP_UserStatusAuto_O
 ON [PCMS].[dbo].[TEMP_UserStatusAuto] (ProductionOrder, SaleOrder, SaleLine, Grade)
-WHERE DataStatus = 'O'
-WITH (IGNORE_DUP_KEY = ON);
+WHERE DataStatus = 'O';
 */

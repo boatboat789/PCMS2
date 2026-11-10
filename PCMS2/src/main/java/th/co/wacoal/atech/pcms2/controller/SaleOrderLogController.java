@@ -55,6 +55,7 @@ public class SaleOrderLogController {
 //		mv.addObject("UserID", g.toJson());'Log - ข้อมูล Prod/Opertation ที่อัพเดทจาก ERP365'
 		return mv;
 	}  
+	private static final int MAX_LOG_ROWS = 50000;
 	@RequestMapping(  value = "/{dataType}/getSaleOrderLogBySearch",  method = RequestMethod.GET )
 	public ResponseEntity<ApiResponse<List<SaleOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
 			,@RequestParam("saleOrder") String saleOrder 
@@ -63,16 +64,24 @@ public class SaleOrderLogController {
 //			, @RequestBody List<SearchCriteria> list 
 			,@PathVariable("dataType") String dataType) throws IOException {  
         ArrayList<SaleOrderLogDetail> resultList;
-		if(dataType.equals("ERP365")) { 
-        	resultList = erpService.getFromErpMainSaleDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,saleOrder);
-        }
-        else { 
-        	resultList = fsmpModel.getFromSapMainSaleDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,saleOrder);
-        }
-//	    boolean isSuccess = result.stream().allMatch(bean -> "I".equals(bean.getIconStatus()));
-	    boolean isSuccess = true;
-	    String status = isSuccess ? "success" : "error";
-	    String message = isSuccess ? "บันทึกข้อมูลสำเร็จ" : "บางรายการบันทึกล้มเหลว";
+	    String status = "success";
+	    String message = "ค้นหาสำเร็จ";
+	    try {
+			if(dataType.equals("ERP365")) { 
+	        	resultList = erpService.getFromErpMainSaleDetailWithRangeOfChangeDate( changeDateStart,changeDateEnd,saleOrder);
+	        }
+	        else { 
+	        	resultList = fsmpModel.getFromSapMainSaleDetailWithRangeOfChangeDate(changeDateStart,changeDateEnd,saleOrder);
+	        }
+		    if (resultList != null && resultList.size() > MAX_LOG_ROWS) {
+		    	resultList = new ArrayList<>(resultList.subList(0, MAX_LOG_ROWS));
+		    	message = "แสดงเพียง " + MAX_LOG_ROWS + " แถวแรก กรุณาแคบเงื่อนไขค้นหา";
+		    }
+	    } catch (RuntimeException e) {
+	    	resultList = new ArrayList<>();
+	    	status = "error";
+	    	message = "ค้นหาไม่สำเร็จ กรุณาตรวจรูปแบบวันที่ (dd/MM/yyyy) หรือติดต่อทีม IT";
+	    }
 
 	    ApiResponse<List<SaleOrderLogDetail>> apiResponse = new ApiResponse<>(status, message, resultList);
 	    return ResponseEntity.ok(apiResponse);

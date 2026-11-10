@@ -34,6 +34,7 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 			+ "        MAX(CASE WHEN Operation BETWEEN 100 AND 104 AND AdminStatus = '-' THEN Operation END) AS maxOperationDye,\r\n"
 			+ "        MAX(CASE WHEN Operation BETWEEN 195 AND 198 AND AdminStatus = '-' THEN Operation END) AS maxOperationColorCheck\r\n"
 			+ "    FROM [PPMM].[dbo].[DataFromSap]\r\n"
+			+ "    WHERE ProductionOrder IN (SELECT ProdId FROM [PCMS].[dbo].[Z_ATT_CustomerConfirm2] WHERE DataStatus = 'O')\r\n"
 			+ "    GROUP BY ProductionOrder\r\n"
 			+ "),\r\n"
 			+ "CTE_Data AS (\r\n"
@@ -68,6 +69,7 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 			+ "        ON SFCD_ColorCheck.ProductionOrder = dfs.ProductionOrder\r\n"
 			+ "        AND SFCD_ColorCheck.Operation = om.maxOperationColorCheck\r\n"
 			+ "    WHERE dfs.DataStatus = 'O'\r\n"
+			+ "      AND dfs.ProductionOrder IN (SELECT ProdId FROM [PCMS].[dbo].[Z_ATT_CustomerConfirm2] WHERE DataStatus = 'O')\r\n"
 			+ ")\r\n";
 	private String select = ""
 
@@ -178,9 +180,11 @@ public class Z_ATT_CustomerConfirm2DaoImpl implements Z_ATT_CustomerConfirm2Dao 
 			ArrayList<Z_ATT_CustomerConfirm2Detail> poList)
 	{
 		ArrayList<Z_ATT_CustomerConfirm2Detail> list = null;
+		if (poList == null || poList.isEmpty()) {
+			return new ArrayList<>(); // รายการว่าง = ไม่เลือกอะไร ต้องไม่คืนทุกแถวของตาราง
+		}
 		String where = " where DataStatus = 'O' ";
-//		String where = " where 1 = 1 ";
-		if ( ! poList.isEmpty()) {
+		{
 			where += " AND a.Id in ( ";
 			for (int i = 0; i < poList.size(); i ++ ) {
 				Z_ATT_CustomerConfirm2Detail beanTmp = poList.get(i);

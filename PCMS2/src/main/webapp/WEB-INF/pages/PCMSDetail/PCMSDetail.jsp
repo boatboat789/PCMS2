@@ -1923,6 +1923,9 @@ function saveInputDetailToServer(arrayTmp,objTmp) {
 				  		MainTable.row(objTmp.idx).invalidate() ; 
 			   		}
 				}  
+			} else if(objTmp.fieldName == 'replacedRemark'){
+				// ล้างค่า Replaced Remark: server ปิดข้อมูลสำเร็จแต่คืน [] เมื่อ PO ตัวแทนเดิมไม่มีแถว Normal ให้เติมกลับ (แถวหลักถูกตั้งเป็นว่างไว้แล้ว)
+				Swal.fire({ title: 'สำเร็จ', text: 'อัพเดตข้อมูลสำเร็จ', icon: 'info' });
 			}
 			else {
 				// server บันทึกแล้วแต่ไม่มีแถวให้รีเฟรช (เช่น ล้างค่า Replaced/Switch Remark) — แจ้งผลให้ผู้ใช้เห็น

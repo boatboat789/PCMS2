@@ -1,132 +1,70 @@
-# API Design — [PROJECT_NAME]
+# API / Endpoint — PCMS2
 
----
+> อัปเดต 2026-11-10 · ไม่ใช่ REST แบบ `ApiResponse` — เป็น Spring MVC `@Controller` + **Gson** (`response.getWriter().println(g.toJson(...))` หรือ `@ResponseBody String`)
+> ฝั่ง JS ต้อง `JSON.parse` เองเมื่อได้ String · ห้ามใช้ Jackson/ObjectMapper (`.claude/rules/core-behavior.md`) · session เก็บ user ที่ `session["user"]`/`["userObject"]`/`["permit"]`
 
-## Response Wrapper
-
-**[Jackson + ApiResponse pattern — แนะนำสำหรับโปรเจคใหม่]**
-
-```java
-// ทุก @RestController return ResponseEntity<ApiResponse<T>>
-@GetMapping("/api/feature")
-@PreAuthorize("hasAnyRole('ADMIN','USER')")
-public ResponseEntity<ApiResponse<List<FooDto>>> getList() {
-    return ResponseEntity.ok(ApiResponse.success(service.findAll()));
-}
-
-@PostMapping("/api/feature/save")
-public ResponseEntity<ApiResponse<Boolean>> save(@RequestBody @Valid FooDto dto,
-        @AuthenticationPrincipal CustomUserDetails user) {
-    service.save(user.getUser(), dto);
-    return ResponseEntity.ok(ApiResponse.success(true, "บันทึกสำเร็จ"));
-}
-```
-
-```javascript
-// JS: ไม่ต้อง JSON.parse — Jackson serialize ให้แล้ว
-$.ajax({ contentType: 'application/json', ... })
-success: function(res) {
-    if (res.status === 'SUCCESS') { /* use res.data */ }
-    else { Swal.fire('Error', res.message, 'error'); }
-}
-```
-
-**[Gson pattern — legacy PCMS2/SFC/PPMM2]**
-
-```java
-@ResponseBody
-public String getList() {
-    return new Gson().toJson(service.findAll());
-}
-```
-
-```javascript
-// JS: ต้อง parse เอง
-var data = JSON.parse(res);
-if (data.status === 'success') { ... }
-```
-
----
-
-## WorkflowResult (Status Change)
-
-```java
-WorkflowResult result = service.updateStatus(user, id, "TARGET_STATUS");
-if ("ERROR".equals(result.getStatus())) {
-    return ResponseEntity.ok(ApiResponse.fail(result.getMessage()));
-}
-return ResponseEntity.ok(ApiResponse.success("บันทึกสำเร็จ"));
-```
-
----
-
-## URL Conventions
-
-| Pattern | ตัวอย่าง | ใช้เมื่อ |
+## Response conventions
+| แบบ | รูป | ใช้ที่ |
 |---|---|---|
-| `GET /api/[feature]` | `/api/foo` | list |
-| `GET /api/[feature]/{id}` | `/api/foo/1` | single record |
-| `POST /api/[feature]` | `/api/foo` | create |
-| `POST /api/[feature]/{id}` | `/api/foo/1` | update |
-| `POST /api/[feature]/{id}/[action]` | `/api/foo/1/approve` | action |
-| `GET /[feature]/list` | `/foo/list` | MVC page render |
+| รายการ/แถว | JSON array ของ bean (`PCMSTableDetail` / `PCMSSecondTableDetail` ...) | Main/Detail search |
+| บันทึกช่อง Detail | array ของแถวที่ต้องรีเฟรช — แต่ละแถวมี `iconStatus` (`I`=สำเร็จ, `E`=ผิดพลาด) + `systemStatus` (ข้อความ) | `saveInputDetail` |
+| Permit/Job API | `{"status":"SUCCESS"\|"FAIL","message":"..."}` | `Setting/*` |
+| Report/Log | ผิดพลาด → HTTP 400/403/404 + ข้อความไทย หรือ JSON `status:"error"` (Log) | `Report/*`, `Log/*` |
+- ⚠️ HTTP 200 ไม่ได้แปลว่า business สำเร็จ — JS ต้องอ่าน `iconStatus`/`status` (กฎ Swal: `.claude/rules/frontend-patterns.md`)
+- ไม่ login → redirect `/login` (`FilterLogin`) · ไม่มี permit → หน้า `error/AccessDenied`
 
----
+## Endpoint ทั้งหมด (context path `/PCMS2`)
+### Login
+| Method | Path | หมายเหตุ |
+|---|---|---|
+| GET | `/login` · `/logout` | ล้าง session |
+| POST | `/login/loginAuth` | AD → fallback `Users` → โหลด Permit |
 
-## MVC Controller (Page Render)
+### Main (`/Main`, `/`)
+| Method | Path | หมายเหตุ |
+|---|---|---|
+| GET | `/Main` | หน้า Summary · ต้อง `IsPCMSMain` |
+| GET | `/Main/getInitData` | os/userId/isCustomer |
+| POST | `/Main/searchByDetail` | body = `[PCMSTableDetail]` (ตัวกรอง) → ผล Summary · `IsCustomer` ซ่อน CFM/RollNo |
+| POST | `/Main/getPrdDetailByRow` | drill-down ต่อแถว |
+| POST | `/Main/saveColSettingToServer` · `saveDefault` · `loadDefault` | คอลัมน์ที่เห็น / ชุดตัวกรองรายคน |
+| POST | `/Main/getEncrypted/{userId}` | คืนรหัส AES ของ userId ให้ปุ่มเปิดระบบอื่น |
 
-```java
-@Controller
-@RequestMapping("/feature")
-public class FeatureController extends BaseController {
+### Detail (`/Detail`)
+| Method | Path | หมายเหตุ |
+|---|---|---|
+| GET | `/Detail` | หน้า Detail · ต้อง `IsPCMSDetail` |
+| POST | `/Detail/searchByDetail` | ผล Detail (UNION 6 ชนิด) |
+| POST | `/Detail/saveInputDetail` | `caseSave` = stockRemark · pcRemark · stockLoad · replacedRemark · switchRemark · delayedDep · causeOfDelay · sendCFMCusDate |
+| POST | `/Detail/saveInputDate` | วันที่ Plan CFM Lab / Plan Delivery ฯลฯ |
+| POST | `/Detail/getCFMPlanDateDetail` · `getCFMPlanLabDateDetail` · `getDeliveryPlanDateDetail` · `getSendCFMCusDateDetail` | ประวัติ/รายละเอียดวันที่ |
+| POST | `/Detail/getSwitchProdOrderListByPrd` · `getSwitchProdOrderListByRowProd` | drill-down switch |
+| POST | `/Detail/saveColSettingToServer` · `saveDefault` · `loadDefault` | เหมือน Main |
+ทุก endpoint ของ `/Detail/*` ต้องมี **`IsPCMSDetail`** (หน้า GET → `AccessDenied`, POST → HTTP 403) — แก้ 2026-11-10 (`business/roles.md` §5)
 
-    @GetMapping("/list")
-    public ModelAndView list(@AuthenticationPrincipal CustomUserDetails user) {
-        return buildView("Feature List", "featureList",
-                "pages/feature/list",
-                "js/feature/list.js");
-    }
-}
-```
+### Report / Log
+| Method | Path | หมายเหตุ |
+|---|---|---|
+| GET | `/Report/{ReportType}/Detail` | หน้ารายงาน (ตอนนี้ `CFM`) · `IsReport` |
+| GET | `/Report/{ReportType}/getReportDetail` | ข้อมูล · เช็ค `IsReport` · ตรวจวันที่/ประเภท |
+| POST | `/Report/{ReportType}/createExcelReportDetail` | body = `[{id}]` · server ดึงข้อมูลจริงเอง · เพดาน 20,000 แถว · JXLS template |
+| GET | `/Log/ProductionOrderLog/{dataType}` · `/Log/SaleOrderLog/{dataType}` | หน้า log · `dataType` = `ATT` หรือ `ERP365` |
+| POST | `/Log/ProductionOrderLog/{dataType}/getProductionOrderLogBySearch` | ค้นตามช่วงวัน/PO · ตัด 50,000 แถว |
+| GET | `/Log/SaleOrderLog/{dataType}/getSaleOrderLogBySearch` | ชุดเดียวกันฝั่ง Sale |
 
----
+### Setting (ADMIN/ITSUPP)
+| Method | Path | หมายเหตุ |
+|---|---|---|
+| GET | `/Setting/PermitManagement` · `/api/permits` · `/api/users` | ดู |
+| POST | `/Setting/PermitManagement/api/permit/update` | **ADMIN เท่านั้น** · แก้ ADMIN ไม่ได้ |
+| POST | `/Setting/PermitManagement/api/user/permit` | ADMIN/ITSUPP · ITSUPP ตั้งเป็น ADMIN ไม่ได้ |
+| GET | `/Setting/JobManagement` · `/api/status` | สถานะ `isRunning`/`scheduleEnabled` |
+| POST | `/Setting/JobManagement/api/run` | ช่วงวันที่ ≤7 วัน (`TaskService.runManual`) |
+| POST | `/Setting/JobManagement/api/schedule/toggle` | เปิด/ปิดทั้งสองงาน |
+`/api/status` · `/api/run` · `/api/schedule/toggle` รับ header **`X-Internal-Token`** (= `${internal.job.token}`) แทน session — ใช้โดย BGJOB (`docs/webapi-integration.md`)
 
-## Exception Handling
+### อื่นๆ
+`/handleError` · `/SapToWeb` (ซากหน้าทดสอบ) · `TestController` (ทดสอบ — อย่าพึ่ง)
 
-`GlobalExceptionHandler` catches all uncaught → `ApiResponse.fail(message)` (ไม่ expose stack trace)
-
-```java
-// Controller — catch business exception เฉพาะที่ต้อง message เฉพาะ
-try {
-    service.doSomething();
-    return ResponseEntity.ok(ApiResponse.success("สำเร็จ"));
-} catch (BusinessException e) {
-    return ResponseEntity.ok(ApiResponse.fail(e.getMessage()));
-}
-// RuntimeException → GlobalExceptionHandler จัดการ → ไม่ได้ HTTP 500
-```
-
----
-
-## Adding a New Setting Page (8 steps)
-
-```
-1.  SQL patch     → sql/YYYY-MM-DD_[feature].sql
-2.  Entity        → entities/[Feature].java
-3.  DAO interface → dao/[Feature]Dao.java
-4.  DaoImpl       → dao/implement/[Feature]DaoImpl.java
-5.  Service       → service/[Feature]Service.java
-6.  API Controller → controller/api/[Feature]ApiController.java
-7.  MVC Controller → controller/[Feature]Controller.java
-8.  JSP + JS      → pages/[feature]/ + resources/js/[feature]/
-9.  Sidebar       → layout/Sidebar.jsp
-10. intercept-url → spring-security.xml  [Spring Security]
-```
-
----
-
-## Anti-patterns
-
-- ห้าม return `String`, `Map`, `boolean` โดยตรงจาก `@RestController`
-- ห้าม throw exception ออกนอก controller โดยไม่ handle
-- ห้าม mix Gson + Jackson ใน project เดียวกัน
+## Error handling
+`MyExceptionController` + `ErrorController` → หน้า `error/error.jsp` · controller ควร catch แล้วคืน JSON/ข้อความไทยเอง (Report/Log ทำแล้วหลัง `72d41c9`) · ห้ามปล่อย 500 ใส่ผู้ใช้

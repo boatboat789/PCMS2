@@ -56,18 +56,28 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 ### Business (อ่านก่อนแตะ logic)
 | ไฟล์ | เนื้อหา |
 |---|---|
-| `docs/business/roles.md` | role registry, visibility, permission matrix |
-| `docs/business/workflow.md` | status machine, transitions, process codes |
-| `docs/business/rules.md` | business rules, constraints, edge cases |
+| `docs/business/roles.md` | Permits 9 flag, ADMIN/ITSUPP/VIEWONLY, matrix, ช่องว่างสิทธิ์ที่พบ (อัปเดต 2026-11-10) |
+| `docs/business/workflow.md` | ไม่มี status machine — pipeline sync, pipeline แสดงผล, flow กรอกข้อมูล/Replaced PO |
+| `docs/business/rules.md` | กฎเหล็ก, สูตรตัวเลข, ปัญหาที่ยังเปิด, กฎที่เคยสับสน |
 
 ### Technical Reference
 | ไฟล์ | เนื้อหา |
 |---|---|
 | `docs/architecture.md` | tech stack, layer design, package structure |
-| `docs/database.md` | qualifier, tables, SQL patch rules, temp table |
-| `docs/api.md` | Gson response, endpoint patterns |
+| `docs/database.md` | 4 datasource, ตารางจัดกลุ่ม (FromSap*/แคช/Input*/สิทธิ์), SP, SQL patch rules |
+| `docs/api.md` | endpoint ทั้งหมด (Gson, ไม่ใช่ ApiResponse) + permit ที่ต้องมี |
 | `docs/deployment.md` | build, deploy, troubleshoot |
+| `docs/background-jobs.md` · `docs/webapi-integration.md` | job :14/:44 + 01:00 (pipeline SP) · endpoint ที่ BGJOB เรียก (`X-Internal-Token`) |
 | `docs/prd-verification-perf-search.md` | ขั้นตอนทดสอบ PERF_SEARCH บน PRD (A/B harness เก่า/ใหม่ + ความเร็ว + เกณฑ์ผ่าน) · สคริปต์ `tools/run-harness-ab.ps1` + `tools/harness-ab-diff.py` |
+
+### วิเคราะห์ logic (2026-11-03 — อ่านก่อนแก้ตัวเลข/แถวในหน้า Detail)
+| ไฟล์ | เนื้อหา |
+|---|---|
+| `docs/detail-row-taxonomy-2026-11-03.md` | ชนิดแถว/สูตร Prod. Qty/แคช/ช่องกรอก — "กี่แบบ อะไรบ้าง" |
+| `docs/logic-map-detail-2026-11-03.md` | ข้อค้นพบ Prod. Qty เปลี่ยนตามตัวกรอง + คำถามที่รอเจ้าของงานยืนยัน |
+| `docs/prd-findings-2026-11-03.md` | ตัวเลขจริงบน PRD (SumBillCache ค้าง, WaitLot +217 ฯลฯ) |
+| `docs/orig-vs-main-compare-2026-11-03.md` · `docs/cache-fix-plan-2026-11-03.md` | เทียบโค้ดเก่า/ใหม่ · แผนแก้แคชยอดส่ง (หลัง !17 ถูก revert) |
+| `SQL_INJECTION_REVIEW.md` · `TEST_PLAN.md` | sweep SQL injection · แผนทดสอบ DAO escape |
 
 ### Design Decisions
 | ไฟล์ | สรุป |
@@ -77,7 +87,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 ### Shared Reference (workspace `docs/` และ `*/CLAUDE.md`)
 | ไฟล์ | เนื้อหา |
 |---|---|
-| `docs/pcms2.md` | SAP integration quirks, PCMSSearch lifecycle, new feature checklist |
+| `docs/pcms2.md` | ⭐ ภาพรวมระบบ: data flow ERP→PCMS, หน้าจอ, แนวคิดแถวพ่วง/สวม/switch/WaitLot, ช่องที่ผู้ใช้กรอก, แคช, quirks (อัปเดต 2026-11-10) |
 | `docs/coding-standards.md` | naming convention, review criteria, comment policy |
 | `backend/CLAUDE.md` | qualifier rules, DAO pattern, temp table rules, SP pattern |
 | `frontend/CLAUDE.md` | Bootstrap 4 rules, selectpicker pitfalls, div-edit-mode pattern |
@@ -159,10 +169,11 @@ controller/ → service/ → dao/implement/ → JdbcTemplate / HikariCP → SQL 
 
 - `LoginController` — LDAP/AD authentication, session setup
 - `PCMSMainController` — main dashboard, AES encryption/decryption of sensitive data
-- `PCMSDetailController` / `PCMSDetailV2Controller` — detailed production order views
+- `PCMSDetailController` — หน้า Detail (UNION 6 ชนิดแถว + ช่องกรอกในตาราง) · ไม่มี `PCMSDetailV2Controller` แล้ว
 - `ReportController` — Excel via Apache POI 5.2.5 + JXLS 2.13.0 (templates from classpath)
 - `SapToWebController` — SAP→Web sync trigger
-- `ProductionOrderLogController` / `SaleOrderLogController` — audit logging
+- `ProductionOrderLogController` / `SaleOrderLogController` — หน้า Log (ATT/ERP365)
+- `PermitManagementController` / `JobManagementController` — Setting (ADMIN/ITSUPP) · Job รับ `X-Internal-Token` จาก BGJOB
 - `BackGroundJobDaoImpl` — scheduled SP execution (no #temp tables; SP-internal only)
 
 ---
