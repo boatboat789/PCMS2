@@ -91,7 +91,7 @@ public class PCMSDetailController {
 				mv.setViewName("error/AccessDenied"); // Redirect to an access-denied view
 				mv.addObject("errorMsg", "Contact IT for set permission first.");
 			} else {
-				if (permit.isPCMSMain()) {
+				if (permit.isPCMSDetail()) {
 					ArrayList<PCMSAllDetail> cusNameList = null ;
 					ArrayList<PCMSAllDetail> cusShortNameList = null ;
 					ArrayList<ColumnHiddenDetail> list = csService.getColumnVisibleDetail(user);
@@ -140,6 +140,7 @@ public class PCMSDetailController {
 	public void doGetSearchByDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -150,6 +151,7 @@ public class PCMSDetailController {
 	public void doGetSaveInputDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		for (PCMSSecondTableDetail bean : poList) {
@@ -164,6 +166,7 @@ public class PCMSDetailController {
 	public void doGetSaveInputDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		for (PCMSSecondTableDetail bean : poList) {
@@ -178,6 +181,7 @@ public class PCMSDetailController {
 	public void doGetCFMPlanDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -188,6 +192,7 @@ public class PCMSDetailController {
 	public void doGetCFMPlanLabDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -198,6 +203,7 @@ public class PCMSDetailController {
 	public void doGetDeliveryDate(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -208,6 +214,7 @@ public class PCMSDetailController {
 	public void doGetSendCFMCusDateDetail(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -218,6 +225,7 @@ public class PCMSDetailController {
 	public void doSaveColSettingToServer(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody String data) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		String user = (String) session.getAttribute("user");
 		Gson g = new Gson();
 		String[] userArray = g.fromJson(data, String[].class);
@@ -242,6 +250,7 @@ public class PCMSDetailController {
 	public void doGetSaveDefault(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user"); 
@@ -253,6 +262,7 @@ public class PCMSDetailController {
 	@RequestMapping(value = "/loadDefault", method = RequestMethod.POST)
 	public void doGetLoadDefault(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
@@ -265,6 +275,7 @@ public class PCMSDetailController {
 	public void doGetSwitchProdOrderListByPrd(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -275,9 +286,21 @@ public class PCMSDetailController {
 	public void doGetSwitchProdOrderListByRowProd(HttpSession session, HttpServletRequest request, HttpServletResponse response,
 			@RequestBody ArrayList<PCMSSecondTableDetail> poList) throws IOException
 	{
+		if ( ! requireDetailPermit(session, response)) { return; }
 		Gson g = new Gson();
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println(g.toJson(pCMSDetailProcess.getSwitchProdOrderListByRowProd(poList)));
+	}
+
+	/** ทุก endpoint ของหน้า Detail ต้องมี IsPCMSDetail (ตรงกับเมนู navbar) — ไม่งั้น 403 */
+	private boolean requireDetailPermit(HttpSession session, HttpServletResponse response) throws IOException
+	{
+		PermitDetail permit = (PermitDetail) session.getAttribute("permit");
+		if (session.getAttribute("user") != null && permit != null && permit.isPCMSDetail()) {
+			return true;
+		}
+		response.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have permission to access this page.");
+		return false;
 	}
 }

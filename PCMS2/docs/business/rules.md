@@ -69,7 +69,7 @@
 |---|---|---|
 | แถว `FromSapMainBillBatch` เป็น X | ใบส่งถูกยกเลิกใน ERP | **ไม่เสมอ** — `ERPAtechDaoImpl` ตั้ง X เมื่อ PO อยู่ในชุดซิงก์แต่ LEFT JOIN หาใบใน staging ไม่เจอ (ตัวอย่าง 10 PO ใบยังอยู่ใน ERP_PROD) |
 | อ่านสดเฉพาะ O = แก้ปัญหาแคชได้ | ใช่ | ผิด — ซ่อนยอดจริง 2,166 กลุ่ม/~190,000 kg → revert |
-| `IsPCMSDetail` คุมหน้า Detail | ใช่ | คุมแค่เมนู · controller เช็ค `IsPCMSMain` |
+| `IsPCMSDetail` คุมหน้า Detail | ใช่ | เดิมคุมแค่เมนู (controller เช็ค `IsPCMSMain`) · ตรงกันแล้วตั้งแต่ 2026-11-10 |
 | `/SapToWeb` คือทางสั่ง sync | ใช่ | ซากหน้าทดสอบ (JSP ไม่มี) — สั่งผ่าน Job Management |
 | เทสเขียว = ใช้ได้ | ใช่ | regex ใน JSP เคยพังเพราะ backslash ถูกยุบ (500) ทั้งที่แก้ "ถูก" — ยิงหน้าจริงเสมอ |
 | ระบบ ERP = SAP | ใช่ | ตอนนี้ ERP365 (ชื่อ `Sap` ยังค้างในตาราง/โค้ด) |

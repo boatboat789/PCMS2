@@ -2,6 +2,13 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ✅ 2026-11-10 — แก้ช่องว่างสิทธิ์หน้า Detail (code-complete · compile ผ่าน JDK 1.8 · ยังไม่ได้ทดสอบกับเบราว์เซอร์ · ยังไม่ deploy)
+
+- `PCMSDetailController`: หน้า GET เช็ค `IsPCMSDetail` (เดิม `IsPCMSMain`) + ทุก POST 12 ตัวเช็คผ่าน `requireDetailPermit` → 403
+- 🔲 ก่อน deploy: ตรวจใน PRD ว่า Permit ที่ `IsPCMSMain=1` และใช้ Detail จริงมี `IsPCMSDetail=1` ด้วย (SELECT `Permits` WHERE WebApp='PCMS2') ไม่งั้นผู้ใช้กลุ่มนั้นเข้า Detail ไม่ได้
+- 🔲 ทดสอบ: ผู้ใช้ Detail=1 เข้าได้/กรอกได้ · Detail=0 ได้ AccessDenied และ POST ตรงได้ 403
+- ช่องว่างที่เหลือ: Log ไม่เช็ค `IsReport` · `IsUserManagement` ไม่ถูกใช้
+
 ## ✅ 2026-11-10 — ทำความเข้าใจระบบ + เติมเอกสารที่ยังเป็น template/TODO (เอกสารล้วน · ยังไม่ commit)
 
 ### ที่ทำ

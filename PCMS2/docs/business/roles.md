@@ -22,8 +22,8 @@ session: "user" (String) · "userObject" (UserDetail) · "permit" (PermitDetail)
 ## 2) Permit flags (ตาราง `Permits`, 9 ตัว)
 | flag | ใช้ที่ไหน | ผลเมื่อเป็น 1 |
 |---|---|---|
-| `IsPCMSMain` | `PCMSMainController`, **`PCMSDetailController`**, navbar "PCMS - Summary" | เปิดหน้า Main **และ Detail** (ทั้งสองหน้าเช็คตัวนี้) |
-| `IsPCMSDetail` | navbar "PCMS - Detail" เท่านั้น | แสดงลิงก์ Detail ในเมนู — ⚠️ **controller ไม่ได้เช็คตัวนี้** (ดู §5) |
+| `IsPCMSMain` | `PCMSMainController`, navbar "PCMS - Summary" | เปิดหน้า Main |
+| `IsPCMSDetail` | **`PCMSDetailController` ทุก endpoint** + navbar "PCMS - Detail" | เปิดหน้า Detail และเรียก endpoint ของ Detail ได้ (แก้ 2026-11-10 — เดิม controller เช็ค `IsPCMSMain`, ดู §5) |
 | `IsPCMSMainToProd` | `searchDiv.jsp` | ปุ่ม "Production Detail" |
 | `IsPCMSMainToLBMS` | `searchDiv.jsp` | ปุ่ม "LBMS Detail" |
 | `IsPCMSMainToQCMS` | `searchDiv.jsp` | ปุ่ม "QCMS Result" |
@@ -45,8 +45,8 @@ SQL สร้าง ADMIN/ITSUPP: `sql/2026-06-23_add_admin_itsupp_permits_pcms2
 ## 4) Permission matrix (ระดับหน้า/การกระทำ)
 | การกระทำ | VIEWONLY/Permit ทั่วไป | `IsPCMSMain` | `IsReport` | ITSUPP | ADMIN |
 |---|---|---|---|---|---|
-| เปิด Main / Detail | ❌ (ตาม flag) | ✅ | — | ✅ | ✅ |
-| กรอกช่อง Input / วันที่ / Replaced ใน Detail | ⚠️ endpoint `saveInputDetail`/`saveInputDate` **ไม่เช็ค permit** (ต้อง login เท่านั้น) | ✅ | — | ✅ | ✅ |
+| เปิด Main (`IsPCMSMain`) / Detail (`IsPCMSDetail`) | ❌ (ตาม flag) | Main | — | ✅ | ✅ |
+| กรอกช่อง Input / วันที่ / Replaced ใน Detail | ❌ 403 ถ้าไม่มี `IsPCMSDetail` | — | — | ✅ | ✅ |
 | รายงาน CFM + Excel | ❌ | — | ✅ (400/403 ข้อความไทยถ้าไม่ผ่าน) | ✅ | ✅ |
 | หน้า Log (ATT/ERP365) | login เท่านั้น (ไม่เช็ค `IsReport` ที่ endpoint) | — | เมนูโผล่เมื่อมี `IsReport` | ✅ | ✅ |
 | Job Management (ดู/รัน/toggle) | ❌ | — | — | ✅ | ✅ (หรือ header `X-Internal-Token` จาก BGJOB) |
@@ -55,8 +55,8 @@ SQL สร้าง ADMIN/ITSUPP: `sql/2026-06-23_add_admin_itsupp_permits_pcms2
 | ตั้ง Permit ให้ผู้ใช้ | ❌ | — | — | ✅ (ไม่ใช่ ADMIN) | ✅ |
 
 ## 5) ช่องว่าง/ข้อสังเกตที่พบตอนไล่โค้ด (ยังไม่แก้ — รอ user ตัดสิน 🟡)
-1. **`IsPCMSDetail` กับ Detail controller ไม่ตรงกัน** — เมนู Detail ใช้ `IsPCMSDetail` แต่ controller เช็ค `IsPCMSMain` → คนที่มี Detail=1/Main=0 เห็นเมนูแล้วเข้าไม่ได้ · คนที่มี Main=1/Detail=0 ไม่เห็นเมนูแต่พิมพ์ `/Detail` เข้าได้
-2. **endpoint บันทึกใน Detail ไม่เช็คสิทธิ์** — ผู้ใช้ที่ login แล้วยิง `POST /Detail/saveInputDetail` ตรงได้แม้ไม่มี flag (ข้อมูลจริงผ่านทางหน้าเว็บมีแต่คนมี Main) · ก่อนเปลี่ยนต้องถามว่า VIEWONLY ควรกรอกได้หรือไม่
+1. ✅ **แก้แล้ว 2026-11-10:** `IsPCMSDetail` กับ Detail controller เคยไม่ตรงกัน (เมนูใช้ `IsPCMSDetail` แต่ controller เช็ค `IsPCMSMain`) → ตอนนี้ controller เช็ค `IsPCMSDetail` ตรงกับเมนู · ผลข้างเคียง: คนที่มี Main=1/Detail=0 จะเข้า `/Detail` ไม่ได้อีก (เดิมพิมพ์ URL เข้าได้)
+2. ✅ **แก้แล้ว 2026-11-10:** ทั้ง 12 endpoint POST ของ `/Detail/*` (รวม `saveInputDetail`/`saveInputDate`) เช็ค `IsPCMSDetail` ผ่าน `requireDetailPermit` → ไม่ผ่านตอบ HTTP 403 (เดิมแค่ login ก็ยิงได้)
 3. **Log controllers ไม่เช็ค `IsReport`** (แต่เมนูซ่อนอยู่หลัง `IsReport`)
 4. `IsUserManagement` ไม่ถูกใช้ — การเข้า Setting ใช้ `permitId == ADMIN/ITSUPP` แทน
 5. `Users.IsAdmin`/`IsSystem` ถูกโหลดเข้า session แต่ไม่ถูกใช้ตัดสินสิทธิ์

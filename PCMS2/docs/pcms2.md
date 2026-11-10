@@ -31,7 +31,7 @@ ERP365 (staging ERP_PROD @10.11.44.219\ATECHERP)   SOR_PRODUCTION (@10.11.44.220
 | URL | JSP | ทำอะไร | สิทธิ์ที่ต้องมี |
 |---|---|---|---|
 | `/Main` (และ `/`) | `PCMSMain/PCMSMain.jsp` | **Summary** — 1 แถวต่อ PO/SO/line สรุป · ตัวกรองลูกค้า/สถานะ/Division/Sale · เลือกคอลัมน์ · บันทึกชุดตัวกรอง (default) · ปุ่มเปิดระบบอื่น | `IsPCMSMain` |
-| `/Detail` | `PCMSDetail/PCMSDetail.jsp` | **Detail** — ตารางกว้าง ~7,600px ครบ 6 ชนิดแถว + ช่องกรอกในตาราง (10 ช่อง) | `IsPCMSMain` (เช็คตัวเดียวกับ Main — ไม่ได้ใช้ `IsPCMSDetail`) |
+| `/Detail` | `PCMSDetail/PCMSDetail.jsp` | **Detail** — ตารางกว้าง ~7,600px ครบ 6 ชนิดแถว + ช่องกรอกในตาราง (10 ช่อง) | `IsPCMSDetail` (แก้ 2026-11-10 — เดิมเช็ค `IsPCMSMain`) |
 | `/Report/CFM/Detail` | `Report/CFMReport.jsp` | รายงาน CFM · ส่งออก Excel (JXLS template) | `IsReport` |
 | `/Log/ProductionOrderLog/{dataType}` · `/Log/SaleOrderLog/{dataType}` | `LogInformation/*.jsp` | ประวัติ sync ของ PO/SO (ATT = ตารางใน PCMS · ERP365 = อ่านจาก ERP_PROD, จำกัด 50,000 แถว) | login |
 | `/Setting/PermitManagement` | `Setting/PermitManagement.jsp` | แก้สิทธิ์ของ Permit/ผู้ใช้ | `ADMIN` / `ITSUPP` |

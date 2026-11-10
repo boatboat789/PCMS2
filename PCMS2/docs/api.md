@@ -33,14 +33,14 @@
 ### Detail (`/Detail`)
 | Method | Path | หมายเหตุ |
 |---|---|---|
-| GET | `/Detail` | หน้า Detail · ต้อง `IsPCMSMain` |
+| GET | `/Detail` | หน้า Detail · ต้อง `IsPCMSDetail` |
 | POST | `/Detail/searchByDetail` | ผล Detail (UNION 6 ชนิด) |
 | POST | `/Detail/saveInputDetail` | `caseSave` = stockRemark · pcRemark · stockLoad · replacedRemark · switchRemark · delayedDep · causeOfDelay · sendCFMCusDate |
 | POST | `/Detail/saveInputDate` | วันที่ Plan CFM Lab / Plan Delivery ฯลฯ |
 | POST | `/Detail/getCFMPlanDateDetail` · `getCFMPlanLabDateDetail` · `getDeliveryPlanDateDetail` · `getSendCFMCusDateDetail` | ประวัติ/รายละเอียดวันที่ |
 | POST | `/Detail/getSwitchProdOrderListByPrd` · `getSwitchProdOrderListByRowProd` | drill-down switch |
 | POST | `/Detail/saveColSettingToServer` · `saveDefault` · `loadDefault` | เหมือน Main |
-⚠️ endpoint บันทึกของ Detail **ไม่เช็ค permit** ที่ตัว endpoint (ดู `business/roles.md` §5)
+ทุก endpoint ของ `/Detail/*` ต้องมี **`IsPCMSDetail`** (หน้า GET → `AccessDenied`, POST → HTTP 403) — แก้ 2026-11-10 (`business/roles.md` §5)
 
 ### Report / Log
 | Method | Path | หมายเหตุ |
