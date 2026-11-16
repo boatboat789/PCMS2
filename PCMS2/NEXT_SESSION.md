@@ -2,6 +2,14 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## ⚠️ 2026-11-14 — กฎใหม่: SQL แก้ข้อมูลบน PRD ต้องจบ transaction ในบล็อกเดียว
+
+- เหตุ (PPMM2/SFC): ให้ user `BEGIN TRAN` แล้ว `COMMIT` แยกทีหลัง → กดผิดหน้าต่าง SSMS → transaction ค้าง ~20 นาที → หน้าระบบจริงค้าง
+- กฎ: `.claude/rules/prd-sql-single-block-transaction.md` (copy มาไว้ที่โปรเจกต์นี้แล้ว โหลดอัตโนมัติ) — BEGIN TRAN→แก้→ตรวจ→COMMIT/ROLLBACK อัตโนมัติในบล็อกเดียว · ห้ามใส่ `IF @@TRANCOUNT>0 ROLLBACK` ต้นสคริปต์ · หลังแก้ตรวจ `DBCC OPENTRAN('<DB>')`
+- รายละเอียดเต็ม: PPMM2 `NEXT_SESSION.md` (2026-11-14)
+
+---
+
 ## ✅ 2026-11-04 (เย็น) — ปิดรอบก่อน deploy: WaitLot เทียบเกณฑ์เดิม · TEMP_UserStatusAuto · Prod.Qty remark · จุดเล็ก
 
 - **main `ad80f8c` ทดสอบหน้าเว็บบน PRD ผ่าน** (รันบนเครื่อง ชี้ PRD, VIEWONLY, job ปิด): ค้น SO/ช่วงวันที่/อักขระ `'` ทั้ง Detail+Summary · Excel · Report/Log · injection ในช่องวันที่ถูกปฏิเสธ · Due Date line ปิดไม่เตือน · WAR `E1756C6F54491AAA556101455999935F` (47,741,693 B) จัดไว้ที่ Desktop\pcms2_release
