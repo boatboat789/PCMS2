@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 import th.co.wacoal.atech.pcms2.entities.ApiResponse;
+import th.co.wacoal.atech.pcms2.entities.PermitDetail;
 import th.co.wacoal.atech.pcms2.entities.ProductionOrderLogDetail;
 import th.co.wacoal.atech.pcms2.service.master.FromSapMainProdService;
 import th.co.wacoal.atech.pcms2.service.master.erp.atech.ERPAtechService; 
@@ -42,6 +44,11 @@ public class ProductionOrderLogController {
 	@RequestMapping(  value = "/{dataType}",  method = RequestMethod.GET )
 	public ModelAndView getModelAndView(HttpSession session,@PathVariable("dataType") String dataType) {
 		ModelAndView mv = new ModelAndView();
+		if ( ! canViewLog(session)) {
+			mv.setViewName("error/AccessDenied");
+			mv.addObject("errorMsg", "You do not have permission to access this page.");
+			return mv;
+		}
 		Gson g = new Gson();
 		String user = (String) session.getAttribute("user");
 		String titleName = "";
@@ -80,12 +87,21 @@ public class ProductionOrderLogController {
 //	}
 	
 // POST - JSON
+	/** Log ใช้สิทธิ์ Report เดียวกับเมนู (ซ่อนอยู่ใต้ Report) — endpoint เรียกตรงได้ จึงต้องเช็คซ้ำ */
+	private boolean canViewLog(HttpSession session)
+	{
+		PermitDetail permit = (PermitDetail) session.getAttribute("permit");
+		return session.getAttribute("user") != null && permit != null && permit.isReport();
+	}
 	private static final int MAX_LOG_ROWS = 50000;
 	@RequestMapping(  value = "/{dataType}/getProductionOrderLogBySearch",  method = RequestMethod.POST )
 	public ResponseEntity<ApiResponse<List<ProductionOrderLogDetail>>> doGetProdOperationLogBySearch(HttpSession session,HttpServletRequest request, HttpServletResponse response   
 			// ถ้าตั้งชื่อ Field ตรงก็ไม่ต้อง Gson ใช้ได้แค่กับ POST
 			 ,@RequestBody SearchCriteria bean  // Direct POJO mapping!
 			,@PathVariable("dataType") String dataType) throws IOException {  
+		if ( ! canViewLog(session)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<List<ProductionOrderLogDetail>>("error", "ไม่มีสิทธิ์ใช้งานหน้านี้", new ArrayList<ProductionOrderLogDetail>()));
+		}
 	    ArrayList<ProductionOrderLogDetail> resultList;    
 	    String changeDateStart = bean.getChangeDateStart() ;
 	    String changeDateEnd = bean.getChangeDateEnd();
