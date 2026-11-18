@@ -57,8 +57,8 @@ SQL สร้าง ADMIN/ITSUPP: `sql/2026-06-23_add_admin_itsupp_permits_pcms2
 ## 5) ช่องว่าง/ข้อสังเกตที่พบตอนไล่โค้ด (ยังไม่แก้ — รอ user ตัดสิน 🟡)
 1. ✅ **แก้แล้ว 2026-11-10:** `IsPCMSDetail` กับ Detail controller เคยไม่ตรงกัน (เมนูใช้ `IsPCMSDetail` แต่ controller เช็ค `IsPCMSMain`) → ตอนนี้ controller เช็ค `IsPCMSDetail` ตรงกับเมนู · ผลข้างเคียง: คนที่มี Main=1/Detail=0 จะเข้า `/Detail` ไม่ได้อีก (เดิมพิมพ์ URL เข้าได้)
 2. ✅ **แก้แล้ว 2026-11-10:** ทั้ง 12 endpoint POST ของ `/Detail/*` (รวม `saveInputDetail`/`saveInputDate`) เช็ค `IsPCMSDetail` ผ่าน `requireDetailPermit` → ไม่ผ่านตอบ HTTP 403 (เดิมแค่ login ก็ยิงได้)
-3. **Log controllers ไม่เช็ค `IsReport`** (แต่เมนูซ่อนอยู่หลัง `IsReport`)
-4. `IsUserManagement` ไม่ถูกใช้ — การเข้า Setting ใช้ `permitId == ADMIN/ITSUPP` แทน
+3. ✅ **แก้แล้ว 2026-11-18 (branch `fix/log-isreport-check`):** Log (`/Log/ProductionOrderLog/*`, `/Log/SaleOrderLog/*`) เช็ค `IsReport` ทั้งหน้าและ endpoint ข้อมูล — หน้า → AccessDenied · endpoint → HTTP 403 + JSON ภาษาไทย · เหตุ: Log ไม่กรองตามลูกค้า (`ConfigCustomerUser`) ผู้ใช้ CUST01/02 ที่ผูกลูกค้า 1 ราย (จาก 149) เคยพิมพ์ URL ดูของทุกลูกค้าได้ · ทดสอบ DEV: CUST01 ถูกปฏิเสธ 4 หน้า + 4 endpoint · VIEWONLY ยังใช้ได้
+4. **`IsUserManagement` เป็น flag ที่ไม่ได้ใช้ (ตั้งใจไม่แก้ — user รับคำแนะนำ 2026-11-18)** — Setting (Job/Permit Management) ถูกกันฝั่ง server ด้วย `permitId == ADMIN/ITSUPP` อยู่แล้วทั้งหน้าและ API ไม่ใช่ช่องรั่ว · ค่าใน PRD เป็น 1 เฉพาะ ADMIN/ITSUPP ตรงกับเช็คเดิม · ห้ามเปลี่ยนไปใช้ flag นี้ (ติ๊กผิดแล้วล็อกตัวเองออกจาก Setting) · ⚠️ หน้า Permit Management มีช่องติ๊กค่านี้แต่ไม่มีผลจริง
 5. `Users.IsAdmin`/`IsSystem` ถูกโหลดเข้า session แต่ไม่ถูกใช้ตัดสินสิทธิ์
 6. รหัส AES (`PCMSDISPLAY`/salt/IV ศูนย์) hardcode ใน `PCMSMainController.getEncrypted` — เป็นกลไกเดิมที่ระบบอื่นถอดรหัสด้วยกัน อย่าเปลี่ยนฝั่งเดียว
 
