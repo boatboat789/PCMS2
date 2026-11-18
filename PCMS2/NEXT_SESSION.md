@@ -2,6 +2,30 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 📍 2026-11-18 — สถานะจริงเทียบ git (ตรวจ `gitlab_master/main` = e93c192 · อ่านบล็อกนี้ก่อน)
+
+- ✅ เข้า `main` ครบแล้ว (merge 2026-11-10): MR !24 report/log + สิทธิ์ Detail · `fix/small-ux-and-prodqty-note` · `fix/detail-due-date-sale-status` · SQL injection fix + regression test · เอกสารระบบ (`2010f63`) · ไฟล์ SQL UserStatusAuto
+- ⏳ ยังไม่เข้า main: `docs/readme-pcms2` (README) · กฎ `prd-sql-single-block-transaction` (branch `docs/next-session-sync-2026-11-18` นี้)
+- ❓ **deploy PRD: ไม่มีบันทึกว่าทำแล้ว** — `main` ปัจจุบันมีโค้ดใหม่กว่า WAR ที่ตรวจ 11-03/11-04 (ต้อง build + ตรวจใหม่ ห้ามใช้ hash WAR เก่า)
+- 🔲 ค้างจริง:
+  - [ ] SELECT บน PRD: Permit ที่ `IsPCMSMain=1` และใช้ Detail จริงต้องมี `IsPCMSDetail=1` (ก่อน deploy)
+  - [ ] ทดสอบสิทธิ์ Detail ในเบราว์เซอร์ (Detail=1 เข้า/กรอกได้ · Detail=0 AccessDenied + POST ตรง 403)
+  - [ ] เฝ้า `dup_key_groups_O` (เริ่ม 11-09) ก่อนพิจารณา unique index (C2) · [ ] (B2) ล้างซ้ำ 3 คีย์ (ไม่บังคับ) · [ ] หาผู้เรียก proc ตัวที่สอง
+  - [ ] ตัดสินช่องว่างสิทธิ์: Log ไม่เช็ค `IsReport` · `IsUserManagement` ไม่ถูกใช้
+  - [ ] ถามเจ้าของงานคำถาม 🟡 ใน `docs/business/rules.md` §4
+  - [ ] SumBillCache: แนวแก้ใน บล็อก 11-04 (เย็น) ยังไม่ตัดสิน/ไม่ได้แก้ในไฟล์นี้ — ตรวจประวัติ MR !17/!19 (revert) ก่อนทำ
+- หมายเหตุ: บล็อกเก่าด้านล่างเขียนตามสถานะ ณ วันนั้น ถ้าขัดกับบล็อกนี้ให้ยึดบล็อกนี้
+
+---
+
+## ⚠️ 2026-11-14 — กฎใหม่: SQL แก้ข้อมูลบน PRD ต้องจบ transaction ในบล็อกเดียว
+
+- เหตุ (PPMM2/SFC): ให้ user `BEGIN TRAN` แล้ว `COMMIT` แยกทีหลัง → กดผิดหน้าต่าง SSMS → transaction ค้าง ~20 นาที → หน้าระบบจริงค้าง
+- กฎ: `.claude/rules/prd-sql-single-block-transaction.md` (copy มาไว้ที่โปรเจกต์นี้แล้ว โหลดอัตโนมัติ) — BEGIN TRAN→แก้→ตรวจ→COMMIT/ROLLBACK อัตโนมัติในบล็อกเดียว · ห้ามใส่ `IF @@TRANCOUNT>0 ROLLBACK` ต้นสคริปต์ · หลังแก้ตรวจ `DBCC OPENTRAN('<DB>')`
+- รายละเอียดเต็ม: PPMM2 `NEXT_SESSION.md` (2026-11-14)
+
+---
+
 ## ✅ 2026-11-04 (เย็น) — ปิดรอบก่อน deploy: WaitLot เทียบเกณฑ์เดิม · TEMP_UserStatusAuto · Prod.Qty remark · จุดเล็ก
 
 - **main `ad80f8c` ทดสอบหน้าเว็บบน PRD ผ่าน** (รันบนเครื่อง ชี้ PRD, VIEWONLY, job ปิด): ค้น SO/ช่วงวันที่/อักขระ `'` ทั้ง Detail+Summary · Excel · Report/Log · injection ในช่องวันที่ถูกปฏิเสธ · Due Date line ปิดไม่เตือน · WAR `E1756C6F54491AAA556101455999935F` (47,741,693 B) จัดไว้ที่ Desktop\pcms2_release
@@ -10,19 +34,19 @@
   - สาเหตุต่าง: เดิมเทียบ "ยอดพ่วง+สวมของ PO ใด PO หนึ่ง" ≥ ยอด Main ทั้ง line (เป็นผลจาก DISTINCT join ต่อ PO) · ใหม่รวมยอดทุก PO ของ line (`#tmpSaleAgg`) → line ที่ถูกพ่วง/สวมกระจายหลาย PO จนครบ/เกินยอด Main จึงขึ้นแถว WaitLot (ทั้ง 217 เป็น line หลาย PO ที่ไม่มี PO เดียวครอบยอดทั้งหมด เช่น 1000003313/1 main 2474 ใช้ 2767 กระจาย 6 PO สูงสุดต่อ PO 771)
   - ถือว่าเป็นการแก้ความหมายให้ตรงเจตนา (line ถูกจัดสรรครบ) ไม่ใช่ถดถอย · 10 line In-Process ที่เพิ่ม: 1000001550/1, 1000001797/4, 1000002831/1, 1000003313/1+2, 1000003732/1, 1000003794/1, 1107012201/6, 1109011997/2, 1111003583/000100 — ให้ฝ่ายแผนยืนยัน
 - **TEMP_UserStatusAuto คีย์ซ้ำ:** DataStatus=O 68,817 แถว · คีย์ (PO,SO,Line,RPM) ซ้ำ 1,408 กลุ่ม (760 กลุ่มสถานะต่างกัน) · **ยังเกิดอยู่** (268 กลุ่มสร้างหลัง มิ.ย. 2025 ล่าสุด 2026-11-03) · อยู่บน sale line เปิด 59 กลุ่ม · **ผลต่อหน้าจอ: ไม่ซ้ำ** เพราะ Detail เลือกแถวเดียวด้วย `#tempUCALBest` (rn=1) · แนะนำ DBA/เจ้าของ proc: เพิ่ม unique index + ล้างซ้ำ (ผมไม่ได้แตะข้อมูล)
-- **TEMP_UserStatusAuto (แก้ข้อสรุปเดิมที่ผิด 2026-11-04):** คีย์ซ้ำจริง (PO+SO+Line+Grade, DataStatus=O) = **12 กลุ่ม** (user รันตรวจเอง) — เลข 1,408 เดิมนับโดยไม่รวม Grade จึงผิด · ทุกกลุ่ม 2 แถว สถานะเหมือนกัน สร้างห่างกันไม่กี่ ms (18/6, 2/7, 4/8, 5/8/2026) PO ละ sale line เดียว → น่าจะเป็น race (proc รันซ้อนกัน) · ไม่กระทบหน้าจอ · สคริปต์ `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` = ปิดแถวซ้ำ + unique index IGNORE_DUP_KEY (ต้องทำ) + แก้ proc จับคู่คีย์เต็ม (ไม่บังคับ ป้องกันล่วงหน้า) — **ยังไม่รัน ยังไม่ทดสอบ**
+- **TEMP_UserStatusAuto (แก้ข้อสรุปเดิมที่ผิด 2026-11-04):** คีย์ซ้ำจริง (PO+SO+Line+Grade, DataStatus=O) = **12 กลุ่ม** (user รันตรวจเอง) — เลข 1,408 เดิมนับโดยไม่รวม Grade จึงผิด · ทุกกลุ่ม 2 แถว สถานะเหมือนกัน สร้างห่างกันไม่กี่ ms (18/6, 2/7, 4/8, 5/8/2026) PO ละ sale line เดียว → น่าจะเป็น race (proc รันซ้อนกัน) · ไม่กระทบหน้าจอ · สคริปต์ `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` = ปิดแถวซ้ำ + unique index IGNORE_DUP_KEY (ต้องทำ) + แก้ proc จับคู่คีย์เต็ม (ไม่บังคับ ป้องกันล่วงหน้า) — ⚠️ ข้อความนี้ล้าสมัย: ไฟล์ถูกเขียนใหม่เป็น A2/B2/C2 และ (A2) ลง PRD แล้ว ดูบล็อก 2026-11-09
 - **SumBillCache — พบกลไกต้นเหตุ 2026-11-04 (ยังไม่แก้ ต้องคุยกับ user):** `spd_UpsertToMainBillBatch` (เรียกต่อจากการ upsert ใบส่งทุกรอบ) มี `UPDATE ... SET DataStatus='X'` **โดยไม่เปลี่ยน ChangeDate** ให้ทุกแถว O ของ SaleOrder ที่ ChangeDate ≠ MAX(ChangeDate) ของ SO นั้นในช่วง 30 นาที (ตรรกะเก่าจากยุค SAP ที่ส่งทั้งชุด) → ยุค ERP365 ที่ส่งเป็นรายใบ: แตะ PO หนึ่งแล้วแถวของ PO อื่นใน SO เดียวกันกลายเป็น X ปลอมเงียบๆ และ `spd_SumBillAndGoodReceive` (คำนวณใหม่เฉพาะ ChangeDate ≥45 นาที) ไม่เห็นการเปลี่ยน → แคชค้าง · หลักฐาน: กลุ่มค้าง 2,190 กลุ่ม ทุกกลุ่ม LastRefreshDT > ChangeDate ล่าสุดของใบ (0 กลุ่มที่ proc พลาดเพราะ ChangeDate ใหม่กว่า) · แนวแก้: (1) ถอด UPDATE เก่าใน proc นั้น + เพิ่ม supersede ระดับ PO ใน Java (X เฉพาะแถวของ PO ที่ไม่อยู่ใน staging) (2) proc SumBill ลบกลุ่มแคชที่ไม่มีแถว O (anti-join) เป็นตาข่ายนิรภัย (3) หลังแก้ ซิงก์ย้อนหลังด้วย runFullErpSyncWithDateRange ให้แถว X ปลอมกลับ O จาก staging · **ยังไม่ได้ทดสอบ/ยังไม่ได้แก้ — ทดสอบบน DEV ก่อน**
 - **จุดเล็ก (branch `fix/small-ux-and-prodqty-note`):** (1) ตรวจรูปแบบวันที่ก่อนส่ง (Detail+Main) แจ้งชื่อช่องแทน "ติดต่อทีม IT" (2) บันทึกที่ server ไม่ส่งแถวกลับ (ล้าง Replaced/Switch Remark) ขึ้น Swal "บันทึกแล้ว" (3) navbar ≥992px สูง ≥44px
 - 🔲 SumBillCache: ไม่แก้ที่หน้าจอ — ต้องหากลไกตั้ง X ปลอมที่ job ซิงก์ (ดูบล็อก 2026-11-03)
 
-## ✅ 2026-11-10 — แก้ช่องว่างสิทธิ์หน้า Detail (code-complete · compile ผ่าน JDK 1.8 · ยังไม่ได้ทดสอบกับเบราว์เซอร์ · ยังไม่ deploy)
+## ✅ 2026-11-10 — แก้ช่องว่างสิทธิ์หน้า Detail (code-complete · compile ผ่าน JDK 1.8 · ✅ merge เข้า main แล้ว `6c80bb4` · ยังไม่ได้ทดสอบกับเบราว์เซอร์ · ยังไม่ deploy)
 
 - `PCMSDetailController`: หน้า GET เช็ค `IsPCMSDetail` (เดิม `IsPCMSMain`) + ทุก POST 12 ตัวเช็คผ่าน `requireDetailPermit` → 403
 - 🔲 ก่อน deploy: ตรวจใน PRD ว่า Permit ที่ `IsPCMSMain=1` และใช้ Detail จริงมี `IsPCMSDetail=1` ด้วย (SELECT `Permits` WHERE WebApp='PCMS2') ไม่งั้นผู้ใช้กลุ่มนั้นเข้า Detail ไม่ได้
 - 🔲 ทดสอบ: ผู้ใช้ Detail=1 เข้าได้/กรอกได้ · Detail=0 ได้ AccessDenied และ POST ตรงได้ 403
 - ช่องว่างที่เหลือ: Log ไม่เช็ค `IsReport` · `IsUserManagement` ไม่ถูกใช้
 
-## ✅ 2026-11-10 — ทำความเข้าใจระบบ + เติมเอกสารที่ยังเป็น template/TODO (เอกสารล้วน · ยังไม่ commit)
+## ✅ 2026-11-10 — ทำความเข้าใจระบบ + เติมเอกสารที่ยังเป็น template/TODO (เอกสารล้วน · ✅ merge เข้า main แล้ว 2026-11-10 `2010f63`)
 
 ### ที่ทำ
 - เติมของจริงแทน placeholder: `docs/pcms2.md` (เดิม TODO) · `docs/business/roles.md` · `workflow.md` · `rules.md` · `docs/api.md` · `docs/database.md` (เดิมเป็น template `[PROJECT_NAME]` ทั้งหมด)
@@ -40,7 +64,7 @@
 - [ ] ยืนยันกับเจ้าของงานคำถาม 🟡 ใน `docs/business/rules.md` §4 (Prod. Qty/WaitLot/OP-OPSW/กุญแจ PO)
 - [ ] ตัดสินเรื่องช่องว่างสิทธิ์ข้างบน (แก้โค้ดหรือบันทึกเป็น known issue)
 
-## 🔥 2026-11-09 — ตรวจ SQL `2026-11-04_01_fix_userstatusauto_duplicate_key.sql` ให้ DBA (แก้ไฟล์แล้ว · ยังไม่ได้รันอะไรบน PRD · ไฟล์ยัง untracked)
+## 🔥 2026-11-09 — ตรวจ SQL `2026-11-04_01_fix_userstatusauto_duplicate_key.sql` ให้ DBA (แก้ไฟล์แล้ว · (A2) ติดตั้งบน PRD แล้ว · ✅ ไฟล์ tracked อยู่ใน main แล้ว)
 
 ### ที่พบ (ตรวจ PRD อ่านอย่างเดียว + ทดสอบใน tempdb)
 - (A) ฉบับเดิม **รันบน PRD ไปแล้ว** (proc modify_date 2026-11-04 16:58:41, นิยามตรงไฟล์เดิมทุกบรรทัด) และ (B) ล้างซ้ำ 9 คีย์รันไปแล้ว (16:58:17) — ไฟล์เดิมเขียนว่า "ยังไม่รัน" ผิดสถานะ
@@ -70,9 +94,9 @@
 - [x] (A2) ลง DEV แล้ว + ลง PRD แล้ว (08:58 วันที่ 11-09) · [ ] (B2) UPDATE ล้างซ้ำ 3 คีย์ (ไม่บังคับ)
 - [ ] หาผู้เรียก proc ตัวที่สอง (job สองตัว? DEV ชี้ PRD?) — เวลาเกิดซ้ำไม่ตรง :14/:44 เสมอ
 - [ ] หลัง deploy เฝ้า `dup_key_groups_O` ทุกวันประมาณ 1 สัปดาห์ → ค่อยพิจารณา (C2)
-- [ ] commit ไฟล์ SQL เข้า repo เมื่อ user สั่ง (ตอนนี้ untracked)
+- [x] commit ไฟล์ SQL เข้า repo — เสร็จ (อยู่ใน main)
 
-## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV+PRD อ่านอย่างเดียวแล้ว · commit `72d41c9` push 2 remote แล้ว · **MR !24 https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/24 รอ review/merge** · ยังไม่ deploy)
+## 🔥 2026-11-08 — code-review หน้า Report/Log + แก้ (ทดสอบ DEV+PRD อ่านอย่างเดียวแล้ว · commit `72d41c9` push 2 remote แล้ว · **MR !24 https://twcgit.wacoal.co.th/twc_att/pcms2/-/merge_requests/24 ✅ merge เข้า main แล้ว 2026-11-10 `460e234`** · ยังไม่ deploy)
 
 branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที่ดึงไว้ 11-04 — VPN ยังไม่ต่อ ดึงใหม่ไม่ได้) · VPN: Fortinet ตัดอยู่ (twcgit/DB ต่อไม่ได้) ต้องต่อเองแล้ว fetch
 
@@ -102,7 +126,7 @@ branch `fix/report-log-review` (แตกจาก `gitlab_master/main` ที�
 ### 🔲 ต้องทำ
 - [x] วัดเวลา SQL CFM บน PRD + ตรวจแถวซ้ำ/ตรวจ SQL ERP365 กับ ERP_PROD จริง — เสร็จ (ผลอยู่ในหัวข้อ "ผลทดสอบ PRD")
 - [x] ต่อ VPN → fetch → push 2 remote → MR !24 (เปิดแล้ว 2026-11-09; `main` ไม่ขยับระหว่างทำงาน)
-- [ ] SQL `sql/2026-11-04_01_fix_userstatusauto_duplicate_key.sql` (untracked) รอ DBA · deploy PRD รอ user สั่ง
+- [x] SQL `sql/2026-11-04_01_...` อยู่ใน main แล้ว (ฉบับ A2 ลง PRD แล้ว ดูบล็อก 11-09) · [ ] deploy PRD รอ user สั่ง
 
 ## ✅ 2026-11-04 — ทดสอบหน้าเว็บบน PRD (รันบนเครื่อง ชี้ DB PRD, VIEWONLY, job ปิด, อ่านอย่างเดียว) + แก้ Due Date ของ line ที่ปิด
 
