@@ -2,14 +2,17 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
-## 🚀 2026-11-18 — เตรียม WAR พร้อมขึ้น PRD (build จาก `main` 58ed589 · **ยังไม่ deploy — รอ user สั่ง**)
+## 🚀 2026-11-19 — WAR ใหม่พร้อมขึ้น PRD (build จาก `main` b397f0d รวมแก้ Log `IsReport` · **ยังไม่ deploy — รอ user สั่ง**)
 
-- WAR: `C:\Users\94687\Desktop\pcms2_release_20261118\PCMS2.war` · 47,746,325 B · SHA-256 `49a952d98e5ffff808889e2d9b088f2512c72f61b31ed183489da96d6bbb52a7` · MD5 `875d0028947502a949d5d4412d2842c8` (build JDK 1.8 `mvn -o clean package -DskipTests` ในสำเนาแยก ไม่แตะ `target/` ของ Eclipse)
-- ตรวจ checklist `docs/deployment.md`: ✅ build จาก `gitlab_master/main` ล่าสุด · ✅ `database.properties` ใน WAR ชี้ PRD ครบ 4 ตัว (PCMS/PPMM `10.11.44.101` · `SOR_PRODUCTION` · `ERP_PROD`) · ✅ WAR ไม่มี DevTest (web.xml 0, jar 0) · ✅ ไม่มี SQL patch ต้องรันก่อน deploy (ฉบับ A2 ลง PRD แล้ว 11-09 08:58 · proc modify_date ยังตรง ไม่ถูกแก้ซ้ำ) · ✅ สิทธิ์ Detail ตรวจแล้ว (บล็อกด้านล่าง: CUST01/02 ไม่ควรเข้าอยู่แล้ว)
+- WAR **ตัวจริง**: `C:\Users\94687\Desktop\pcms2_release_20261119\PCMS2.war` · 47,747,189 B · SHA-256 `1a66966a638d8c8b7c9f68303ae5d157c3b70e6e1b4320956d97df8000da9cdc` · MD5 `ac9d467187888a9266480d479845be32` (build JDK 1.8 `mvn -o clean package -DskipTests` ในสำเนาแยก ไม่แตะ `target/` ของ Eclipse)
+- 🔴 **ห้ามใช้ `pcms2_release_20261118\PCMS2.war` (SHA `49a952d9…`)** — build ก่อนแก้ Log `IsReport` ไม่มีการปิดช่อง CUST ดู Log ข้ามลูกค้า
+- ตรวจ checklist `docs/deployment.md` (11-19 ตรวจกับตัว WAR: build จาก main · config ใน WAR ชี้ PRD 4 ตัว · ไม่มี DevTest · มี guard `canViewLog`/`requireDetailPermit`/`canViewReport` ใน class ที่คอมไพล์แล้ว 4 controller · ตรวจ PRD ซ้ำหลังต่อ VPN แล้วดูบรรทัด 'ตรวจ PRD ซ้ำ 11-19 10:07' ด้านล่าง): ✅ build จาก `gitlab_master/main` ล่าสุด · ✅ `database.properties` ใน WAR ชี้ PRD ครบ 4 ตัว (PCMS/PPMM `10.11.44.101` · `SOR_PRODUCTION` · `ERP_PROD`) · ✅ WAR ไม่มี DevTest (web.xml 0, jar 0) · ✅ ไม่มี SQL patch ต้องรันก่อน deploy (ฉบับ A2 ลง PRD แล้ว 11-09 08:58 · proc modify_date ยังตรง ไม่ถูกแก้ซ้ำ) · ✅ สิทธิ์ Detail ตรวจแล้ว (บล็อกด้านล่าง: CUST01/02 ไม่ควรเข้าอยู่แล้ว)
 - PRD ตอนนี้ (SELECT): คีย์ O ซ้ำใน `TEMP_UserStatusAuto` (PO+SO+Line+Grade) = **1 กลุ่ม** (11-09 พบ 3 คีย์ — นับด้วยกุญแจต่างกัน เทียบกันตรงๆ ไม่ได้ แต่ไม่เพิ่ม) · `DBCC OPENTRAN` รันไม่ได้ (user `pcmspgm` ไม่มีสิทธิ์) — ให้ DBA/คุณเช็กเองใน SSMS ถ้าต้องการ
 - 🔲 ขั้นที่ต้องทำโดยคน: สำรอง WAR เดิมบน PRD → วาง `PCMS2.war` ช่วง **:19–:38 หรือ :49–:08** (ห้าม :14/:44/01:00) → เปิด `/PCMS2/Main` + `/PCMS2/Detail` ค้น SO 1 ใบ · Download Excel 1 ครั้ง · ดู log Tomcat ไม่มี SQL error → ผู้ใช้ CUST01/02 (3 คน) ควรเห็น Detail ถูกปฏิเสธ (ตั้งใจ)
 - ⚠️ ไม่ทราบว่า PRD รันเวอร์ชันไหนอยู่ — ขอให้ admin เก็บ WAR เดิมไว้ย้อนกลับ · ⚠️ POST ที่ถูกปฏิเสธจะเห็น 405 ไม่ใช่ 403 (error-page) ไม่ใช่ตัวบล็อก
-- หมายเหตุ: ฝั่ง Log (`IsReport`) และ `IsUserManagement` ยังเป็นช่องว่างที่ไม่ได้แก้ (ไม่บล็อก deploy · รอ user ตัดสิน)
+- ✅ ช่องว่างฝั่ง Log (`IsReport`) แก้แล้วและ merge เข้า main (branch `fix/log-isreport-check` · ทดสอบ DEV: CUST01 ปฏิเสธ 4 หน้า+4 endpoint ด้วย 403 · VIEWONLY ใช้ได้) · `IsUserManagement` ตั้งใจไม่แก้ (ดู `docs/business/roles.md` §5)
+- ✅ ตรวจ PRD ซ้ำ 11-19 10:07 (SELECT ล้วน หลังต่อ VPN) — **ผลเหมือน 11-18 ทุกข้อ**: Permits ADMIN/ITSUPP/VIEWONLY = Main1/Detail1/Report1 · CUST01/02 = Main1/Detail0/Report0 (ผู้ถือ 3/4/2/1/2 ตามเดิม) · proc A2 modify_date `2026-11-09 08:58:12` ไม่ถูกแก้ซ้ำ · คีย์ O ซ้ำ `TEMP_UserStatusAuto` = 1 กลุ่ม · ตาราง/proc ที่โค้ดอ้างมีครบ (`SumBillCache`/`SumGRCache`/`spd_SumBillAndGoodReceive`/`ConfigCustomerUser`/`EmployeePermits`/`FromSapMainSale`) · PPMM เชื่อมต่อได้ · `ERP_PROD` มี view `FromErpMainProd`/`FromErpMainSale` (ที่ Log ERP365 อ่าน) → ไม่มีอะไรขวางการ deploy
+- 🔲 ก่อนวางจริง: สำรอง WAR เดิมบน PRD · วางช่วง :19–:38 / :49–:08 · หลัง deploy ลอง `/Log/SaleOrderLog/ERP365` + `/Log/ProductionOrderLog/ERP365` 1 ครั้ง (ทดสอบ DEV ไม่ได้ — ยืนยันได้แค่ว่า view มีอยู่)
 
 ## ✅ 2026-11-18 — ผลตรวจ Permit บน PRD + ทดสอบ 403 บน DEV (สิทธิ์หน้า Detail)
 
