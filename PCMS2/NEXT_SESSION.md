@@ -2,14 +2,46 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🚀 2026-11-19 — WAR ใหม่พร้อมขึ้น PRD (build จาก `main` b397f0d รวมแก้ Log `IsReport` · **ยังไม่ deploy — รอ user สั่ง**)
+
+- WAR **ตัวจริง**: `C:\Users\94687\Desktop\pcms2_release_20261119\PCMS2.war` · 47,747,189 B · SHA-256 `1a66966a638d8c8b7c9f68303ae5d157c3b70e6e1b4320956d97df8000da9cdc` · MD5 `ac9d467187888a9266480d479845be32` (build JDK 1.8 `mvn -o clean package -DskipTests` ในสำเนาแยก ไม่แตะ `target/` ของ Eclipse)
+- 🔴 **ห้ามใช้ `pcms2_release_20261118\PCMS2.war` (SHA `49a952d9…`)** — build ก่อนแก้ Log `IsReport` ไม่มีการปิดช่อง CUST ดู Log ข้ามลูกค้า
+- ตรวจ checklist `docs/deployment.md` (11-19 ตรวจกับตัว WAR: build จาก main · config ใน WAR ชี้ PRD 4 ตัว · ไม่มี DevTest · มี guard `canViewLog`/`requireDetailPermit`/`canViewReport` ใน class ที่คอมไพล์แล้ว 4 controller · ตรวจ PRD ซ้ำหลังต่อ VPN แล้วดูบรรทัด 'ตรวจ PRD ซ้ำ 11-19 10:07' ด้านล่าง): ✅ build จาก `gitlab_master/main` ล่าสุด · ✅ `database.properties` ใน WAR ชี้ PRD ครบ 4 ตัว (PCMS/PPMM `10.11.44.101` · `SOR_PRODUCTION` · `ERP_PROD`) · ✅ WAR ไม่มี DevTest (web.xml 0, jar 0) · ✅ ไม่มี SQL patch ต้องรันก่อน deploy (ฉบับ A2 ลง PRD แล้ว 11-09 08:58 · proc modify_date ยังตรง ไม่ถูกแก้ซ้ำ) · ✅ สิทธิ์ Detail ตรวจแล้ว (บล็อกด้านล่าง: CUST01/02 ไม่ควรเข้าอยู่แล้ว)
+- PRD ตอนนี้ (SELECT): คีย์ O ซ้ำใน `TEMP_UserStatusAuto` (PO+SO+Line+Grade) = **1 กลุ่ม** (11-09 พบ 3 คีย์ — นับด้วยกุญแจต่างกัน เทียบกันตรงๆ ไม่ได้ แต่ไม่เพิ่ม) · `DBCC OPENTRAN` รันไม่ได้ (user `pcmspgm` ไม่มีสิทธิ์) — ให้ DBA/คุณเช็กเองใน SSMS ถ้าต้องการ
+- 🔲 ขั้นที่ต้องทำโดยคน: สำรอง WAR เดิมบน PRD → วาง `PCMS2.war` ช่วง **:19–:38 หรือ :49–:08** (ห้าม :14/:44/01:00) → เปิด `/PCMS2/Main` + `/PCMS2/Detail` ค้น SO 1 ใบ · Download Excel 1 ครั้ง · ดู log Tomcat ไม่มี SQL error → ผู้ใช้ CUST01/02 (3 คน) ควรเห็น Detail ถูกปฏิเสธ (ตั้งใจ)
+- ⚠️ ไม่ทราบว่า PRD รันเวอร์ชันไหนอยู่ — ขอให้ admin เก็บ WAR เดิมไว้ย้อนกลับ · ⚠️ POST ที่ถูกปฏิเสธจะเห็น 405 ไม่ใช่ 403 (error-page) ไม่ใช่ตัวบล็อก
+- ✅ ช่องว่างฝั่ง Log (`IsReport`) แก้แล้วและ merge เข้า main (branch `fix/log-isreport-check` · ทดสอบ DEV: CUST01 ปฏิเสธ 4 หน้า+4 endpoint ด้วย 403 · VIEWONLY ใช้ได้) · `IsUserManagement` ตั้งใจไม่แก้ (ดู `docs/business/roles.md` §5)
+- ✅ ตรวจ PRD ซ้ำ 11-19 10:07 (SELECT ล้วน หลังต่อ VPN) — **ผลเหมือน 11-18 ทุกข้อ**: Permits ADMIN/ITSUPP/VIEWONLY = Main1/Detail1/Report1 · CUST01/02 = Main1/Detail0/Report0 (ผู้ถือ 3/4/2/1/2 ตามเดิม) · proc A2 modify_date `2026-11-09 08:58:12` ไม่ถูกแก้ซ้ำ · คีย์ O ซ้ำ `TEMP_UserStatusAuto` = 1 กลุ่ม · ตาราง/proc ที่โค้ดอ้างมีครบ (`SumBillCache`/`SumGRCache`/`spd_SumBillAndGoodReceive`/`ConfigCustomerUser`/`EmployeePermits`/`FromSapMainSale`) · PPMM เชื่อมต่อได้ · `ERP_PROD` มี view `FromErpMainProd`/`FromErpMainSale` (ที่ Log ERP365 อ่าน) → ไม่มีอะไรขวางการ deploy
+- 🔲 ก่อนวางจริง: สำรอง WAR เดิมบน PRD · วางช่วง :19–:38 / :49–:08 · หลัง deploy ลอง `/Log/SaleOrderLog/ERP365` + `/Log/ProductionOrderLog/ERP365` 1 ครั้ง (ทดสอบ DEV ไม่ได้ — ยืนยันได้แค่ว่า view มีอยู่)
+
+## ✅ 2026-11-18 — ผลตรวจ Permit บน PRD + ทดสอบ 403 บน DEV (สิทธิ์หน้า Detail)
+
+### PRD (SELECT ล้วน ไม่เขียนอะไร) — `PCMS.dbo.Permits` WebApp='PCMS2' + `EmployeePermits` (สถานะ O)
+| PermitId | ผู้ถือ | IsPCMSMain | IsPCMSDetail |
+|---|---|---|---|
+| ADMIN | 3 | 1 | 1 |
+| ITSUPP | 4 | 1 | 1 |
+| VIEWONLY | 2 | 1 | 1 |
+| CUST01 | 1 | 1 | **0** |
+| CUST02 | 2 | 1 | **0** |
+- ผล: ADMIN/ITSUPP/VIEWONLY เข้า Detail ได้ต่อ · CUST01/CUST02 (รวม 3 คน) จะเข้า Detail ไม่ได้หลัง deploy — **user ยืนยัน 2026-11-18: กลุ่ม CUST ไม่ควรเข้า Detail อยู่แล้ว (ไม่มีสิทธิ์ตั้งแต่แรก/เมนูซ่อน) → ไม่ต้องแก้ PRD**
+- ไม่ต้องรัน SQL เขียนอะไรบน PRD เพื่อเรื่องนี้
+
+### DEV (Tomcat 8082 จาก `main` e93c192+ · build ในสำเนาแยก ไม่แตะ target/ ของ Eclipse · jobs OFF)
+- permit `CUST01` (Detail=0): GET `/Detail` → หน้า **Access Denied** ✅ · GET `/Main` → เข้าได้ปกติ ✅ · POST ทั้ง 12 endpoint ของ `/Detail/*` ถูกปฏิเสธ (ไม่ได้ข้อมูล) ✅
+- permit `VIEWONLY` (Detail=1): GET `/Detail` → `PCMS - Detail` ✅ · POST `loadDefault` → 200 ได้ข้อมูล ✅ (ส่วน `getCFMPlanDateDetail`/`saveDefault` ที่ส่ง `[]` ว่างได้ 405 เพราะ service โยน `IndexOutOfBounds` หลังผ่านเช็คสิทธิ์แล้ว ไม่ใช่เรื่อง permit — ไม่ได้ทดสอบด้วยข้อมูลจริงครบทุก endpoint)
+- ⚠️ **สังเกต: POST ที่ถูกปฏิเสธได้ HTTP 405 ไม่ใช่ 403** — สาเหตุ `web.xml` ตั้ง `<error-page>` ทุกสถานะ → `/handleError` ซึ่งรับแค่ GET ทำให้ `sendError(403)` ของ POST กลายเป็น 405 (และ 500/400 ของ POST ก็กลายเป็น 405 เหมือนกัน) · การปฏิเสธยังได้ผล แต่ฝั่ง JS ที่ดู status จะเห็น 405 · เป็นพฤติกรรมเดิมของแอป ไม่ได้แก้ — ถ้าจะแก้ ให้ `ErrorController` รับทุก method
+- ยังไม่ได้ทดสอบ: ผู้ใช้จริงบน PRD · ปุ่มบันทึก (`saveInputDetail`/`saveInputDate`) ด้วย VIEWONLY จริง (ไม่เขียนข้อมูล DEV เพิ่ม)
+- เก็บกวาด: Tomcat DEV หยุดแล้ว (8082 ว่าง) · ลบ worktree ชั่วคราวแล้ว
+
 ## 📍 2026-11-18 — สถานะจริงเทียบ git (ตรวจ `gitlab_master/main` = e93c192 · อ่านบล็อกนี้ก่อน)
 
 - ✅ เข้า `main` ครบแล้ว (merge 2026-11-10): MR !24 report/log + สิทธิ์ Detail · `fix/small-ux-and-prodqty-note` · `fix/detail-due-date-sale-status` · SQL injection fix + regression test · เอกสารระบบ (`2010f63`) · ไฟล์ SQL UserStatusAuto
 - ⏳ ยังไม่เข้า main: `docs/readme-pcms2` (README) · กฎ `prd-sql-single-block-transaction` (branch `docs/next-session-sync-2026-11-18` นี้)
 - ❓ **deploy PRD: ไม่มีบันทึกว่าทำแล้ว** — `main` ปัจจุบันมีโค้ดใหม่กว่า WAR ที่ตรวจ 11-03/11-04 (ต้อง build + ตรวจใหม่ ห้ามใช้ hash WAR เก่า)
 - 🔲 ค้างจริง:
-  - [ ] SELECT บน PRD: Permit ที่ `IsPCMSMain=1` และใช้ Detail จริงต้องมี `IsPCMSDetail=1` (ก่อน deploy)
-  - [ ] ทดสอบสิทธิ์ Detail ในเบราว์เซอร์ (Detail=1 เข้า/กรอกได้ · Detail=0 AccessDenied + POST ตรง 403)
+  - [x] SELECT บน PRD: Permit — ตรวจแล้ว 2026-11-18 (ดูบล็อก 'ผลตรวจ Permit + ทดสอบ 403' ด้านล่าง)
+  - [x] ทดสอบสิทธิ์ Detail บน DEV — ผ่านแล้ว 2026-11-18 (ดูบล็อกด้านล่าง)
   - [ ] เฝ้า `dup_key_groups_O` (เริ่ม 11-09) ก่อนพิจารณา unique index (C2) · [ ] (B2) ล้างซ้ำ 3 คีย์ (ไม่บังคับ) · [ ] หาผู้เรียก proc ตัวที่สอง
   - [ ] ตัดสินช่องว่างสิทธิ์: Log ไม่เช็ค `IsReport` · `IsUserManagement` ไม่ถูกใช้
   - [ ] ถามเจ้าของงานคำถาม 🟡 ใน `docs/business/rules.md` §4
