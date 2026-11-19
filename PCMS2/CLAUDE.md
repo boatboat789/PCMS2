@@ -74,6 +74,7 @@ Prioritize: **Correctness → Simplicity → Maintainability → Performance →
 | ไฟล์ | เนื้อหา |
 |---|---|
 | `docs/detail-row-taxonomy-2026-11-03.md` | ชนิดแถว/สูตร Prod. Qty/แคช/ช่องกรอก — "กี่แบบ อะไรบ้าง" |
+| `docs/design-relation-page-2026-11-19.md` | 🟡 ร่างออกแบบหน้าใหม่ "ความสัมพันธ์ SO/PO — โยก/สวม" (ค้น → รายการ → แผงกรอกด้านล่าง) + ผลตรวจ PRD + คำถามค้าง (ยังไม่เขียนโค้ด) · คำศัพท์: โยก=Replaced, สวม=Switch |
 | `docs/logic-map-detail-2026-11-03.md` | ข้อค้นพบ Prod. Qty เปลี่ยนตามตัวกรอง + คำถามที่รอเจ้าของงานยืนยัน |
 | `docs/prd-findings-2026-11-03.md` | ตัวเลขจริงบน PRD (SumBillCache ค้าง, WaitLot +217 ฯลฯ) |
 | `docs/orig-vs-main-compare-2026-11-03.md` · `docs/cache-fix-plan-2026-11-03.md` | เทียบโค้ดเก่า/ใหม่ · แผนแก้แคชยอดส่ง (หลัง !17 ถูก revert) |

@@ -2,6 +2,25 @@
 
 > อัปเดตไฟล์นี้ทุกครั้งที่จบ session
 
+## 🔥 2026-11-19 — ออกแบบหน้าใหม่ "ความสัมพันธ์ SO/PO — โยก/สวม" (ร่างออกแบบ · ยังไม่เขียนโค้ด)
+
+- เอกสาร: `docs/design-relation-page-2026-11-19.md` (หน้าจอ 3 โซน · การอัปเดตตารางหลังบันทึก · backend ที่เรียก logic เดิม · เฟส 0–4 · คำถามค้าง 9 ข้อ)
+- **คำศัพท์ที่ user ยืนยัน:** โยก = Replaced (ReplacedRemark) · สวม = Switch (SwitchRemark) · พ่วง = OrderPuang (มาจาก ERP) — เอกสารเก่าเรียกสลับ ยังไม่ได้แก้
+- ตรวจ PRD (SELECT ล้วน 4 ชุด): 1 PO = 1 sale line แต่ 1 sale line มีหลาย PO · ผลค้น 1 SO/PO ไม่เกินหลักสิบแถว (query ตรง 261–386 ms) · สถานะ PCMS ต่างจาก ERP 12% · ยกเลิก/ตัดเกรดZ ไม่นับยอด · โยกใช้บ่อยกว่าสวม (94 ครั้ง/7 คน เทียบ 10 ครั้ง/1 คน ใน 30 วัน)
+- ✅ user ตอบแล้ว 2026-11-19: สิทธิ์แก้ = ใครมี Detail แก้ได้ต่อไป (รอสอบถามเพิ่ม · ใส่ตัวเช็คสิทธิ์เขียนจุดเดียวไว้) · **หลังโยกต้องอัปเดตสถานะ PCMS ทันที** · ยอดคงเหลือ: ออกแบบให้แสดงทั้ง 'ทั้งระบบ' และ 'ตามที่ค้น' คู่กัน · เสริม/แทนที่ Detail: อธิบายแล้ว แนะนำ 'เสริม' ก่อน — รายละเอียดที่ design doc หัวข้อ 10
+- ⚠️ **ก่อนเฟส 2:** proc ต่อ PO `spd_UpsertToTEMP_UserStatusOnWebWithProdOrder` (ที่ Stock Load ใช้ และจะใช้หลังโยก/สวม) **ไม่มี applock/transaction** ต่างจากตัวรวม A2 → ให้ DBA ใส่ applock ตัวเดียวกัน (SQL บล็อกเดียว ทดสอบ DEV) ก่อนเรียกบ่อยขึ้น · ยังค้าง: 🟡 ความหมาย 'ใช้ไป > ปริมาณ PO' 1,819 PO (ฝ่ายแผนยืนยัน) · แก้เอกสารเก่าให้ตรงป้ายหน้าจอ
+- ⚠️ SELECT PRD รอบนี้ทำในช่วง :49–:08 · `sqlcmd -i` ต้องส่ง path แบบ Windows (`cygpath -w`) ไม่งั้น error "file C: Access is denied"
+
+## ✅ 2026-11-19 — ทดลอง deploy WAR ตัวจริงบนเครื่อง (DEV config) + ตรวจ · ผ่าน
+
+- WAR ที่ทดลอง: `Desktop\pcms2_release_20261119\PCMS2.war` SHA-256 `1a66966a…da9cdc` (ตรงกับที่บันทึก) · ระเบิดลงสำเนา Tomcat (`C:\Users\94687\pcms2-dev-tomcat`, พอร์ต 8082) แล้ว **เขียนทับ config เป็น DEV ครบ 4 ตัว + ปิด scheduled jobs** (ห้ามรัน WAR ตัวจริงตรงๆ บนเครื่อง — config ใน WAR คือ PRD และ job เขียนข้อมูลจริงได้) · เริ่มหลัง :19 เลี่ยงรอบ job
+- **VIEWONLY (Detail=1/Report=1):** `/Main` `/Detail` `/Report/CFM/Detail` `/Log/*` (ATT+ERP365) โหลดได้ · `/Setting/*` Access Denied (ถูก) · เมนู Setting ซ่อน · **ค้นผ่านหน้าเว็บจริง:** Detail ค่าเริ่มต้น 4,525 แถว · SO 1107009548 = 1/1 · Main 3,684 แถว (ตรงกับตัวเลข DEV เดิม 11-03) · Download Excel ได้ `PCMS-Detail.xlsx` ไม่มี JS error · วันที่ dd/MM/yyyy · Log ATT: Sale 8 แถว · Prod S2K252 1 แถว
+- **CUST01 (Detail=0/Report=0) บน WAR ชุดเดียวกัน:** `/Main` เข้าได้ · `/Detail` `/Report/CFM/Detail` `/Log/*` `/Setting/*` = Access Denied · POST Log ทั้ง 2 ตัว = HTTP 403 + JSON ไทย · POST `/Detail/*` ถูกปฏิเสธ (405 ผ่าน error-page ตามที่บันทึกไว้)
+- Log Tomcat: SEVERE 3 รายการ **ทั้งหมดมาจาก curl ที่ผมส่ง body ไม่ครบฟิลด์เอง** (`buildLikeClause`/`buildListClause` เจอ null — หน้าเว็บจริงส่งครบเสมอ) ไม่ใช่บั๊กของ WAR · 404 มีแค่ `favicon.ico` · จากหน้าเว็บจริง SEVERE = 0
+- 📝 ข้อสังเกต (ไม่แก้ ไม่บล็อก): endpoint `/Detail/searchByDetail` พังด้วย NPE (ตอบ 405) ถ้า client ส่ง JSON ขาดฟิลด์ — เกิดเฉพาะการเรียกตรงนอกหน้าเว็บ · ถ้าจะทำให้ทนขึ้นให้ default ค่า null ใน `PCMSSqlService.buildLikeClause/buildListClause`
+- ❌ ทดสอบไม่ได้บน DEV: Log ERP365 (DEV ไม่มี view — ตอบ `status:error` ตามเดิม) · ปุ่มบันทึก/แก้ข้อมูล (ไม่เขียน DEV เพิ่ม) · ผู้ใช้ ADMIN/ITSUPP (DEV ไม่มีสิทธิ์สองตัวนี้ ใช้ผลอ่านโค้ด+PRD ว่าเป็น Main1/Detail1/Report1 เหมือน VIEWONLY)
+- เก็บกวาด: Tomcat DEV หยุดแล้ว (8082 ว่าง) · ไม่ได้แตะ PRD
+
 ## 🚀 2026-11-19 — WAR ใหม่พร้อมขึ้น PRD (build จาก `main` b397f0d รวมแก้ Log `IsReport` · **ยังไม่ deploy — รอ user สั่ง**)
 
 - WAR **ตัวจริง**: `C:\Users\94687\Desktop\pcms2_release_20261119\PCMS2.war` · 47,747,189 B · SHA-256 `1a66966a638d8c8b7c9f68303ae5d157c3b70e6e1b4320956d97df8000da9cdc` · MD5 `ac9d467187888a9266480d479845be32` (build JDK 1.8 `mvn -o clean package -DskipTests` ในสำเนาแยก ไม่แตะ `target/` ของ Eclipse)
